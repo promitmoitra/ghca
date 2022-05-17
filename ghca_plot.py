@@ -131,8 +131,8 @@ if __name__=='__main__':
     ca.plot(com,cid=conf_id,cbar='v',txt='True')
     ca.animate(com,s,T=T,interval=500,txt=True)
 
-    flag='Fixed\ active';anch = 17; cycle=18
-    plot_perst_prob(core_size,flag,anch)
+##    flag='Fixed\ active';anch = 17
+##    plot_perst_prob(core_size,flag,anch)
     for i in range(1,18):
         flag='Fixed\ active'
 ##        flag='Fixed\ passive'
