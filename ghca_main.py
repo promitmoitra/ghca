@@ -1,7 +1,11 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib import colors
-import matplotlib.animation as animation
+
+
+def _import_mpl():
+    global plt, colors, animation
+    import matplotlib.pyplot as plt
+    from matplotlib import colors
+    from matplotlib import animation
 
 
 class Population:
@@ -277,6 +281,7 @@ def run(com):
 ####################################################################################
 
 def set_plot_text(pop,ax,cycle):
+    _import_mpl()
     core_len = int(len(pop))
     for txt in ax.texts:
         txt.set_text('');
@@ -287,6 +292,7 @@ def set_plot_text(pop,ax,cycle):
     return s_txt,
 
 def plot(com,cid=None,ax=None,cbar=False,txt=False):
+    _import_mpl()
     core_len = int(len(com[0].p));cycle=int(com[0].tau0);n_states = cycle+1
     if ax == None:
         fig,ax = plt.subplots()
@@ -324,6 +330,7 @@ def plot(com,cid=None,ax=None,cbar=False,txt=False):
     return img,
 
 def animate(com,data,txt=False,interval=100,T=50):
+    _import_mpl()
     core_len = int(len(com[0].p));cycle=int(com[0].tau0);n_states = cycle+1
     
     cmap = colors.ListedColormap(['xkcd:pale grey','xkcd:darkish red','xkcd:almost black'])
