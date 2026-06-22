@@ -4,15 +4,29 @@ Multi-core embedding experiment for Greenberg-Hastings CA.
 Addresses: at what seeding density (clustering level) does activity persist
 when cores are embedded in a large resting lattice?
 
-Two regimes are distinguished:
-  1. Pre-selected persistent cores (from act_config_ids files): always survive
-     individually in absorbing boundaries — they are spiral-wave sources.
-     Any non-zero seeding density is sufficient.
-  2. Uniformly random cores (the physically interesting case): individually
+Three regimes / transitions are distinguished:
+
+  1. Pre-selected persistent cores — individual cores are spiral-wave sources
+     that survive indefinitely in absorbing boundaries at any non-zero density,
+     UNLESS the persistent config set is resting-cell-free (see regime 3).
+
+  2. Uniformly random cores (lower nucleation threshold) — individually
      non-persistent cores can *collectively nucleate* stable activity once the
      seeding density exceeds a critical threshold.  This threshold scales with
-     the active/passive ratio and is where interaction between neighbouring
-     cores first allows waves to reinitialise each other before dying out.
+     act/tau0: lower active fraction → higher required density.
+
+  3. Upper extinction threshold (resting-cell starvation) — observed for
+     parameter pairs whose entire persistent config set consists of
+     resting-cell-free phase-wave patterns (e.g. (2,10) and (3,14)).
+     For these pairs all 8 persistent configs are permutations of a single
+     multiset {act, 2·act, 3·act, 4·act} with uniform inter-state spacing of
+     `act`.  No resting cells appear in any config, so at full tiling density
+     (d=1) the lattice contains zero resting cells and the GHCA infection
+     mechanism (resting → active) can never fire.  Active cells advance one
+     step to passive and activity collapses in a single step.  The transition
+     sharpens as density approaches 1: P(persist) drops from ~1 at d≈0.90 to
+     0 at d=1.00, tracking the vanishing supply of resting cells from the few
+     remaining empty slots.
 
 Usage:
     python ghca_cluster.py                     # default sweep
@@ -147,13 +161,44 @@ def sweep_density(pair, L, densities, mode, core_len, n_trials, T,
 
 
 def critical_density(densities, probs, threshold=0.5):
-    """Linearly interpolated density where P(persist) crosses threshold."""
+    """Linearly interpolated density where P(persist) crosses threshold (upward)."""
     for i in range(len(probs) - 1):
         if probs[i] < threshold <= probs[i + 1]:
             d0, d1 = densities[i], densities[i + 1]
             p0, p1 = probs[i], probs[i + 1]
             return d0 + (threshold - p0) / (p1 - p0) * (d1 - d0)
     return None
+
+
+def upper_critical_density(densities, probs, threshold=0.5):
+    """Linearly interpolated density where P(persist) crosses threshold (downward)."""
+    for i in range(len(probs) - 1):
+        if probs[i] >= threshold > probs[i + 1]:
+            d0, d1 = densities[i], densities[i + 1]
+            p0, p1 = probs[i], probs[i + 1]
+            return d0 + (threshold - p0) / (p1 - p0) * (d1 - d0)
+    return None
+
+
+def config_resting_cell_fraction(pair, data_path, core_size=4):
+    """
+    Fraction of persistent configs for `pair` that contain at least one
+    resting (state-0) cell.  Zero means the config set is resting-cell-free,
+    which is necessary (and almost sufficient) for the upper extinction
+    transition to appear.
+    """
+    import ghca_core as cacore
+    act, pas = pair
+    n_states = act + pas + 1
+    ids = np.load(
+        data_path + 'act_config_ids_states-({0:02d},{1:02d})_core-04.npy'.format(act, pas))
+    if len(ids) == 0:
+        return float('nan')
+    has_resting = sum(
+        np.any(cacore.str_to_state(
+            cacore.base_conv(int(c), n_states).rjust(core_size, '0'), n_states) == 0)
+        for c in ids)
+    return has_resting / len(ids)
 
 
 def nn_distance_cells(density, L, core_len):
