@@ -16,17 +16,34 @@ Three regimes / transitions are distinguished:
      act/tau0: lower active fraction → higher required density.
 
   3. Upper extinction threshold (resting-cell starvation) — observed for
-     parameter pairs whose entire persistent config set consists of
-     resting-cell-free phase-wave patterns (e.g. (2,10) and (3,14)).
-     For these pairs all 8 persistent configs are permutations of a single
-     multiset {act, 2·act, 3·act, 4·act} with uniform inter-state spacing of
-     `act`.  No resting cells appear in any config, so at full tiling density
-     (d=1) the lattice contains zero resting cells and the GHCA infection
-     mechanism (resting → active) can never fire.  Active cells advance one
-     step to passive and activity collapses in a single step.  The transition
-     sharpens as density approaches 1: P(persist) drops from ~1 at d≈0.90 to
-     0 at d=1.00, tracking the vanishing supply of resting cells from the few
-     remaining empty slots.
+     parameter pairs whose entire persistent config set is resting-cell-free.
+     Five such pairs exist in the tested 1..17 × 1..17 grid:
+
+       Pair    tau0  n_configs  n_multisets  structure
+       (2,10)   12       8           1       pure phase-wave
+       (3,14)   17       8           1       pure phase-wave
+       (3,13)   16      40           5       resting-cell-free (mixed)
+       (4,16)   20     120          15       resting-cell-free (mixed)
+       (4,17)   21      40           5       resting-cell-free (mixed)
+
+     Pure phase-wave pairs ((2,10) and (3,14)) have all configs drawn from the
+     single multiset {act, 2·act, 3·act, 4·act} — uniform inter-state spacing
+     of `act`, no resting cells anywhere.  At full tiling density (d=1) the
+     lattice contains zero resting cells so the GHCA infection mechanism
+     (resting → active) can never fire; activity collapses in a single step.
+     Mixed resting-cell-free pairs share the same extinction mechanism but
+     spread probability mass over several distinct multisets.
+
+     The transition sharpens as density approaches 1: P(persist) drops from
+     ~1 at d≈0.90 to 0 at d=1.00, tracking the vanishing supply of resting
+     cells from the few remaining empty slots.
+
+Parameter space notes (act in 1..17, pas in 1..17):
+  - Pairs with act/tau0 < 1/4 tend to have n_configs=0 (no persistent cores
+    exist for isolated 2×2 patches — activity requires cooperation).
+  - For pairs near the "extinction boundary" (n_configs just above zero) the
+    config set often collapses to a single multiset (n_multisets=1).
+  - All five resting-cell-free pairs sit at or near that boundary.
 
 Usage:
     python ghca_cluster.py                     # default sweep
@@ -180,25 +197,79 @@ def upper_critical_density(densities, probs, threshold=0.5):
     return None
 
 
+def decode_all(ids, n_states, core_size=4):
+    """Vectorised base-n decoder: convert integer config IDs to cell-state arrays.
+
+    Returns array of shape (len(ids), core_size) with dtype int8.
+    ~10,000× faster than the ghca_core pure-Python loop for large id arrays.
+    """
+    ids = np.array(ids, dtype=np.int64)
+    out = np.zeros((len(ids), core_size), dtype=np.int8)
+    tmp = ids.copy()
+    for pos in range(core_size - 1, -1, -1):
+        out[:, pos] = tmp % n_states
+        tmp //= n_states
+    return out
+
+
 def config_resting_cell_fraction(pair, data_path, core_size=4):
+    """Fraction of persistent configs for `pair` that have at least one resting cell.
+
+    Zero means resting-cell-free — necessary (and nearly sufficient) for the
+    upper extinction transition to appear.
     """
-    Fraction of persistent configs for `pair` that contain at least one
-    resting (state-0) cell.  Zero means the config set is resting-cell-free,
-    which is necessary (and almost sufficient) for the upper extinction
-    transition to appear.
-    """
-    import ghca_core as cacore
     act, pas = pair
     n_states = act + pas + 1
     ids = np.load(
         data_path + 'act_config_ids_states-({0:02d},{1:02d})_core-04.npy'.format(act, pas))
     if len(ids) == 0:
         return float('nan')
-    has_resting = sum(
-        np.any(cacore.str_to_state(
-            cacore.base_conv(int(c), n_states).rjust(core_size, '0'), n_states) == 0)
-        for c in ids)
-    return has_resting / len(ids)
+    configs = decode_all(ids, n_states, core_size)
+    has_resting = np.any(configs == 0, axis=1)
+    return float(has_resting.mean())
+
+
+def analyze_config_structure(pair, data_path, core_size=4):
+    """Classify the persistent config set for a (act, pas) pair.
+
+    Returns a dict with keys:
+      n_configs      — number of persistent configs
+      resting_frac   — fraction that contain at least one state-0 cell
+      n_multisets    — number of distinct sorted-state multisets
+      is_phase_wave  — True if all configs equal {act, 2*act, 3*act, 4*act}
+      resting_free   — True if resting_frac == 0 and n_configs > 0
+    """
+    act, pas = pair
+    n_states = act + pas + 1
+    tau0 = act + pas
+    ids = np.load(
+        data_path + 'act_config_ids_states-({0:02d},{1:02d})_core-04.npy'.format(act, pas))
+    n = len(ids)
+    if n == 0:
+        return dict(n_configs=0, resting_frac=float('nan'),
+                    n_multisets=0, is_phase_wave=False, resting_free=False)
+
+    configs = decode_all(ids, n_states, core_size)
+    has_resting = np.any(configs == 0, axis=1)
+    resting_frac = float(has_resting.mean())
+
+    configs_sorted = np.sort(configs, axis=1)
+    n_multisets = len(np.unique(configs_sorted, axis=0))
+
+    pw = np.array([act, 2 * act, 3 * act, 4 * act], dtype=np.int8)
+    valid_pw = bool((pw >= 1).all() and (pw <= tau0).all())
+    if valid_pw:
+        is_phase_wave = bool(np.all(configs_sorted == pw))
+    else:
+        is_phase_wave = False
+
+    return dict(
+        n_configs=n,
+        resting_frac=resting_frac,
+        n_multisets=n_multisets,
+        is_phase_wave=is_phase_wave,
+        resting_free=(resting_frac == 0.0),
+    )
 
 
 def nn_distance_cells(density, L, core_len):
