@@ -98,7 +98,68 @@ act/pas    1    2    3    4    5    6    7    8    9   10   11   12   13   14   
 
 ---
 
-## 2026-06-23 — Chirality, D4 orbits, and the orientation character
+## 2026-06-23 — Config set degeneracy as a mediator of both density bounds
+
+### Conceptual framing
+Config-set degeneracy — the size and structure of the persistent config set —
+mediates **both** density thresholds, not just one:
+
+**Lower bound (d_crit):** The probability that a uniformly random 2×2 fill lands
+on a persistent config is n_configs / n_states^4.  Higher degeneracy (more
+configs) → lower per-slot probability of a "miss" → lower d_crit for collective
+nucleation.  This is why symmetric pairs (high n_configs) nucleate at d < 0.5%
+while long-refractory pairs (low n_configs) require up to 9%.
+
+**Upper bound (d → 1 extinction):** Governed not by the *count* of configs but
+by their *structural content* — specifically whether any resting cells appear.
+The relevant degeneracy measure here is not n_configs but resting_frac: zero
+resting cells across the entire config set forces upper extinction regardless of
+how many configs exist.  n_multisets captures a finer degeneracy: the number of
+distinct state compositions (sorted multisets) in the persistent set.
+
+The two bounds therefore respond to orthogonal aspects of config-set structure:
+
+| bound | sensitive to | insensitive to |
+|-------|-------------|----------------|
+| lower d_crit | n_configs (count) | multiset composition |
+| upper d → 1  | resting_frac (composition) | n_configs |
+
+### Multiset count pattern for resting-cell-free pairs
+
+The n_multisets values 1 → 5 → 15 across the resting-cell-free pairs suggest a
+combinatorial progression.  All resting-cell-free multisets are "near-phase-wave"
+sequences — 4 states drawn from (0, tau0] with uniform or near-uniform spacing
+of approximately `act`.  The count grows with the "slack" `tau0 − 4·act`:
+
+| pair   | act | tau0 | slack = tau0−4·act | n_multisets |
+|--------|-----|------|--------------------|-------------|
+| (2,10) |  2  |  12  |         4          |      1      |
+| (3,14) |  3  |  17  |         5          |      1      |
+| (3,13) |  3  |  16  |         4          |      5      |
+| (4,16) |  4  |  20  |         4          |     15      |
+| (4,17) |  4  |  21  |         5          |      5      |
+
+Pairs with slack=5 have n_multisets=1 (only the exact phase-wave multiset fits);
+pairs with slack=4 have more room, and n_multisets grows with act.  The sequence
+1, 5, 15 for act=2,3,4 with slack=4 matches C(act+1, 2): 1=C(2,2), 5≈?, 15=C(6,2).
+The precise combinatorial formula is an open question — it likely involves
+counting 4-element multisets from {1..tau0} with all pairwise gaps ≥ 1 that
+admit a persistent ring wave.
+
+### Spatial structure and the integer invariant
+The multiset representation (sorted state values) collapses spatial information.
+Two configs from the same multiset can carry **opposite chirality** — one CW
+spiral seed, one CCW — and interact destructively when adjacent in the lattice.
+
+The natural integer invariant is the **topological charge W ∈ {−1, 0, +1}**:
+the orientation character of the D4 symmetry group acting on the 2×2 grid.
+This is the simplest non-trivial 1D representation of D4 (rotations → +1,
+reflections → −1) and provides a complete topological classification of each
+config's handedness.  See the following section for the full analysis.
+
+---
+
+
 
 ### Method
 The 2×2 Von Neumann periodic lattice forms a 4-cycle ring:
@@ -188,6 +249,21 @@ Resting-cell-free ↔ (purity=1, Q=0): the "topologically pure and balanced" cor
 - Do CW+CW adjacent core pairs nucleate more readily than CW+CCW pairs?
   (Testable by forcing chirality in `make_lattice_persistent`.)
 - Is purity correlated with d_crit independently of n_configs?
+- What is the precise combinatorial formula for n_multisets as a function of
+  act and slack (tau0 − 4·act)?
+
+### Next experiment
+Extend `make_lattice_persistent` with a `chirality` argument (`+1`, `-1`, or
+`None` for mixed).  Re-run the density sweep for a resting-cell-free pair such
+as (3,13) under three conditions:
+1. Mixed chirality (current behaviour)
+2. Homogeneous CW seeding
+3. Homogeneous CCW seeding
+
+If CW+CW cores cooperate better (d_crit lower for homogeneous), that implicates
+chirality alignment — not just raw density — as a driver of collective
+nucleation.  If the upper extinction still occurs at the same d for all three,
+it confirms resting-cell depletion as the sole mechanism at d → 1.
 
 ---
 
