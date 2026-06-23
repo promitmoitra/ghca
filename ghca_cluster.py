@@ -272,6 +272,93 @@ def analyze_config_structure(pair, data_path, core_size=4):
     )
 
 
+# ---------------------------------------------------------------------------
+# Chirality and D4 orbit analysis
+# ---------------------------------------------------------------------------
+
+# CW ring order on the 2×2 grid (flat row-major indices):
+#   (0,0) → (0,1) → (1,1) → (1,0) → back
+_RING_IDX = [0, 1, 3, 2]
+
+
+def chirality_batch(configs, tau0):
+    """Orientation (topological charge) of each config on the 2×2 ring.
+
+    Uses the determinant character of D4: count "forward" diffs (< M/2) vs
+    "backward" diffs (> M/2) going CW around the ring.  Returns int8 array
+    of length N: +1 CW, -1 CCW, 0 mixed/ambiguous.
+
+    Theorem (verified empirically): a config has definite chirality (≠ 0) if
+    and only if it contains no resting (state-0) cells.  Equivalently,
+    resting_frac == 0  ⟺  chirality_purity == 1.0  for all (act,pas) pairs.
+    """
+    M = tau0 + 1
+    s = configs[:, _RING_IDX]                             # (N,4) ring-ordered
+    diffs = (np.roll(s, -1, axis=1).astype(np.int32)
+             - s.astype(np.int32)) % M                   # (N,4) in [0,M)
+    half = M / 2.0
+    fwd = np.sum(diffs < half, axis=1)
+    bwd = np.sum(diffs > half, axis=1)
+    return np.sign(fwd - bwd).astype(np.int8)
+
+
+def d4_canonical(config_flat):
+    """Canonical representative of a config under the D4 symmetry group.
+
+    D4 acts on the 2×2 grid by 4 rotations × 2 reflections (order 8).
+    Returns the lexicographically smallest tuple among all 8 images.
+    Rotations preserve chirality; reflections (det = -1) flip it.
+    """
+    c = config_flat.reshape(2, 2)
+    best = None
+    tmp = c.copy()
+    for _ in range(4):
+        for flip in (False, True):
+            mat = np.fliplr(tmp) if flip else tmp
+            t = tuple(mat.flatten().tolist())
+            if best is None or t < best:
+                best = t
+        tmp = np.rot90(tmp)
+    return best
+
+
+def chirality_summary(pair, data_path, core_size=4):
+    """Topological charge distribution for a (act, pas) pair's config set.
+
+    Returns dict with:
+      n_configs   — total persistent configs
+      n_cw        — configs with chirality +1 (CW)
+      n_ccw       — configs with chirality -1 (CCW)
+      n_mix       — configs with chirality  0 (ambiguous, contain resting cell)
+      net_charge  — n_cw - n_ccw  (= 0 for all resting-cell-free pairs)
+      purity      — (n_cw + n_ccw) / n_configs  (= 1 iff resting-cell-free)
+      n_d4_orbits — number of distinct D4 orbits
+    """
+    act, pas = pair
+    tau0 = act + pas
+    ids = np.load(
+        data_path + 'act_config_ids_states-({0:02d},{1:02d})_core-04.npy'.format(act, pas))
+    n = len(ids)
+    if n == 0:
+        return dict(n_configs=0, n_cw=0, n_ccw=0, n_mix=0,
+                    net_charge=0, purity=float('nan'), n_d4_orbits=0)
+
+    configs = decode_all(ids, tau0 + 1, core_size)
+    chi = chirality_batch(configs, tau0)
+    n_cw  = int(np.sum(chi == +1))
+    n_ccw = int(np.sum(chi == -1))
+    n_mix = int(np.sum(chi ==  0))
+    n_orbits = len(set(d4_canonical(configs[i]) for i in range(n)))
+
+    return dict(
+        n_configs=n,
+        n_cw=n_cw, n_ccw=n_ccw, n_mix=n_mix,
+        net_charge=n_cw - n_ccw,
+        purity=(n_cw + n_ccw) / n,
+        n_d4_orbits=n_orbits,
+    )
+
+
 def nn_distance_cells(density, L, core_len):
     """Estimated mean nearest-neighbour distance in cells at a given density."""
     n_grid = L // core_len

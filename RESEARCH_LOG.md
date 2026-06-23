@@ -98,59 +98,96 @@ act/pas    1    2    3    4    5    6    7    8    9   10   11   12   13   14   
 
 ---
 
-## 2026-06-23 — Spatial structure and chirality (open thread)
+## 2026-06-23 — Chirality, D4 orbits, and the orientation character
 
-### Observation
-The multiset representation collapses spatial information. Two configs from the
-same multiset but different spatial arrangements can carry opposite wave
-chirality — one CW spiral seed, one CCW — which will interact destructively
-when adjacent cores collide.
+### Method
+The 2×2 Von Neumann periodic lattice forms a 4-cycle ring:
+`(0,0)→(0,1)→(1,1)→(1,0)→(0,0)` (CW).  Each config is a discrete phase field
+on this ring.  **Chirality** is computed by voting on ring-step diffs modulo
+M = tau0+1: "forward" diffs (< M/2) vs "backward" diffs (> M/2).
 
-### Why it matters
-- **Lower threshold**: collective nucleation depends not just on the *number*
-  of persistent configs but on whether neighbouring cores' wave directions
-  reinforce or cancel. Chirality-mixed seeding may shift d_crit upward.
-- **Upper threshold**: even before d=1, adjacent CW/CCW core pairs may
-  annihilate. The sharpness of the upper transition could be partly driven by
-  chirality annihilation, not only resting-cell depletion.
-
-### The ring topology
-Under Von Neumann neighbourhood on a 2×2 periodic lattice, cells form a 4-cycle:
-`(0,0) ↔ (0,1) ↔ (1,1) ↔ (1,0) ↔ (0,0)`. Each config is a discrete phase
-field on this ring. The winding number of that phase field is the natural
-chirality invariant.
-
-### Proposed approaches
-
-**1. Ring winding number** (fast, vectorisable)
 ```python
-ring_order = [(0,0),(0,1),(1,1),(1,0)]
-states = config[ring_order]
-diffs = np.diff(states, append=states[0])
-wrapped = ((diffs + tau0//2) % (tau0+1)) - tau0//2
-winding = wrapped.sum()   # >0 → CCW,  <0 → CW
+diffs = (ring_states[1:] - ring_states[:-1]) % M   # CW ring diffs
+chirality = sign(n_forward - n_backward)             # +1 CW, -1 CCW, 0 mixed
 ```
-Splits the 8 phase-wave configs into exactly two ±chirality classes of 4.
-Generalises to non-phase-wave configs naturally.
 
-**2. D4 orbit classification**
-Group configs by their orbit under the dihedral group of the square (4
-rotations × 2 reflections). Phase-wave configs should yield 2 orbits of size 4.
-Mixed-multiset resting-cell-free configs may reveal additional topological
-invariants beyond chirality.
+**D4 canonical form:** the lexicographically smallest config among all 8 images
+under the dihedral group of the square (4 rotations × 2 reflections).
 
-**3. Empirical wave tracking**
-Seed each config in a large resting lattice, run forward, track the rotation
-direction of the expanding wavefront. Unambiguous, no analytical assumptions,
-but costs one simulation per config ID.
+### Results
+
+| pair   | n_configs | CW | CCW | mixed | net Q | purity | D4 orbits |
+|--------|-----------|----|----|-------|-------|--------|-----------|
+| (2,10) |     8     |  4 |  4 |   0   |   0   |  1.00  |     1     |
+| (3,14) |     8     |  4 |  4 |   0   |   0   |  1.00  |     1     |
+| (3,13) |    40     | 20 | 20 |   0   |   0   |  1.00  |     5     |
+| (4,16) |   120     | 60 | 60 |   0   |   0   |  1.00  |    15     |
+| (4,17) |    40     | 20 | 20 |   0   |   0   |  1.00  |     5     |
+| (1,1)  |    46     | 24 | 12 |  10   |  12   |  0.78  |     9     |
+| (4,4)  |  4060     |1500|1140|1420   | 360   |  0.65  |   590     |
+| (6,17) |  8940     |3236|2964|2740   | 272   |  0.69  |  1135     |
+
+### Key findings
+
+**1. Theorem (verified for all 289 pairs):**
+> resting\_frac == 0  ⟺  chirality\_purity == 1.0
+
+Configs with no resting cells always have definite chirality (±1); configs with
+any resting cell can be chirality-ambiguous.  The equivalence is exact — zero
+exceptions across the full 17×17 parameter grid.
+
+Mechanistic reason: a resting cell (state 0) creates a phase discontinuity in
+the ring field.  The diff across it can land on either side of M/2, making the
+chirality vote a tie.  Without resting cells, all diffs are bounded away from
+M/2 for arithmetic-progression multisets.
+
+**2. Net chirality Q = n_CW − n_CCW = 0 for all resting-cell-free pairs.**
+The config set is perfectly balanced.  No preferred handedness.
+
+**3. D4 orbit structure: orientation character of D4.**
+Every D4 orbit for the resting-cell-free pairs has size 8 (= |D4|) and contains
+exactly 4 CW + 4 CCW configs.  Within an orbit:
+- The 4 **rotations** (det = +1, orientation-preserving) map CW ↔ CW, CCW ↔ CCW.
+- The 4 **reflections** (det = −1, orientation-reversing) flip chirality: CW ↔ CCW.
+
+The chirality W ∈ {±1} is therefore the **determinant character** of D4 — the
+unique nontrivial 1-dimensional real representation of D4 that assigns +1 to
+rotations and −1 to reflections.  This is the natural integer invariant.
+
+**4. Orbit chirality pattern is universal for (3,13).**
+All 5 orbits share the identical chirality pattern `[+1,−1,−1,+1,−1,+1,+1,−1]`
+regardless of which multiset they belong to.  The CW/CCW assignment is
+determined entirely by spatial arrangement within D4, not by state values.
+
+**5. Multisets of (3,13) are near-uniform phase waves.**
+All 5 multisets have states with spacing ≈ act=3:
+```
+{2,5,8,11}   — shifted by -1 from uniform
+{3,5,8,11}   — one defect spacing of 2
+{3,6,8,11}   — one defect spacing of 2
+{3,6,9,11}   — one defect spacing of 2
+{3,6,9,12}   — perfectly uniform {act, 2act, 3act, 4act}
+```
+These are the only multisets with all states in (0, tau0] and uniform or
+near-uniform spacing.  The "defect" variants arise because tau0=16 = 4*act+4,
+leaving one "slot" short of the next uniform step.
+
+### Integer representation
+The single integer that best characterises each config's spatial topology is its
+**topological charge W ∈ {−1, 0, +1}** (chirality index).  For the config set:
+- **purity** = (n_CW + n_CCW)/n_total — fraction with definite topology
+- **net charge** Q = n_CW − n_CCW — handedness bias
+
+Resting-cell-free ↔ (purity=1, Q=0): the "topologically pure and balanced" corner.
 
 ### Open questions
-- Do the 8 phase-wave configs for (2,10)/(3,14) split evenly into 4 CW + 4 CCW?
-- For the mixed resting-cell-free pairs, does chirality still cleanly partition
-  configs, or do the additional multisets introduce new topological classes?
-- Does chirality-homogeneous seeding (all CW or all CCW) shift the upper
-  extinction threshold relative to mixed seeding?
-- Is the D4 orbit structure of the config set correlated with d_crit?
+- Does chirality-homogeneous seeding (all CW or all CCW) shift d_crit or the
+  upper extinction threshold relative to chirality-mixed seeding?
+- For generic pairs, does the excess CW (Q > 0) reflect a physical asymmetry or
+  is it an artifact of the D4-canonical ring ordering convention?
+- Do CW+CW adjacent core pairs nucleate more readily than CW+CCW pairs?
+  (Testable by forcing chirality in `make_lattice_persistent`.)
+- Is purity correlated with d_crit independently of n_configs?
 
 ---
 
@@ -162,4 +199,7 @@ but costs one simulation per config ID.
 | `ghca_cluster.py` | Multi-core embedding experiment; vectorised CA step; density sweep |
 | `ghca_cluster.py::decode_all` | Vectorised base-n config decoder (~10,000× faster than ghca_core) |
 | `ghca_cluster.py::analyze_config_structure` | Classify a pair's config set: n_configs, resting_frac, n_multisets, is_phase_wave |
+| `ghca_cluster.py::chirality_batch` | Topological charge W∈{±1,0} for a batch of configs (orientation character of D4) |
+| `ghca_cluster.py::d4_canonical` | D4 canonical form (lex-min over 8 symmetry images) |
+| `ghca_cluster.py::chirality_summary` | Per-pair chirality distribution: n_cw, n_ccw, n_mix, net_charge, purity, n_d4_orbits |
 | `result/act_config_ids_states-(AA,PP)_core-04.npy` | Pre-computed persistent config IDs for each (act,pas) pair |
