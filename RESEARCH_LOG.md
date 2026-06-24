@@ -241,29 +241,83 @@ The single integer that best characterises each config's spatial topology is its
 
 Resting-cell-free ↔ (purity=1, Q=0): the "topologically pure and balanced" corner.
 
-### Open questions
-- Does chirality-homogeneous seeding (all CW or all CCW) shift d_crit or the
-  upper extinction threshold relative to chirality-mixed seeding?
+### Open questions (remaining)
 - For generic pairs, does the excess CW (Q > 0) reflect a physical asymmetry or
   is it an artifact of the D4-canonical ring ordering convention?
-- Do CW+CW adjacent core pairs nucleate more readily than CW+CCW pairs?
-  (Testable by forcing chirality in `make_lattice_persistent`.)
 - Is purity correlated with d_crit independently of n_configs?
 - What is the precise combinatorial formula for n_multisets as a function of
   act and slack (tau0 − 4·act)?
 
-### Next experiment
-Extend `make_lattice_persistent` with a `chirality` argument (`+1`, `-1`, or
-`None` for mixed).  Re-run the density sweep for a resting-cell-free pair such
-as (3,13) under three conditions:
-1. Mixed chirality (current behaviour)
-2. Homogeneous CW seeding
-3. Homogeneous CCW seeding
+---
 
-If CW+CW cores cooperate better (d_crit lower for homogeneous), that implicates
-chirality alignment — not just raw density — as a driver of collective
-nucleation.  If the upper extinction still occurs at the same d for all three,
-it confirms resting-cell depletion as the sole mechanism at d → 1.
+## 2026-06-24 — Chirality-controlled seeding experiment
+
+### Setup
+Pair (3,13) (τ=16, 40 persistent configs, 20 CW + 20 CCW).
+Three seeding modes using `make_lattice_persistent(chirality=...)`:
+- **mixed** — draw from all 40 configs uniformly
+- **cw** — draw only from the 20 CW (W=+1) configs
+- **ccw** — draw only from the 20 CCW (W=−1) configs
+
+Parameters: L=60, T=1000, 20 trials (coarse sweep) + 60 trials (upper region).
+Code: `chirality_sweep.py`.
+
+### Results
+
+Coarse density sweep (20 trials each):
+
+| density | mixed | cw   | ccw  |
+|---------|-------|------|------|
+| 0.005–0.70 | 1.00 | 1.00 | 1.00 |
+| 0.880   | 1.00  | 1.00 | 1.00 |
+| 0.920   | 0.95  | 1.00 | 0.95 |
+| 0.950   | 0.85  | 0.95 | 0.95 |
+| 0.970   | 0.70  | 0.55 | 0.85 |
+| 0.980   | 0.45  | 0.45 | 0.60 |
+| 0.990   | 0.20  | 0.30 | 0.25 |
+| 1.000   | 0.00  | 0.00 | 0.00 |
+
+High-resolution upper transition (60 trials):
+
+| density | mixed       | cw          | ccw         |
+|---------|-------------|-------------|-------------|
+| 0.920   | 0.950±0.028 | 0.950±0.028 | 0.983±0.017 |
+| 0.950   | 0.850±0.046 | 0.850±0.046 | 0.850±0.046 |
+| 0.970   | 0.517±0.065 | 0.583±0.064 | 0.600±0.063 |
+| 0.980   | 0.600±0.063 | 0.617±0.063 | 0.467±0.064 |
+| 0.990   | 0.167±0.048 | 0.317±0.060 | 0.267±0.057 |
+| 1.000   | 0.000       | 0.000       | 0.000       |
+
+Interpolated upper critical density:
+- mixed: d_crit_hi ≈ 0.982
+- cw:    d_crit_hi ≈ 0.984
+- ccw:   d_crit_hi ≈ 0.978
+
+### Finding
+**Chirality alignment has no significant effect on the upper extinction threshold.**
+The dc_hi values span a window of 0.006, within sampling noise.  Z-tests at
+the steepest points: z=0.19 at d=0.97, z=−1.67 at d=0.98 (p≈0.10, not
+significant at α=0.05).
+
+All three modes also show P(persist)=1 at all densities d ≤ 0.80, confirming
+that with persistent seeding the lower nucleation threshold is irrelevant
+(regime 1: single pre-selected cores survive indefinitely regardless of
+chirality).
+
+**Conclusion:** The upper extinction transition is driven entirely by resting-cell
+depletion, not by chirality annihilation between adjacent cores.  The topological
+charge W resolves the structural organisation of the config set, but it does not
+independently control either density threshold once n_configs and resting_frac
+are known.
+
+### Open questions (new)
+- Would chirality matter for **random seeding** (regime 2), where no individual
+  core is guaranteed to persist?  There, coherence of wave directions across
+  cores might affect collective nucleation.
+- Does chirality affect the spatial correlation structure of activity at
+  intermediate densities (e.g., spiral domain size or lifetime distribution)?
+- Is the marginal z=−1.67 signal at d=0.98 a genuine weak effect worth
+  reproducing with larger N, or sampling noise?
 
 ---
 

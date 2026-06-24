@@ -107,21 +107,42 @@ def _decode(config_id, n_states, core_size, cacore):
     return cacore.str_to_state(s, n_states)
 
 
-def make_lattice_persistent(L, core_len, density, pair, persistent_ids, rng, cacore):
-    """Seed from the pre-computed persistent config set."""
+def make_lattice_persistent(L, core_len, density, pair, persistent_ids, rng, cacore,
+                             chirality=None):
+    """Seed from the pre-computed persistent config set.
+
+    chirality : None  — draw uniformly from all persistent configs (default)
+                +1    — draw only CW configs
+                -1    — draw only CCW configs
+                0     — draw only chirality-mixed (W=0) configs
+    """
     act, pas = pair
-    n_states = act + pas + 1
+    tau0 = act + pas
+    n_states = tau0 + 1
     core_size = core_len ** 2
     n_grid = L // core_len
     n_slots = n_grid ** 2
     n_cores = max(1, int(round(density * n_slots)))
+
+    # Filter by chirality if requested
+    if chirality is not None:
+        all_configs = decode_all(persistent_ids, n_states, core_size)
+        chi = chirality_batch(all_configs, tau0)
+        mask = chi == chirality
+        if not np.any(mask):
+            raise ValueError(
+                "No persistent configs with chirality={} for pair {}".format(
+                    chirality, pair))
+        pool = persistent_ids[mask]
+    else:
+        pool = persistent_ids
 
     all_slots = [(r * core_len, c * core_len)
                  for r in range(n_grid) for c in range(n_grid)]
     lat = np.zeros((L, L), dtype=np.int8)
     for i in rng.choice(n_slots, min(n_cores, n_slots), replace=False):
         r, c = all_slots[i]
-        cid = int(rng.choice(persistent_ids))
+        cid = int(rng.choice(pool))
         state = _decode(cid, n_states, core_size, cacore)
         lat[r:r+core_len, c:c+core_len] = state
     return lat
