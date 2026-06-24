@@ -159,7 +159,7 @@ config's handedness.  See the following section for the full analysis.
 
 ---
 
-
+## 2026-06-23 — Chirality as the integer invariant (D4 orbit analysis)
 
 ### Method
 The 2×2 Von Neumann periodic lattice forms a 4-cycle ring:
@@ -321,6 +321,60 @@ are known.
 
 ---
 
+## 2026-06-24 — Chirality and collective nucleation (regime 2)
+
+### Question
+Does imposing a chirality bias on random initial seedings shift the collective
+nucleation threshold d_crit?  Two independent comparisons:
+1. **CW vs CCW**: pure handedness effect at equal density
+2. **uniform vs no\_rest**: resting-cell removal effect (chirality-free baseline)
+
+### Background: diff=0 bug fix
+The `chirality_batch` function had a latent bug: `diff=0` (two adjacent ring
+cells in the same state) was counted as "forward" because `0 < M/2`.  This
+inflated CW counts for random configs (CW≈0.297, CCW≈0.209 before fix).  After
+fix (`fwd = np.sum((diffs > 0) & (diffs < half), axis=1)`), the distribution
+is symmetric: CW≈0.277, CCW≈0.281.  The fix has **zero impact** on persistent
+config chirality assignments — persistent configs never have adjacent identical
+states on the ring.
+
+### Setup
+Pair (4,12), tau0=16, n_states=17.
+Random config acceptance rates (n=50,000 sample):
+- CW: 0.277 → expected draws/slot ≈ 3.6
+- CCW: 0.281 → expected draws/slot ≈ 3.6
+- no-resting: 0.785 → expected draws/slot ≈ 1.3
+
+Four modes: `uniform`, `no_rest`, `cw`, `ccw`. L=80, T=2000.
+
+Coarse pass (60 trials): densities 0.005–0.50, 16 points.
+
+### Coarse results (60 trials each, pair (4,12))
+
+```
+mode      d_crit
+uniform   0.0075
+no_rest   0.0077
+cw        0.0086
+ccw       0.0074
+```
+
+The d_crit range is 0.0074–0.0086 (spread 0.0012). At n=60, σ(P) ≈ 0.065 at
+P=0.5; with density grid spacing 0.002–0.005 near the transition, d_crit
+uncertainty is ~0.001–0.002. The observed spread is within noise.
+
+CW vs CCW per-density deltas are erratic in sign (−0.133 to +0.183) — no
+monotone trend. The transition also exhibits non-monotone raw probabilities
+(P=0.550 at d=0.008 then P=0.467 at d=0.010 for uniform mode) confirming
+high variance at these densities.
+
+### Fine-grained run (in progress)
+To get a clean signal, running 200 trials × 12 density points centred on the
+transition for (4,12), and also pair (6,17) (higher tau0, higher expected
+d_crit) as an independent test.
+
+---
+
 ## Code
 
 | file | description |
@@ -329,7 +383,10 @@ are known.
 | `ghca_cluster.py` | Multi-core embedding experiment; vectorised CA step; density sweep |
 | `ghca_cluster.py::decode_all` | Vectorised base-n config decoder (~10,000× faster than ghca_core) |
 | `ghca_cluster.py::analyze_config_structure` | Classify a pair's config set: n_configs, resting_frac, n_multisets, is_phase_wave |
-| `ghca_cluster.py::chirality_batch` | Topological charge W∈{±1,0} for a batch of configs (orientation character of D4) |
+| `ghca_cluster.py::chirality_batch` | Topological charge W∈{±1,0} for a batch of configs (orientation character of D4); v2 fixes diff=0 bias |
 | `ghca_cluster.py::d4_canonical` | D4 canonical form (lex-min over 8 symmetry images) |
 | `ghca_cluster.py::chirality_summary` | Per-pair chirality distribution: n_cw, n_ccw, n_mix, net_charge, purity, n_d4_orbits |
+| `ghca_cluster.py::make_lattice_random_chirality` | Rejection-sampling lattice seeder: uniform/CW/CCW/no-resting filter |
+| `chirality_sweep.py` | Regime 3 chirality experiment (persistent seeding, upper extinction) |
+| `random_chirality_sweep.py` | Regime 2 chirality experiment (random seeding, lower nucleation) |
 | `result/act_config_ids_states-(AA,PP)_core-04.npy` | Pre-computed persistent config IDs for each (act,pas) pair |

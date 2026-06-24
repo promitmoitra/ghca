@@ -166,6 +166,53 @@ def make_lattice_random(L, core_len, density, pair, rng):
     return lat
 
 
+def make_lattice_random_chirality(L, core_len, density, pair, rng,
+                                   chirality=None, no_resting=False,
+                                   max_attempts=200):
+    """Seed with random configs filtered by chirality via rejection sampling.
+
+    chirality   : None  — uniform random (identical to make_lattice_random)
+                  +1    — CW configs only (W=+1 from chirality_batch)
+                  -1    — CCW configs only
+    no_resting  : if True, reject any config containing a state-0 cell
+    max_attempts: max draws per slot before giving up (fills 0 as fallback)
+
+    Rejection sampling works because CW/CCW each comprise ~28% of the random
+    state space for typical pairs — accept rate ~28% means ~3.5 draws/slot on
+    average, well within max_attempts=200.
+    """
+    act, pas = pair
+    tau0 = act + pas
+    n_states = tau0 + 1
+    core_size = core_len ** 2
+    n_grid = L // core_len
+    n_slots = n_grid ** 2
+    n_cores = max(1, int(round(density * n_slots)))
+
+    all_slots = [(r * core_len, c * core_len)
+                 for r in range(n_grid) for c in range(n_grid)]
+    lat = np.zeros((L, L), dtype=np.int8)
+
+    for slot_idx in rng.choice(n_slots, min(n_cores, n_slots), replace=False):
+        r, c = all_slots[slot_idx]
+        placed = False
+        for _ in range(max_attempts):
+            candidate = rng.integers(0, n_states,
+                                     size=(core_size,)).astype(np.int8)
+            if no_resting and np.any(candidate == 0):
+                continue
+            if chirality is not None:
+                chi = int(chirality_batch(candidate[np.newaxis, :], tau0)[0])
+                if chi != chirality:
+                    continue
+            lat[r:r+core_len, c:c+core_len] = candidate.reshape(core_len, core_len)
+            placed = True
+            break
+        # if max_attempts exceeded, slot stays zeros (resting)
+
+    return lat
+
+
 # ---------------------------------------------------------------------------
 # Sweep utilities
 # ---------------------------------------------------------------------------
@@ -318,7 +365,7 @@ def chirality_batch(configs, tau0):
     diffs = (np.roll(s, -1, axis=1).astype(np.int32)
              - s.astype(np.int32)) % M                   # (N,4) in [0,M)
     half = M / 2.0
-    fwd = np.sum(diffs < half, axis=1)
+    fwd = np.sum((diffs > 0) & (diffs < half), axis=1)   # exclude diff=0 (same state)
     bwd = np.sum(diffs > half, axis=1)
     return np.sign(fwd - bwd).astype(np.int8)
 
