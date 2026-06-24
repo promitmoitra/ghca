@@ -175,18 +175,28 @@ chirality = sign(n_forward - n_backward)             # +1 CW, -1 CCW, 0 mixed
 **D4 canonical form:** the lexicographically smallest config among all 8 images
 under the dihedral group of the square (4 rotations × 2 reflections).
 
-### Results
+### Results (after diff=0 bug fix — see note below)
 
-| pair   | n_configs | CW | CCW | mixed | net Q | purity | D4 orbits |
-|--------|-----------|----|----|-------|-------|--------|-----------|
-| (2,10) |     8     |  4 |  4 |   0   |   0   |  1.00  |     1     |
-| (3,14) |     8     |  4 |  4 |   0   |   0   |  1.00  |     1     |
-| (3,13) |    40     | 20 | 20 |   0   |   0   |  1.00  |     5     |
-| (4,16) |   120     | 60 | 60 |   0   |   0   |  1.00  |    15     |
-| (4,17) |    40     | 20 | 20 |   0   |   0   |  1.00  |     5     |
-| (1,1)  |    46     | 24 | 12 |  10   |  12   |  0.78  |     9     |
-| (4,4)  |  4060     |1500|1140|1420   | 360   |  0.65  |   590     |
-| (6,17) |  8940     |3236|2964|2740   | 272   |  0.69  |  1135     |
+| pair   | n_configs |  CW  | CCW  | mixed | net Q | purity | D4 orbits |
+|--------|-----------|------|------|-------|-------|--------|-----------|
+| (2,10) |     8     |    4 |    4 |     0 |   0   |  1.000 |     1     |
+| (3,14) |     8     |    4 |    4 |     0 |   0   |  1.000 |     1     |
+| (3,13) |    40     |   20 |   20 |     0 |   0   |  1.000 |     5     |
+| (4,16) |   120     |   60 |   60 |     0 |   0   |  1.000 |    15     |
+| (4,17) |    40     |   20 |   20 |     0 |   0   |  1.000 |     5     |
+| (1,1)  |    46     |   12 |   12 |    22 |   0   |  0.522 |     9     |
+| (2,2)  |   378     |  124 |  124 |   130 |   0   |  0.656 |    62     |
+| (4,4)  |  4060     | 1380 | 1380 |  1300 |   0   |  0.680 |   590     |
+| (8,8)  | 52056     |17400 |17400 | 17256 |   0   |  0.669 |  7044     |
+| (4,12) |  3336     | 1156 | 1156 |  1024 |   0   |  0.693 |   430     |
+| (6,17) |  8940     | 3236 | 3236 |  2468 |   0   |  0.724 |  1135     |
+
+**Bug fix note:** The original `chirality_batch` counted `diff=0` as "forward"
+(because `0 < M/2`).  This inflated CW counts for configs with adjacent equal
+ring states — which occur when resting cells (state 0) are present, or when
+multiset slack allows repeated states.  Fix: `fwd = np.sum((diffs > 0) & (diffs < half), axis=1)`.
+After fix, **Q=0 for every pair** in the full 17×17 parameter space.
+The previously-reported excess Q>0 for generic pairs was entirely an artifact.
 
 ### Key findings
 
@@ -241,9 +251,49 @@ The single integer that best characterises each config's spatial topology is its
 
 Resting-cell-free ↔ (purity=1, Q=0): the "topologically pure and balanced" corner.
 
+### Analytical purity prediction
+
+For generic pairs, purity is predictable from M=tau0+1 alone.  For a uniform
+random 4-element ring over {0,...,M-1}, chirality is ambiguous (W=0) exactly
+when fwd_diffs = bwd_diffs.  Independent-diff approximation (accurate for
+M >> 4):
+
+```
+P(mixed) ≈ sum_{k=0}^{2} C(4,k) C(4-k,k) pf^k pb^k pz^{4-2k}
+```
+
+where pf = pb = floor((M-1)/2)/M (for odd M),  pz = 1/M.
+
+The (k=2) term dominates: P(f=2,b=2) = C(4,2)(8/17)^4 ≈ 0.282 for M=17.
+As M→∞: P(f=2,b=2) → C(4,2)/16 = 3/8, so purity → 5/8 = 0.625.
+
+Observed vs predicted purity:
+
+| pair   |  M  | purity (obs) | purity (theory) |  error  |
+|--------|-----|-------------|-----------------|---------|
+| (4,12) | 17  |   0.6930    |     0.6965      |  -0.004 |
+| (6,17) | 24  |   0.7239    |     0.7177      |  +0.006 |
+| (8,8)  | 17  |   0.6685    |     0.6965      |  -0.028 |
+| (4,4)  |  9  |   0.6798    |     0.7365      |  -0.057 |
+| (1,1)  |  3  |   0.5217    |     0.7654      |  -0.244 |
+
+Three regimes:
+1. **Resting-cell-free** (5 pairs): purity=1.0, far above theory. All configs
+   are phase waves with uniformly spaced states → all ring diffs in the same
+   direction (all fwd or all bwd) → definite chirality by construction.
+2. **Generic, large M** ((4,12), (6,17)): purity ≈ theory. The persistent
+   config set is large enough to be statistically representative of the full
+   state space.
+3. **Symmetric, small M** ((1,1), (2,2), (4,4)): purity < theory. Small M
+   means the state space is coarse; resting-cell configs are
+   overrepresented in the persistent set (they occupy a proportionally larger
+   fraction of small-M space), pulling purity below the uniform-draw baseline.
+
+**Key result:** For large M, purity is a state-space statistic, not a dynamical
+property.  The persistent config set is unbiased in chirality composition —
+neither CW nor CCW waves are selected.  This corroborates Q=0 universally.
+
 ### Open questions (remaining)
-- For generic pairs, does the excess CW (Q > 0) reflect a physical asymmetry or
-  is it an artifact of the D4-canonical ring ordering convention?
 - Is purity correlated with d_crit independently of n_configs?
 - What is the precise combinatorial formula for n_multisets as a function of
   act and slack (tau0 − 4·act)?
