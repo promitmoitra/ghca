@@ -363,6 +363,13 @@ and **discriminator**.
   the graph substrate.
 - **Discriminator.** If no band supports both persistence *and*
   non-saturation, revisit topology/degree before proceeding.
+- **Status: DONE.** See [`e0_results.md`](e0_results.md). Key outcomes: range-1
+  (von Neumann) fixates and cannot self-sustain — the discriminator fired and
+  moved the operating point to r≥2; the live threshold band widens with range
+  (threshold-range scaling); an organised intermediate band sits at
+  **r=2, a=6, τ=14, θ≈4**; and the dominant loop period tracks τ almost exactly
+  (`period = 1.00·τ + 0.95`, r = 0.9992), validating Line B's control variable.
+  Implemented in `ghca_net.py` + `experiments/e0_characterization.py`.
 
 ### E1 — Stimulus→response conditioning (identity only, no delay)
 
