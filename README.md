@@ -27,7 +27,9 @@ not as built-in modules.
 | `ghca_core.py` | Encode/embed integer configurations, run + animate |
 | `ghca_plot.py` | Persistence-probability maps over `(active, passive)` space |
 | `ghca_net.py` | **GH dynamics on a graph**: per-node timescales, weighted-threshold excitation, spontaneous firing, homeostatic threshold; topology builders and order-parameter observables |
+| `ghca_learn.py` | **Reward-modulated learner**: eligibility-trace conduction (Line A) and timescale (Line B) plasticity, order-parameter critic, layered-graph builder |
 | `experiments/e0_characterization.py` | E0 — substrate characterisation (find the self-sustaining band) |
+| `experiments/e1_conditioning.py` | E1 — stimulus→response conditioning (A-vs-B dissociation) |
 | `result/` | Saved simulation outputs (`.npy`) and experiment data |
 
 ## Documentation
@@ -40,11 +42,15 @@ not as built-in modules.
   characterisation): range-1 fixates, the live threshold band widens with range
   (threshold-range scaling), an organised spiral band at r=2/a=6/θ≈4, and the
   dominant loop period tracking τ (`period = 1.00·τ + 0.95`, r = 0.9992).
+- [`docs/e1_results.md`](docs/e1_results.md) — **findings from E1**
+  (conditioning): a strict scalar reward carves the stimulus→action mapping;
+  the predicted dissociation holds (Line A = 0.91, Line B = 0.35 ≤ chance,
+  A+B = 0.86 final accuracy over 6 seeds).
 
 ## Progress
 
 - [x] **E0** — substrate characterisation and operating point (see results)
-- [ ] E1 — stimulus→response conditioning
+- [x] **E1** — stimulus→response conditioning (A-vs-B dissociation confirmed)
 - [ ] E2 — delayed response (working memory)
 - [ ] E3 — temporal sequence reproduction (the A-vs-B discriminator)
 - [ ] E4 — selective attention (cue competition)

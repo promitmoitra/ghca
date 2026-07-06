@@ -386,6 +386,13 @@ and **discriminator**.
   because identity mapping needs routing, not timing.
 - **Discriminator.** A ≫ B here. If B alone succeeds, the readout is leaking
   spatial information through timing — investigate.
+- **Status: DONE.** See [`e1_results.md`](e1_results.md). Over 6 seeds:
+  **A = 0.91, B = 0.35 (≤ chance), A+B = 0.86** final accuracy. Line A learns
+  the mapping (chance → ~0.91); Line B cannot route identity and stays at/below
+  chance; the discriminator passes with no timing leak. Implemented in
+  `ghca_learn.py` + `experiments/e1_conditioning.py`. Note: required
+  stimulus-selective (channel-biased) hidden wiring — letting the net discover
+  selective representations is deferred.
 
 ### E2 — Delayed response (working memory)
 
