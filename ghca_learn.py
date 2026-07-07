@@ -100,7 +100,8 @@ class GHLearner(Network):
 
     def __init__(self, W, plastic, roles, line="AB",
                  eta_w=0.02, eta_tau=0.05, lam=0.9, gamma=0.95, alpha_v=0.1,
-                 w_max=4.0, tau_min=2, tau_max=23, **kw):
+                 w_max=4.0, tau_min=2, tau_max=23, tau_sigma=0.0, tau_mask=None,
+                 tau_shared=False, **kw):
         super().__init__(W, **kw)
         self.plastic = np.asarray(plastic, dtype=bool)
         self.adj = self.W > 0
@@ -111,12 +112,37 @@ class GHLearner(Network):
         self.w_max = w_max
         self.tau_min, self.tau_max = tau_min, tau_max
         self.tau = self.tau.astype(float)     # timescales become continuous
+        self.tau_base = self.tau.copy()       # perturbation baseline (Line B)
+        self.tau_sigma = tau_sigma            # >0 enables tau exploration
+        self.tau_mask = np.ones(self.N, bool) if tau_mask is None \
+            else np.asarray(tau_mask, bool)
+        self.tau_shared = tau_shared          # one shared timescale per group
+        self.tau_scalar = float(self.tau[self.tau_mask].mean())
+        self._eps = np.zeros(self.N)
+        self._eps_s = 0.0
 
         self.E = np.zeros_like(self.W)         # edge eligibility (Line A)
         self.tau_elig = np.zeros(self.N)       # period eligibility (Line B)
         self.last_fire = np.full(self.N, -1.0)
         self.v_w = np.zeros(3)                 # critic weights on [A, R, 1]
         self._prev = self.phi.copy()
+
+    def perturb_tau(self):
+        """Draw a fresh timescale perturbation for a trial (node-perturbation
+        exploration for Line B). Call at the start of each trial. In shared
+        mode a single scalar perturbs the whole group (one regional timescale),
+        which avoids the weakest-link credit-assignment problem of independent
+        per-node perturbation (see e2_results.md)."""
+        explore = self.tau_sigma > 0 and "B" in self.line
+        if self.tau_shared:
+            self._eps_s = self.tau_sigma * np.random.standard_normal() if explore else 0.0
+            self.tau = self.tau_base.copy()
+            self.tau[self.tau_mask] = np.clip(self.tau_scalar + self._eps_s,
+                                              self.tau_min, self.tau_max)
+        else:
+            self._eps = self.tau_sigma * np.random.standard_normal(self.N) * self.tau_mask \
+                if explore else np.zeros(self.N)
+            self.tau = np.clip(self.tau_base + self._eps, self.tau_min, self.tau_max)
 
     # -- one learning step ---------------------------------------------------
     def step_learn(self, drive=None):
@@ -153,8 +179,29 @@ class GHLearner(Network):
                                            0.0, self.w_max)
             self.adj = self.W > 0
         if "B" in self.line:
-            dtau = self.eta_tau * delta * self.tau_elig
-            self.tau = np.clip(self.tau + dtau, self.tau_min, self.tau_max)
+            if self.tau_shared:
+                # reinforce the shared-timescale perturbation that earned reward
+                self.tau_scalar = float(np.clip(
+                    self.tau_scalar + self.eta_tau * delta * self._eps_s,
+                    self.tau_min, self.tau_max))
+                self.tau[self.tau_mask] = self.tau_scalar
+            elif self.tau_sigma > 0:
+                # per-node perturbation: reinforce the timescale perturbation
+                # that earned reward. Reward is only earned when a loop
+                # *sustains* (tau below the loop transit time), so this drives
+                # tau toward the sustaining regime -- but hits a weakest-link
+                # problem (the loop dies at the slowest node; see e2_results.md).
+                self.tau_base = np.clip(self.tau_base + self.eta_tau * delta * self._eps,
+                                        self.tau_min, self.tau_max)
+                self.tau = self.tau_base.copy()
+            else:
+                # resonance rule: drive tau toward the observed re-fire interval.
+                # NOTE: this targets tau = loop period, i.e. the marginal (death)
+                # boundary; it maintains an already-sustaining loop but does not
+                # by itself find the sustaining regime (see e2_results.md).
+                self.tau_base = np.clip(self.tau_base + self.eta_tau * delta * self.tau_elig,
+                                        self.tau_min, self.tau_max)
+                self.tau = self.tau_base.copy()
 
     def update_critic(self, delta, feats):
         self.v_w += self.alpha_v * delta * feats

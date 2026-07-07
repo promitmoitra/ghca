@@ -410,6 +410,16 @@ and **discriminator**.
   hold activity across `D`; A-only should show accuracy decaying fast with `D`.
 - **Discriminator.** B (or A+B) sustains long `D`; A-only degrades. Persistent,
   cue-specific loop = the memory engram.
+- **Status: DONE.** See [`e2_results.md`](e2_results.md). The dissociation
+  **inverts E1**: with `τ` fixed above the loop transit time, **Line A retains
+  only at D=0** (loop dies, retention `[1,0,0,0,0]`), while **Line B learns
+  `τ` below `L` (26→~13) and holds memory to D=200** (`[1,1,1,1,1]`); A+B
+  matches B. Mechanism sweep confirms memory duration is `τ`-controlled
+  (`τ<L` sustains, `τ≥L` dies). Two rule findings: the resonance rule targets
+  the death boundary (`τ=L`) so B uses reward-gated perturbation; and per-node
+  `τ` hits a weakest-link problem (loop dies at the slowest node), so a **shared
+  regional timescale** is what learns robustly. Implemented in `ghca_learn.py`
+  (shared-`τ` mode) + `experiments/e2_delayed_response.py`.
 
 ### E3 — Temporal sequence reproduction (the A-vs-B discriminator)
 

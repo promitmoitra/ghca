@@ -30,6 +30,7 @@ not as built-in modules.
 | `ghca_learn.py` | **Reward-modulated learner**: eligibility-trace conduction (Line A) and timescale (Line B) plasticity, order-parameter critic, layered-graph builder |
 | `experiments/e0_characterization.py` | E0 — substrate characterisation (find the self-sustaining band) |
 | `experiments/e1_conditioning.py` | E1 — stimulus→response conditioning (A-vs-B dissociation) |
+| `experiments/e2_delayed_response.py` | E2 — delayed response / working memory (τ-controlled memory) |
 | `result/` | Saved simulation outputs (`.npy`) and experiment data |
 
 ## Documentation
@@ -46,12 +47,17 @@ not as built-in modules.
   (conditioning): a strict scalar reward carves the stimulus→action mapping;
   the predicted dissociation holds (Line A = 0.91, Line B = 0.35 ≤ chance,
   A+B = 0.86 final accuracy over 6 seeds).
+- [`docs/e2_results.md`](docs/e2_results.md) — **findings from E2** (working
+  memory): memory is a τ-controlled reentrant loop; the dissociation inverts —
+  Line A retains only at zero delay, Line B learns τ below the loop transit time
+  and holds memory to D=200. Needs a *shared* regional timescale (per-node τ
+  hits a weakest-link problem).
 
 ## Progress
 
 - [x] **E0** — substrate characterisation and operating point (see results)
 - [x] **E1** — stimulus→response conditioning (A-vs-B dissociation confirmed)
-- [ ] E2 — delayed response (working memory)
+- [x] **E2** — delayed response / working memory (dissociation inverts: B critical)
 - [ ] E3 — temporal sequence reproduction (the A-vs-B discriminator)
 - [ ] E4 — selective attention (cue competition)
 - [ ] E5 — executive control / task switching (options)

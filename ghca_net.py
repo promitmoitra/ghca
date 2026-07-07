@@ -116,7 +116,8 @@ class Network:
         self.N = self.W.shape[0]
         self.act = int(act)
         self.tau = np.full(self.N, int(act) + int(pas), dtype=np.int64)  # per-node
-        self.theta = float(theta)
+        self.theta = np.full(self.N, float(theta)) if np.isscalar(theta) \
+            else np.asarray(theta, dtype=float).copy()               # per-node
         self.p_s = float(p_s)
         self.rho_star = rho_star
         self.eta_theta = float(eta_theta)
@@ -181,9 +182,9 @@ class Network:
         # homeostatic threshold update
         if self.rho_star is not None:
             rho = self.active_mask().mean()
-            self.theta = float(np.clip(
+            self.theta = np.clip(
                 self.theta + self.eta_theta * (rho - self.rho_star),
-                *self.theta_bounds))
+                *self.theta_bounds)
 
         self.t += 1
         return self.active_mask()
