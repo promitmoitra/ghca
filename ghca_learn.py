@@ -172,7 +172,13 @@ class GHLearner(Network):
         return float(self.v_w @ self.features())
 
     # -- apply the reward-driven updates -------------------------------------
-    def learn(self, delta):
+    def learn(self, delta, delta_b=None):
+        """Apply reward-modulated plasticity. `delta` gates Line A (conduction);
+        `delta_b` gates Line B (timescale) -- pass a separate value for FACTORED
+        credit (each line credited by the error component it controls; see
+        e3_factored_credit.py). If `delta_b` is None the same `delta` gates both
+        (the original shared-scalar rule)."""
+        db = delta if delta_b is None else delta_b
         if "A" in self.line:
             dW = self.eta_w * delta * self.E
             self.W[self.plastic] = np.clip(self.W[self.plastic] + dW[self.plastic],
@@ -182,7 +188,7 @@ class GHLearner(Network):
             if self.tau_shared:
                 # reinforce the shared-timescale perturbation that earned reward
                 self.tau_scalar = float(np.clip(
-                    self.tau_scalar + self.eta_tau * delta * self._eps_s,
+                    self.tau_scalar + self.eta_tau * db * self._eps_s,
                     self.tau_min, self.tau_max))
                 self.tau[self.tau_mask] = self.tau_scalar
             elif self.tau_sigma > 0:
@@ -191,7 +197,7 @@ class GHLearner(Network):
                 # *sustains* (tau below the loop transit time), so this drives
                 # tau toward the sustaining regime -- but hits a weakest-link
                 # problem (the loop dies at the slowest node; see e2_results.md).
-                self.tau_base = np.clip(self.tau_base + self.eta_tau * delta * self._eps,
+                self.tau_base = np.clip(self.tau_base + self.eta_tau * db * self._eps,
                                         self.tau_min, self.tau_max)
                 self.tau = self.tau_base.copy()
             else:
@@ -199,7 +205,7 @@ class GHLearner(Network):
                 # NOTE: this targets tau = loop period, i.e. the marginal (death)
                 # boundary; it maintains an already-sustaining loop but does not
                 # by itself find the sustaining regime (see e2_results.md).
-                self.tau_base = np.clip(self.tau_base + self.eta_tau * delta * self.tau_elig,
+                self.tau_base = np.clip(self.tau_base + self.eta_tau * db * self.tau_elig,
                                         self.tau_min, self.tau_max)
                 self.tau = self.tau_base.copy()
 
