@@ -111,11 +111,48 @@ trial     : cue=4, delay D in [15,70] (train) then eval; 1800 trials, 5 seeds
 - No spontaneous firing during the delay (it would activate both rings and
   destroy stimulus specificity); a noise-robust memory is not yet tested.
 
+## Addendum — working memory as a low information-destruction rate
+
+*Run of `experiments/e2_information.py`.* Recasting the E2 mechanism in the
+information-theoretic language of discrete-diffusion learning (Casado Noguerales
+et al., 2026): the irreducible cost of a noising process is the rate at which it
+destroys information about the clean data, `−d/dt I(Z₀;Z_t)`. Take the clean data
+to be the stimulus identity `X` and the noised state to be the network state at
+delay `D`. Then a reentrant loop is a noising process whose
+**information-destruction rate is tuned by `τ`**.
+
+Measuring `I(X ; ring readout)` in bits (exact, from the confusion counts; no
+learning) vs delay:
+
+| τ (L=24) | I at D=0…160 | info retained at D=80 | memory half-life |
+|----------|--------------|-----------------------|------------------|
+| 16, 20, 22 (`<L`) | **1.00 bit at every delay** | 1.00 | > 160 |
+| 24, 28 (`≥L`) | 1.00 until D≈10, then **0** | 0.00 | ~20 |
+
+![E2 information](figures/e2_information.png)
+
+- For `τ < L` the loop retains the **full bit** of stimulus information at every
+  delay out to 160 steps — the information-destruction rate is ≈ 0 (perfect
+  memory).
+- For `τ ≥ L` the loop dies by `D≈20`, destroying all stimulus information — a
+  high, effectively step-like destruction rate.
+- The transition is sharp at `τ = L`: `τ` *is* the knob on the
+  information-destruction rate, giving E2 an information-theoretic backbone and
+  restating "memory" as "a noising process the substrate has tuned to forget
+  slowly."
+
+This is the **temporal** information-loss companion to C4's **coarse-graining**
+information loss (`I(B;W)` vs `I(B;S)`, [`c4_results.md`](c4_results.md)): the
+same currency (bits about the behaviourally-relevant variable) lost either over
+time (here) or under macro compression (C4). See [`synthesis.md`](synthesis.md).
+
 ## Reproduce
 
 ```
-python3 experiments/e2_delayed_response.py
+python3 experiments/e2_delayed_response.py     # mechanism + learning
+python3 experiments/e2_information.py          # information-destruction addendum
 ```
 
-Writes `docs/figures/e2_mechanism.png`, `docs/figures/e2_learning.png`, and
-`result/e2/e2_data.npz`.
+Writes `docs/figures/e2_mechanism.png`, `docs/figures/e2_learning.png`,
+`docs/figures/e2_information.png`, and `result/e2/e2_data.npz`,
+`result/e2/e2_information.npz`.

@@ -32,6 +32,7 @@ not as built-in modules.
 | `experiments/e0_characterization.py` | E0 — substrate characterisation (find the self-sustaining band) |
 | `experiments/e1_conditioning.py` | E1 — stimulus→response conditioning (A-vs-B dissociation) |
 | `experiments/e2_delayed_response.py` | E2 — delayed response / working memory (τ-controlled memory) |
+| `experiments/e2_information.py` | E2 addendum — memory as a τ-tuned information-destruction rate |
 | `experiments/e3_timed_response.py` | E3 — timed response (identity × latency double dissociation) |
 | `experiments/c0_instrumentation.py` | C0 — instrument the causal variables (`W=f(S)`, partial spikes) |
 | `experiments/c1_graph_certificates.py` | C1 — validate Theorem-1 epiphenomenality certificate on known SCMs |
