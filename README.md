@@ -28,10 +28,12 @@ not as built-in modules.
 | `ghca_plot.py` | Persistence-probability maps over `(active, passive)` space |
 | `ghca_net.py` | **GH dynamics on a graph**: per-node timescales, weighted-threshold excitation, spontaneous firing, homeostatic threshold; topology builders and order-parameter observables |
 | `ghca_learn.py` | **Reward-modulated learner**: eligibility-trace conduction (Line A) and timescale (Line B) plasticity, order-parameter critic, layered-graph builder |
+| `ghca_causal.py` | **Causal instrumentation** (C-series): partial-observation `S_obs`, wave variables `W=f(S)`, and `do(S)` / `do(W)` / `do(θ)` intervention operators |
 | `experiments/e0_characterization.py` | E0 — substrate characterisation (find the self-sustaining band) |
 | `experiments/e1_conditioning.py` | E1 — stimulus→response conditioning (A-vs-B dissociation) |
 | `experiments/e2_delayed_response.py` | E2 — delayed response / working memory (τ-controlled memory) |
 | `experiments/e3_timed_response.py` | E3 — timed response (identity × latency double dissociation) |
+| `experiments/c0_instrumentation.py` | C0 — instrument the causal variables (`W=f(S)`, partial spikes) |
 | `result/` | Saved simulation outputs (`.npy`) and experiment data |
 
 ## Documentation
@@ -57,6 +59,15 @@ not as built-in modules.
   response): double dissociation confirmed — Line A learns identity (wrong
   timing), Line B learns timing (not identity). New open problem: naive A+B
   *interferes* (both worse than either alone) under a single shared reward.
+- [`docs/causal_experiments.md`](docs/causal_experiments.md) — **C-series plan**:
+  using the substrate (where `W = f(S)` is explicit) as a synthetic-SCM testbed
+  for the spike-wave causal question (arXiv:2511.06602) — validate the paper's
+  certificates on ground truth, then show `do(W)` is fat-handed under real
+  constitution and `do(θ)` is the well-posed handle.
+- [`docs/c0_results.md`](docs/c0_results.md) — **findings from C0**: `W=f(S)`
+  verified; the wave carries info beyond *partial* spikes for a collective code
+  (growing as observation gets sparser) but not for a labeled-line code —
+  informativeness is structure-dependent.
 
 ## Progress
 
@@ -65,6 +76,14 @@ not as built-in modules.
 - [x] **E2** — delayed response / working memory (dissociation inverts: B critical)
 - [x] **E3** — timed response (double dissociation confirmed; A+B interference found)
 - [ ] E4 — selective attention (cue competition)
+
+**C-series** (constitution & causality of spike–wave duality — see [`docs/causal_experiments.md`](docs/causal_experiments.md)):
+
+- [x] **C0** — instrument the causal variables (`W=f(S)`; wave informative beyond partial spikes for a collective code only)
+- [ ] C1 — build the paper's graphs, validate certificates on ground truth
+- [ ] C2 — constitution / fat-handed `do(W)` (headline)
+- [ ] C3 — `do(θ)` as the well-posed causal handle
+- [ ] C4 — outcome-relativity & degeneracy
 - [ ] E5 — executive control / task switching (options)
 - [ ] E6 — emergent categories (Horde/GVF readout)
 
