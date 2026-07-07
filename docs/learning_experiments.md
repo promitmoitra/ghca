@@ -443,6 +443,20 @@ and **discriminator**.
 - **Discriminator.** The double dissociation above is the key predicted result of
   the whole program. Its presence/absence validates or refutes the
   two-line decomposition.
+- **Status: DONE (reduced task).** See [`e3_results.md`](e3_results.md). Run as a
+  single timed event (fire the correct channel at a target latency) rather than
+  a multi-element sequence — same spatial-vs-temporal dissociation, counter/
+  shift-register for true sequences deferred. **The double dissociation holds:**
+  Line A learns identity (channel 1.00) but wrong timing (latency fixed by `τ`);
+  Line B learns timing (latency → target, gate `τ` 10→20) but not identity.
+  **New finding: A+B does *not* compose — it interferes** (both worse than
+  either alone) under a single shared TD-error, because B's timescale shifts
+  move the spatial target A is chasing and vice versa. Composing spatial+temporal
+  credit assignment (curriculum / factored eligibility / separate modulators) is
+  the headline open problem. Implemented in `experiments/e3_timed_response.py`
+  (τ-metronome gate + gapless relay). Also connects to the spike-vs-wave causal
+  question (arXiv:2511.06602): here the τ-controlled *rhythm* causally sets
+  response timing and is not epiphenomenal.
 
 ### E4 — Selective attention (cue competition)
 

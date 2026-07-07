@@ -31,6 +31,7 @@ not as built-in modules.
 | `experiments/e0_characterization.py` | E0 — substrate characterisation (find the self-sustaining band) |
 | `experiments/e1_conditioning.py` | E1 — stimulus→response conditioning (A-vs-B dissociation) |
 | `experiments/e2_delayed_response.py` | E2 — delayed response / working memory (τ-controlled memory) |
+| `experiments/e3_timed_response.py` | E3 — timed response (identity × latency double dissociation) |
 | `result/` | Saved simulation outputs (`.npy`) and experiment data |
 
 ## Documentation
@@ -52,13 +53,17 @@ not as built-in modules.
   Line A retains only at zero delay, Line B learns τ below the loop transit time
   and holds memory to D=200. Needs a *shared* regional timescale (per-node τ
   hits a weakest-link problem).
+- [`docs/e3_results.md`](docs/e3_results.md) — **findings from E3** (timed
+  response): double dissociation confirmed — Line A learns identity (wrong
+  timing), Line B learns timing (not identity). New open problem: naive A+B
+  *interferes* (both worse than either alone) under a single shared reward.
 
 ## Progress
 
 - [x] **E0** — substrate characterisation and operating point (see results)
 - [x] **E1** — stimulus→response conditioning (A-vs-B dissociation confirmed)
 - [x] **E2** — delayed response / working memory (dissociation inverts: B critical)
-- [ ] E3 — temporal sequence reproduction (the A-vs-B discriminator)
+- [x] **E3** — timed response (double dissociation confirmed; A+B interference found)
 - [ ] E4 — selective attention (cue competition)
 - [ ] E5 — executive control / task switching (options)
 - [ ] E6 — emergent categories (Horde/GVF readout)
