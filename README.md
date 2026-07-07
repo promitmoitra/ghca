@@ -35,6 +35,7 @@ not as built-in modules.
 | `experiments/e3_timed_response.py` | E3 — timed response (identity × latency double dissociation) |
 | `experiments/c0_instrumentation.py` | C0 — instrument the causal variables (`W=f(S)`, partial spikes) |
 | `experiments/c1_graph_certificates.py` | C1 — validate Theorem-1 epiphenomenality certificate on known SCMs |
+| `experiments/c2_fat_handed.py` | C2 — `do(W)` is fat-handed when `W=f(S)` (achievable-band of behaviour) |
 | `result/` | Saved simulation outputs (`.npy`) and experiment data |
 
 ## Documentation
@@ -73,6 +74,10 @@ not as built-in modules.
   canonical graphs the Theorem-1 certificate matches ground-truth `do(W)` —
   including the confounded case (association without causation) and front-door
   (causal despite an observed mediator).
+- [`docs/c2_results.md`](docs/c2_results.md) — **findings from C2** (headline):
+  when `W=f(S)` is constituted, one `do(W=w)` admits a huge behavioural band
+  (33 σ) for a micro-reading behaviour vs ~0 for a collective one — `do(W)` is
+  fat-handed and its causal verdict depends on the realization.
 
 ## Progress
 
@@ -86,7 +91,7 @@ not as built-in modules.
 
 - [x] **C0** — instrument the causal variables (`W=f(S)`; wave informative beyond partial spikes for a collective code only)
 - [x] **C1** — certificate validated on ground truth (all 6 canonical graphs agree; confounded & front-door as key cases)
-- [ ] C2 — constitution / fat-handed `do(W)` (headline)
+- [x] **C2** — `do(W)` is fat-handed for a constituted `W=f(S)` (achievable band 33σ vs ~0)
 - [ ] C3 — `do(θ)` as the well-posed causal handle
 - [ ] C4 — outcome-relativity & degeneracy
 - [ ] E5 — executive control / task switching (options)

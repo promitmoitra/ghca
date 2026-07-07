@@ -86,6 +86,13 @@ Now `W = f(S)` is the genuine constituted aggregate. Implement `do(W=w)` under
 Measure `P(B; do_π(W=w))` across `π`.
 *Expect:* the causal verdict **varies with `π`** → `do(W)` is ill-posed
 (fat-handed) for a constituted `W`. *Gate:* motivates `do(θ)`.
+*Status: DONE.* See [`c2_results.md`](c2_results.md). At the moment of
+intervention a single `do(W=w)` admits an achievable band of `B` of **0.24 σ**
+(collective readout) vs **33 σ** (labeled-line) — `do(W)` pins collective
+behaviour but leaves micro-reading behaviour essentially free, so the causal
+verdict is whatever the realization makes it. The under-determination washes out
+at long propagation in this relaxing medium (substrate-specific caveat).
+Implemented in `experiments/c2_fat_handed.py`.
 
 ### C3 — `do(θ)`: the generating parameter as the well-posed handle
 `do(τ)` and `do(coupling)`; measure effect on `B` and mediation `θ→W→B`.
