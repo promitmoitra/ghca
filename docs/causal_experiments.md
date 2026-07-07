@@ -115,6 +115,13 @@ effective-information / invariance measure).
 *Expect:* `W` epiphenomenal for one outcome, causal for the other; `W` is the
 "natural" causal variable exactly where `S→W` degeneracy is high (causal
 emergence, Hoel). Closes the arc.
+*Status: DONE.* See [`c4_results.md`](c4_results.md). The `do(θ)` causal matrix
+on the E3 net is **diagonal** — `do(τ)` → timing (1.00), not identity (0.00);
+`do(g_route)` → identity (1.00), not timing (0.06): the causal role is
+(handle, outcome)-relative. Macro-sufficiency `I(B;W)/I(B;S)` = **1.03**
+(collective) vs **0.11** (labeled-line): the wave is the natural causal variable
+only where behaviour reads the aggregate (causal emergence). Implemented in
+`experiments/c4_outcome_relativity.py`. **C-series complete.**
 
 ## Breadth constraints (deliberately excluded)
 

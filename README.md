@@ -37,6 +37,7 @@ not as built-in modules.
 | `experiments/c1_graph_certificates.py` | C1 — validate Theorem-1 epiphenomenality certificate on known SCMs |
 | `experiments/c2_fat_handed.py` | C2 — `do(W)` is fat-handed when `W=f(S)` (achievable-band of behaviour) |
 | `experiments/c3_do_theta.py` | C3 — `do(θ)` (timescales/couplings) is the well-posed causal handle |
+| `experiments/c4_outcome_relativity.py` | C4 — outcome-relativity & degeneracy (causal-emergence cap) |
 | `result/` | Saved simulation outputs (`.npy`) and experiment data |
 
 ## Documentation
@@ -83,6 +84,14 @@ not as built-in modules.
   (timescales/couplings) is the well-posed handle — single-valued reproducible
   response, intervention ambiguity 0.014 σ vs `do(W)`'s 33 σ; `θ` is exactly
   what plasticity acts on.
+- [`docs/c4_results.md`](docs/c4_results.md) — **findings from C4**: the causal
+  role is (handle, outcome)-relative (`do(θ)` matrix is diagonal); the wave is
+  the natural causal variable only where behaviour is collective (macro-
+  sufficiency 1.03 vs 0.11 — causal emergence).
+- [`docs/synthesis.md`](docs/synthesis.md) — **tying note**: the E-series and
+  C-series are one argument — `θ` (timescales, couplings) is both the variable
+  the learner adapts and the only well-posed causal handle; spikes and waves are
+  two readouts of one parameterised dynamics.
 
 ## Progress
 
@@ -98,7 +107,9 @@ not as built-in modules.
 - [x] **C1** — certificate validated on ground truth (all 6 canonical graphs agree; confounded & front-door as key cases)
 - [x] **C2** — `do(W)` is fat-handed for a constituted `W=f(S)` (achievable band 33σ vs ~0)
 - [x] **C3** — `do(θ)` is the well-posed causal handle (ambiguity 0.014σ vs 33σ; `θ→W→B`)
-- [ ] C4 — outcome-relativity & degeneracy
+- [x] **C4** — outcome-relativity (diagonal `do(θ)` matrix) & degeneracy (macro-sufficiency 1.03 vs 0.11) — **C-series complete**
+
+See [`docs/synthesis.md`](docs/synthesis.md) for how the E-series and C-series tie together.
 - [ ] E5 — executive control / task switching (options)
 - [ ] E6 — emergent categories (Horde/GVF readout)
 

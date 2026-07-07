@@ -79,6 +79,21 @@ a shared three-factor rule. Natural next steps (deferred): a curriculum
 line is credited by the reward component it controls, or separate
 neuromodulatory channels for spatial vs temporal error.
 
+### Update — insight from the C-series
+
+The C-series ([`c4_results.md`](c4_results.md)) gives the causal reason the A+B
+interference is expected, and sharpens the fix. C4's `do(θ)` causal matrix is
+**diagonal**: `do(τ)` moves timing and *not* identity, `do(g_route)` moves
+identity and *not* timing. Identity and timing are therefore **distinct outcomes
+with distinct, non-overlapping causal handles**. A single shared scalar reward
+`δ` conflates two separate credit-assignment problems onto one signal — so
+interference is not a tuning artifact but the predicted consequence of using one
+error channel for two causally-orthogonal outcomes. The principled fix is to
+treat them as the separate channels C4 shows them to be: factor the reward /
+eligibility so the timing error drives `τ` (Line B) and the identity error drives
+weights (Line A), rather than hoping one scalar disentangles them. See
+[`synthesis.md`](synthesis.md).
+
 ## Relation to the substrate's "spike vs wave" duality
 
 This experiment cleanly separates the two kinds of activity the GH substrate

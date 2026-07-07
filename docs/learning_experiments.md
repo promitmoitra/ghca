@@ -202,6 +202,26 @@ long-`τ` loop (a spiral core) whose initiation set `I` is the context in which 
 ignites, whose policy `π` is the fast dynamics it gates, and whose termination
 `β` is its decay — an option learned over the medium's own loops.
 
+### 2.6 Causal grounding (from the C-series)
+
+The [C-series](causal_experiments.md) supplies a causal justification for this
+whole design, which is worth stating up front:
+
+- **The learned variables are the well-posed causal handles.** C3 shows that in
+  this substrate `do(θ)` — intervening on timescales and couplings — is the
+  unique, modular causal handle, while `do(W)` on the constituted wave aggregate
+  is fat-handed (C2). The two plasticity lines learn exactly `θ`: Line A =
+  couplings, Line B = timescales. So the learner adapts precisely the variables
+  on which intervention is causally well-defined.
+- **Read the wave, drive the parameters.** C0/C4 show the wave/order-parameter is
+  an informative *descriptive* variable (for collective codes) but C2 shows it is
+  not a well-posed *control* variable. Hence the design: the critic (§2.2) reads
+  order parameters as features, but plasticity drives `θ`, never the wave.
+- **Identity and timing are causally orthogonal** (C4's diagonal `do(θ)`
+  matrix), which is why they are cleanly separable across E1–E3 — and why the
+  E3 A+B interference is expected under a single shared reward. See
+  [`synthesis.md`](synthesis.md).
+
 ---
 
 ## 3. Common experimental scaffold
