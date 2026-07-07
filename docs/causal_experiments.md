@@ -100,6 +100,13 @@ Implemented in `experiments/c2_fat_handed.py`.
 recovers E3 (`do(τ)` moves timing not identity). *Contribution:* in mechanistic
 systems the causal question should target generating parameters, not the
 aggregate.
+*Status: DONE.* See [`c3_results.md`](c3_results.md). `do(τ)` gives a
+single-valued, reproducible causal response (across-seed std 0.15) mediated
+`θ→W→B`. Intervention ambiguity: `do(W)` labeled = **33 σ** (irreducible policy
+band) vs `do(θ)` = **0.014 σ** (stochastic residual only; realization band is 0
+by construction). E3 bridge: `do(τ_gate)` sets latency at slope 1.00, uniquely,
+identity untouched. The causal handle `θ` is exactly what plasticity acts on.
+Implemented in `experiments/c3_do_theta.py`.
 
 ### C4 — Outcome-relativity & degeneracy *(synthesis cap)*
 Test Def-1 invariance of the *same* `W` under `do(θ)` for two behaviours

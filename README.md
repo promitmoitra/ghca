@@ -36,6 +36,7 @@ not as built-in modules.
 | `experiments/c0_instrumentation.py` | C0 — instrument the causal variables (`W=f(S)`, partial spikes) |
 | `experiments/c1_graph_certificates.py` | C1 — validate Theorem-1 epiphenomenality certificate on known SCMs |
 | `experiments/c2_fat_handed.py` | C2 — `do(W)` is fat-handed when `W=f(S)` (achievable-band of behaviour) |
+| `experiments/c3_do_theta.py` | C3 — `do(θ)` (timescales/couplings) is the well-posed causal handle |
 | `result/` | Saved simulation outputs (`.npy`) and experiment data |
 
 ## Documentation
@@ -78,6 +79,10 @@ not as built-in modules.
   when `W=f(S)` is constituted, one `do(W=w)` admits a huge behavioural band
   (33 σ) for a micro-reading behaviour vs ~0 for a collective one — `do(W)` is
   fat-handed and its causal verdict depends on the realization.
+- [`docs/c3_results.md`](docs/c3_results.md) — **findings from C3**: `do(θ)`
+  (timescales/couplings) is the well-posed handle — single-valued reproducible
+  response, intervention ambiguity 0.014 σ vs `do(W)`'s 33 σ; `θ` is exactly
+  what plasticity acts on.
 
 ## Progress
 
@@ -92,7 +97,7 @@ not as built-in modules.
 - [x] **C0** — instrument the causal variables (`W=f(S)`; wave informative beyond partial spikes for a collective code only)
 - [x] **C1** — certificate validated on ground truth (all 6 canonical graphs agree; confounded & front-door as key cases)
 - [x] **C2** — `do(W)` is fat-handed for a constituted `W=f(S)` (achievable band 33σ vs ~0)
-- [ ] C3 — `do(θ)` as the well-posed causal handle
+- [x] **C3** — `do(θ)` is the well-posed causal handle (ambiguity 0.014σ vs 33σ; `θ→W→B`)
 - [ ] C4 — outcome-relativity & degeneracy
 - [ ] E5 — executive control / task switching (options)
 - [ ] E6 — emergent categories (Horde/GVF readout)
