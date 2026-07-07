@@ -34,6 +34,7 @@ not as built-in modules.
 | `experiments/e2_delayed_response.py` | E2 — delayed response / working memory (τ-controlled memory) |
 | `experiments/e2_information.py` | E2 addendum — memory as a τ-tuned information-destruction rate |
 | `experiments/e3_timed_response.py` | E3 — timed response (identity × latency double dissociation) |
+| `experiments/e3_factored_credit.py` | E3 composition study — factored credit + curriculum vs shared reward |
 | `experiments/c0_instrumentation.py` | C0 — instrument the causal variables (`W=f(S)`, partial spikes) |
 | `experiments/c1_graph_certificates.py` | C1 — validate Theorem-1 epiphenomenality certificate on known SCMs |
 | `experiments/c2_fat_handed.py` | C2 — `do(W)` is fat-handed when `W=f(S)` (achievable-band of behaviour) |
@@ -99,7 +100,7 @@ not as built-in modules.
 - [x] **E0** — substrate characterisation and operating point (see results)
 - [x] **E1** — stimulus→response conditioning (A-vs-B dissociation confirmed)
 - [x] **E2** — delayed response / working memory (dissociation inverts: B critical)
-- [x] **E3** — timed response (double dissociation confirmed; A+B interference found)
+- [x] **E3** — timed response (double dissociation confirmed; A+B interference **decomposed & partly resolved**: factored credit + slow-first curriculum lift joint identity 0.20→0.77, residual is a substrate resonance artifact)
 - [ ] E4 — selective attention (cue competition)
 
 **C-series** (constitution & causality of spike–wave duality — see [`docs/causal_experiments.md`](docs/causal_experiments.md)):

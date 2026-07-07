@@ -477,6 +477,16 @@ and **discriminator**.
   (τ-metronome gate + gapless relay). Also connects to the spike-vs-wave causal
   question (arXiv:2511.06602): here the τ-controlled *rhythm* causally sets
   response timing and is not epiphenomenal.
+- **A+B composition — partly resolved** (`experiments/e3_factored_credit.py`).
+  The interference decomposes into three sources: reward-conflation (**fixed by
+  factored credit** — `learn(delta, delta_b)`, each line credited by its own
+  outcome error; joint identity 0.20→0.50), dynamical non-stationarity (**needs
+  a slow-first curriculum** — learn τ then freeze and learn routing; 0.50→0.77),
+  and a substrate gate-resonance artifact (identity learnability is jagged in τ —
+  a caveat, not a credit issue). Factored credit + curriculum ~quadruples joint
+  identity over the shared-reward baseline; residual per-seed fragility is the
+  resonance. This is the fix C4's outcome-orthogonality and the
+  discrete-diffusion "parameterization governs learnability" result both predict.
 
 ### E4 — Selective attention (cue competition)
 
