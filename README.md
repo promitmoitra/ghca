@@ -34,6 +34,7 @@ not as built-in modules.
 | `experiments/e2_delayed_response.py` | E2 — delayed response / working memory (τ-controlled memory) |
 | `experiments/e3_timed_response.py` | E3 — timed response (identity × latency double dissociation) |
 | `experiments/c0_instrumentation.py` | C0 — instrument the causal variables (`W=f(S)`, partial spikes) |
+| `experiments/c1_graph_certificates.py` | C1 — validate Theorem-1 epiphenomenality certificate on known SCMs |
 | `result/` | Saved simulation outputs (`.npy`) and experiment data |
 
 ## Documentation
@@ -68,6 +69,10 @@ not as built-in modules.
   verified; the wave carries info beyond *partial* spikes for a collective code
   (growing as observation gets sparser) but not for a labeled-line code —
   informativeness is structure-dependent.
+- [`docs/c1_results.md`](docs/c1_results.md) — **findings from C1**: on six
+  canonical graphs the Theorem-1 certificate matches ground-truth `do(W)` —
+  including the confounded case (association without causation) and front-door
+  (causal despite an observed mediator).
 
 ## Progress
 
@@ -80,7 +85,7 @@ not as built-in modules.
 **C-series** (constitution & causality of spike–wave duality — see [`docs/causal_experiments.md`](docs/causal_experiments.md)):
 
 - [x] **C0** — instrument the causal variables (`W=f(S)`; wave informative beyond partial spikes for a collective code only)
-- [ ] C1 — build the paper's graphs, validate certificates on ground truth
+- [x] **C1** — certificate validated on ground truth (all 6 canonical graphs agree; confounded & front-door as key cases)
 - [ ] C2 — constitution / fat-handed `do(W)` (headline)
 - [ ] C3 — `do(θ)` as the well-posed causal handle
 - [ ] C4 — outcome-relativity & degeneracy

@@ -71,6 +71,14 @@ hidden) — controlling which nodes are `S` vs hidden `U`. Treat `W` as a
 `P(B|S)` and check against Theorem 1's d-separation prediction.
 *Expect:* fork → invariant (epiphenomenal); unobserved-mediator & front-door →
 causal. *Contribution:* empirical validation of their theorems on a known SCM.
+*Status: DONE.* See [`c1_results.md`](c1_results.md). All six canonical graphs
+agree: Theorem-1 certificate == ground-truth `do(W)` == expected verdict. The
+`confounded` graph shows strong association (0.64) with zero causal effect
+(correlation≠causation); `front-door` is causal (0.26) despite conditioning on
+the observed mediator (Prop 2). Implemented in
+`experiments/c1_graph_certificates.py`. (Subtlety: Definition 1 must be scored
+interventional-vs-*observational*, not `do(W=1)` vs `do(W=0)`, or front-door is
+mis-scored.)
 
 ### C2 — Constitution / fat-handed `do(W)` *(headline)*
 Now `W = f(S)` is the genuine constituted aggregate. Implement `do(W=w)` under
