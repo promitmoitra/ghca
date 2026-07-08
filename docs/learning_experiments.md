@@ -506,6 +506,16 @@ and **discriminator**.
   to `V_M`. Attention needs **no new inhibitory machinery**.
 - **Discriminator.** If accurate routing requires an added inhibitory population,
   the "refractoriness = sufficient competition" claim fails.
+- **Status: DONE (mechanism).** See [`e4_results.md`](e4_results.md). Two waves
+  collide and annihilate on a shared arena; a top-down bias selects the winner
+  via which stream captures the centre. **Textbook psychometric** `P(win)` vs
+  bias (sigmoid, width set by sensory noise; accuracy 0.96 at `|b|=4`); the
+  **annihilation locus is linear in the bias** (slope 0.50 through centre) — the
+  competition is resolved spatially. Achieved with **zero inhibitory nodes** —
+  the discriminator is passed (refractoriness supplies the WTA, as the C-series
+  flagged). Implemented in `experiments/e4_attention.py`. Attention is *tested*
+  (top-down bias applied), not yet *learned* — coupling to a controller that
+  learns where to bias is E5.
 
 ### E5 — Executive control / task switching (options)
 
