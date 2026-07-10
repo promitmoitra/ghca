@@ -36,6 +36,8 @@ not as built-in modules.
 | `experiments/e3_timed_response.py` | E3 — timed response (identity × latency double dissociation) |
 | `experiments/e3_factored_credit.py` | E3 composition study — factored credit + curriculum vs shared reward |
 | `experiments/e4_attention.py` | E4 — selective attention as biased WTA by wave annihilation |
+| `experiments/e5_executive.py` | E5 — executive control / task switching (a slow-loop option gates fast routing) |
+| `experiments/e6_horde.py` | E6 — emergent categories (three GVF demons read one frozen substrate) |
 | `experiments/c0_instrumentation.py` | C0 — instrument the causal variables (`W=f(S)`, partial spikes) |
 | `experiments/c1_graph_certificates.py` | C1 — validate Theorem-1 epiphenomenality certificate on known SCMs |
 | `experiments/c2_fat_handed.py` | C2 — `do(W)` is fat-handed when `W=f(S)` (achievable-band of behaviour) |
@@ -71,6 +73,18 @@ not as built-in modules.
   selective attention as biased winner-take-all by wave annihilation — a
   textbook psychometric (accuracy 0.96 at modest bias), the annihilation locus
   linear in the bias, achieved with zero inhibitory nodes.
+- [`docs/e5_results.md`](docs/e5_results.md) — **findings from E5** (executive
+  control): a persistent reentrant loop (the E2 mechanism) acts as an *option*
+  that gates fast routing — switching 0.89 vs 0.20 when the loop is ablated,
+  post-switch accuracy consolidating 0.57→0.92, single-rule routing spared by the
+  ablation (0.87 vs 0.86). The discriminator localises the loop's role to *holding*
+  the rule across a block.
+- [`docs/e6_results.md`](docs/e6_results.md) — **findings from E6** (emergent
+  categories): three GVF demons on one frozen substrate, reading the same feature
+  vector, predict distinct questions well above baseline (memory R²=0.62, attention
+  forecast 0.84, executive R²=0.98); their readouts are near-orthogonal and a
+  generic probe matches an own-region oracle — memory/attention/executive are
+  *questions asked of one machine*, not modules.
 - [`docs/causal_experiments.md`](docs/causal_experiments.md) — **C-series plan**:
   using the substrate (where `W = f(S)` is explicit) as a synthetic-SCM testbed
   for the spike-wave causal question (arXiv:2511.06602) — validate the paper's
@@ -108,6 +122,8 @@ not as built-in modules.
 - [x] **E2** — delayed response / working memory (dissociation inverts: B critical)
 - [x] **E3** — timed response (double dissociation confirmed; A+B interference **decomposed & partly resolved**: factored credit + slow-first curriculum lift joint identity 0.20→0.77, residual is a substrate resonance artifact)
 - [x] **E4** — selective attention as biased WTA by wave annihilation (psychometric accuracy 0.96 at modest bias; **zero inhibitory nodes**)
+- [x] **E5** — executive control / task switching: a persistent loop (E2 mechanism) as an *option* gating routing (switching 0.89 vs ablated 0.20; switch cost consolidates 0.57→0.92; single-rule spared 0.87 vs 0.86)
+- [x] **E6** — emergent categories (Horde/GVF readout): three demons on one frozen substrate predict distinct questions (memory R²=0.62, attention 0.84, executive R²=0.98), near-orthogonal, no dedicated wiring — **E-series complete**
 
 **C-series** (constitution & causality of spike–wave duality — see [`docs/causal_experiments.md`](docs/causal_experiments.md)):
 
@@ -117,13 +133,17 @@ not as built-in modules.
 - [x] **C3** — `do(θ)` is the well-posed causal handle (ambiguity 0.014σ vs 33σ; `θ→W→B`)
 - [x] **C4** — outcome-relativity (diagonal `do(θ)` matrix) & degeneracy (macro-sufficiency 1.03 vs 0.11) — **C-series complete**
 
-See [`docs/synthesis.md`](docs/synthesis.md) for how the E-series and C-series tie together.
-- [ ] E5 — executive control / task switching (options)
-- [ ] E6 — emergent categories (Horde/GVF readout)
+Both series are complete. See [`docs/synthesis.md`](docs/synthesis.md) for how the
+E-series and C-series tie together into one argument.
 
 ## Reproduce
 
 ```
 python3 -m pip install numpy matplotlib scipy
 python3 experiments/e0_characterization.py    # writes docs/figures/e0_*.png, result/e0/
+python3 experiments/e5_executive.py           # writes docs/figures/e5_*.png, result/e5/
+python3 experiments/e6_horde.py               # writes docs/figures/e6_horde.png, result/e6/
 ```
+
+Each `experiments/*.py` is self-contained and writes its figures to `docs/figures/`
+and data to `result/`.
