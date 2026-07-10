@@ -111,7 +111,7 @@ class Network:
 
     def __init__(self, W, act=2, pas=8, theta=2.0, p_s=5e-3,
                  rho_star=None, eta_theta=1e-3, theta_bounds=(0.5, 20.0),
-                 seed=0):
+                 seed=0, p_s_mask=None):
         self.W = np.asarray(W, dtype=float)
         self.N = self.W.shape[0]
         self.act = int(act)
@@ -119,6 +119,10 @@ class Network:
         self.theta = np.full(self.N, float(theta)) if np.isscalar(theta) \
             else np.asarray(theta, dtype=float).copy()               # per-node
         self.p_s = float(p_s)
+        # optional per-node spontaneous-firing mask: if given, only masked nodes
+        # fire spontaneously (lets an experiment confine exploration to a medium
+        # while leaving driven / context nodes deterministic). None = all nodes.
+        self.p_s_mask = None if p_s_mask is None else np.asarray(p_s_mask, bool)
         self.rho_star = rho_star
         self.eta_theta = float(eta_theta)
         self.theta_bounds = theta_bounds
@@ -162,9 +166,11 @@ class Network:
         inp = self.W @ active.astype(float)
         excite = rested & (inp >= self.theta)
 
-        # spontaneous firing among rested nodes
+        # spontaneous firing among rested nodes (optionally confined by a mask)
         if self.p_s > 0:
             spont = rested & (self.rng.random(self.N) < self.p_s)
+            if self.p_s_mask is not None:
+                spont &= self.p_s_mask
             excite |= spont
 
         # forced external drive (cues), if any
