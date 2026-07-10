@@ -82,11 +82,39 @@ constitution, and outcome. Spikes and waves are not rivals for causal primacy �
 they are two readouts of one parameterised dynamics, and the parameters are where
 both learning and causation actually live.
 
+## From two lines to a full repertoire (E4–E6)
+
+The two-line story (routing vs timing) is the engine; E4–E6 show it composing into
+recognisable faculties on the *one* substrate, without adding machinery.
+
+- **[E4](e4_results.md) — attention** uses the substrate's native refractory
+  annihilation as a winner-take-all: colliding waves suppress each other, so
+  *selection* is free once waves exist (zero inhibitory nodes). A top-down bias
+  moves the annihilation locus — competition resolved spatially.
+- **[E5](e5_results.md) — executive control** repurposes E2's persistent loop as an
+  **option**: a slow *timescale* structure (`τ < L`) that gates *spatial* routing
+  across a block. This is the two orthogonal `do(θ)` handles (timescales, couplings)
+  composed **hierarchically** rather than fought over one scalar — the constructive
+  counterpart to the E3 A+B interference. Ablating the loop's persistence kills
+  switching but not single-rule routing, localising the loop's causal role.
+- **[E6](e6_results.md) — emergent readout** is the punchline: freeze the shaped
+  substrate and the "faculties" are *questions*. Memory, attention and executive
+  control are three GVF cumulants read off one phase stream by one identical linear
+  probe, near-orthogonally and with no dedicated sub-network (a generic probe
+  matches an own-region oracle). This is the reader/controller split made concrete —
+  the demons **read** the collective state and never drive it, exactly as C2/C4 say
+  the wave should be used.
+
+Read together: the spatial/temporal `do(θ)` dissociation (E1–E3, grounded in C3–C4)
+is the mechanism; attention, options and the emergent-category readout (E4–E6) are
+what that mechanism *looks like* when asked cognitive questions.
+
 ## Map of the work
 
 - Plan / substrate: [`learning_experiments.md`](learning_experiments.md),
   [`causal_experiments.md`](causal_experiments.md)
 - E-series results: [`e0`](e0_results.md) · [`e1`](e1_results.md) ·
-  [`e2`](e2_results.md) · [`e3`](e3_results.md)
+  [`e2`](e2_results.md) · [`e3`](e3_results.md) · [`e4`](e4_results.md) ·
+  [`e5`](e5_results.md) · [`e6`](e6_results.md)
 - C-series results: [`c0`](c0_results.md) · [`c1`](c1_results.md) ·
   [`c2`](c2_results.md) · [`c3`](c3_results.md) · [`c4`](c4_results.md)
