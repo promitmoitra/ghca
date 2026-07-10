@@ -121,6 +121,30 @@ def signed_charge(phi_flat):
     return n_pos, n_neg, net, core_xy
 
 
+def local_winding(phi_flat, cx, cy, rad=6):
+    """Local rotation-direction readout: the winding number of the cyclic phase
+    around a square loop of half-size `rad` centred on (cx, cy). Returns ~+1 for a
+    CCW core, ~-1 for CW, ~0 if no core is enclosed. Unlike the global net charge,
+    this reads the seeded core's handedness immediately (no settling transient) and
+    is robust to distant transient defects -- the local, 'direction-selective'
+    readout the learning phase (E7 Phase B) routes on."""
+    ang = 2 * np.pi * phi_flat.reshape(L, L) / TAU
+    def wrap(d):
+        return (d + np.pi) % (2 * np.pi) - np.pi
+    pts = []
+    for x in range(cx - rad, cx + rad + 1):
+        pts.append((x, cy - rad))
+    for y in range(cy - rad, cy + rad + 1):
+        pts.append((cx + rad, y))
+    for x in range(cx + rad, cx - rad - 1, -1):
+        pts.append((x, cy + rad))
+    for y in range(cy + rad, cy - rad - 1, -1):
+        pts.append((cx - rad, y))
+    pts = [(min(max(x, 0), L - 1), min(max(y, 0), L - 1)) for x, y in pts]
+    return sum(wrap(ang[pts[i + 1]] - ang[pts[i]])
+               for i in range(len(pts) - 1)) / (2 * np.pi)
+
+
 def probe_chirality(net, core_xy):
     """Local readout: circular phase difference between two probes 90 deg apart
     around the (tracked) core -- East vs North. Its sign flips with handedness.
