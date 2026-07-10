@@ -67,7 +67,14 @@ the band of `B`. Repeat across the three readouts (centre / tracked-core / globa
 - *Discriminator.* The band's dependence on readout locality decides A vs B; either
   is a real result. *Gate:* the outcome sets C6's contrast (a C3-style fix if A, or
   a near-zero-band contrast if B).
-- *Status: PLANNED.*
+- *Status: DONE.* See [`c5_results.md`](c5_results.md). **Both, readout-decided.**
+  Topological chirality *escapes* C2's 33σ fat-handedness when read topologically
+  (tracked-core band **1.0σ**), but a fixed-locus readout re-introduces it (center
+  band **6.2σ**; global 2.6σ). Behavioural confirmation on a frozen E7 router at a
+  displaced core: routing 0.55 (center) vs 0.78 (tracked). The sharpened lesson:
+  well-posedness is a property of the *(variable, reader)* pair — a winding number is
+  a better-posed wave variable than a scalar aggregate, but only for a topology-aware
+  reader. Implemented in `experiments/c5_do_chirality.py`.
 
 ### C6 — `do(θ_χ)` (nucleation) is the well-posed handle + necessity
 Set `χ` generatively (seed sign / pinned rotor); measure `B` across seeds → expect
