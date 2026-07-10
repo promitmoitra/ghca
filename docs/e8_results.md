@@ -73,6 +73,43 @@ concrete: the substrate *predicts and is surprised*, yet has **no dedicated
 prediction-vs-error pathway** — prediction is the forward evolution of one medium, and
 the only error is a global TD/surprise scalar (the same `δ` the E-series critic uses).
 
+## Result 4 — nested two-timescale prediction: a slow context gates the fast readout (E8.5)
+
+*Run of `experiments/e8_nested.py`.* A second, slow timescale is added: an i.i.d.
+carrier tone stream plus a **regime** that is cued only at each switch (every 10
+tones) and sets a transform of the current tone, `target = (tone + regime·3) mod M`.
+Because the carrier is i.i.d. it leaks *no* information about the regime — so the
+regime must be **held** from the switch cue by a slow context trace (persistence set
+by `τ_ctx`), exactly the E5 "option" idea at a slow timescale. The linear readout is
+given the **fast × slow conjunction** (current-tone ⊗ held-context) — the
+interaction E5's conjunction cells compute — because a context-dependent transform is
+not linearly separable from the concatenation alone.
+
+| τ_ctx | 6 | 18 | 30 | 45 | 70 |
+|-------|:-:|:--:|:--:|:--:|:--:|
+| nested accuracy | 0.55 | 0.75 | 0.95 | 1.00 | 1.00 |
+| context available | 0.10 | 0.50 | 0.90 | 1.00 | 1.00 |
+
+| condition | intact slow context (τ_ctx=70) | ablated (τ_ctx=6) |
+|-----------|:------------------------------:|:-----------------:|
+| **nested** (switching) | **1.00** | **0.55** |
+| **within-context** (fixed regime) | 1.00 | 1.00 |
+
+![E8.5 nested](figures/e8_nested.png)
+
+- **The slow option must out-last the regime block.** Nested accuracy rises with
+  `τ_ctx`, reaching 1.00 once the context persists across the block (`τ_ctx ≳ T_ctx·ISI
+  = 30` steps) — a `do(τ_ctx)` result at the *slow* timescale, the complement of Result
+  2's fast history window. (A clean single-regime representation needs the context
+  reset at each switch, E5-style — otherwise the previous regime lingers and both are
+  ambiguously held.)
+- **Discriminator.** Ablating the slow context (short `τ_ctx`) collapses the nested,
+  context-conditioned prediction to chance-between-regimes (1.00 → 0.55), while a
+  within-context control (single regime, no switching) is spared (1.00) — the slow
+  option is necessary for holding the regime across the block, not for the fast
+  mapping itself. This is the E5 discriminator, now bridging two timescales in a
+  predictive task.
+
 ## Interpretation — prediction without predictive coding
 
 E8 shows the substrate is a genuinely *predictive* system that is not a

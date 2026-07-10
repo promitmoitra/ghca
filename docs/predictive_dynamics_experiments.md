@@ -77,12 +77,16 @@ coding.**
 
 ## 3. The stimulus ladder (progressive complexity)
 
-*Status: E8.0–E8.4 **DONE** (first cut) — see [`e8_results.md`](e8_results.md);
-implemented in `experiments/e8_predictive.py`. Headlines confirmed: prediction grades
-with predictability and anticipatory confidence sharpens (E8.1/8.2); the history
-window is a `do(τ)` property (window 0→7 tones as τ 4→26, E8.3); surprise is a global
-scalar spiking on deviants with no per-feature error field (E8.4). E8.5 (nested
-regularities) and the richer order-preserving reservoir remain **PLANNED**.*
+*Status: E8.0–E8.5 **DONE** (first cut) — see [`e8_results.md`](e8_results.md);
+implemented in `experiments/e8_predictive.py` (E8.0–8.4) and `experiments/e8_nested.py`
+(E8.5). Headlines confirmed: prediction grades with predictability and anticipatory
+confidence sharpens (E8.1/8.2); the fast history window is a `do(τ)` property (0→7
+tones as τ 4→26, E8.3); surprise is a global scalar spiking on deviants with no
+per-feature error field (E8.4); and a slow persistent context (the E5 option) gates
+fast prediction of a two-timescale sequence via a fast×slow conjunction — nested
+accuracy needs `τ_ctx ≳` the regime block, and ablating the slow context collapses
+context-conditioned prediction (1.00→0.55) while sparing within-context (E8.5). A
+richer order-preserving reservoir (for deep positional recall) remains **PLANNED**.*
 
 ### E8.0 — Instrument the predictive readout *(gate)*
 Confirm the tonotopic map, the next-tone GVF readout, and a predictability metric
