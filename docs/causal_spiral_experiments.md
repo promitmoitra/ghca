@@ -102,7 +102,15 @@ persistent core → switching collapses, single-rule spared).
   epiphenomenal* — while its direct `do(wave)` form is (or is not; per C5)
   fat-handed. "Read the wave, drive the parameters," now for a real spiral, and a
   direct entry in the cortical spiral-wave causality debate.
-- *Status: PLANNED.*
+- *Status: DONE.* See [`c7_results.md`](c7_results.md). Outcome matrix (normalized):
+  `do(χ)` → rule **1.00**, content **0.11**; `do(g_route)` → content **1.00**, rule
+  0.57 — chirality is causal for the rule, epiphenomenal for content
+  (outcome-relative, diagonal-dominant). Mediation: `O_rule` follows the *injected*
+  `χ` (+ → ~0.84, − → ~0.16) independent of the nucleation seed — `χ` screens its
+  generator on the `θ_seed → χ → B` path. Synthesis: rotation direction is a causal
+  **mediator**, not epiphenomenal, but contingent on reader (C5) and outcome (C7),
+  with the clean handle being the generative nucleation (C6). Implemented in
+  `experiments/c7_outcome_relativity.py`. **C-series spiral extension complete.**
 
 ## Breadth constraints (deliberately excluded)
 
