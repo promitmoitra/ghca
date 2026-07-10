@@ -534,6 +534,20 @@ and **discriminator**.
   routing; switch cost decreases across blocks as options consolidate.
 - **Discriminator.** Ablating the slow (`high-τ`) sub-population abolishes
   flexible switching while leaving single-rule performance intact.
+- **Status: DONE.** See [`e5_results.md`](e5_results.md). Two rules alternate in
+  blocks (identity `x→x` vs reversal `x→¬x`; `action = x XOR rule`); each rule owns
+  a slow directed ring (the E2 `τ<L` loop) that the block cue ignites and that then
+  **persists**, supplying a phase-invariant context signal to a hard-coincidence
+  hidden layer of `(stimulus × rule)` conjunction cells, with reward-driven Line A
+  learning the `H→M` routing. Over 5 seeds: **switching 0.89 vs ablated 0.20**;
+  **post-switch accuracy rises 0.57 → 0.92** across blocks (switch cost
+  consolidates); **single-rule intact under ablation (0.87 vs 0.86)**; rule
+  decodable from the loop (alive 1.00 vs 0.04). The discriminator passes: the slow
+  loop is necessary for *switching*, not for single-rule *routing*. Implemented in
+  `experiments/e5_executive.py`; needed a small backward-compatible `p_s_mask` on
+  `ghca_net.Network` to confine exploration to the hidden+motor medium (so masked
+  spontaneous firing never re-ignites an ablated ring). Reuses Line A (E1) + the
+  persistent loop (E2); the option is *cued*, not yet *discovered* (deferred).
 
 ### E6 — Emergent categories (Horde readout)
 
@@ -555,6 +569,22 @@ and **discriminator**.
   not the machine.
 - **Discriminator.** If a demon can only succeed given a dedicated sub-network,
   the strong emergence claim is weakened to a modular one.
+- **Status: DONE (reduced).** See [`e6_results.md`](e6_results.md). One frozen
+  substrate with three non-interacting regions carrying the memory (E2), attention
+  (E4) and executive (E5) motifs in a single phase stream; three linear GVF demons
+  read the **same** whole-network feature vector, differing only in
+  cumulant/continuation (memory & executive continuing → TD(0); attention episodic
+  terminal-outcome → Monte-Carlo). Over 5 seeds: **all three predict well above
+  baseline** — memory R²=0.62, attention forecast acc=0.84 (chance 0.50), executive
+  R²=0.98 — the learned weight vectors are **near-orthogonal** (pairwise cosine
+  ≈0.01–0.03, so genuinely distinct questions), and the **discriminator passes**:
+  the generic full-substrate probe matches an own-region oracle (0.62≈0.63,
+  0.84≈0.85, 0.98≈0.98) while an other-region control fails (−0.05, 0.48, 0.11) —
+  **no function-specific sub-network is required**, so the strong-emergence reading
+  holds. Implemented in `experiments/e6_horde.py`. Reduced vs the spec: the motifs
+  are reused mechanisms wired into one frozen graph and scripted, not the literal
+  E2–E5 trained weights carried forward; and demons are on-policy *prediction* GVFs,
+  not off-policy gradient-TD (both deferred).
 
 ---
 
