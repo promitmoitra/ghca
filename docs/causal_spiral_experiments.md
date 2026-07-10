@@ -84,7 +84,12 @@ persistent core → switching collapses, single-rule spared).
 - *Expect.* `θ_χ → χ → B` is modular and reproducible; the generative handle is
   well-posed regardless of C5's A/B outcome — "drive the parameters."
 - *Contribution.* The handle E7 actually uses (nucleation) is the causally clean one.
-- *Status: PLANNED.*
+- *Status: DONE.* See [`c6_results.md`](c6_results.md). `do(θ_χ)` (centred
+  nucleation) gives a **0.0σ** band for *every* reader (center/tracked/global) —
+  well-posed even for C5's fat-handed fixed-centre reader — vs `do(χ)`'s 6.2/1.0/2.6σ.
+  Necessity (do-ablation of persistence): switching **0.85 → 0.52** while single-rule
+  is spared (**0.90 vs 0.89**) — the persistent core is causally required for
+  switching, not routing. Implemented in `experiments/c6_do_theta_chi.py`.
 
 ### C7 — Outcome-relativity, mediation, synthesis *(cap)*
 - **Mediation `θ→χ→B`.** Conditioning on the decoded `χ` screens off the seed — `χ`
