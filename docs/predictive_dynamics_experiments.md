@@ -89,7 +89,13 @@ context-conditioned prediction (1.00→0.55) while sparing within-context (E8.5)
 richer **order-preserving reservoir** (E8.6, `experiments/e8_reservoir.py`) is also
 **DONE**: a delay-line grid recalls the exact tone at every lag up to its depth
 (1.00 vs the recency trace's ≈chance beyond lag 0), with recall depth set by the
-grid length `L` — resolving the positional-recall cap noted for the trace.*
+grid length `L` — resolving the positional-recall cap noted for the trace. And
+**E8.7** (`experiments/e8_conditional.py`) composes them: on a high-entropy
+conditional task (`target = (x[t] + x[t−K]) mod M`) only the order-preserving grid
+**with** the fast×slow conjunction solves it (0.96 vs ≈chance for grid-alone,
+trace+conjunction, or trace-alone), with a clean depth threshold at `L > K` —
+positional memory, the `do(τ)` window, and conjunction are three separable
+capabilities that compose to give conditional long-range prediction.*
 
 ### E8.0 — Instrument the predictive readout *(gate)*
 Confirm the tonotopic map, the next-tone GVF readout, and a predictability metric

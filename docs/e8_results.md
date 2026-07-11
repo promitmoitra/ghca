@@ -145,6 +145,38 @@ by both reservoirs, because periodicity is recoverable from the recency signatur
 — positional recall is strictly needed only for non-periodic history, as isolated
 here with the i.i.d. stream.)
 
+## Result 6 — conditional long-range prediction needs positional memory AND conjunction (E8.7)
+
+*Run of `experiments/e8_conditional.py`.* Result 2's long-range recurrence was only
+muddily predictable for two *independent* reasons the later experiments each isolated:
+the recency trace cannot recall the exact tone at lag K (positional memory — E8.6),
+and a value that is a *transform of two symbols* is not linearly separable from the
+concatenation (it needs the conjunction — E8.5). E8.7 puts them together on a
+high-entropy, non-memorisable task — i.i.d. carrier `x`, target `= (x[t] + x[t−K]) mod
+M` (`K=4`) — and crosses {order-preserving grid, recency trace} × {conjunction on/off}:
+
+| | conjunction on | conjunction off |
+|---|:---:|:---:|
+| **order-preserving grid** | **0.96** | 0.14 |
+| recency trace | 0.15 | 0.13 |
+
+![E8.7 conditional](figures/e8_conditional.png)
+
+- **Both ingredients are necessary and jointly sufficient.** Only the
+  order-preserving grid *with* the conjunction solves the task (0.96); dropping either
+  — the grid alone (can't form the mod-M sum, 0.14) or the trace with conjunction
+  (can't recall the lag-K symbol, 0.15) — collapses to chance (0.125). This cleanly
+  decomposes E8.3's failure into its two causes and fixes both.
+- **Clean depth threshold at `L > K`.** Grid+conjunction accuracy jumps from chance
+  (L≤4) to ~1.0 (L≥6) as the reservoir depth passes the dependency lag — the sharp
+  step E8.3's recency trace could not produce.
+
+This closes the loop across the predictive extension: **positional memory** (E8.6, an
+order-preserving reservoir), the **`do(τ)` history window** (E8.3), and the **fast×slow
+conjunction** (E8.5, the E5 conjunction-cell motif) are three separable capabilities
+that compose to give genuine conditional long-range prediction — all without a
+predictive-coding error hierarchy.
+
 ## Interpretation — prediction without predictive coding
 
 E8 shows the substrate is a genuinely *predictive* system that is not a
@@ -171,9 +203,9 @@ succeeds because it integrates the medium's *whole* trace state; a fixed-locus r
   lag K is lost when channels repeat (Result 2's ~0.67 plateau). **Result 5 (E8.6)
   resolves this** with an order-preserving delay-line reservoir that recalls every lag
   up to its depth; the recency trace is retained in Results 1–4 as the minimal
-  reservoir where recency suffices. A remaining open item is folding the
-  order-preserving reservoir into the *conditional* tasks (E8.3's mod-M recurrence,
-  E8.5), which additionally need a fast×slow conjunction feature (as E8.5 showed).
+  reservoir where recency suffices. **Result 6 (E8.7)** then folds the
+  order-preserving reservoir into the *conditional* long-range task and shows it needs
+  the fast×slow conjunction too — both ingredients necessary and jointly sufficient.
 - **The learner is the predictive readout (a next-tone GVF), not Line A plasticity.**
   Transition structure is learned by the self-supervised readout; folding it into Line A
   conduction plasticity (so the *substrate* learns the transition graph) is the deferred
