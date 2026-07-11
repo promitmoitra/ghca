@@ -5,11 +5,15 @@ the substrate by reward and read cognitive functions off it; **E8** asks whether
 same substrate makes genuine **time-forward predictions** of upcoming sensory input
 for progressively complex stimuli — and how that prediction is (dis)similar to
 predictive coding. Motivated by the auditory-sequence prediction literature
-(Chait/Bianco — *Neural mechanisms of time-forward predictions for naturalistic
-auditory tone sequences*; and the predecessor showing neural activity integrates the
-last ~7 tones to predict the next pitch, with sharper anticipatory tuning for more
-predictable sequences) and the wave-based prediction line (Muller / Benigno et al. —
-traveling waves ignite short-term predictions of sensory input).*
+(Chait/Bianco lineage — the verified predecessor *Neural Integration of Stimulus
+History Underlies Prediction for Naturalistically Evolving Sequences* shows neural
+activity integrates ~the last 7 tones to predict the next pitch, with sharper
+anticipatory tuning for more predictable sequences; a 2026 follow-on reportedly
+titled *Neural mechanisms of time-forward predictions for naturalistic auditory tone
+sequences* motivated this line but is not independently verified — see
+[`extensions_review.md`](extensions_review.md)) and the wave-based prediction line
+(Muller / Benigno et al. — traveling waves ignite short-term predictions of sensory
+input).*
 
 ---
 
@@ -154,10 +158,14 @@ abolishes context-conditioned prediction while sparing within-context prediction
 
 ## 5. Reference anchors
 
-- Chait/Bianco — *Neural mechanisms of time-forward predictions for naturalistic
-  auditory tone sequences*; and *Neural Integration of Stimulus History Underlies
-  Prediction for Naturalistically Evolving Sequences* (history integration over
-  ~7 tones; predictability → anticipatory tuning) — the target phenomenon.
+- Chait/Bianco lineage — *Neural Integration of Stimulus History Underlies
+  Prediction for Naturalistically Evolving Sequences* (*J. Neurosci.*; **verified**):
+  history integration over ~7 tones; predictability → anticipatory tuning — the
+  target phenomenon this program leans on. (A 2026 follow-on, reportedly *Neural
+  mechanisms of time-forward predictions for naturalistic auditory tone sequences*,
+  motivated this line but the exact reference is **not independently verified** — see
+  [`extensions_review.md`](extensions_review.md); the verified predecessor is the
+  load-bearing citation.)
 - Muller; Benigno et al., *Nat. Commun.* 2023 — traveling waves ignite short-term
   predictions (the wave forward-model).
 - Rao & Ballard 1999; Friston 2005 — predictive coding (the foil to disambiguate from).
