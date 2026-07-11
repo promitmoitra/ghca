@@ -135,12 +135,12 @@ class GHLearner(Network):
         per-node perturbation (see e2_results.md)."""
         explore = self.tau_sigma > 0 and "B" in self.line
         if self.tau_shared:
-            self._eps_s = self.tau_sigma * np.random.standard_normal() if explore else 0.0
+            self._eps_s = self.tau_sigma * self.rng.standard_normal() if explore else 0.0
             self.tau = self.tau_base.copy()
             self.tau[self.tau_mask] = np.clip(self.tau_scalar + self._eps_s,
                                               self.tau_min, self.tau_max)
         else:
-            self._eps = self.tau_sigma * np.random.standard_normal(self.N) * self.tau_mask \
+            self._eps = self.tau_sigma * self.rng.standard_normal(self.N) * self.tau_mask \
                 if explore else np.zeros(self.N)
             self.tau = np.clip(self.tau_base + self._eps, self.tau_min, self.tau_max)
 
