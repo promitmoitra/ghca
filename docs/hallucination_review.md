@@ -157,14 +157,36 @@ These are honest gaps in *this review's* coverage, not identified problems:
    `inf` entries (non-oscillating sweep points), so the exact regression
    `period=1.00·τ+0.95, r=0.9992` was not independently re-derived from the
    saved data. Plausible and low-stakes, but not confirmed here.
-3. **Code-level circularity audit — partially completed.** E3 has now been read
-   to the per-seed level (no circularity; the framing issue above is the finding).
-   Still worth a second close read: the C-series `do(W)`/`do(θ)` operators in
-   `ghca_causal.py`, and the **E5 ablation comparison** (switching 0.89 vs 0.20
-   ablated) — both are constructed contrasts where an unfair ablation or a
-   before/after endpoint pick could inflate the effect, and E5's per-seed spread
-   has not yet been inspected the way E3's was. Nothing seen so far indicates a
-   problem, and the docs acknowledge the near-deterministic-by-construction cases.
+3. **Code-level circularity audit — mostly completed.** E3 and E5 have now been
+   read to the per-seed level. E3 → framing issue above. **E5 holds up cleanly**
+   (see E5 note below): the ablation is a fair, well-controlled dissociation and
+   the per-seed spread is tight, not bimodal. The one remaining code read is the
+   C-series `do(W)`/`do(θ)` operators in `ghca_causal.py` — constructed contrasts
+   (33σ vs 0.014σ) where the effect could in principle be partly definitional; the
+   C2 doc half-concedes this ("partly definitional — that is the intended
+   message"). Nothing seen so far indicates hidden circularity.
+
+## E5 note — audited, holds up
+
+E5 was checked to the same per-seed depth as E3 (code `experiments/e5_executive.py`,
+data `result/e5/e5_data.npz`). Every number reproduces exactly under the code's own
+windowing (switching final 0.891; ablated 0.199; single-rule steady-state
+0.872/0.861 = last-150-trial mean; post-switch 0.567→0.917). Unlike E3 the per-seed
+spread is **tight and unimodal** — switching `[0.96, 0.82, 0.92, 0.91, 0.85]`,
+ablated `[0.21, 0.19, 0.25, 0.15, 0.19]` — so this is a robust effect, not a
+lucky-seed mean.
+
+The ablation is a **fair dissociation**, which was the main risk. The single-rule
+control applies the *same* lesion (ring τ=18≥L) but re-cues the ring every trial;
+it still works ablated (0.86), proving the lesion removes *held context*
+specifically, not the routing machinery. Same lesion, one task collapses, the
+other is spared — a clean 2×2. Two honest points (both disclosed in the doc, not
+defects): the option is **cued, not discovered** (the gating structure is
+pre-wired; only the H→M routing is learned), and ablated switching falls to 0.20
+**below** chance because the hard-AND gate mutes the medium (silence commits
+wrong). The latter makes the "0.89 vs 0.20" gap look more dramatic than a "vs 0.50
+chance" framing would, but it is explained openly and the single-rule control
+anchors the interpretation. Verdict: **Supported.**
 
 ## Recommendation
 
