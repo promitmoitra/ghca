@@ -85,8 +85,11 @@ tones as τ 4→26, E8.3); surprise is a global scalar spiking on deviants with 
 per-feature error field (E8.4); and a slow persistent context (the E5 option) gates
 fast prediction of a two-timescale sequence via a fast×slow conjunction — nested
 accuracy needs `τ_ctx ≳` the regime block, and ablating the slow context collapses
-context-conditioned prediction (1.00→0.55) while sparing within-context (E8.5). A
-richer order-preserving reservoir (for deep positional recall) remains **PLANNED**.*
+context-conditioned prediction (1.00→0.55) while sparing within-context (E8.5). The
+richer **order-preserving reservoir** (E8.6, `experiments/e8_reservoir.py`) is also
+**DONE**: a delay-line grid recalls the exact tone at every lag up to its depth
+(1.00 vs the recency trace's ≈chance beyond lag 0), with recall depth set by the
+grid length `L` — resolving the positional-recall cap noted for the trace.*
 
 ### E8.0 — Instrument the predictive readout *(gate)*
 Confirm the tonotopic map, the next-tone GVF readout, and a predictability metric

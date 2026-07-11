@@ -110,6 +110,41 @@ not linearly separable from the concatenation alone.
   mapping itself. This is the E5 discriminator, now bridging two timescales in a
   predictive task.
 
+## Result 5 — an order-preserving reservoir recovers deep positional history (E8.6)
+
+*Run of `experiments/e8_reservoir.py`.* Result 2's long-range recall was capped
+because the per-channel trace stores *recency* — when a tone repeats, the older
+occurrence is overwritten, so the exact tone *at lag K* is lost. E8.6 fixes the
+representation with an **order-preserving reservoir**: a delay-line grid of
+`M` channels × `L` stages (a directed shift-register per channel — a synfire /
+delay-line motif on the GH substrate). Presenting tone `c` injects a token at stage 0
+of channel `c`; each tone the tokens shift one stage down their channel, so cell
+`(c, k)` active means "tone `c` occurred ~`k` tones ago" — an exact, ordered history
+with no overwrite on repeats. Lag-`K` recall (decode tone[t−K]) on an i.i.d. stream:
+
+| lag K | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|-------|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| order-preserving grid (L=10) | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 0.91 |
+| recency trace (τ=26) | 1.00 | 0.08 | 0.12 | 0.05 | 0.10 | 0.22 | 0.36 | 0.51 | 0.13 |
+
+![E8.6 reservoir](figures/e8_reservoir.png)
+
+- **The grid keeps deep order; the trace does not.** The order-preserving reservoir
+  recalls the exact tone at every lag up to its depth (~1.00 through lag 7, falling
+  near `L`), while the recency trace recovers only the *current* tone (lag 0) and
+  drops to ≈chance for any deeper lag — because a per-channel recency code cannot say
+  *which* of the recently-seen tones was at a specific lag once channels repeat.
+- **Recall depth = reservoir depth (structural handle).** Recovering a fixed deep lag
+  (K=5) needs grid depth `L > K`: recall jumps from chance (L≤6) to 1.00 (L≥8), while
+  the trace never recovers it (0.22 regardless). This is the positional-memory
+  complement of Result 2's `do(τ)` window — here the depth is set by the reservoir's
+  structure `L` rather than the timescale `τ`.
+
+(Honest note: a periodic *delayed-copy* task `x[t]=x[t−K]` is predicted equally well
+by both reservoirs, because periodicity is recoverable from the recency signature too
+— positional recall is strictly needed only for non-periodic history, as isolated
+here with the i.i.d. stream.)
+
 ## Interpretation — prediction without predictive coding
 
 E8 shows the substrate is a genuinely *predictive* system that is not a
@@ -132,12 +167,13 @@ succeeds because it integrates the medium's *whole* trace state; a fixed-locus r
 
 ## Caveats / open items
 
-- **Per-channel traces store recency, not positional order.** Each channel's trace
-  records *how recently that tone last occurred*, so when tones repeat within the
-  window the exact tone *at lag K* is not recoverable — which caps long-range recall
-  (Result 2's ~0.67 plateau rather than a sharp threshold at `window ≥ K`). A richer
-  recurrent reservoir that preserves order (or an explicit positional code) is the
-  natural next step (E8.5), and would sharpen the long-range/nested-regularity results.
+- **Per-channel traces store recency, not positional order** — so the exact tone at
+  lag K is lost when channels repeat (Result 2's ~0.67 plateau). **Result 5 (E8.6)
+  resolves this** with an order-preserving delay-line reservoir that recalls every lag
+  up to its depth; the recency trace is retained in Results 1–4 as the minimal
+  reservoir where recency suffices. A remaining open item is folding the
+  order-preserving reservoir into the *conditional* tasks (E8.3's mod-M recurrence,
+  E8.5), which additionally need a fast×slow conjunction feature (as E8.5 showed).
 - **The learner is the predictive readout (a next-tone GVF), not Line A plasticity.**
   Transition structure is learned by the self-supervised readout; folding it into Line A
   conduction plasticity (so the *substrate* learns the transition graph) is the deferred
