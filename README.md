@@ -68,7 +68,9 @@ not as built-in modules.
   response): double dissociation confirmed — Line A learns identity (wrong
   timing), Line B learns timing (not identity). New open problem: naive A+B
   *interferes* (both worse than either alone) under a single shared reward —
-  later decomposed & partly resolved by factored credit + a slow-first curriculum.
+  later decomposed: factored credit removes the below-chance collapse (to ≈chance),
+  a slow-first curriculum adds a marginal bimodal lift (joint composition on 1/5
+  seeds) — direction supported, magnitude not established at n=5.
 - [`docs/e4_results.md`](docs/e4_results.md) — **findings from E4** (attention):
   selective attention as biased winner-take-all by wave annihilation — a
   textbook psychometric (accuracy 0.96 at modest bias), the annihilation locus
@@ -120,7 +122,7 @@ not as built-in modules.
 - [x] **E0** — substrate characterisation and operating point (see results)
 - [x] **E1** — stimulus→response conditioning (A-vs-B dissociation confirmed)
 - [x] **E2** — delayed response / working memory (dissociation inverts: B critical)
-- [x] **E3** — timed response (double dissociation confirmed; A+B interference **decomposed & partly resolved**: factored credit + slow-first curriculum lift joint identity 0.20→0.77, residual is a substrate resonance artifact)
+- [x] **E3** — timed response (double dissociation confirmed; A+B interference **decomposed**: factored credit removes the below-chance reward-conflation collapse 0.11→0.48, a slow-first curriculum adds a marginal, bimodal lift to 0.56 with genuine joint composition on 1/5 seeds — direction supported, magnitude not established at n=5; substrate-resonance capped)
 - [x] **E4** — selective attention as biased WTA by wave annihilation (psychometric accuracy 0.96 at modest bias; **zero inhibitory nodes**)
 - [x] **E5** — executive control / task switching: a persistent loop (E2 mechanism) as an *option* gating routing (switching 0.89 vs ablated 0.20; switch cost consolidates 0.57→0.92; single-rule spared 0.87 vs 0.86)
 - [x] **E6** — emergent categories (Horde/GVF readout): three demons on one frozen substrate predict distinct questions (memory R²=0.62, attention 0.84, executive R²=0.98), near-orthogonal, no dedicated wiring — **E-series complete**
