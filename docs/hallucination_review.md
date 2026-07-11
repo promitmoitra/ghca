@@ -8,7 +8,7 @@ theoretical framing disconnected from what the code actually does.*
 Reviewer pass date: 2026-07-11. Branch: `claude/ai-hallucination-review-ya7aq5`.
 Coverage: data-vs-doc numbers verified for all 13 experiments; citations
 verified; per-seed / code-level audit completed for E3, E5, and the C-series
-causal operators. Remaining: clean end-to-end reproduction run (item 1 below).
+causal operators; full end-to-end reproduction run completed (see below).
 
 ## Bottom line
 
@@ -31,6 +31,16 @@ chance), reports only the identity axis, and rests on a hand-picked favorable
 operating point. Genuine *joint* composition (identity **and** timing together —
 the thing the study claims to partly achieve) occurs on **1 of 5 seeds**. This
 is overreach in altitude, not fabrication; see the dedicated section below.
+
+**A reproduction run also surfaced one genuine bug.** Re-running all 14
+experiments from scratch, 12 of 14 reproduce bit-identically. The exceptions —
+the Line-B / A+B conditions of E2 and E3 — trace to an **unseeded global RNG** in
+the Line-B learning mechanism (`perturb_tau`, `ghca_learn.py:138/143`), so those
+conditions' "seeds" are not controlled and their committed per-seed numbers are
+not regenerable (E3's composition headline moved 0.77 → 0.65 on rerun). E2's
+scientific conclusion survives (retention still 1.00); E3's precise composition
+numbers do not. This compounds the E3 framing issue with a concrete
+reproducibility defect — details in the "Reproduction run" section.
 
 ## Method
 
@@ -148,22 +158,57 @@ resolved" claim without more seeds and a non-resonant substrate.
 - The README Progress table does **not** round hedged results up: E3 is marked
   "partly resolved… residual is a substrate resonance artifact," not "solved."
 
-## Not fully verified (residual items, not defects)
+## Reproduction run — completed (turned up a real bug)
 
-These are honest gaps in *this review's* coverage, not identified problems:
+All 14 experiments were re-run from scratch and the regenerated `.npz` files
+compared numerically against the committed originals. Result: **12 of 14
+reproduce bit-identically** (E0, E1, E4, E5, E6, C0–C4, plus the E2 mechanism and
+all Line-A conditions). The exceptions are **exactly and only the Line-B /
+A+B conditions of E2 and E3** — and finding that isolated the cause.
 
-1. **End-to-end re-runs.** I verified that the committed data matches the docs,
-   not that re-running each experiment from scratch regenerates that data. The
-   code is present and self-contained; a reproduction pass (`python3
-   experiments/*.py`) would close this. Cheap to do and recommended.
-2. **E0 period-fit `r=0.9992`.** The `periods` array in `e0_data.npz` contains
-   `inf` entries (non-oscillating sweep points), so the exact regression
-   `period=1.00·τ+0.95, r=0.9992` was not independently re-derived from the
-   saved data. Plausible and low-stakes, but not confirmed here.
-3. **Code-level circularity audit — completed.** E3 (→ framing issue above), E5
+**Root cause — an unseeded RNG in the Line-B learning mechanism.**
+`GHLearner.perturb_tau` (`ghca_learn.py:138` and `:143`) draws its timescale
+exploration noise from `np.random.standard_normal()` — the **global, unseeded**
+NumPy generator — whereas everything else in the codebase uses a properly seeded
+generator (`self.rng`, `np.random.default_rng(seed)`). That τ-perturbation *is*
+the entire Line-B learning signal. Consequences:
+
+- The `seed` argument does **not** control Line-B exploration, so the "5 seeds"
+  for these conditions are not independent controlled replicates and the committed
+  per-seed numbers are **not regenerable** — a rerun draws a different stream.
+- This is the reproducibility half of the E3 problem, now with a concrete cause:
+  the headline **AB-factored+curriculum composition moved 0.77 → 0.65 on rerun**,
+  with the per-seed pattern reshuffling (`[1.0, 0.51, 0.79, 1.0, 0.57]` →
+  `[0.74, 0.51, 1.0, 0.0, 1.0]` — seed 3 flipped from full success to total
+  failure). The specific "0.20→0.77 ~quadrupling" rests on one uncontrolled draw.
+
+**What survives the bug.** E2's scientific conclusion is robust: retention
+`ret_B`/`ret_AB` reproduce **identically at 1.00** because whatever τ the unseeded
+perturbation lands on, it stays below the loop transit time `L=24`, so memory
+still holds (the τ values wobble, e.g. `[14.1,10.7,14.3,13.7,10.1]` →
+`[11.4,11.1,14.5,12.3,13.1]`, but all `<24`). E3's *qualitative* story also
+survives (shared-reward collapses; factored-alone lands at chance; curriculum
+lifts it fragilely). What does **not** survive is the precise E3 composition
+numbers and their per-seed breakdown.
+
+**Fix (recommended, out of scope for this review):** thread `self.rng` through
+`perturb_tau` instead of the global RNG, then re-run E2/E3 and update the numbers.
+Everything else in the repo is already deterministic under its seeds.
+
+**Undocumented dependencies (minor):** the README's install line lists only
+`numpy matplotlib scipy`, but the suite also needs `networkx` (C1) and
+`scikit-learn` (C0, C4) to run. Worth adding.
+
+## Not fully verified (residual items)
+
+1. **E0 period-fit `r=0.9992`** — still not independently re-derived (the
+   `periods` array has `inf` entries for non-oscillating sweep points). The E0
+   `.npz` reproduces bit-identically, so the underlying run is deterministic;
+   only the reported regression constant is unconfirmed. Low-stakes.
+2. **Code-level circularity audit — completed.** E3 (→ framing issue above), E5
    (→ holds up, note below), and the C-series `do(W)`/`do(θ)` operators in
    `ghca_causal.py` (→ clean, note below) have all been read. No hidden
-   circularity found anywhere. The one residual is presentational, in C3 (below),
+   circularity found anywhere. The one presentational residual is in C3 (below),
    not a correctness or fabrication problem.
 
 ## E5 note — audited, holds up
