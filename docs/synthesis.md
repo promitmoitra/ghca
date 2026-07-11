@@ -109,12 +109,48 @@ Read together: the spatial/temporal `do(θ)` dissociation (E1–E3, grounded in 
 is the mechanism; attention, options and the emergent-category readout (E4–E6) are
 what that mechanism *looks like* when asked cognitive questions.
 
+## Onto the native medium and forward in time (E7, C5–C7, E8)
+
+Two extensions, prompted by the rotating-wave and auditory-prediction neuroscience,
+push the same thesis further — and, satisfyingly, land on the same conclusion.
+
+- **[E7](e7_results.md) + the spiral causal split ([C5](c5_results.md)–[C6](c6_results.md)–[C7](c7_results.md)).**
+  E7 lifts the E5 "option" from a 1-D ring to a genuine 2-D spiral core whose
+  **rotation direction** is the rule. C5–C7 then point the C-series machinery at it and
+  answer the field's spike-vs-wave question for a real spiral: rotation direction is a
+  causal **mediator** (`θ_seed → χ → B`; ablating the core kills switching) — *not
+  epiphenomenal* — but its status is **contingent on the reader** (C5: fat-handed at a
+  fixed locus, 6.2σ; well-posed read topologically, 1.0σ) and **on the outcome** (C7:
+  causal for the rule, inert for content). The clean, reader-robust handle is the
+  generative **nucleation** `do(θ_χ)` (C6: 0σ for every reader) — "drive the
+  parameters," now for a genuine spiral. This is the scalar C2→C3→C4 arc re-run on a
+  topological wave variable, and it *refines* C2: well-posedness is a property of the
+  *(variable, reader)* pair, and a topological invariant is better-posed than a scalar
+  aggregate.
+- **[E8](e8_results.md) — predictive dynamics.** The substrate makes time-forward
+  predictions of tone sequences as **forward dynamics + a `do(τ)` history window**
+  (window 0→7 tones as τ grows), with a **global** surprise and no per-feature error
+  hierarchy — a *predictive* system that is not a *predictive-coding* one. Its slow
+  extension (E8.5) reuses the E5 option: a slow persistent context, via a fast×slow
+  conjunction, gates prediction across a regime block. So the C-series' "the causal
+  variable is the generative timescale" reappears on the E-side as "the predictive
+  memory depth is the generative timescale `τ`."
+
+The two extensions rhyme: C5–C7 say *read the wave topologically, control it through
+`θ`*; E8 *reads the medium's integrated state and controls its memory through `τ`*.
+Across spikes, waves, spirals, and predictions, the parameters `θ` (timescales,
+couplings) remain the one context-free place where learning and causation live.
+
 ## Map of the work
 
 - Plan / substrate: [`learning_experiments.md`](learning_experiments.md),
   [`causal_experiments.md`](causal_experiments.md)
 - E-series results: [`e0`](e0_results.md) · [`e1`](e1_results.md) ·
   [`e2`](e2_results.md) · [`e3`](e3_results.md) · [`e4`](e4_results.md) ·
-  [`e5`](e5_results.md) · [`e6`](e6_results.md)
+  [`e5`](e5_results.md) · [`e6`](e6_results.md) · [`e7`](e7_results.md) ·
+  [`e8`](e8_results.md)
 - C-series results: [`c0`](c0_results.md) · [`c1`](c1_results.md) ·
-  [`c2`](c2_results.md) · [`c3`](c3_results.md) · [`c4`](c4_results.md)
+  [`c2`](c2_results.md) · [`c3`](c3_results.md) · [`c4`](c4_results.md) ·
+  [`c5`](c5_results.md) · [`c6`](c6_results.md) · [`c7`](c7_results.md)
+- Extension specs: [`causal_spiral_experiments.md`](causal_spiral_experiments.md) ·
+  [`predictive_dynamics_experiments.md`](predictive_dynamics_experiments.md)
