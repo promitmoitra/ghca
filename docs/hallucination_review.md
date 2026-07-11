@@ -6,6 +6,9 @@ claims not backed by code or data, invented citations, and grandiose
 theoretical framing disconnected from what the code actually does.*
 
 Reviewer pass date: 2026-07-11. Branch: `claude/ai-hallucination-review-ya7aq5`.
+Coverage: data-vs-doc numbers verified for all 13 experiments; citations
+verified; per-seed / code-level audit completed for E3, E5, and the C-series
+causal operators. Remaining: clean end-to-end reproduction run (item 1 below).
 
 ## Bottom line
 
@@ -157,14 +160,11 @@ These are honest gaps in *this review's* coverage, not identified problems:
    `inf` entries (non-oscillating sweep points), so the exact regression
    `period=1.00·τ+0.95, r=0.9992` was not independently re-derived from the
    saved data. Plausible and low-stakes, but not confirmed here.
-3. **Code-level circularity audit — mostly completed.** E3 and E5 have now been
-   read to the per-seed level. E3 → framing issue above. **E5 holds up cleanly**
-   (see E5 note below): the ablation is a fair, well-controlled dissociation and
-   the per-seed spread is tight, not bimodal. The one remaining code read is the
-   C-series `do(W)`/`do(θ)` operators in `ghca_causal.py` — constructed contrasts
-   (33σ vs 0.014σ) where the effect could in principle be partly definitional; the
-   C2 doc half-concedes this ("partly definitional — that is the intended
-   message"). Nothing seen so far indicates hidden circularity.
+3. **Code-level circularity audit — completed.** E3 (→ framing issue above), E5
+   (→ holds up, note below), and the C-series `do(W)`/`do(θ)` operators in
+   `ghca_causal.py` (→ clean, note below) have all been read. No hidden
+   circularity found anywhere. The one residual is presentational, in C3 (below),
+   not a correctness or fabrication problem.
 
 ## E5 note — audited, holds up
 
@@ -187,6 +187,44 @@ pre-wired; only the H→M routing is learned), and ablated switching falls to 0.
 wrong). The latter makes the "0.89 vs 0.20" gap look more dramatic than a "vs 0.50
 chance" framing would, but it is explained openly and the single-rule control
 anchors the interpretation. Verdict: **Supported.**
+
+## C-series note — operators clean; one presentational caveat in C3
+
+The causal operators in `ghca_causal.py` were read directly. They are honest and
+correct: `wave_coherence` / `wave_active_fraction` are genuine deterministic
+coarse-grainings (`W=f(S)`); `do_theta` sets τ / θ / coupling directly (modular,
+unique); `do_W` explicitly exposes the realization `policy` (random / clustered /
+min_edit) as a free parameter — which *is* the fat-handedness being studied, not a
+bug. All C2/C3 numbers reproduce exactly (C2 band 0.243 / 33.09; C3 doθ 0.01409;
+E3-bridge latency-vs-τ slope 1.00).
+
+Two things a reader should know about the dramatic σ figures:
+
+- **C2's "33.1σ" is the *extremal* achievable band** — `(hi−lo)/std`, where the
+  edges activate the k-smallest vs k-largest-weight nodes (an adversarial
+  realization), standardized by that behaviour's own observational std. It is a
+  real quantity, not a tiny-denominator artifact (raw labeled-line band 76.6 units
+  vs collective 6.6; the extra factor in the 33-vs-0.24 ratio comes from each
+  behaviour being standardized by its own std, which is the correct way to ask
+  "how many of its natural SDs can the intervention move it"). The doc also
+  reports the more modest *typical* random-realization spread (2.09σ), so both the
+  maximal and typical readings are disclosed. The C2 doc itself concedes the core
+  point is "partly definitional." Fair.
+- **C3's "0.014σ" is a *different quantity* from C2's band**, and the "~2400× less
+  ambiguous" headline places the two on one axis. C2's band is a realization-DOF
+  spread ÷ observational-std; C3's `doTheta_band` is `rep_c / std(Ec)` =
+  across-seed *estimation noise* ÷ *effect size* (0.146 / 10.36). These are not
+  the same kind of σ, so the single-number 2348× ratio and the shared-axis bar
+  chart slightly over-dramatize comparability. **However**, the surrounding prose
+  states the real, correct point explicitly: `do(W)`'s band is *irreducible* (a
+  free policy choice, does not shrink with samples) while `do(θ)`'s realization
+  band is *zero by construction* (setting τ=t is unique), leaving only ordinary
+  estimation error that shrinks with samples. That qualitative claim is sound and
+  honestly explained; only the headline number dramatizes it.
+
+Verdict: C0–C4 **Supported**; C3 carries a minor presentational caveat (the
+cross-quantity "2400×"), which the doc's own prose already defuses. Not
+hallucination — a framing choice with the honest explanation adjacent.
 
 ## Recommendation
 
