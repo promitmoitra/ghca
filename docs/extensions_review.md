@@ -145,3 +145,14 @@ branch (no extension numbers change); (3) the deepest open item is to move the
 computed readouts/features (winding, conjunction) *into* the substrate as learned
 or spiking mechanisms — the honest frontier these experiments point at but do not
 yet cross.
+
+**Update (2026-07-11): follow-up (3) is now partly crossed for the conjunction
+case.** [E9](e9_results.md) replaces the hand-built `(stimulus × rule)` conjunction
+feature (E5, and the outer-product features of E8.5/E8.7) with a basis that
+**self-organises on the substrate** via a reward-free competitive Hebbian rule —
+conjunction selectivity emerges 0.00 → 1.00 and reward routing on the emergent
+basis (0.84) approaches the wired upper bound (0.92) while a no-self-organisation
+control fails at chance. So the conjunction is now *learned*, not afforded. The
+residual computed readouts (E7's topological winding; the E8 delay-line/trace
+reservoirs) and the imposed competition (k-WTA) in E9 itself remain on the far side
+of the frontier.
