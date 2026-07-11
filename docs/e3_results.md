@@ -37,8 +37,8 @@ sets *when* the response is emitted.
 | Line | channel acc | latency err | learned gate τ |
 |------|-------------|-------------|----------------|
 | **A** (weights) | **1.00** | **8.0** (wrong) | 10.0 (unchanged) |
-| **B** (timescale) | 0.70 (not learned) | **1.0** (within tol) | 19.7 |
-| **A+B** | 0.30 | 13.8 | 13.4 |
+| **B** (timescale) | 0.70 (not learned) | **1.4** (within tol) | 18.9 |
+| **A+B** | 0.21 | 14.1 | 18.7 |
 
 ![E3 dissociation](figures/e3_dissociation.png)
 
@@ -55,7 +55,7 @@ sets *when* the response is emitted.
   They are genuinely different mechanisms.
 
 - **A+B does NOT compose — it interferes.** Jointly, both objectives get *worse*
-  than either line alone (channel 0.30, latency error 13.8). This is a real
+  than either line alone (channel 0.21, latency error 14.1). This is a real
   negative result and answers the design doc's open question ("do A and B
   compose or trade off?"): under a **single shared TD-error broadcast**, they
   interfere. Line B's timescale changes shift *which gate beat* the response

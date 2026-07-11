@@ -139,7 +139,7 @@ E-series and C-series tie together into one argument.
 ## Reproduce
 
 ```
-python3 -m pip install numpy matplotlib scipy
+python3 -m pip install numpy matplotlib scipy networkx scikit-learn
 python3 experiments/e0_characterization.py    # writes docs/figures/e0_*.png, result/e0/
 python3 experiments/e5_executive.py           # writes docs/figures/e5_*.png, result/e5/
 python3 experiments/e6_horde.py               # writes docs/figures/e6_horde.png, result/e6/

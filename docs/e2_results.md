@@ -47,8 +47,8 @@ timescale** learned by reward-gated perturbation. 5 seeds.
 | Line | learned τ (L=24) | D=0 | D=20 | D=50 | D=100 | D=200 |
 |------|------------------|-----|------|------|-------|-------|
 | **A** (weights) | 26.0 (unchanged) | 1.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| **B** (timescale) | 12.6 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
-| **A+B** | 12.9 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
+| **B** (timescale) | 12.2 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
+| **A+B** | 12.2 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
 
 ![E2 learning](figures/e2_learning.png)
 
@@ -57,7 +57,7 @@ timescale** learned by reward-gated perturbation. 5 seeds.
   the refractory sustain condition, so accuracy collapses to chance for any
   `D > 0`. This is the predicted A-only decay with delay, in its sharpest form.
 - **Line B learns to hold memory across arbitrary delay.** Reward-gated
-  timescale perturbation drives the ring's shared `τ` from 26 down to ~13 (well
+  timescale perturbation drives the ring's shared `τ` from 26 down to ~12 (well
   below `L`), converting the dying loop into a self-sustaining one; retention is
   perfect out to `D = 200`.
 - **The dissociation inverts E1.** In E1 (identity mapping, no delay) Line A was
