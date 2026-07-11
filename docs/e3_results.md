@@ -37,8 +37,8 @@ sets *when* the response is emitted.
 | Line | channel acc | latency err | learned gate τ |
 |------|-------------|-------------|----------------|
 | **A** (weights) | **1.00** | **8.0** (wrong) | 10.0 (unchanged) |
-| **B** (timescale) | 0.70 (not learned) | **1.0** (within tol) | 19.7 |
-| **A+B** | 0.30 | 13.8 | 13.4 |
+| **B** (timescale) | 0.70 (not learned) | **1.4** (within tol) | 18.9 |
+| **A+B** | 0.21 | 14.1 | 18.7 |
 
 ![E3 dissociation](figures/e3_dissociation.png)
 
@@ -55,7 +55,7 @@ sets *when* the response is emitted.
   They are genuinely different mechanisms.
 
 - **A+B does NOT compose — it interferes.** Jointly, both objectives get *worse*
-  than either line alone (channel 0.30, latency error 13.8). This is a real
+  than either line alone (channel 0.21, latency error 14.1). This is a real
   negative result and answers the design doc's open question ("do A and B
   compose or trade off?"): under a **single shared TD-error broadcast**, they
   interfere. Line B's timescale changes shift *which gate beat* the response
@@ -97,52 +97,59 @@ weights (Line A), rather than hoping one scalar disentangles them. See
 ## Composition study — decomposing (and partly resolving) the A+B interference
 
 *Run of `experiments/e3_factored_credit.py` (5 seeds, resonance-compatible
-operating point: target latency 16 → gate `τ ∈ [17,19]`).* The A+B interference
-turns out to have **three distinct sources**, and factoring + a curriculum
-address the first two:
+operating point: target latency 16 → gate `τ ∈ [17,19]`).* **These numbers were
+regenerated after a reproducibility fix** — the Line-B timescale RNG is now seeded
+(`ghca_learn.perturb_tau`), so the run is deterministic and the earlier committed
+numbers (based on an unseeded draw) are superseded. The A+B interference has
+**three distinct sources**; factoring removes the catastrophic one, a curriculum
+helps marginally, and a substrate resonance caps the rest:
 
-| condition | channel (identity) acc |
-|-----------|:----------------------:|
-| A only (factored) | 1.00 |
-| B only (factored) | 0.69 (innate; timing err 0.4 — timing *is* learnable) |
-| **AB shared** (one scalar) | **0.20** |
-| **AB factored** (per-line error) | **0.50** |
-| **AB factored + curriculum** | **0.77** |
+| condition | channel (identity) acc | per-seed | joint (identity **and** timing) |
+|-----------|:----------------------:|----------|:-------------------------------:|
+| A only (factored) | 1.00 | [1,1,1,1,1] | 0/5 (timing fixed wrong by design) |
+| B only (factored) | 0.69 (innate; timing err 0.2) | [0.48,0.75,1.0,0.22,1.0] | 2/5 |
+| **AB shared** (one scalar) | **0.11** | [0,0.57,0,0,0] | 0/5 |
+| **AB factored** (per-line error) | **0.48** (≈ chance) | [0.48,0.48,0.52,0.50,0.45] | 0/5 |
+| **AB factored + curriculum** | **0.56** | [0.50,0.51,0.79,0.0,1.0] | **1/5** |
 
 ![E3 composition](figures/e3_factored.png)
 
-1. **Reward-conflation → fixed by factored credit.** A single scalar credits
-   both lines for a trial right on one axis and wrong on the other; the joint
-   verdict collapses (AB-shared identity **0.20**, below chance). Giving each
-   line its own error signal — `δ_A` = identity error, `δ_B` = timing error —
-   restores each faculty to full isolated performance (A-only 1.00, B-only timing
-   err 0.4).
-2. **Dynamical non-stationarity → needs a slow-first curriculum.** Factored
-   credit *alone* still doesn't compose (AB-factored identity **0.50**, chance):
-   Line B's ongoing `τ`-exploration keeps shifting *when* the response fires, so
-   Line A's routing target never settles. Learning the slow variable `τ` first,
-   then freezing it and learning routing (justified by E0: `τ` is a slow
-   variable), lifts joint identity to **0.77** — fully composing (identity 1.0 +
-   timing in tolerance) on the seeds where B's `τ` lands in the good zone.
+1. **Reward-conflation → catastrophic collapse, removed by factored credit.** A
+   single scalar credits both lines for a trial right on one axis and wrong on the
+   other; the joint verdict collapses to **0.11** (below chance; per-seed mostly 0).
+   Giving each line its own error signal — `δ_A` = identity error, `δ_B` = timing
+   error — removes the collapse. But note what that buys: AB-factored identity is
+   **0.48 (≈ chance on every seed)** — factoring restores each faculty *in
+   isolation* (A-only 1.00, B-only timing err 0.2), and it removes the catastrophic
+   zeros, but it does **not** by itself restore *joint* identity above chance.
+2. **A slow-first curriculum gives a marginal, bimodal lift.** Learning `τ` first,
+   then freezing it and learning routing, raises identity to **0.56** — but the
+   per-seed values are bimodal ([0.50, 0.51, 0.79, 0.0, 1.0]): two seeds above
+   chance, three at or below. Genuine *joint* composition — identity ≈ 1.0 **and**
+   latency within tolerance — holds on **exactly 1 of 5 seeds** (the headline
+   reports the identity axis alone; the matching latency errors are
+   [14.0, 9.3, 9.3, —, 0.0], tolerance 1).
 3. **Substrate resonance → a caveat, not a credit-assignment issue.** Identity
    learnability is a *jagged* function of the gate `τ` (right panel: 1.0 at
    `τ`=10,12,17–19,21,22,24; ≈chance at 13–15) — an aliasing artifact of the
-   reduced gate-metronome mechanism. This, not the credit rule, is why
-   composition is fragile per-seed and why we evaluate at a `τ`-compatible
-   operating point.
+   reduced gate-metronome mechanism. We evaluate at a `τ`-compatible operating
+   point *because* of this, and the curriculum does not steer `τ` there — it freezes
+   wherever stochastic exploration landed, which is why composition is per-seed
+   fragile.
 
-**Takeaway.** Factored credit removes the fundamental (reward-conflation) source
-of interference — the one C4's outcome-orthogonality and the discrete-diffusion
-"parameterization governs learnability" result both predict — and a slow-first
-curriculum handles the dynamical coupling, together ~quadrupling joint identity
-accuracy over the shared-reward baseline (0.20 → 0.77). The residual fragility is
-a substrate resonance artifact of the *reduced* E3 mechanism, not a limit of the
-principle. *Honest caveats:* the timing metric in the joint conditions is
-confounded (seeds that fail identity also fire at wrong beats, inflating latency
-error — B-only shows timing is cleanly learnable); and full, seed-robust
-composition would need either a non-resonant timing substrate or genuinely
-separate sub-networks for routing vs timing (architectural decoupling), since the
-two faculties still share one dynamical medium.
+**Takeaway (honest).** Factored credit removes the *catastrophic* reward-conflation
+collapse (AB-shared 0.11 → AB-factored 0.48) — the fix C4's outcome-orthogonality
+and the discrete-diffusion "parameterization governs learnability" result both
+predict — but only up to **chance**; the slow-first curriculum adds a **marginal,
+bimodal** improvement (0.56), with genuine joint composition on **1/5 seeds at a
+hand-picked, resonance-favourable operating point**. So the *direction* is
+supported (factoring is the principled move, and it eliminates the below-chance
+collapse), but n=5 with this variance does **not** support a "resolved" or
+"composes" claim; establishing it would need many more seeds and a non-resonant
+timing substrate (or architecturally separate routing/timing sub-networks). This
+section previously rounded the result up to "~quadrupling (0.20→0.77), partly
+resolved"; that framing overstated a fragile, largely-at-chance result and has been
+corrected here.
 
 ## Relation to the substrate's "spike vs wave" duality
 
