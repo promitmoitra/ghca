@@ -20,6 +20,15 @@ The residual risk is **not** fabrication; it is the ordinary risk of an
 ambitious framing (Buzsáki "inside-out", spike–wave causality) resting on
 small hand-built toy simulations. The docs themselves flag this repeatedly.
 
+**One material exception — E3's composition study.** Its numbers reproduce
+exactly and its footnoted caveats are honest, but the *top-line framing*
+overstates a fragile result: the headline "joint identity 0.20 → 0.77 (~quadrupling)"
+is a mean over n=5 seeds that is actually bimodal (2 seeds at ceiling, 2 at
+chance), reports only the identity axis, and rests on a hand-picked favorable
+operating point. Genuine *joint* composition (identity **and** timing together —
+the thing the study claims to partly achieve) occurs on **1 of 5 seeds**. This
+is overreach in altitude, not fabrication; see the dedicated section below.
+
 ## Method
 
 For each series I did three checks:
@@ -44,7 +53,7 @@ far suggests a problem there; it is simply not exhaustively cleared.
 | E0 substrate characterisation | Yes (range-death bands r1→θ1, r2→θ4, r3→θ7; p_ss monotone in θ) | Supported |
 | E1 conditioning | Yes (reward_A≈0.67, reward_B≈0.33≈chance, A+B≈0.68) | Supported |
 | E2 working memory | Yes (mech mean 0.667=20/30; ret_A=0.20, ret_B/AB=1.0; learned τ_B≈12.6; info half-lives 161/161/161/20/20) | Supported |
-| E3 timed response | Yes (headline numbers match saved arrays) | Supported |
+| E3 timed response | Yes (all arrays match) | **Numbers supported; framing overstated** — see E3 deep-dive |
 | E4 attention | Yes (headline numbers match saved arrays) | Supported |
 | E5 executive control | Yes (headline numbers match saved arrays) | Supported |
 | E6 emergent categories | Yes (mem R²=0.62, att=0.84, exe=0.98; cosines ≈0.01/0.03; own/other-region controls exact) | Supported |
@@ -74,6 +83,54 @@ load-bearing ones check out:
   Buzsáki (inside-out) and Sutton (reward) are used as framing, not as sources
   of specific quantitative claims.
 
+## E3 deep-dive — honest numbers, overstated framing
+
+E3 was audited to the per-seed level (code: `experiments/e3_timed_response.py`,
+`experiments/e3_factored_credit.py`; data: `result/e3/e3_data.npz`,
+`result/e3/e3_factored.npz`). No fabrication, no circular setup, no rigged
+comparison — but this is the repo's weakest link and its top-line story rounds a
+fragile result up to a clean one.
+
+**What holds up.** The mechanism is clean (latency tracks gate τ: τ=[6,10,14,18,
+22,26,30] → latency [5,10,13,17,22,25,29] ≈ τ−2). Line A learns identity (1.00 on
+all seeds); the A-vs-B dissociation *logic* is sound (Line B has no routing
+plasticity, so it structurally cannot learn identity).
+
+**Where the framing outruns the data:**
+
+1. **"Stable" means hide high variance (n=5).** Line B identity reported as
+   "innate ~0.70" is per-seed `[0.50, 0.76, 1.00, 0.23, 1.00]` — one seed below
+   chance, two at ceiling; it is an artifact of the fixed 85%-channel-biased
+   random wiring, not a stable baseline. AB-shared "0.20" is `[0, 0, 0.48, 0.55,
+   0]` — total collapse on 3/5 seeds.
+2. **"Factored credit restores performance" — yet joint identity stays at
+   chance.** AB-factored per-seed `[0.53, 0.48, 0.56, 0.48, 0.43]` (mean 0.50):
+   every seed at chance. The 0.20→0.50 "lift" is just the removal of the
+   catastrophic zeros, landing at chance — not restoration of the faculty.
+3. **The headline 0.77 is bimodal and reports only one axis.** AB-factored+
+   curriculum identity `[1.00, 0.51, 0.79, 1.00, 0.57]` (mean 0.77) = 2 seeds at
+   ceiling, 2 at chance. "Composition" requires identity **and** timing together;
+   the matching latency errors on those seeds are `[20, 9.3, 9.3, 0, 14.6]`
+   (tolerance 1). Joint success (identity≈1 **and** timing in tolerance) holds on
+   **exactly 1 of 5 seeds** (seed 3). The doc reports only the identity axis in
+   the headline.
+4. **Favorable operating point is hand-picked.** The factored study sets target
+   latency = 16 *because* it forces gate τ into [17,19], which the code's own
+   resonance map flags as identity-learnable (τ=17–19 → 1.0; τ=13–15 → 0.54,
+   chance). Disclosed as a caveat, but it means the "resolution" is contingent on
+   choosing a task whose timing lands in a lucky substrate resonance, and the
+   curriculum does not steer τ there — it freezes wherever stochastic exploration
+   landed.
+
+**Assessment.** Overreach in altitude, not hallucination. All caveats exist in
+the doc (it literally says "on the seeds where B's τ lands in the good zone" and
+"residual fragility is a substrate resonance artifact"), but they are
+subordinated to a confident headline ("~quadrupling," "fully composing"), and the
+README compresses further to "decomposed & partly resolved, 0.20→0.77." Suggested
+correction: state that joint composition succeeds on 1/5 seeds at a chosen
+operating point, and that n=5 with this variance does not support a "partly
+resolved" claim without more seeds and a non-resonant substrate.
+
 ## What is genuinely good (honesty markers)
 
 - Result docs consistently distinguish measured fact from interpretation, and
@@ -100,13 +157,14 @@ These are honest gaps in *this review's* coverage, not identified problems:
    `inf` entries (non-oscillating sweep points), so the exact regression
    `period=1.00·τ+0.95, r=0.9992` was not independently re-derived from the
    saved data. Plausible and low-stakes, but not confirmed here.
-3. **Code-level circularity audit.** A careful read for subtle circular setup
-   (result baked into construction) across every experiment was begun but not
-   completed. The C-series `do(W)`/`do(θ)` operators in `ghca_causal.py` and the
-   E5 ablation comparison are the two places most worth a second close read,
-   since both are constructed contrasts where the conclusion could in principle
-   be built into the world script. Nothing seen so far indicates that, and the
-   docs openly acknowledge the near-deterministic-by-construction cases.
+3. **Code-level circularity audit — partially completed.** E3 has now been read
+   to the per-seed level (no circularity; the framing issue above is the finding).
+   Still worth a second close read: the C-series `do(W)`/`do(θ)` operators in
+   `ghca_causal.py`, and the **E5 ablation comparison** (switching 0.89 vs 0.20
+   ablated) — both are constructed contrasts where an unfair ablation or a
+   before/after endpoint pick could inflate the effect, and E5's per-seed spread
+   has not yet been inspected the way E3's was. Nothing seen so far indicates a
+   problem, and the docs acknowledge the near-deterministic-by-construction cases.
 
 ## Recommendation
 
