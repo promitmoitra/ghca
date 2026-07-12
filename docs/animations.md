@@ -7,7 +7,7 @@ from which reward selects useful ones and an observer reads out faculties. This
 page lets you **watch** that medium — the same Greenberg–Hastings substrate,
 animated for each mechanism.
 
-All animations are rendered by [`ghca_net_viz.py`](../ghca_net_viz.py) from a
+All animations are rendered by `ghca_net_viz.py` from a
 recorded phase rollout (`Network.run(...)["phi"]`). Colour = GH state: light grey
 rested, bright active crest, darkening refractory tail.
 
