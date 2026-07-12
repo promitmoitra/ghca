@@ -31,6 +31,13 @@ Accuracy vs delay for fixed uniform `τ` (no learning), ring `L = 24`:
 
 ![E2 mechanism](figures/e2_mechanism.png)
 
+**Animation of the mechanism.** Two identical rings ignited the same way, differing
+only in `τ`: the left (`τ=20 < L`) sustains its rotating pulse indefinitely — the
+stimulus is *held* — while the right (`τ=28 ≥ L`) dies within ~`L` steps as its
+refractory tail wraps round and blocks reentry. `τ` *is* the memory-duration knob.
+
+![E2 ring memory](figures/e2_ring_memory.gif)
+
 Below the transit time (`τ < L`) the loop sustains and memory is perfect at
 arbitrary delay; at/above it (`τ ≥ L`) the loop dies after one revolution and
 only the immediate (`D = 0`) readout succeeds. This is the causal lever the

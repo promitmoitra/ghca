@@ -26,6 +26,7 @@ not as built-in modules.
 | `ghca_main.py` | Lattice GH substrate: `Population` class, `run`, `plot`, `animate` |
 | `ghca_core.py` | Encode/embed integer configurations, run + animate |
 | `ghca_plot.py` | Persistence-probability maps over `(active, passive)` space |
+| `ghca_net_viz.py` | **Animator for the network substrate**: renders a phase rollout as a GIF (line / ring / grid / free layouts); makes the excitable dynamics watchable, not just summarised |
 | `ghca_net.py` | **GH dynamics on a graph**: per-node timescales, weighted-threshold excitation, spontaneous firing, homeostatic threshold; topology builders and order-parameter observables |
 | `ghca_learn.py` | **Reward-modulated learner**: eligibility-trace conduction (Line A) and timescale (Line B) plasticity, order-parameter critic, layered-graph builder |
 | `ghca_causal.py` | **Causal instrumentation** (C-series): partial-observation `S_obs`, wave variables `W=f(S)`, and `do(S)` / `do(W)` / `do(θ)` intervention operators |
@@ -47,6 +48,9 @@ not as built-in modules.
 
 ## Documentation
 
+- [`docs/animations.md`](docs/animations.md) — **watch the substrate**: a narrated
+  animation gallery (spiral waves, E2 ring memory, E4 wave annihilation, E5
+  options) showing the mechanisms as motion, all rendered by `ghca_net_viz.py`.
 - [`docs/learning_experiments.md`](docs/learning_experiments.md) — the full
   design: substrate spec, strict-reward learning framework, the two parallel
   plasticity lines (conduction weights vs local timescales), input/cue/feedback

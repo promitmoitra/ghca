@@ -1,0 +1,73 @@
+site_name: GHCA — a Greenberg–Hastings learning substrate
+site_description: Excitable-media dynamics as the substrate for reward-driven learning, with a narrated animation gallery.
+site_url: https://promitmoitra.github.io/ghca/
+repo_url: https://github.com/promitmoitra/ghca
+repo_name: promitmoitra/ghca
+docs_dir: docs
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep orange
+      accent: deep orange
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep orange
+      accent: deep orange
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - content.code.copy
+    - toc.follow
+
+markdown_extensions:
+  - admonition
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.highlight
+
+nav:
+  - Home: index.md
+  - Watch the substrate: animations.md
+  - Design & framework: learning_experiments.md
+  - E-series (learning):
+      - E0 — substrate characterisation: e0_results.md
+      - E1 — conditioning: e1_results.md
+      - E2 — working memory: e2_results.md
+      - E3 — timed response: e3_results.md
+      - E4 — attention: e4_results.md
+      - E5 — executive control: e5_results.md
+      - E6 — emergent categories: e6_results.md
+      - E7 — spiral-core option: e7_results.md
+      - E8 — predictive dynamics: e8_results.md
+      - E9 — emergent conjunction cells: e9_results.md
+  - C-series (causality):
+      - Plan: causal_experiments.md
+      - C0 — instrumentation: c0_results.md
+      - C1 — certificates: c1_results.md
+      - C2 — fat-handed do(W): c2_results.md
+      - C3 — do(theta): c3_results.md
+      - C4 — outcome-relativity: c4_results.md
+      - Spiral extension (plan): causal_spiral_experiments.md
+      - C5 — do(chirality): c5_results.md
+      - C6 — do(theta_chi): c6_results.md
+      - C7 — outcome-relativity (spiral): c7_results.md
+  - Extensions:
+      - Predictive-dynamics plan: predictive_dynamics_experiments.md
+      - Extensions self-audit: extensions_review.md
+      - Next steps / roadmap: next_steps.md
+  - Synthesis: synthesis.md
+  - AI hallucination review: hallucination_review.md
