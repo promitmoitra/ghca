@@ -53,6 +53,13 @@ deterministic so that exploration never spuriously re-ignites a dead ring.
 
 ![E5 switching](figures/e5_switching.png)
 
+**Animation of the option.** The rule in force is literally *which slow loop is
+rotating*: at each block start the active rule's ring is ignited and persists,
+while the other stays dark; at the next block they flip. The standing rotation is
+the held context that gates the fast routing.
+
+![E5 options](figures/e5_options.gif)
+
 - **A slow loop reconfigures fast routing.** With the persistent ring holding the
   block's rule, reward-driven Line A learns all four `(stimulus × rule)`
   conjunctions → correct actions, and the network applies the currently-cued rule:
