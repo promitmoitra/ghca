@@ -48,6 +48,9 @@ not as built-in modules.
 
 ## Documentation
 
+- [`docs/animations.md`](docs/animations.md) — **watch the substrate**: a narrated
+  animation gallery (spiral waves, E2 ring memory, E4 wave annihilation, E5
+  options) showing the mechanisms as motion, all rendered by `ghca_net_viz.py`.
 - [`docs/learning_experiments.md`](docs/learning_experiments.md) — the full
   design: substrate spec, strict-reward learning framework, the two parallel
   plasticity lines (conduction weights vs local timescales), input/cue/feedback
