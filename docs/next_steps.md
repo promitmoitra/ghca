@@ -99,13 +99,19 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 - **Effort.** Medium–high (a second model). **Risk.** Low — clean comparison either way.
 - **Connects to.** E8.
 
-### 2b. Model → data predictions
+### 2b. Model → data predictions — ✅ **DONE** (see [`spiral_predictions.md`](spiral_predictions.md))
 - **What.** Derive falsifiable claims for the Gong/Steinmetz spiral-wave data: e.g.
   reversing a cortical spiral's chirality should reconfigure routing; ablating persistent
   cores should selectively impair switching-like flexibility.
 - **Why.** Bridges toy → testable neural hypothesis; the highest-reach scientific output.
-- **Takes.** Mostly analysis/writing atop E7 + C5–C7; identify a measurable signature.
-- **Effort.** Low–medium. **Risk.** Low (a hypothesis, not a claim).
+- **What was built.** Six predictions (P1–P6) from E7 + C5–C7, each with observable,
+  discriminator vs an epiphenomenal/non-spiral account, and a falsifier: persistent
+  rotation-direction rule code (P1); persistent cores necessary for flexibility not fixed
+  mappings (P2, highest-reach); outcome-relativity χ→rule-not-content (P3); a fixed-ROI
+  decoder collapsing with core drift while a topology-aware one holds (P4, with a bridge
+  figure recast from C5); nucleation as the clean handle + χ mediating θ→behaviour (P5);
+  persistent lone cores localising to anatomical boundaries (P6). Bridge figure:
+  `experiments/p2b_signature_figure.py`.
 - **Connects to.** E7, C5–C7; Gong 2023, Steinmetz/Ye 2026.
 
 ---
@@ -135,16 +141,20 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 
 ## Track 4 — New territory *(novelty)*
 
-### 4a. Emergent timescale hierarchy / cross-frequency coupling *(recommended if the goal is novelty)*
+### 4a. Emergent timescale hierarchy / cross-frequency coupling — ⏸ **ATTEMPTED, PAUSED** (see [`e10_notes.md`](e10_notes.md))
 - **What.** With per-node τ plastic, do learned τ distributions self-organise into a
   fast/slow hierarchy with theta–gamma-style cross-frequency coupling?
 - **Why.** Deepest genuinely-new phenomenon the substrate could show; connects to the
   nested-waves literature (E8.5 only used two hand-set timescales).
-- **Takes.** Line B on a task rewarding multi-scale structure; measure the learned τ
-  spectrum and cross-frequency coupling.
-- **Effort.** High. **Risk.** Medium–high — may not self-organise; the `perturb_tau`
-  mechanism is coarse.
-- **Connects to.** E2, E5, E8.5.
+- **Status.** The `Medium–high` risk was realised: the existing Line B resonance rule
+  **structurally cannot** build the hierarchy — it only ratchets τ *upward* toward
+  multiples of a drive period, never down to a fundamental, so no fast (small-τ)
+  population forms (confirmed decisively in the ideal isolated-node case; see
+  `experiments/e10_diagnostics.py` on branch `claude/e10-timescale-hierarchy`). 4a is a
+  *mechanism-design* task (a new bidirectional "τ tracks input period" rule + E9-style
+  competition + balanced channel activity), **not** a reuse-E9 task — correcting the
+  earlier de-risking claim. Resume from `e10_notes.md`.
+- **Connects to.** E2, E5, E8.5; E9 (competition, for the grouping half only).
 
 ### 4b. Package the causal testbed
 - **What.** Turn C0–C7 + the substrate into a reusable synthetic-SCM benchmark for the
@@ -184,12 +194,15 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 | **External impact / reach** | **4b** causal testbed | 5a write-up, 2b |
 | **Lowest-risk strengthening** | **3a** stats/sweeps + **5b** hygiene | 2b |
 
-**Overall recommendation.** ~~If one thing: **1a (emergent conjunction cells)**~~ —
-**done (E9)**; it retired the single most-cited caveat and was the truest test of the
-inside-out thesis. Natural follow-ups: **2b (model→data predictions)** for neuroscience
-reach at low cost, or **4a (emergent timescale hierarchy)** when the goal shifts from
-"make the existing story solid" to "find a genuinely new phenomenon". 1a also directly
-de-risks 4a (it built the on-substrate representation-learning machinery 4a would reuse).
+**Progress.** **1a done (E9)** — retired the most-cited caveat. **2b done**
+([`spiral_predictions.md`](spiral_predictions.md)) — the toy→data bridge, low cost, high
+reach. **4a attempted, paused** ([`e10_notes.md`](e10_notes.md)) — the existing τ rule
+structurally can't build the hierarchy; it needs a new bidirectional τ-plasticity rule
+(mechanism design), and E9 de-risks only the *grouping* half, not the τ-value rule
+(earlier claim corrected). Remaining high-value, lower-risk options: **2a** (the
+predictive-coding foil, cleanest disambiguation), **4b** (package the causal testbed,
+most reusable artifact), **3a** (stats/sweeps). Return to **4a** only with appetite for
+mechanism design.
 
 ## Process notes (apply to whatever is chosen)
 
