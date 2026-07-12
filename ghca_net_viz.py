@@ -91,7 +91,7 @@ def layout_positions(layout, N, L=None, pos=None):
 
 def animate(rollout, act, tau, layout="line", L=None, pos=None, out="anim.gif",
             fps=12, stride=1, title=None, captions=None, colors_rollout=None,
-            marker_size=None, figsize=None, dpi=90):
+            marker_size=None, figsize=None, dpi=90, annotations=None):
     """Animate a phase rollout and write a GIF.
 
     Parameters
@@ -110,6 +110,9 @@ def animate(rollout, act, tau, layout="line", L=None, pos=None, out="anim.gif",
                                     by the *original* time step.
     colors_rollout : (T,N,4) or None -- override per-frame colours (e.g. to tint
                                     two competing waves); default colours-by-state.
+    annotations : list[(x, y, text)] or None -- static labels drawn in data
+                                    coordinates (scatter layouts), e.g. to title
+                                    side-by-side panels.
     """
     rollout = np.asarray(rollout)
     T, N = rollout.shape
@@ -148,6 +151,9 @@ def animate(rollout, act, tau, layout="line", L=None, pos=None, out="anim.gif",
         ax.set_ylim(p[:, 1].min() - pad_y, p[:, 1].max() + pad_y)
         ax.set_aspect("equal")
         ax.axis("off")
+        for (ax_x, ax_y, txt) in (annotations or []):
+            ax.text(ax_x, ax_y, txt, ha="center", va="center", fontsize=10,
+                    fontweight="bold")
 
     sub = ax.set_title("", fontsize=10)
     if title:
