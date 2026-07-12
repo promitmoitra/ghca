@@ -1,0 +1,367 @@
+[
+ {
+  "executable": true,
+  "graph": {
+   "S": [],
+   "edges": [
+    [
+     "U",
+     "W"
+    ],
+    [
+     "U",
+     "B"
+    ]
+   ],
+   "expected_verdict": "epiphenomenal"
+  },
+  "ground_truth": {
+   "exact": true,
+   "notes": "Definition 1 scored interventional-vs-OBSERVATIONAL; do(1)-vs-do(0) mis-scores front-door as epiphenomenal.",
+   "ordering": [],
+   "scalars": {
+    "effect": 0.001,
+    "obs_assoc": 0.642
+   },
+   "task": "T1",
+   "verdict": "epiphenomenal"
+  },
+  "kind": "scm",
+  "name": "c1_confounded",
+  "script": "experiments/c1_graph_certificates.py",
+  "seed": 0,
+  "task": "T1",
+  "track": "C1"
+ },
+ {
+  "executable": true,
+  "graph": {
+   "S": [],
+   "edges": [
+    [
+     "W",
+     "B"
+    ]
+   ],
+   "expected_verdict": "causal"
+  },
+  "ground_truth": {
+   "exact": true,
+   "notes": "Definition 1 scored interventional-vs-OBSERVATIONAL; do(1)-vs-do(0) mis-scores front-door as epiphenomenal.",
+   "ordering": [],
+   "scalars": {
+    "effect": 0.4,
+    "obs_assoc": 0.799
+   },
+   "task": "T1",
+   "verdict": "causal"
+  },
+  "kind": "scm",
+  "name": "c1_direct",
+  "script": "experiments/c1_graph_certificates.py",
+  "seed": 0,
+  "task": "T1",
+  "track": "C1"
+ },
+ {
+  "executable": true,
+  "graph": {
+   "S": [
+    "S"
+   ],
+   "edges": [
+    [
+     "S",
+     "W"
+    ],
+    [
+     "S",
+     "B"
+    ]
+   ],
+   "expected_verdict": "epiphenomenal"
+  },
+  "ground_truth": {
+   "exact": true,
+   "notes": "Definition 1 scored interventional-vs-OBSERVATIONAL; do(1)-vs-do(0) mis-scores front-door as epiphenomenal.",
+   "ordering": [],
+   "scalars": {
+    "effect": 0.001,
+    "obs_assoc": 0.004
+   },
+   "task": "T1",
+   "verdict": "epiphenomenal"
+  },
+  "kind": "scm",
+  "name": "c1_fork",
+  "script": "experiments/c1_graph_certificates.py",
+  "seed": 0,
+  "task": "T1",
+  "track": "C1"
+ },
+ {
+  "executable": true,
+  "graph": {
+   "S": [
+    "M"
+   ],
+   "edges": [
+    [
+     "C",
+     "W"
+    ],
+    [
+     "C",
+     "B"
+    ],
+    [
+     "W",
+     "M"
+    ],
+    [
+     "M",
+     "B"
+    ]
+   ],
+   "expected_verdict": "causal"
+  },
+  "ground_truth": {
+   "exact": true,
+   "notes": "Definition 1 scored interventional-vs-OBSERVATIONAL; do(1)-vs-do(0) mis-scores front-door as epiphenomenal.",
+   "ordering": [],
+   "scalars": {
+    "effect": 0.258,
+    "obs_assoc": 0.634
+   },
+   "task": "T1",
+   "verdict": "causal"
+  },
+  "kind": "scm",
+  "name": "c1_frontdoor",
+  "script": "experiments/c1_graph_certificates.py",
+  "seed": 0,
+  "task": "T1",
+  "track": "C1"
+ },
+ {
+  "executable": true,
+  "graph": {
+   "S": [
+    "M"
+   ],
+   "edges": [
+    [
+     "W",
+     "M"
+    ],
+    [
+     "M",
+     "B"
+    ]
+   ],
+   "expected_verdict": "epiphenomenal"
+  },
+  "ground_truth": {
+   "exact": true,
+   "notes": "Definition 1 scored interventional-vs-OBSERVATIONAL; do(1)-vs-do(0) mis-scores front-door as epiphenomenal.",
+   "ordering": [],
+   "scalars": {
+    "effect": 0.008,
+    "obs_assoc": 0.001
+   },
+   "task": "T1",
+   "verdict": "epiphenomenal"
+  },
+  "kind": "scm",
+  "name": "c1_mediator_obs",
+  "script": "experiments/c1_graph_certificates.py",
+  "seed": 0,
+  "task": "T1",
+  "track": "C1"
+ },
+ {
+  "executable": true,
+  "graph": {
+   "S": [],
+   "edges": [
+    [
+     "W",
+     "M"
+    ],
+    [
+     "M",
+     "B"
+    ]
+   ],
+   "expected_verdict": "causal"
+  },
+  "ground_truth": {
+   "exact": true,
+   "notes": "Definition 1 scored interventional-vs-OBSERVATIONAL; do(1)-vs-do(0) mis-scores front-door as epiphenomenal.",
+   "ordering": [],
+   "scalars": {
+    "effect": 0.322,
+    "obs_assoc": 0.64
+   },
+   "task": "T1",
+   "verdict": "causal"
+  },
+  "kind": "scm",
+  "name": "c1_mediator_unobs",
+  "script": "experiments/c1_graph_certificates.py",
+  "seed": 0,
+  "task": "T1",
+  "track": "C1"
+ },
+ {
+  "executable": false,
+  "ground_truth": {
+   "exact": false,
+   "notes": "fat-handedness of a constituted do(W).",
+   "ordering": [
+    "band_labeled >> band_collective (~140x): do(W) pins a collective readout but leaves a labeled-line reader free"
+   ],
+   "scalars": {
+    "band_collective": 0.24,
+    "band_labeled": 33.1
+   },
+   "task": "T2",
+   "verdict": null
+  },
+  "kind": "cnet",
+  "name": "c2_cnet",
+  "script": "experiments/c2_fat_handed.py",
+  "seed": 0,
+  "task": "T2",
+  "track": "C2"
+ },
+ {
+  "executable": false,
+  "ground_truth": {
+   "exact": false,
+   "notes": "do(theta) realization band ~0 vs do(W) fat-handed.",
+   "ordering": [
+    "do(theta) << do(W): the generating parameter is the well-posed handle"
+   ],
+   "scalars": {
+    "doTheta": 0.014,
+    "doW_collective": 0.24,
+    "doW_labeled": 33.1,
+    "e3_latency_slope": 1.0
+   },
+   "task": "T3",
+   "verdict": null
+  },
+  "kind": "cnet",
+  "name": "c3_cnet_e3",
+  "script": "experiments/c3_do_theta.py",
+  "seed": 0,
+  "task": "T3",
+  "track": "C3"
+ },
+ {
+  "executable": false,
+  "ground_truth": {
+   "exact": false,
+   "notes": "outcome-relativity; the causal role is (handle,outcome)-relative.",
+   "ordering": [
+    "outcome matrix is diagonal: do(tau)->timing, do(route)->identity",
+    "macro-sufficiency collective >> labeled (causal emergence)"
+   ],
+   "scalars": {
+    "do_route_identity": 1.0,
+    "do_route_timing": 0.06,
+    "do_tau_identity": 0.0,
+    "do_tau_timing": 1.0,
+    "suff_collective": 1.03,
+    "suff_labeled": 0.11
+   },
+   "task": "T4",
+   "verdict": null
+  },
+  "kind": "e3",
+  "name": "c4_e3_cnet",
+  "script": "experiments/c4_outcome_relativity.py",
+  "seed": 0,
+  "task": "T4",
+  "track": "C4"
+ },
+ {
+  "executable": false,
+  "ground_truth": {
+   "exact": false,
+   "notes": "do(chi) fat-handed at a fixed locus.",
+   "ordering": [
+    "fat-hand band center > global > tracked: chirality is well-posed only read topologically"
+   ],
+   "scalars": {
+    "band_center": 6.2,
+    "band_global": 2.6,
+    "band_tracked": 1.0,
+    "routing_center": 0.55,
+    "routing_tracked": 0.78
+   },
+   "task": "T5",
+   "verdict": null
+  },
+  "kind": "spiral",
+  "name": "c5_spiral",
+  "script": "experiments/c5_do_chirality.py",
+  "seed": 0,
+  "task": "T5",
+  "track": "C5"
+ },
+ {
+  "executable": false,
+  "ground_truth": {
+   "exact": false,
+   "notes": "generative handle well-posed; persistent core necessary.",
+   "ordering": [
+    "do(theta_chi) well-posed (0 sigma) for every reader",
+    "ablating persistence collapses switching, spares single-rule"
+   ],
+   "scalars": {
+    "band_theta_chi": 0.0,
+    "single_ablated": 0.89,
+    "single_intact": 0.9,
+    "switch_ablated": 0.52,
+    "switch_intact": 0.85
+   },
+   "task": "T5",
+   "verdict": null
+  },
+  "kind": "spiral",
+  "name": "c6_spiral",
+  "script": "experiments/c6_do_theta_chi.py",
+  "seed": 0,
+  "task": "T5",
+  "track": "C6"
+ },
+ {
+  "executable": false,
+  "ground_truth": {
+   "exact": false,
+   "notes": "outcome-relativity + theta->chi->B mediation/screening.",
+   "ordering": [
+    "outcome matrix diagonal-DOMINANT (off-diagonals honest)",
+    "O_rule tracks injected chi, independent of nucleation seed"
+   ],
+   "scalars": {
+    "chi_content": 0.11,
+    "chi_rule": 1.0,
+    "route_content": 1.0,
+    "route_rule": 0.57,
+    "screen_seedplus_injminus": 0.19,
+    "screen_seedplus_injplus": 0.86
+   },
+   "task": "T5",
+   "verdict": null
+  },
+  "kind": "spiral",
+  "name": "c7_spiral",
+  "script": "experiments/c7_outcome_relativity.py",
+  "seed": 0,
+  "task": "T5",
+  "track": "C7"
+ }
+]
