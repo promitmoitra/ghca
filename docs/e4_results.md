@@ -36,6 +36,14 @@ wake — the mechanism the C-series flagged as already present in the substrate.
 
 ![E4 attention](figures/e4_attention.png)
 
+**Animation of the mechanism.** The panel-C raster, animated: the two waves
+ignite the chain ends, travel inward (blue = attended left stream, orange =
+right), collide, and annihilate — the collision landing *left of centre* under a
+`+6` bias, so the attended stream captures the centre node. No inhibition; just
+excitation meeting refractoriness.
+
+![E4 wave annihilation](figures/e4_annihilation.gif)
+
 | quantity | value |
 |----------|-------|
 | accuracy at bias \|b\|=4 (σ=2.5) | 0.96 |
