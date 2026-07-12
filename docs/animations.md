@@ -95,3 +95,14 @@ python3 experiments/e2_animation.py         # docs/figures/e2_ring_memory.gif
 python3 experiments/e4_animation.py         # docs/figures/e4_annihilation.gif
 python3 experiments/e5_animation.py         # docs/figures/e5_options.gif
 ```
+
+## Future scope / backlog
+
+- **Interactive HTML explorer.** A self-contained web page with live sliders for
+  `τ`, `θ`, bias, ring length `L`, etc., re-rendering the substrate in the browser
+  — turning these fixed GIFs into something you can drive. Needs either a small JS
+  reimplementation of the GH update rule or a pre-rendered parameter sweep. Deferred.
+- **Scrollytelling narration.** The same walkthrough as a single scrolling page
+  where each animation plays alongside the claim it supports.
+- **C-series causal animation.** `do(θ) → W → B` vs the fat-handed `do(W)` as a
+  side-by-side dynamic, to give the causal argument the same watchable treatment.
