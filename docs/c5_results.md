@@ -39,6 +39,16 @@ band tracks the decode band.
 
 ![C5 do(chirality)](figures/c5_do_chirality.png)
 
+**Animation of the mechanism.** One spiral, true chirality CCW throughout, core
+nucleated displaced from the lattice centre. Two probe rings overlaid live on
+the real substrate: a **fixed-locus** reader (green/crimson) parked at the
+lattice centre, and a **tracked** reader (teal/orange) following the actual
+core. The fixed reader never recovers the true chirality — parked over the
+outer wave, not the core — while the tracked reader stays locked on throughout:
+the same rotation reads as WRONG or CORRECT depending only on where you look.
+
+![C5 fixed vs tracked reader](figures/c5_fixed_vs_tracked.gif)
+
 - **Topological chirality escapes C2's fat-handedness — if read topologically.**
   The tracked-core readout recovers `χ` across *every* realization (band **1.0σ**,
   vs C2's **33σ** for a scalar aggregate). A winding number genuinely is a

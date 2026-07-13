@@ -86,6 +86,25 @@ rotation direction is task-relevant.
 
 ---
 
+## 5. Is the spin causal, or just where you're looking? (C5)
+
+E7 showed the spiral's rotation direction *is* the rule. C5 asks the harder
+question: is that rotation direction **causal**, or does a naive reader only
+*think* it is? One spiral is nucleated with its core displaced from the lattice
+centre — the true chirality never changes — while two probes read it live: a
+**fixed-locus** reader (green/crimson) parked at the lattice centre, and a
+**tracked** reader (teal/orange) that follows the actual core. The fixed reader
+never recovers the true rotation (it's watching the outer wave, not the core);
+the tracked reader stays locked on throughout. Same rotation, opposite verdict —
+depending only on where you look. This is the concrete form of the C-series
+caution: a wave variable is a well-posed handle only for a matched reader.
+
+![C5 fixed vs tracked reader](figures/c5_fixed_vs_tracked.gif)
+
+*(`python3 experiments/c5_animation.py`; see [c5_results.md](c5_results.md))*
+
+---
+
 ## The point of the gallery
 
 Memory (a sustaining loop), attention (annihilating waves), executive control (a
@@ -118,6 +137,7 @@ python3 experiments/e2_animation.py         # docs/figures/e2_ring_memory.gif
 python3 experiments/e4_animation.py         # docs/figures/e4_annihilation.gif
 python3 experiments/e5_animation.py         # docs/figures/e5_options.gif
 python3 experiments/e7_animation.py         # docs/figures/e7_spiral_rule.gif
+python3 experiments/c5_animation.py         # docs/figures/c5_fixed_vs_tracked.gif
 ```
 
 *(This `deploy-viz-page` branch carries only the site — Markdown + rendered GIFs
