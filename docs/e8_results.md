@@ -189,9 +189,18 @@ E8 shows the substrate is a genuinely *predictive* system that is not a
   clean intervention the biological correlations cannot make, and it is the E-side
   echo of the C-series thesis: *the causally meaningful variable is the generative
   timescale.*
-- **Surprise is global, and prediction is not dissociable from representation** (there
-  is no separate top-down pathway to lesion) — two observables that distinguish this
-  account from hierarchical predictive coding (Rao–Ballard/Friston).
+- **Surprise is a global scalar**, not a per-channel error field, and prediction is a
+  *passive readout of the same medium* that carries representation — there is no
+  dedicated top-down generative pathway. **Correction (see
+  [`e8_hardening_results.md`](e8_hardening_results.md), 2a):** an earlier version of
+  this bullet claimed prediction is "not dissociable from representation". The
+  predictive-coding foil shows that is wrong — E8's two readouts tap different parts of
+  the medium, so prediction and representation *can* be dissociated (as can PC's), and
+  both models' errors localise on a deviant. The observables that actually distinguish
+  this account from hierarchical predictive coding (Rao–Ballard/Friston) are
+  **architectural**: PC has *intrinsic per-channel error units* driving inference and a
+  *dedicated generative pathway*; E8 has neither (a global scalar surprise and a
+  `do(τ)`-set window). Those are the empirical, testable discriminators.
 
 It also carries [C5](c5_results.md)'s lesson across the series: the predictive readout
 succeeds because it integrates the medium's *whole* trace state; a fixed-locus readout
