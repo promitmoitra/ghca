@@ -18,8 +18,8 @@ surfaced. Nothing here is built yet.*
 - **C-series (causality).** C0–C4 spike–wave causality on the substrate → C5–C7 the
   spiral causal split (`do(χ)` fat-handed at a fixed locus; `do(θ_χ)` well-posed;
   rotation direction is a causal mediator, outcome-relative, not epiphenomenal).
-- **Reviews.** An independent hallucination/overreach audit (E0–E6/C0–C4; on branch
-  `claude/ai-hallucination-review-ya7aq5`) and a self-audit of the extensions
+- **Reviews.** An independent integrity/overreach audit (E0–E6/C0–C4;
+  [`core_review.md`](core_review.md)) and a self-audit of the extensions
   ([`extensions_review.md`](extensions_review.md)). No fabrication; one reproducibility
   bug (fixed: `perturb_tau` seeding) and one framing overreach (fixed: E3 composition).
 
@@ -207,8 +207,9 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 ### 5b. Reproducibility hygiene
 - **What.** Audit every experiment for seeded RNG (the `perturb_tau` bug pattern);
   a `reproduce-all` entry point that regenerates every figure/number; optionally CI.
-  Also consider landing `hallucination_review.md` on `main` (currently only on its
-  review branch) so both audits sit with the work.
+  (The independent core-series audit now sits on `main` as
+  [`core_review.md`](core_review.md), alongside the extensions self-audit — the
+  "both audits with the work" gap is closed; see [`process.md`](process.md).)
 - **Effort.** Low–medium. **Risk.** Low.
 
 ---
