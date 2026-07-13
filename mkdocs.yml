@@ -70,5 +70,6 @@ nav:
       - Predictive-dynamics plan: predictive_dynamics_experiments.md
       - Extensions self-audit: extensions_review.md
       - Next steps / roadmap: next_steps.md
+      - Review & planning process: process.md
   - Synthesis: synthesis.md
-  - AI hallucination review: hallucination_review.md
+  - Core series review: core_review.md

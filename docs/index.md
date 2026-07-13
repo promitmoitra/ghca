@@ -23,7 +23,7 @@ categories **read out** from one homogeneous substrate — not as built-in modul
   A synthetic causal testbed for the spike–wave question: `do(W)` is fat-handed
   under constitution; `do(θ)` is the well-posed handle.
 
-- :material-magnify-scan: **[AI hallucination review](hallucination_review.md)**
+- :material-magnify-scan: **[Core series review](core_review.md)**
   An independent audit of every claim against code and data — what reproduces,
   what is overstated, and one real reproducibility bug.
 

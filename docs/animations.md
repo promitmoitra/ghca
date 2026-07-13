@@ -120,7 +120,7 @@ E3 is deliberately **not** given a headline "mechanism" animation. Its solid
 finding — response latency tracks the gate timescale — is a one-line relationship
 better shown as the static `latency = τ − a` plot. Its *interesting* result is
 the **fragility** of composing timing with identity, which is a per-seed scatter,
-not a dynamic (see the [hallucination review](hallucination_review.md), E3
+not a dynamic (see the [core series review](core_review.md), E3
 deep-dive). Animating a clean E3 "composition" would misrepresent a result that
 is genuinely bimodal and seed-dependent — so it isn't done here.
 

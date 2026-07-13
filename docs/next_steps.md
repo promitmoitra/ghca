@@ -18,8 +18,8 @@ surfaced. Nothing here is built yet.*
 - **C-series (causality).** C0–C4 spike–wave causality on the substrate → C5–C7 the
   spiral causal split (`do(χ)` fat-handed at a fixed locus; `do(θ_χ)` well-posed;
   rotation direction is a causal mediator, outcome-relative, not epiphenomenal).
-- **Reviews.** An independent hallucination/overreach audit (E0–E6/C0–C4; on branch
-  `claude/ai-hallucination-review-ya7aq5`) and a self-audit of the extensions
+- **Reviews.** An independent integrity/overreach audit (E0–E6/C0–C4;
+  [`core_review.md`](core_review.md)) and a self-audit of the extensions
   ([`extensions_review.md`](extensions_review.md)). No fabrication; one reproducibility
   bug (fixed: `perturb_tau` seeding) and one framing overreach (fixed: E3 composition).
 
@@ -75,37 +75,52 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   noisy (C5 showed the readout-locality problem).
 - **Connects to.** E7, C5 (readout-relativity).
 
-### 1c. Reward-/GVF-driven prediction
+### 1c. Reward-/GVF-driven prediction — ✅ **DONE** (see [`e8_hardening_results.md`](https://github.com/promitmoitra/ghca/blob/main/docs/e8_hardening_results.md))
 - **What.** Fold E8's offline-ridge predictor into the substrate's own TD/GVF machinery
   (E6 demons, gradient-TD), so prediction is learned online and intrinsically.
 - **Why.** Tests "prediction is inside-out, not taught"; unifies E8 with E6; removes the
   "learning lives in the readout weights" caveat.
-- **Takes.** GVF next-tone demons with online (gradient-)TD on the tonotopic substrate;
-  compare to the ridge baseline.
-- **Effort.** Medium. **Risk.** Low–medium.
+- **What was built.** A bank of `M` linear GVF demons (E6's TD rule) learned online: a
+  single incremental reward-free pass matches the offline ridge on every sequence
+  (periodic 1.00, Markov 0.91/0.56, random-walk 0.41), and γ>0 demons give multi-step
+  predictive knowledge (r=0.97/0.85) the ridge doesn't. **Softens** caveat 7 (learning
+  is now online/intrinsic) but doesn't fully retire it — still a readout of a fixed
+  substrate; plastic dynamics deferred.
 - **Connects to.** E6, E8.
 
 ---
 
 ## Track 2 — Make the neuroscience bridge falsifiable *(retires tension 3; scientific value)*
 
-### 2a. Build the predictive-coding foil *(recommended if the goal is a clean disambiguation)*
+### 2a. Build the predictive-coding foil — ✅ **DONE** (see [`e8_hardening_results.md`](https://github.com/promitmoitra/ghca/blob/main/docs/e8_hardening_results.md))
 - **What.** Implement a small Rao–Ballard/Friston predictive-coding model on the *same*
   tone-sequence task E8 uses, and measure the distinguishing observables (global vs
   per-feature prediction error; prediction/representation dissociability under lesion).
 - **Why.** E8 currently *asserts* "prediction without predictive coding"; this makes the
   contrast empirical rather than rhetorical.
-- **Takes.** A hierarchical PC network + the same sequences + the same probes.
-- **Effort.** Medium–high (a second model). **Risk.** Low — clean comparison either way.
-- **Connects to.** E8.
+- **What was built + honest finding.** A minimal untied Rao–Ballard PC model on E8's
+  tones. The clean PC signature reproduces (top-down lesion: prediction 0.37→0.12 chance,
+  representation 0.95 spared). But the two observables one expects to disambiguate — **do
+  not**: E8 is *also* dissociable (its two readouts tap different medium parts), and both
+  models' errors localise on the deviant. This **corrects the E8-doc "not dissociable"
+  overclaim**. The real discriminators are architectural (intrinsic error units +
+  generative pathway [PC] vs global scalar surprise + passive-readout + do(τ) window
+  [E8]) — now stated as empirical, testable contrasts.
+- **Connects to.** E8; complements 1c (E8 hardened on both tension axes).
 
-### 2b. Model → data predictions
+### 2b. Model → data predictions — ✅ **DONE** (see [`spiral_predictions.md`](https://github.com/promitmoitra/ghca/blob/main/docs/spiral_predictions.md))
 - **What.** Derive falsifiable claims for the Gong/Steinmetz spiral-wave data: e.g.
   reversing a cortical spiral's chirality should reconfigure routing; ablating persistent
   cores should selectively impair switching-like flexibility.
 - **Why.** Bridges toy → testable neural hypothesis; the highest-reach scientific output.
-- **Takes.** Mostly analysis/writing atop E7 + C5–C7; identify a measurable signature.
-- **Effort.** Low–medium. **Risk.** Low (a hypothesis, not a claim).
+- **What was built.** Six predictions (P1–P6) from E7 + C5–C7, each with observable,
+  discriminator vs an epiphenomenal/non-spiral account, and a falsifier: persistent
+  rotation-direction rule code (P1); persistent cores necessary for flexibility not fixed
+  mappings (P2, highest-reach); outcome-relativity χ→rule-not-content (P3); a fixed-ROI
+  decoder collapsing with core drift while a topology-aware one holds (P4, with a bridge
+  figure recast from C5); nucleation as the clean handle + χ mediating θ→behaviour (P5);
+  persistent lone cores localising to anatomical boundaries (P6). Bridge figure:
+  `experiments/p2b_signature_figure.py`.
 - **Connects to.** E7, C5–C7; Gong 2023, Steinmetz/Ye 2026.
 
 ---
@@ -135,41 +150,66 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 
 ## Track 4 — New territory *(novelty)*
 
-### 4a. Emergent timescale hierarchy / cross-frequency coupling *(recommended if the goal is novelty)*
+### 4a. Emergent timescale hierarchy / cross-frequency coupling — ⏸ **ATTEMPTED, PAUSED** (see [`e10_notes.md`](https://github.com/promitmoitra/ghca/blob/main/docs/e10_notes.md))
 - **What.** With per-node τ plastic, do learned τ distributions self-organise into a
   fast/slow hierarchy with theta–gamma-style cross-frequency coupling?
 - **Why.** Deepest genuinely-new phenomenon the substrate could show; connects to the
   nested-waves literature (E8.5 only used two hand-set timescales).
-- **Takes.** Line B on a task rewarding multi-scale structure; measure the learned τ
-  spectrum and cross-frequency coupling.
-- **Effort.** High. **Risk.** Medium–high — may not self-organise; the `perturb_tau`
-  mechanism is coarse.
-- **Connects to.** E2, E5, E8.5.
+- **Status.** The `Medium–high` risk was realised: the existing Line B resonance rule
+  **structurally cannot** build the hierarchy — it only ratchets τ *upward* toward
+  multiples of a drive period, never down to a fundamental, so no fast (small-τ)
+  population forms (confirmed decisively in the ideal isolated-node case; see
+  `experiments/e10_diagnostics.py` on branch `claude/e10-timescale-hierarchy`). 4a is a
+  *mechanism-design* task (a new bidirectional "τ tracks input period" rule + E9-style
+  competition + balanced channel activity), **not** a reuse-E9 task — correcting the
+  earlier de-risking claim. Resume from `e10_notes.md`.
+- **Connects to.** E2, E5, E8.5; E9 (competition, for the grouping half only).
 
-### 4b. Package the causal testbed
+### 4b. Package the causal testbed — ✅ **CORE DONE** (see [`causal_testbed.md`](causal_testbed.md); spec/plan alongside)
 - **What.** Turn C0–C7 + the substrate into a reusable synthetic-SCM benchmark for the
   Jalaldoust spike–wave framework (clean API, ground-truth graphs, the three `do`
   operators).
 - **Why.** The most externally-reusable artifact — a ground-truth SCM others can test
   causal-discovery/epiphenomenality methods on. Low new-science, high utility.
-- **Effort.** Medium (engineering/packaging). **Risk.** Low.
+- **What was built.** The `ghca_testbed` package: single-source operator/substrate
+  re-exports; the six canonical C1 SCM graphs **executable in-process** with the correct
+  interventional-vs-observational `epiphenomenality_test` + Theorem-1 certificate
+  (validated end-to-end — front-door scored causal 0.257, all six verdicts match);
+  the method-agnostic metric library (`fat_hand_band`, `macro_sufficiency`,
+  `outcome_matrix`, `mediation`); a 12-scenario `REGISTRY` (C1 executable, C2–C7 ground
+  truth carried as verified data) with JSON export; a `score(method_fn)` harness +
+  `python -m ghca_testbed`; `docs/causal_testbed.md`; and `test_ctestbed.py` (10 tests,
+  including a guard for the C1 subtlety). Planned via a multi-agent workflow
+  ([`causal_testbed_plan.md`](https://github.com/promitmoitra/ghca/blob/main/docs/causal_testbed_plan.md)).
+- **Deferred (plan 4b.0d).** The verbatim refactor of the eight C-scripts into thin
+  callers behind a bit-identical gate, and wiring the C2–C7 substrate scenarios to
+  execute in-process through `Testbed` subclasses. Left as reference implementations;
+  their ground truth is carried and reproduced by running the scripts.
 - **Connects to.** C0–C7, `ghca_causal.py`.
 
 ---
 
 ## Track 5 — Consolidate
 
-### 5a. Unified write-up
+### 5a. Unified write-up — ✅ **DONE** (see [`synthesis.md`](synthesis.md))
 - **What.** Draw E0–E8 + C0–C7 into one honest narrative (synthesis.md is the seed),
   positioned as an illustrative computational study + a reusable causal testbed.
 - **Why.** Makes the arc legible; forces the framing to stay at the right altitude.
+- **What was built.** Expanded `synthesis.md` into the capstone: the two arcs + the
+  `θ` = learned-variable = causal-handle spine, the E4–E6 repertoire and E7/C5–C7/E8
+  extensions, then the new work woven in — the afforded→learned closure (E9 + 1c), the
+  predictive-coding foil and the overclaim it corrected (2a), and the outward artifacts
+  (2b predictions + 4b testbed) — capped by an **honest ledger** of the three tensions
+  as they now stand (1 substantially retired, 2 still open, 3 addressed by framing +
+  artifacts) and the corrections the programme made (E3, `perturb_tau`, 2a).
 - **Effort.** Medium (writing). **Risk.** Low.
 
 ### 5b. Reproducibility hygiene
 - **What.** Audit every experiment for seeded RNG (the `perturb_tau` bug pattern);
   a `reproduce-all` entry point that regenerates every figure/number; optionally CI.
-  Also consider landing `hallucination_review.md` on `main` (currently only on its
-  review branch) so both audits sit with the work.
+  (The independent core-series audit now sits on `main` as
+  [`core_review.md`](core_review.md), alongside the extensions self-audit — the
+  "both audits with the work" gap is closed; see [`process.md`](process.md).)
 - **Effort.** Low–medium. **Risk.** Low.
 
 ---
@@ -184,12 +224,15 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 | **External impact / reach** | **4b** causal testbed | 5a write-up, 2b |
 | **Lowest-risk strengthening** | **3a** stats/sweeps + **5b** hygiene | 2b |
 
-**Overall recommendation.** ~~If one thing: **1a (emergent conjunction cells)**~~ —
-**done (E9)**; it retired the single most-cited caveat and was the truest test of the
-inside-out thesis. Natural follow-ups: **2b (model→data predictions)** for neuroscience
-reach at low cost, or **4a (emergent timescale hierarchy)** when the goal shifts from
-"make the existing story solid" to "find a genuinely new phenomenon". 1a also directly
-de-risks 4a (it built the on-substrate representation-learning machinery 4a would reuse).
+**Progress.** **1a done (E9)** — retired the most-cited caveat. **2b done**
+([`spiral_predictions.md`](https://github.com/promitmoitra/ghca/blob/main/docs/spiral_predictions.md)) — the toy→data bridge, low cost, high
+reach. **4a attempted, paused** ([`e10_notes.md`](https://github.com/promitmoitra/ghca/blob/main/docs/e10_notes.md)) — the existing τ rule
+structurally can't build the hierarchy; it needs a new bidirectional τ-plasticity rule
+(mechanism design), and E9 de-risks only the *grouping* half, not the τ-value rule
+(earlier claim corrected). Remaining high-value, lower-risk options: **2a** (the
+predictive-coding foil, cleanest disambiguation), **4b** (package the causal testbed,
+most reusable artifact), **3a** (stats/sweeps). Return to **4a** only with appetite for
+mechanism design.
 
 ## Process notes (apply to whatever is chosen)
 

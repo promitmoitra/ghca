@@ -1,33 +1,18 @@
-# AI Hallucination / Overreach Review
+# Core Series Review — Integrity & Overreach Audit (E0–E6, C0–C4)
 
 *Independent audit of the work in this repository (E0–E6 and C0–C4 series),
-checking specifically for AI-generated hallucination: fabricated numbers,
-claims not backed by code or data, invented citations, and grandiose
+checking for the failure modes an AI-assisted programme is prone to: fabricated
+numbers, claims not backed by code or data, invented citations, and grandiose
 theoretical framing disconnected from what the code actually does.*
 
-Reviewer pass date: 2026-07-11. Branch: `claude/ai-hallucination-review-ya7aq5`.
+Reviewer pass date: 2026-07-11 (produced on the project's independent-review branch).
 Coverage: data-vs-doc numbers verified for all 13 experiments; citations
 verified; per-seed / code-level audit completed for E3, E5, and the C-series
 causal operators; full end-to-end reproduction run completed (see below).
 
-!!! success "Status: both actionable findings have since been fixed on `main`"
-    This audit produced two actionable findings — an **unseeded RNG in the Line-B
-    learning mechanism** and the **overstated E3 composition framing**. Parallel
-    work independently confirmed and fixed both:
-
-    - **RNG seeding** — `perturb_tau` now uses the instance generator `self.rng`
-      (commit `ccc2e37`, "seed the Line-B RNG in `perturb_tau`; re-run E2/E3; add
-      missing deps"). E2/E3 were re-run on the seeded code.
-    - **E3 framing** — the composition claim was corrected post-reseeding
-      (commit `b4cfe3d`, "correct the overstated E3 composition framing").
-
-    The findings below are therefore **historical** — read as "what the audit
-    caught," not open problems. They are kept because the reasoning and the
-    reproduction method still document how the issues were found and validated.
-
 ## Bottom line
 
-**No hallucinated results were found.** Every headline number I checked
+**No fabricated results were found.** Every headline number I checked
 reproduces from the committed `.npz` data, every external citation I could
 reach is real and accurately characterized, and the prose is consistently
 hedged rather than overclaiming. This is an unusually honest body of
@@ -150,7 +135,7 @@ plasticity, so it structurally cannot learn identity).
    curriculum does not steer τ there — it freezes wherever stochastic exploration
    landed.
 
-**Assessment.** Overreach in altitude, not hallucination. All caveats exist in
+**Assessment.** Overreach in altitude, not fabrication. All caveats exist in
 the doc (it literally says "on the seeds where B's τ lands in the good zone" and
 "residual fragility is a substrate resonance artifact"), but they are
 subordinated to a confident headline ("~quadrupling," "fully composing"), and the
@@ -284,7 +269,7 @@ Two things a reader should know about the dramatic σ figures:
 
 Verdict: C0–C4 **Supported**; C3 carries a minor presentational caveat (the
 cross-quantity "2400×"), which the doc's own prose already defuses. Not
-hallucination — a framing choice with the honest explanation adjacent.
+fabrication — a framing choice with the honest explanation adjacent.
 
 ## Recommendation
 
@@ -292,6 +277,6 @@ Treat the work as **sound and honestly reported** for what it is: an
 exploratory computational-neuroscience study using toy Greenberg–Hastings
 substrates to illustrate (not prove) claims about memory/attention/executive
 function as readouts, and to instantiate an external causal-inference framework
-on synthetic ground truth. No AI-hallucination cleanup is required. The one
+on synthetic ground truth. No cleanup for fabrication is required. The one
 concrete follow-up worth doing is a clean reproduction run of all experiments
 to close item 1 above.

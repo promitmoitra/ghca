@@ -1,8 +1,8 @@
 # Extensions Self-Audit — E7, C5–C7, E8.x
 
-*A hallucination/overreach audit of the extension work (spiral option E7, the
+*An integrity/overreach audit of the extension work (spiral option E7, the
 spiral causal split C5–C7, and predictive dynamics E8.0–E8.7), applying the same
-scrutiny the independent review ([`hallucination_review.md`](hallucination_review.md))
+scrutiny the independent review ([`core_review.md`](core_review.md))
 applied to E0–E6 / C0–C4 — with particular attention to the failure mode it caught
 in E3 (a confident headline over a bimodal, lucky-seed mean).*
 
@@ -145,6 +145,9 @@ branch (no extension numbers change); (3) the deepest open item is to move the
 computed readouts/features (winding, conjunction) *into* the substrate as learned
 or spiking mechanisms — the honest frontier these experiments point at but do not
 yet cross.
+
+*(The independent core-series audit referenced above now lives on `main` as
+[`core_review.md`](core_review.md) — renamed from its original branch filename.)*
 
 **Update (2026-07-11): follow-up (3) is now partly crossed for the conjunction
 case.** [E9](e9_results.md) replaces the hand-built `(stimulus × rule)` conjunction
