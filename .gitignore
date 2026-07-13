@@ -1,2 +1,6 @@
 __pycache__/
 *.pyc
+
+# mkdocs build output (this branch owns the publication layer)
+site/
+_site/
