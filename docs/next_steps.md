@@ -204,12 +204,31 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   artifacts) and the corrections the programme made (E3, `perturb_tau`, 2a).
 - **Effort.** Medium (writing). **Risk.** Low.
 
-### 5b. Reproducibility hygiene
+### 5b. Reproducibility hygiene — ✅ **CORE DONE** (verified 2026-07-13)
 - **What.** Audit every experiment for seeded RNG (the `perturb_tau` bug pattern);
   a `reproduce-all` entry point that regenerates every figure/number; optionally CI.
-  (The independent core-series audit now sits on `main` as
-  [`core_review.md`](core_review.md), alongside the extensions self-audit — the
-  "both audits with the work" gap is closed; see [`process.md`](process.md).)
+- **What is done.**
+  - The `perturb_tau` unseeded-global-RNG bug the [`core_review.md`](core_review.md)
+    audit found is **fixed**: `perturb_tau` now draws from the seeded `self.rng`
+    (`ghca_learn.py:138/143`), and E2/E3 were regenerated to their seeded numbers
+    (E3 curriculum composition mean **0.560**, per-seed `[0.50, 0.51, 0.79, 0.00,
+    1.00]`).
+  - **Independently verified** by a from-scratch re-run of the previously-flagged
+    Line-B conditions: **E2, E3 (main), and E3 (factored) reproduce
+    bit-identically** (max\|Δ\| = 0 across every array, including the `ret_B` /
+    `tau_B` arrays the audit had found non-regenerable and the composition
+    headline). The audit's one "not fully verified" residual, the **E0 period-fit
+    `r=0.9992`**, was re-derived from `result/e0/e0_data.npz`: `period =
+    0.9991·τ + 0.9480, r = 0.9992` on the 8 oscillating points (the τ=20 `inf`
+    non-oscillating point dropped) — matches the doc.
+  - The independent core-series audit now sits on `main` as
+    [`core_review.md`](core_review.md), alongside the extensions self-audit — the
+    "both audits with the work" gap is closed; see [`process.md`](process.md).
+- **Deferred.** (i) A single `reproduce-all` entry point that regenerates every
+  figure/number, and optional CI. (ii) `ghca_main.py` (the **original lattice-CA
+  strand**, README strand 1) still uses the global NumPy RNG (`ghca_main.py:100–103`);
+  it is outside the E/C experiment path the audits cover, but bringing it under the
+  seed-everything house rule would finish the sweep.
 - **Effort.** Low–medium. **Risk.** Low.
 
 ---
@@ -222,17 +241,22 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 | **Clean disambiguation** | **2a** predictive-coding foil | 1c |
 | **Scientific novelty** | **4a** emergent timescale hierarchy | 2b |
 | **External impact / reach** | **4b** causal testbed | 5a write-up, 2b |
-| **Lowest-risk strengthening** | **3a** stats/sweeps + **5b** hygiene | 2b |
+| **Lowest-risk strengthening** | **3a** stats/sweeps (**5b** hygiene ✅ done) | 1b, 3b |
 
-**Progress.** **1a done (E9)** — retired the most-cited caveat. **2b done**
-([`spiral_predictions.md`](https://github.com/promitmoitra/ghca/blob/main/docs/spiral_predictions.md)) — the toy→data bridge, low cost, high
-reach. **4a attempted, paused** ([`e10_notes.md`](https://github.com/promitmoitra/ghca/blob/main/docs/e10_notes.md)) — the existing τ rule
-structurally can't build the hierarchy; it needs a new bidirectional τ-plasticity rule
-(mechanism design), and E9 de-risks only the *grouping* half, not the τ-value rule
-(earlier claim corrected). Remaining high-value, lower-risk options: **2a** (the
-predictive-coding foil, cleanest disambiguation), **4b** (package the causal testbed,
-most reusable artifact), **3a** (stats/sweeps). Return to **4a** only with appetite for
-mechanism design.
+**Progress.** **1a done (E9)** — retired the most-cited caveat. **1c / 2a done**
+([`e8_hardening_results.md`](https://github.com/promitmoitra/ghca/blob/main/docs/e8_hardening_results.md)) — online GVF prediction and the
+predictive-coding foil. **2b done** ([`spiral_predictions.md`](https://github.com/promitmoitra/ghca/blob/main/docs/spiral_predictions.md)) —
+the toy→data bridge, low cost, high reach. **4b core done**
+([`causal_testbed.md`](causal_testbed.md)) — the reusable synthetic-SCM benchmark.
+**5b core done** (verified 2026-07-13) — the `perturb_tau` fix is landed and E0/E2/E3
+reproduce bit-identically; only a `reproduce-all` entry point and the original
+lattice-CA strand's RNG remain. **4a attempted, paused** ([`e10_notes.md`](https://github.com/promitmoitra/ghca/blob/main/docs/e10_notes.md))
+— the existing τ rule structurally can't build the hierarchy; it needs a new
+bidirectional τ-plasticity rule (mechanism design), and E9 de-risks only the *grouping*
+half, not the τ-value rule (earlier claim corrected). Remaining high-value, lower-risk
+options: **3a** (stats/sweeps — directly retires the narrow-evidence tension), then
+**1b** (learned direction-selective readout) and **3b** (other topologies). Return to
+**4a** only with appetite for mechanism design.
 
 ## Process notes (apply to whatever is chosen)
 
