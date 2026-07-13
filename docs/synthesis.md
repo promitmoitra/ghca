@@ -205,8 +205,9 @@ headline was walked back from "quadrupling / partly resolved" to the honest
 "0.11 → 0.48 ≈ chance → 0.56, joint on 1/5 seeds" (direction supported, not
 magnitude); a reproducibility bug (`perturb_tau` using the global RNG) was fixed and
 the affected numbers re-run; and 2a corrected E8's "not dissociable" claim. Two
-audit passes (an independent hallucination/overreach review of E0–E6/C0–C4 and a
-self-audit of the extensions, [`extensions_review.md`](extensions_review.md))
+audit passes (an independent integrity/overreach review of E0–E6/C0–C4,
+[`core_review.md`](core_review.md), and a self-audit of the extensions,
+[`extensions_review.md`](extensions_review.md))
 underwrite the reported numbers as reproducible.
 
 ## One-paragraph takeaway
