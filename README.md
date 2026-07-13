@@ -117,6 +117,20 @@ not as built-in modules.
   the learner adapts and the only well-posed causal handle; spikes and waves are
   two readouts of one parameterised dynamics.
 
+### Process & reviews
+
+- [`docs/process.md`](docs/process.md) — **how the project runs its planning and
+  review passes**: decoupled in process, linked by a one-directional review→plan
+  hand-off, and why. Read before doing either pass.
+- [`docs/core_review.md`](docs/core_review.md) — **independent integrity/overreach
+  audit** of the core series (E0–E6, C0–C4): no fabrication; surfaced the E3
+  framing overreach and the `perturb_tau` reproducibility bug.
+- [`docs/extensions_review.md`](docs/extensions_review.md) — **self-audit** of the
+  extensions (E7, C5–C7, E8.x): reproducible and honest; the residual risk is the
+  substrate-vs-analysis boundary (afforded vs learned).
+- [`docs/next_steps.md`](docs/next_steps.md) — **roadmap / planning**: candidate
+  directions scored by which review-surfaced tension they retire.
+
 ## Progress
 
 - [x] **E0** — substrate characterisation and operating point (see results)
