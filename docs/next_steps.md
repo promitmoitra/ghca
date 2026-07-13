@@ -191,10 +191,17 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 
 ## Track 5 — Consolidate
 
-### 5a. Unified write-up
+### 5a. Unified write-up — ✅ **DONE** (see [`synthesis.md`](synthesis.md))
 - **What.** Draw E0–E8 + C0–C7 into one honest narrative (synthesis.md is the seed),
   positioned as an illustrative computational study + a reusable causal testbed.
 - **Why.** Makes the arc legible; forces the framing to stay at the right altitude.
+- **What was built.** Expanded `synthesis.md` into the capstone: the two arcs + the
+  `θ` = learned-variable = causal-handle spine, the E4–E6 repertoire and E7/C5–C7/E8
+  extensions, then the new work woven in — the afforded→learned closure (E9 + 1c), the
+  predictive-coding foil and the overclaim it corrected (2a), and the outward artifacts
+  (2b predictions + 4b testbed) — capped by an **honest ledger** of the three tensions
+  as they now stand (1 substantially retired, 2 still open, 3 addressed by framing +
+  artifacts) and the corrections the programme made (E3, `perturb_tau`, 2a).
 - **Effort.** Medium (writing). **Risk.** Low.
 
 ### 5b. Reproducibility hygiene
