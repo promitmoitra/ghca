@@ -40,11 +40,12 @@ neighborhood, not new scaffolding.
 
 ## Seed target
 
-**n=20 for headline dissociations; n=30 for E3** (its composition is bimodal, so
-it needs enough draws to characterise the mixture, not just its mean). Rationale:
-with the observed tight SDs (≈0.02–0.05) n=20 gives a bootstrap 95% CI half-width
-well under the effect gaps; E3's two-mode structure needs ~30 to estimate the
-success *rate* with a usable CI. *(Adjustable — this is the recommended default.)*
+**n=50 for every headline dissociation** (publication-grade CIs). With the
+observed tight SDs (≈0.02–0.05) this puts the bootstrap 95% CI half-width far
+below the effect gaps; for the bimodal E3 composition, n=50 also gives a usable
+Wilson interval on the joint-success *rate*, not just the mixture mean. Sweep
+grid-points (θ/τ neighborhood, E8 sweeps) run at n=50 per cell as well, which is
+the bulk of the compute below.
 
 ## Deliverables
 
@@ -83,8 +84,10 @@ success *rate* with a usable CI. *(Adjustable — this is the recommended defaul
 
 ## Effort & risk
 
-**Effort:** low but real compute — scaling n 4–6× plus sweep grids is order 1–2 h
-of parallelisable runtime (E8 × seeds is the heaviest single piece). **Risk:** low
+**Effort:** real compute — n=50 is ~10× the current seed counts, and the sweep
+grids multiply that per cell; expect several hours of parallelisable runtime
+(E8 × 50 seeds × sweep grid is the heaviest single piece), run in the background
+in phases. **Risk:** low
 to the programme (findings are already hedged); moderate to specific headline
 *magnitudes* — E3's composition and the E8 tails are the likeliest to soften. A
 softened-but-honest number is the intended outcome, not a regression.
