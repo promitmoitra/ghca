@@ -91,7 +91,8 @@ def layout_positions(layout, N, L=None, pos=None):
 
 def animate(rollout, act, tau, layout="line", L=None, pos=None, out="anim.gif",
             fps=12, stride=1, title=None, captions=None, colors_rollout=None,
-            marker_size=None, figsize=None, dpi=90, annotations=None):
+            marker_size=None, figsize=None, dpi=90, annotations=None,
+            grid_shape=None):
     """Animate a phase rollout and write a GIF.
 
     Parameters
@@ -113,6 +114,10 @@ def animate(rollout, act, tau, layout="line", L=None, pos=None, out="anim.gif",
     annotations : list[(x, y, text)] or None -- static labels drawn in data
                                     coordinates (scatter layouts), e.g. to title
                                     side-by-side panels.
+    grid_shape : (rows, cols) or None -- for layout='grid', reshape each frame to
+                                    this instead of the default square (L, L). Use
+                                    to render a non-square field or two lattices
+                                    side by side (cols = 2*L + gap).
     """
     rollout = np.asarray(rollout)
     T, N = rollout.shape
@@ -125,10 +130,13 @@ def animate(rollout, act, tau, layout="line", L=None, pos=None, out="anim.gif",
         return state_colors(rollout[t], act, tau)
 
     if mode == "grid":
-        if L is None:
-            L = int(round(np.sqrt(N)))
+        if grid_shape is None:
+            if L is None:
+                L = int(round(np.sqrt(N)))
+            grid_shape = (L, L)
+        rows, cols = grid_shape
         fig, ax = plt.subplots(figsize=figsize or (5.2, 5.6))
-        img = ax.imshow(frame_colors(0).reshape(L, L, 4), interpolation="nearest")
+        img = ax.imshow(frame_colors(0).reshape(rows, cols, 4), interpolation="nearest")
         ax.set_xticks([]); ax.set_yticks([])
     else:
         span_x = np.ptp(p[:, 0]) or 1.0
@@ -162,7 +170,7 @@ def animate(rollout, act, tau, layout="line", L=None, pos=None, out="anim.gif",
     def update(t):
         c = frame_colors(t)
         if mode == "grid":
-            img.set_data(c.reshape(L, L, 4))
+            img.set_data(c.reshape(grid_shape[0], grid_shape[1], 4))
             artists = [img]
         else:
             scat.set_facecolors(c)
