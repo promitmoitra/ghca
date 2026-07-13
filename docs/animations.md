@@ -68,6 +68,24 @@ executive control as an *option*, not a dedicated controller.
 
 ---
 
+## 4. Executive control in 2-D — a spiral whose spin is the rule (E7)
+
+E5's option was a hand-built 1-D ring. E7 lifts it onto the substrate's **native
+2-D medium**: a genuine spiral wave with a phase-singularity core, on the E0
+organised-band lattice (no-flux boundaries). Two cores of opposite handedness are
+seeded — left **counter-clockwise** (net charge +1), right **clockwise** (−1) —
+and each persists for hundreds of steps. In E7 Phase B these two handednesses
+*are* the two task rules (CCW → identity, CW → reversal): the rule in force is
+literally **which way the spiral turns**. This is the substrate's answer to the
+rotating-wave neuroscience (Xu/Gong 2023; Ye/Steinmetz 2026), where cortical
+rotation direction is task-relevant.
+
+![E7 spiral rule](figures/e7_spiral_rule.gif)
+
+*(`python3 experiments/e7_animation.py`; see [e7_results.md](e7_results.md))*
+
+---
+
 ## The point of the gallery
 
 Memory (a sustaining loop), attention (annihilating waves), executive control (a
@@ -94,6 +112,7 @@ python3 ghca_net_viz.py                     # docs/figures/demo_lattice.gif
 python3 experiments/e2_animation.py         # docs/figures/e2_ring_memory.gif
 python3 experiments/e4_animation.py         # docs/figures/e4_annihilation.gif
 python3 experiments/e5_animation.py         # docs/figures/e5_options.gif
+python3 experiments/e7_animation.py         # docs/figures/e7_spiral_rule.gif
 ```
 
 ## Future scope / backlog
