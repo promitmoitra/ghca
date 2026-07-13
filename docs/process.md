@@ -4,6 +4,10 @@
 review pass or a planning pass; the point is to keep them **decoupled in
 process** while **linked by a one-directional hand-off**.*
 
+*This process is **agent-agnostic** (the [`publish-viz`](../.claude/skills/publish-viz/SKILL.md)
+convention): any agent — or a human at a terminal — can follow it. It relies on
+no proprietary tools.*
+
 ## The two passes
 
 **Review** is adversarial and backward-looking. Its job is to re-run the
@@ -64,7 +68,7 @@ the old one.
 on its own branch is decoupling gone too far — the record should sit with the
 code it audits, not drift off on a side branch.
 
-## Rules for agents
+## Rules for either pass (agent or human)
 
 - **Doing a review?** Re-run from scratch; compare regenerated output against
   every quantitative claim in the docs. Pull per-seed arrays and check for

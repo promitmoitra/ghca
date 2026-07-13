@@ -5,6 +5,10 @@ excitable dynamics on a graph as the substrate for a reward-driven learner
 (E-series), plus a causal-inference instrumentation of the same substrate
 (C-series). See [`README.md`](README.md) for the map of files and results.
 
+This file is **agent-agnostic** (the [`publish-viz`](.claude/skills/publish-viz/SKILL.md)
+convention): it is plain guidance any agent — or a human — can follow, with no
+proprietary tools. `AGENTS.md` is the vendor-neutral name coding agents look for.
+
 ## Process — read before a planning or review pass
 
 The project runs two recurring meta-passes, **kept decoupled in process but
@@ -24,7 +28,7 @@ finding to justify a roadmap track. Both audits live on `main` with the work.
 ## House rules (apply to every experiment)
 
 - Seed *everything*: thread `default_rng(seed)` explicitly; never use the global
-  NumPy RNG (the `perturb_tau` bug — see `core_review.md`).
+  NumPy RNG (the `perturb_tau` bug — see `docs/core_review.md`).
 - Report per-seed spreads, not just means; call out bimodality (the E3 lesson).
 - State the substrate/analysis boundary explicitly: what the *dynamics* do vs
   what a *readout/feature* does.
