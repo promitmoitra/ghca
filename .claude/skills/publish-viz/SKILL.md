@@ -13,6 +13,16 @@ helper script. Any agent — or a human at a terminal — can follow it. It uses
 proprietary tools; pushing to the deploy branch triggers the existing GitHub
 Actions workflow that builds and deploys the site.
 
+The skill **aids** a manual write path — it does not replace it. Everything below
+can be done by hand (that is the point of keeping it plain git + mkdocs). Two ways
+to write to the page, both first-class:
+- **Direct push** (fast, for a trusted publish) — the procedure below.
+- **Reviewable PR** into `deploy-viz-page` — open a PR with the
+  [`publish` template](../../../.github/PULL_REQUEST_TEMPLATE/publish.md) so a
+  maintainer sees what goes public before the merge deploys it. The steps are the
+  same; you push a publish branch and open the PR instead of pushing the deploy
+  branch directly.
+
 ## The branch model (read first)
 
 - **`main`** is the research trunk — full history, work in progress.
