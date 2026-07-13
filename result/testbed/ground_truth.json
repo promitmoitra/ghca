@@ -1,0 +1,324 @@
+[
+ {
+  "exact": true,
+  "quantity": "verdict",
+  "scenario": "c1_confounded",
+  "task": "T1",
+  "value": "epiphenomenal"
+ },
+ {
+  "exact": true,
+  "quantity": "effect",
+  "scenario": "c1_confounded",
+  "task": "T1",
+  "value": 0.001
+ },
+ {
+  "exact": true,
+  "quantity": "obs_assoc",
+  "scenario": "c1_confounded",
+  "task": "T1",
+  "value": 0.642
+ },
+ {
+  "exact": true,
+  "quantity": "verdict",
+  "scenario": "c1_direct",
+  "task": "T1",
+  "value": "causal"
+ },
+ {
+  "exact": true,
+  "quantity": "effect",
+  "scenario": "c1_direct",
+  "task": "T1",
+  "value": 0.4
+ },
+ {
+  "exact": true,
+  "quantity": "obs_assoc",
+  "scenario": "c1_direct",
+  "task": "T1",
+  "value": 0.799
+ },
+ {
+  "exact": true,
+  "quantity": "verdict",
+  "scenario": "c1_fork",
+  "task": "T1",
+  "value": "epiphenomenal"
+ },
+ {
+  "exact": true,
+  "quantity": "effect",
+  "scenario": "c1_fork",
+  "task": "T1",
+  "value": 0.001
+ },
+ {
+  "exact": true,
+  "quantity": "obs_assoc",
+  "scenario": "c1_fork",
+  "task": "T1",
+  "value": 0.004
+ },
+ {
+  "exact": true,
+  "quantity": "verdict",
+  "scenario": "c1_frontdoor",
+  "task": "T1",
+  "value": "causal"
+ },
+ {
+  "exact": true,
+  "quantity": "effect",
+  "scenario": "c1_frontdoor",
+  "task": "T1",
+  "value": 0.258
+ },
+ {
+  "exact": true,
+  "quantity": "obs_assoc",
+  "scenario": "c1_frontdoor",
+  "task": "T1",
+  "value": 0.634
+ },
+ {
+  "exact": true,
+  "quantity": "verdict",
+  "scenario": "c1_mediator_obs",
+  "task": "T1",
+  "value": "epiphenomenal"
+ },
+ {
+  "exact": true,
+  "quantity": "effect",
+  "scenario": "c1_mediator_obs",
+  "task": "T1",
+  "value": 0.008
+ },
+ {
+  "exact": true,
+  "quantity": "obs_assoc",
+  "scenario": "c1_mediator_obs",
+  "task": "T1",
+  "value": 0.001
+ },
+ {
+  "exact": true,
+  "quantity": "verdict",
+  "scenario": "c1_mediator_unobs",
+  "task": "T1",
+  "value": "causal"
+ },
+ {
+  "exact": true,
+  "quantity": "effect",
+  "scenario": "c1_mediator_unobs",
+  "task": "T1",
+  "value": 0.322
+ },
+ {
+  "exact": true,
+  "quantity": "obs_assoc",
+  "scenario": "c1_mediator_unobs",
+  "task": "T1",
+  "value": 0.64
+ },
+ {
+  "exact": false,
+  "quantity": "band_collective",
+  "scenario": "c2_cnet",
+  "task": "T2",
+  "value": 0.24
+ },
+ {
+  "exact": false,
+  "quantity": "band_labeled",
+  "scenario": "c2_cnet",
+  "task": "T2",
+  "value": 33.1
+ },
+ {
+  "exact": false,
+  "quantity": "doW_labeled",
+  "scenario": "c3_cnet_e3",
+  "task": "T3",
+  "value": 33.1
+ },
+ {
+  "exact": false,
+  "quantity": "doW_collective",
+  "scenario": "c3_cnet_e3",
+  "task": "T3",
+  "value": 0.24
+ },
+ {
+  "exact": false,
+  "quantity": "doTheta",
+  "scenario": "c3_cnet_e3",
+  "task": "T3",
+  "value": 0.014
+ },
+ {
+  "exact": false,
+  "quantity": "e3_latency_slope",
+  "scenario": "c3_cnet_e3",
+  "task": "T3",
+  "value": 1.0
+ },
+ {
+  "exact": false,
+  "quantity": "do_tau_timing",
+  "scenario": "c4_e3_cnet",
+  "task": "T4",
+  "value": 1.0
+ },
+ {
+  "exact": false,
+  "quantity": "do_tau_identity",
+  "scenario": "c4_e3_cnet",
+  "task": "T4",
+  "value": 0.0
+ },
+ {
+  "exact": false,
+  "quantity": "do_route_timing",
+  "scenario": "c4_e3_cnet",
+  "task": "T4",
+  "value": 0.06
+ },
+ {
+  "exact": false,
+  "quantity": "do_route_identity",
+  "scenario": "c4_e3_cnet",
+  "task": "T4",
+  "value": 1.0
+ },
+ {
+  "exact": false,
+  "quantity": "suff_collective",
+  "scenario": "c4_e3_cnet",
+  "task": "T4",
+  "value": 1.03
+ },
+ {
+  "exact": false,
+  "quantity": "suff_labeled",
+  "scenario": "c4_e3_cnet",
+  "task": "T4",
+  "value": 0.11
+ },
+ {
+  "exact": false,
+  "quantity": "band_center",
+  "scenario": "c5_spiral",
+  "task": "T5",
+  "value": 6.2
+ },
+ {
+  "exact": false,
+  "quantity": "band_tracked",
+  "scenario": "c5_spiral",
+  "task": "T5",
+  "value": 1.0
+ },
+ {
+  "exact": false,
+  "quantity": "band_global",
+  "scenario": "c5_spiral",
+  "task": "T5",
+  "value": 2.6
+ },
+ {
+  "exact": false,
+  "quantity": "routing_center",
+  "scenario": "c5_spiral",
+  "task": "T5",
+  "value": 0.55
+ },
+ {
+  "exact": false,
+  "quantity": "routing_tracked",
+  "scenario": "c5_spiral",
+  "task": "T5",
+  "value": 0.78
+ },
+ {
+  "exact": false,
+  "quantity": "band_theta_chi",
+  "scenario": "c6_spiral",
+  "task": "T5",
+  "value": 0.0
+ },
+ {
+  "exact": false,
+  "quantity": "switch_intact",
+  "scenario": "c6_spiral",
+  "task": "T5",
+  "value": 0.85
+ },
+ {
+  "exact": false,
+  "quantity": "switch_ablated",
+  "scenario": "c6_spiral",
+  "task": "T5",
+  "value": 0.52
+ },
+ {
+  "exact": false,
+  "quantity": "single_intact",
+  "scenario": "c6_spiral",
+  "task": "T5",
+  "value": 0.9
+ },
+ {
+  "exact": false,
+  "quantity": "single_ablated",
+  "scenario": "c6_spiral",
+  "task": "T5",
+  "value": 0.89
+ },
+ {
+  "exact": false,
+  "quantity": "chi_rule",
+  "scenario": "c7_spiral",
+  "task": "T5",
+  "value": 1.0
+ },
+ {
+  "exact": false,
+  "quantity": "chi_content",
+  "scenario": "c7_spiral",
+  "task": "T5",
+  "value": 0.11
+ },
+ {
+  "exact": false,
+  "quantity": "route_rule",
+  "scenario": "c7_spiral",
+  "task": "T5",
+  "value": 0.57
+ },
+ {
+  "exact": false,
+  "quantity": "route_content",
+  "scenario": "c7_spiral",
+  "task": "T5",
+  "value": 1.0
+ },
+ {
+  "exact": false,
+  "quantity": "screen_seedplus_injplus",
+  "scenario": "c7_spiral",
+  "task": "T5",
+  "value": 0.86
+ },
+ {
+  "exact": false,
+  "quantity": "screen_seedplus_injminus",
+  "scenario": "c7_spiral",
+  "task": "T5",
+  "value": 0.19
+ }
+]

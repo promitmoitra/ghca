@@ -156,13 +156,26 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   earlier de-risking claim. Resume from `e10_notes.md`.
 - **Connects to.** E2, E5, E8.5; E9 (competition, for the grouping half only).
 
-### 4b. Package the causal testbed
+### 4b. Package the causal testbed — ✅ **CORE DONE** (see [`causal_testbed.md`](causal_testbed.md); spec/plan alongside)
 - **What.** Turn C0–C7 + the substrate into a reusable synthetic-SCM benchmark for the
   Jalaldoust spike–wave framework (clean API, ground-truth graphs, the three `do`
   operators).
 - **Why.** The most externally-reusable artifact — a ground-truth SCM others can test
   causal-discovery/epiphenomenality methods on. Low new-science, high utility.
-- **Effort.** Medium (engineering/packaging). **Risk.** Low.
+- **What was built.** The `ghca_testbed` package: single-source operator/substrate
+  re-exports; the six canonical C1 SCM graphs **executable in-process** with the correct
+  interventional-vs-observational `epiphenomenality_test` + Theorem-1 certificate
+  (validated end-to-end — front-door scored causal 0.257, all six verdicts match);
+  the method-agnostic metric library (`fat_hand_band`, `macro_sufficiency`,
+  `outcome_matrix`, `mediation`); a 12-scenario `REGISTRY` (C1 executable, C2–C7 ground
+  truth carried as verified data) with JSON export; a `score(method_fn)` harness +
+  `python -m ghca_testbed`; `docs/causal_testbed.md`; and `test_ctestbed.py` (10 tests,
+  including a guard for the C1 subtlety). Planned via a multi-agent workflow
+  ([`causal_testbed_plan.md`](causal_testbed_plan.md)).
+- **Deferred (plan 4b.0d).** The verbatim refactor of the eight C-scripts into thin
+  callers behind a bit-identical gate, and wiring the C2–C7 substrate scenarios to
+  execute in-process through `Testbed` subclasses. Left as reference implementations;
+  their ground truth is carried and reproduced by running the scripts.
 - **Connects to.** C0–C7, `ghca_causal.py`.
 
 ---
