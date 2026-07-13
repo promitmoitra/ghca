@@ -65,6 +65,7 @@ nav:
       - C5 — do(chirality): c5_results.md
       - C6 — do(theta_chi): c6_results.md
       - C7 — outcome-relativity (spiral): c7_results.md
+      - Causal testbed (benchmark): causal_testbed.md
   - Extensions:
       - Predictive-dynamics plan: predictive_dynamics_experiments.md
       - Extensions self-audit: extensions_review.md
