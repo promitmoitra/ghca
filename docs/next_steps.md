@@ -233,6 +233,106 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 
 ---
 
+## Track 6 — Extinguishing reentrant activity without a trackable core *(new capability; not audit-driven — doesn't retire tensions 1–3, prompted by a design discussion rather than a review finding)*
+
+*C6's `do(θ)` ablation is a single global parameter change on a substrate with one
+seeded, trackable spiral core — `signed_charge`/`local_winding` assume a locatable
+singularity to read out. Real excitable media (cardiac fibrillation is the paradigm
+case) often have per-cell heterogeneous timescales and multiple, drifting, or no
+clean core at all. This track asks: with nothing dominant to localise, how do you
+extinguish self-sustaining activity? Four independent, complementary levers.*
+
+*Shared prerequisite: the C5/C6 success criterion (does the winding-number readout
+match the true chirality) has no referent once there is no trackable core. Every
+thread below needs a cruder, structure-agnostic order parameter instead — e.g.
+global active fraction decaying to (and staying at) the spontaneous-noise floor, or
+an entropy/coherence measure separating "organised wavelets" from "noise-driven
+flicker."*
+
+### 6a. Percolation-threshold lesioning
+- **What.** Force a fraction `p` of cells permanently non-excitable (`theta=inf`, no
+  code change needed — `inp >= theta` is simply never true), randomly or in a
+  pattern, and sweep `p` (and neighbourhood range `r`) for a critical density above
+  which no path anywhere supports a full reentrant loop, vs. below which wavelets
+  route around the gaps.
+- **Why.** Needs no localisation at all — if the lesion pattern disconnects the
+  medium into non-percolating clusters, extinction follows from graph structure, not
+  from finding anything. A direct generalisation of E0's own threshold-range (FGG)
+  scaling into a percolation account of extinction, and the closest analogue of real
+  "substrate modification" ablation strategies used when no single rotor is found.
+- **Takes.** A lesion-mask generator on `ghca_net.Network` + a sweep over `p` and
+  `r`; measure active-fraction decay to the spontaneous floor; compare against a
+  percolation-theory prediction for the critical density at a given `r`.
+- **Effort.** Medium. **Risk.** Medium — heterogeneous, multi-wavelet activity may
+  not have one sharp threshold; wavelets could adaptively reroute around sparse
+  lesions unless density is high.
+- **Connects to.** E0 (threshold-range scaling), C2 (constituted aggregates), C6
+  (the spatial counterpart to its global `do(θ)`).
+
+### 6b. Closed-loop / reactive ablation
+- **What.** A feedback controller that reads a live local-activity signal (e.g. a
+  sliding-window active fraction) and raises `theta` / forces refractory only where
+  and when activity is currently detected — no a priori patch or global constant,
+  purely reactive.
+- **Why.** Makes no assumption about a trackable or even locatable core. The
+  substrate already has a precedent for readout-driven `theta` changes — the
+  homeostatic `rho_star` mechanism (`ghca_net.py`) adapts one *global* threshold from
+  the *global* active fraction; 6b is the spatially-local, suppression-oriented
+  generalisation of that same pattern. The real-world analogue is anti-tachycardia
+  pacing: implantable devices sense local activation and respond without knowing
+  where the rotor is in advance.
+- **Takes.** A live local order-parameter readout + a control law (threshold/dose as
+  a function of detected local activity) layered on `Network.step`; test on both the
+  trackable single-spiral substrate (contrast with C6's blind global ablation) and a
+  genuinely heterogeneous, untrackable multi-wavelet one.
+- **Effort.** Medium–high (a new controller layer). **Risk.** Medium — a naive
+  reactive controller could chase activity indefinitely without ever catching up if
+  wavelets are fast or numerous.
+- **Connects to.** `Network.coherence` / `active_mask` (the existing order
+  parameters), the homeostatic `rho_star` rule (the pattern this generalises), C3/C6
+  (`theta` as the causal handle).
+
+### 6c. Overdrive pacing / entrainment
+- **What.** Drive the substrate with a strong, fast, spatially localised (one or a
+  few sites) periodic stimulus; ask whether it entrains the tissue away from
+  disorganised reentry, so that withdrawing the drive at the right phase leaves the
+  substrate quiescent.
+- **Why.** The only lever here that *adds* excitation rather than removing or raising
+  a threshold — exploits refractory-period competition to let one dominant rhythm
+  outcompete existing wavefronts, then simply stops. Doesn't require finding or
+  disabling anything.
+- **Takes.** A periodic forced drive (reusing the existing `drive` argument to
+  `Network.step`) at one or a few sites, swept over drive frequency, phase, and
+  withdrawal timing; success = active fraction reaches and stays at zero after
+  withdrawal.
+- **Effort.** Medium. **Risk.** Medium–high — entraining a genuinely heterogeneous,
+  multi-wavelet medium is the least certain of the four; a narrow working window
+  would itself be an interesting (negative-adjacent) finding.
+- **Connects to.** E1 (clamped sensory drive, the same `drive` mechanic), C6
+  (contrast: an excitatory stopping intervention vs. a threshold-raising one).
+
+### 6d. Heterogeneity as the destabilising lever
+- **What.** Instead of raising the *mean* `theta`/`tau` (C6's move), raise the
+  *variance* of per-cell timescales or thresholds with the mean held fixed, and ask
+  whether heterogeneity alone destabilises otherwise-persistent reentry into
+  self-terminating chaos.
+- **Why.** The counter-intuitive option — more disorder, not less excitability —
+  grounded in a real phenomenon (source–sink mismatch / conduction block at steep
+  refractoriness gradients causing wavebreak). If it holds, heterogeneity itself
+  becomes a causal handle in the `do(theta)` vocabulary, not just an inconvenience
+  the other three threads have to route around.
+- **Takes.** Sweep the variance of a per-cell `theta`/`tau` distribution (mean fixed)
+  on both a nucleated single spiral and a multi-wavelet substrate; measure
+  time-to-extinction or steady-state active fraction vs. variance; contrast against
+  C6's mean-shift ablation to see whether variance alone (no mean shift) suffices.
+- **Effort.** Low–medium (a parameter sweep on existing machinery). **Risk.**
+  Low–medium.
+- **Connects to.** C6 (contrast: variance vs. mean as the operative parameter), C4
+  (outcome-relativity — is heterogeneity causal for extinction specifically, and
+  inert for other outcomes?).
+
+---
+
 ## Decision matrix (by goal)
 
 | Goal | Do first | Then |
