@@ -75,29 +75,38 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   noisy (C5 showed the readout-locality problem).
 - **Connects to.** E7, C5 (readout-relativity).
 
-### 1c. Reward-/GVF-driven prediction
+### 1c. Reward-/GVF-driven prediction — ✅ **DONE** (see [`e8_hardening_results.md`](e8_hardening_results.md))
 - **What.** Fold E8's offline-ridge predictor into the substrate's own TD/GVF machinery
   (E6 demons, gradient-TD), so prediction is learned online and intrinsically.
 - **Why.** Tests "prediction is inside-out, not taught"; unifies E8 with E6; removes the
   "learning lives in the readout weights" caveat.
-- **Takes.** GVF next-tone demons with online (gradient-)TD on the tonotopic substrate;
-  compare to the ridge baseline.
-- **Effort.** Medium. **Risk.** Low–medium.
+- **What was built.** A bank of `M` linear GVF demons (E6's TD rule) learned online: a
+  single incremental reward-free pass matches the offline ridge on every sequence
+  (periodic 1.00, Markov 0.91/0.56, random-walk 0.41), and γ>0 demons give multi-step
+  predictive knowledge (r=0.97/0.85) the ridge doesn't. **Softens** caveat 7 (learning
+  is now online/intrinsic) but doesn't fully retire it — still a readout of a fixed
+  substrate; plastic dynamics deferred.
 - **Connects to.** E6, E8.
 
 ---
 
 ## Track 2 — Make the neuroscience bridge falsifiable *(retires tension 3; scientific value)*
 
-### 2a. Build the predictive-coding foil *(recommended if the goal is a clean disambiguation)*
+### 2a. Build the predictive-coding foil — ✅ **DONE** (see [`e8_hardening_results.md`](e8_hardening_results.md))
 - **What.** Implement a small Rao–Ballard/Friston predictive-coding model on the *same*
   tone-sequence task E8 uses, and measure the distinguishing observables (global vs
   per-feature prediction error; prediction/representation dissociability under lesion).
 - **Why.** E8 currently *asserts* "prediction without predictive coding"; this makes the
   contrast empirical rather than rhetorical.
-- **Takes.** A hierarchical PC network + the same sequences + the same probes.
-- **Effort.** Medium–high (a second model). **Risk.** Low — clean comparison either way.
-- **Connects to.** E8.
+- **What was built + honest finding.** A minimal untied Rao–Ballard PC model on E8's
+  tones. The clean PC signature reproduces (top-down lesion: prediction 0.37→0.12 chance,
+  representation 0.95 spared). But the two observables one expects to disambiguate — **do
+  not**: E8 is *also* dissociable (its two readouts tap different medium parts), and both
+  models' errors localise on the deviant. This **corrects the E8-doc "not dissociable"
+  overclaim**. The real discriminators are architectural (intrinsic error units +
+  generative pathway [PC] vs global scalar surprise + passive-readout + do(τ) window
+  [E8]) — now stated as empirical, testable contrasts.
+- **Connects to.** E8; complements 1c (E8 hardened on both tension axes).
 
 ### 2b. Model → data predictions — ✅ **DONE** (see [`spiral_predictions.md`](spiral_predictions.md))
 - **What.** Derive falsifiable claims for the Gong/Steinmetz spiral-wave data: e.g.
