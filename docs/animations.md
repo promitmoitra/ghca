@@ -105,6 +105,26 @@ caution: a wave variable is a well-posed handle only for a matched reader.
 
 ---
 
+## 6. The fix — drive the parameters, not the wave (C6)
+
+C5 showed reading the wave at the wrong spot loses the rotation. C6 shows the
+fix: intervene on the **generative parameter** instead — the nucleation seed —
+which sidesteps the reader problem entirely (well-posed for *every* reader, C6
+Result A). But that generative handle only matters if the core it creates
+*persists*. Two spirals are nucleated with the **same** true chirality, differing
+only in the lattice threshold `θ`: intact (left) holds the rule for the whole
+run; ablated (right, `θ` raised) loses it almost immediately and goes fully
+quiescent — same nucleation, only the threshold differs, and that alone decides
+whether the context survives to be used. This is why switching collapses under
+ablation (0.85 → 0.52) while the re-nucleated single-rule control is spared
+(0.90 vs 0.89): the persistent core is *necessary*, not just sufficient.
+
+![C6 necessity](figures/c6_necessity.gif)
+
+*(`python3 experiments/c6_animation.py`; see [c6_results.md](c6_results.md))*
+
+---
+
 ## The point of the gallery
 
 Memory (a sustaining loop), attention (annihilating waves), executive control (a
@@ -138,6 +158,7 @@ python3 experiments/e4_animation.py         # docs/figures/e4_annihilation.gif
 python3 experiments/e5_animation.py         # docs/figures/e5_options.gif
 python3 experiments/e7_animation.py         # docs/figures/e7_spiral_rule.gif
 python3 experiments/c5_animation.py         # docs/figures/c5_fixed_vs_tracked.gif
+python3 experiments/c6_animation.py         # docs/figures/c6_necessity.gif
 ```
 
 *(This `deploy-viz-page` branch carries only the site — Markdown + rendered GIFs

@@ -36,6 +36,15 @@ so the seeded core dies ~`L` steps after nucleation), 5 seeds:
 
 ![C6 do(theta_chi)](figures/c6_do_theta_chi.png)
 
+**Animation of the necessity result.** Two spirals nucleated with the *same* true
+chirality, differing only in the lattice threshold `θ`. Intact (left) forms a
+persistent spiral that holds the rule for the whole run; ablated (right) loses it
+almost immediately and goes fully quiescent for the rest of the block — the same
+nucleation, only the threshold parameter differs, and that alone determines
+whether the context survives to be used later.
+
+![C6 necessity](figures/c6_necessity.gif)
+
 Ablating persistence collapses switching to chance (0.85 → 0.52) while sparing the
 single-rule control (0.90 vs 0.89) — the persistent spiral is necessary for *holding*
 the rule across a block, not for the routing itself. This is the E7 mechanism recast
