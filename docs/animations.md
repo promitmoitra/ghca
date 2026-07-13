@@ -107,6 +107,11 @@ is genuinely bimodal and seed-dependent — so it isn't done here.
 
 ## Reproduce all
 
+The animator (`ghca_net_viz.py`) and the `e*_animation.py` scripts live in the
+repository on the `main` branch. From a `main` checkout (`pip install
+mkdocs-material` pulls in matplotlib + Pillow for GIF rendering), regenerate
+every GIF:
+
 ```
 python3 ghca_net_viz.py                     # docs/figures/demo_lattice.gif
 python3 experiments/e2_animation.py         # docs/figures/e2_ring_memory.gif
@@ -114,6 +119,9 @@ python3 experiments/e4_animation.py         # docs/figures/e4_annihilation.gif
 python3 experiments/e5_animation.py         # docs/figures/e5_options.gif
 python3 experiments/e7_animation.py         # docs/figures/e7_spiral_rule.gif
 ```
+
+*(This `deploy-viz-page` branch carries only the site — Markdown + rendered GIFs
++ MkDocs config; the animation source is not duplicated here.)*
 
 ## Future scope / backlog
 
