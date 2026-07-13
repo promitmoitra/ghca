@@ -1,6 +1,6 @@
 # Extensions Self-Audit — E7, C5–C7, E8.x
 
-*A hallucination/overreach audit of the extension work (spiral option E7, the
+*An integrity/overreach audit of the extension work (spiral option E7, the
 spiral causal split C5–C7, and predictive dynamics E8.0–E8.7), applying the same
 scrutiny the independent review ([`core_review.md`](core_review.md))
 applied to E0–E6 / C0–C4 — with particular attention to the failure mode it caught

@@ -5,7 +5,7 @@ checking for the failure modes an AI-assisted programme is prone to: fabricated
 numbers, claims not backed by code or data, invented citations, and grandiose
 theoretical framing disconnected from what the code actually does.*
 
-Reviewer pass date: 2026-07-11. Branch: `claude/ai-hallucination-review-ya7aq5`.
+Reviewer pass date: 2026-07-11 (produced on the project's independent-review branch).
 Coverage: data-vs-doc numbers verified for all 13 experiments; citations
 verified; per-seed / code-level audit completed for E3, E5, and the C-series
 causal operators; full end-to-end reproduction run completed (see below).
