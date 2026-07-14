@@ -1,0 +1,41 @@
+{
+  "n": 50,
+  "rows": {
+    "A_identity": {
+      "name": "A_identity",
+      "n": 50,
+      "mean": 0.7223333333333334,
+      "ci_lo": 0.6214999999999999,
+      "ci_hi": 0.8180041666666665,
+      "sd": 0.36299350643542605,
+      "bc": 0.6952057514758967,
+      "bimodal": true
+    },
+    "B_identity": {
+      "name": "B_identity",
+      "n": 50,
+      "mean": 0.64,
+      "ci_lo": 0.5473333333333333,
+      "ci_hi": 0.7296666666666667,
+      "sd": 0.3340553405074404,
+      "bc": 0.5378171152800197,
+      "bimodal": false
+    },
+    "AB_identity": {
+      "name": "AB_identity",
+      "n": 50,
+      "mean": 0.2931666666666667,
+      "ci_lo": 0.22416666666666668,
+      "ci_hi": 0.36066666666666664,
+      "sd": 0.24938524187732752,
+      "bc": 0.7592431339012078,
+      "bimodal": true
+    }
+  },
+  "extra": {
+    "A_latency": null,
+    "B_latency": null,
+    "AB_latency": null,
+    "effect_identity_A_vs_B": 0.2360307281938491
+  }
+}

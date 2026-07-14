@@ -1,0 +1,33 @@
+{
+  "n": 50,
+  "rows": {
+    "curriculum_identity": {
+      "name": "curriculum_identity",
+      "n": 50,
+      "mean": 0.7148333333333333,
+      "ci_lo": 0.6265,
+      "ci_hi": 0.7998333333333334,
+      "sd": 0.3207236096498792,
+      "bc": 0.5676765756924158,
+      "bimodal": true
+    },
+    "factored_identity": {
+      "name": "factored_identity",
+      "n": 50,
+      "mean": 0.49816666666666665,
+      "ci_lo": 0.4700000000000001,
+      "ci_hi": 0.5223333333333333,
+      "sd": 0.09595400565799252,
+      "bc": 0.36382543574251575,
+      "bimodal": false
+    }
+  },
+  "extra": {
+    "curriculum_lat_err": null,
+    "joint_success": null,
+    "joint_rate": 0.32,
+    "joint_ci": null,
+    "TARGET_LAT": 16,
+    "LAT_TOL": 1
+  }
+}

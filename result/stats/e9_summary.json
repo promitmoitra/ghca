@@ -1,0 +1,68 @@
+{
+  "n": 50,
+  "rows": {
+    "routing_emergent": {
+      "name": "routing_emergent",
+      "n": 50,
+      "mean": 0.8633333333333333,
+      "ci_lo": 0.8410666666666667,
+      "ci_hi": 0.8852,
+      "sd": 0.08042122665158201,
+      "bc": 0.3862595703641636,
+      "bimodal": false
+    },
+    "routing_wired": {
+      "name": "routing_wired",
+      "n": 50,
+      "mean": 0.8793333333333334,
+      "ci_lo": 0.85213,
+      "ci_hi": 0.9045333333333333,
+      "sd": 0.097182531580755,
+      "bc": 0.5825926680404809,
+      "bimodal": true
+    },
+    "routing_frozen": {
+      "name": "routing_frozen",
+      "n": 50,
+      "mean": 0.2382666666666667,
+      "ci_lo": 0.22893333333333335,
+      "ci_hi": 0.24733666666666665,
+      "sd": 0.033693563715161745,
+      "bc": 0.44213289058124766,
+      "bimodal": false
+    },
+    "selectivity_emergent": {
+      "name": "selectivity_emergent",
+      "n": 50,
+      "mean": 0.9999999984,
+      "ci_lo": 0.9999999984,
+      "ci_hi": 0.9999999984,
+      "sd": 0.0,
+      "bc": NaN,
+      "bimodal": false
+    },
+    "selectivity_wired": {
+      "name": "selectivity_wired",
+      "n": 50,
+      "mean": 0.8401666647406,
+      "ci_lo": 0.8313333314314978,
+      "ci_hi": 0.848666664754811,
+      "sd": 0.031528071163869284,
+      "bc": 0.3645449529520515,
+      "bimodal": false
+    },
+    "selectivity_frozen": {
+      "name": "selectivity_frozen",
+      "n": 50,
+      "mean": 0.0015416666609166664,
+      "ci_lo": 0.0007499999971666665,
+      "ci_hi": 0.002458333323916666,
+      "sd": 0.003116058625187459,
+      "bc": 0.9132626090041197,
+      "bimodal": true
+    }
+  },
+  "extra": {
+    "effect_emergent_vs_frozen": 10.138032976194149
+  }
+}
