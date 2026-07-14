@@ -159,9 +159,10 @@ def animate(rollout, act, tau, layout="line", L=None, pos=None, out="anim.gif",
         ax.set_ylim(p[:, 1].min() - pad_y, p[:, 1].max() + pad_y)
         ax.set_aspect("equal")
         ax.axis("off")
-        for (ax_x, ax_y, txt) in (annotations or []):
-            ax.text(ax_x, ax_y, txt, ha="center", va="center", fontsize=10,
-                    fontweight="bold")
+
+    for (ax_x, ax_y, txt) in (annotations or []):
+        ax.text(ax_x, ax_y, txt, ha="center", va="center", fontsize=10,
+                fontweight="bold")
 
     sub = ax.set_title("", fontsize=10)
     if title:
