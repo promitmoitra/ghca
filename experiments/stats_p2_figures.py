@@ -71,9 +71,12 @@ def e7_theta():
                 capsize=5, ms=7, label="intact spiral")
     ax.plot(th, am, "s--", color="crimson", label="ablated (θ_dead=5.0)")
     ax.axhline(0.5, ls=":", color="0.6", label="chance")
-    ax.set_xlabel("spiral-band threshold θ_live")
+    for x, y in zip(th, im):
+        ax.annotate(f"≥{int(np.ceil(x))} nbrs", (x, y), textcoords="offset points",
+                    xytext=(0, 10), ha="center", fontsize=8, color="0.4")
+    ax.set_xlabel("spiral threshold θ_live  (excites on inp ≥ θ; inp is integer)")
     ax.set_ylabel("switching accuracy (last 4 blocks)")
-    ax.set_title("E7 switching across the spiral band (n=%d)" % int(d["n"]))
+    ax.set_title("E7 switching across the (integer) spiral band (n=%d)" % int(d["n"]))
     ax.set_ylim(0, 1.02)
     ax.legend(fontsize=9)
     fig.tight_layout()

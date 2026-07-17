@@ -6,6 +6,13 @@ spiral band, or an artifact of the single hand-chosen theta=4.0. Sweeps the
 spiral substrate's THETA_LIVE (module constant read by make_spiral); ablation
 keeps THETA_DEAD=5.0. As theta_live rises toward the death threshold the intact
 spiral should degrade toward the ablated baseline -- that band edge is the point.
+
+NOTE: the substrate excites on `inp >= theta`, and on the unweighted lattice
+`inp` is an integer neighbour-count, so theta is effectively an integer
+threshold ceil(theta): theta=3.5 and 4.0 both mean ">=4 neighbours" (identical),
+theta=4.5 means ">=5" (== the death threshold). Choose theta values in distinct
+integer bands (e.g. 1.5/2.5/3.5/4.5 -> thresholds 2/3/4/5) or the sweep samples
+fewer regimes than points.
 """
 
 import os
