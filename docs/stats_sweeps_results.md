@@ -99,8 +99,75 @@ before editing the result docs. Proposed:
 - **E3** (`e3_results.md`): A-identity is bimodal at n=50 (median 1.00, mean 0.72);
   composition joint-success **32% [21%, 46%]** replaces "1/5 seeds".
 
-## Next (P2)
+## P2 — operating-point sweeps
 
-- **E3 composition across target latency / gate τ** — does joint-success rise off
-  the latency=16 resonance, or is ~1/3 the ceiling?
-- **Substrate θ/τ neighborhood** — re-run E5/E7/E3 across θ∈{3.5,4,4.5}, τ∈{10…18}.
+Two sweeps around the hand-chosen operating point. Drivers:
+`experiments/stats_e3_latency_sweep.py`, `experiments/stats_e7_theta_sweep.py`;
+figure: `experiments/stats_p2_figures.py`.
+
+### E3 composition IS operating-point-contingent (the audit's "lucky resonance", confirmed)
+
+Sweeping the curriculum's target latency (which sets the required gate τ ≈
+latency+2) at n=50 per point, joint-success swings **0%–40%** and tracks the
+substrate's identity-vs-τ resonance map:
+
+| target latency | required τ | resonance @τ | joint-success (Wilson 95%) |
+|:--:|:--:|:--:|:--:|
+| 10 | ~12 | 0.94 | **0.40 [0.28, 0.54]** |
+| 12 | ~14 | 0.51 | 0.06 [0.02, 0.16] |
+| 14 | ~16 | 0.69 | **0.00 [0.00, 0.07]** |
+| 16 | ~18 | 0.95 | 0.32 [0.21, 0.46] |
+| 18 *(default)* | ~20 | 0.73 | 0.32 [0.21, 0.46] |
+| 20 | ~22 | 0.97 | 0.04 [0.01, 0.14] |
+
+![E3 latency sweep](figures/stats_p2_e3_latency.png)
+
+Composition is high only where the required τ lands in an identity-learnable
+zone (τ≈12, τ≈18) and collapses to ≈chance in the τ13–16 dead zone. The default
+target latency (18) sits near the top of the range — **a favorable operating
+point, not a unique one** (latency 10 is comparable/better). This substantiates
+the audit's claim: the composition result is contingent on the chosen task
+landing in a substrate resonance. One honest wrinkle — latency 20 (τ≈22) has high
+*identity* resonance (0.97) but low *joint*-success (4%), because timing
+precision (|latency − target| ≤ 2) degrades at high τ even when identity is
+learnable; joint-success needs both.
+
+### E7 switching IS robust across the θ neighborhood
+
+The substrate excites on `inp ≥ θ` with integer neighbour-counts, so θ is
+effectively an integer threshold ⌈θ⌉. Sweeping across distinct thresholds
+(n=30):
+
+| θ_live | effective | intact switching (95% CI) | vs ablated | Cohen d |
+|:--:|:--:|:--:|:--:|:--:|
+| 1.5 | ≥2 nbrs | 0.750 [0.683, 0.807] | 0.486 | 2.05 |
+| 2.5 | ≥3 nbrs | 0.755 [0.690, 0.810] | 0.486 | 2.13 |
+| 3.5 | ≥4 nbrs *(band)* | 0.771 [0.703, 0.827] | 0.486 | 2.18 |
+| 4.5 | ≥5 nbrs *(death)* | 0.486 [0.467, 0.504] | 0.486 | 0.00 |
+
+![E7 theta sweep](figures/stats_p2_e7_theta.png)
+
+The intact-vs-ablated switching dissociation holds firmly (d≈2.1, CIs clear of
+the ablated baseline) across the excitable range ≥2…≥4, and collapses to the
+ablated baseline exactly at the death threshold ≥5 (which *is* the ablation).
+So the softened-but-real E7 headline (P1) is **not knife-edge on θ** — it is
+robust across the operating-point neighborhood, failing only at the substrate's
+death boundary. *(Caveat: below the E0 organised-spiral band the intact readout
+may be driven by a less-organised excitation pattern than a clean rotating core;
+characterising the mechanism off-band is deferred — the dissociation, not its
+microstructure, is what this sweep establishes.)*
+
+### P2 verdict
+
+The two sweeps sharpen tension 2 rather than simply retiring it: **E3 composition
+is genuinely operating-point-contingent** (a fragile, ~1/3-at-best capability that
+depends on task–substrate resonance), while **E7 switching is genuinely robust**
+across the θ neighborhood. Both are honest, and both were invisible at n=5 at a
+single point.
+
+## Next
+
+- **Substrate τ axis** for E7/E5 and a θ×τ grid for E3 (the τ axis is the harder
+  monkeypatch — gate τ is learned, not set).
+- **P3**: C-series + E8 seed/CI and sweeps; **P4**: fold these tables into the
+  result docs and apply the flagged E3/E7 headline edits (pending review).
