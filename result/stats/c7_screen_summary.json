@@ -1,0 +1,45 @@
+{
+  "n": 30,
+  "rows": {
+    "seedplus_injplus": {
+      "name": "seedplus_injplus",
+      "n": 30,
+      "mean": 0.7705555555555557,
+      "ci_lo": 0.7180555555555556,
+      "ci_hi": 0.8219444444444444,
+      "sd": 0.14908297808618093,
+      "bc": 0.5334954258839791,
+      "bimodal": false
+    },
+    "seedplus_injminus": {
+      "name": "seedplus_injminus",
+      "n": 30,
+      "mean": 0.18166666666666662,
+      "ci_lo": 0.1536111111111111,
+      "ci_hi": 0.2105555555555555,
+      "sd": 0.08198331761898936,
+      "bc": 0.424599385505884,
+      "bimodal": false
+    },
+    "seedminus_injplus": {
+      "name": "seedminus_injplus",
+      "n": 30,
+      "mean": 0.7711111111111111,
+      "ci_lo": 0.7194375000000001,
+      "ci_hi": 0.8211111111111111,
+      "sd": 0.1469637360678796,
+      "bc": 0.558047393629998,
+      "bimodal": true
+    },
+    "seedminus_injminus": {
+      "name": "seedminus_injminus",
+      "n": 30,
+      "mean": 0.16611111111111107,
+      "ci_lo": 0.1383333333333333,
+      "ci_hi": 0.19555555555555557,
+      "sd": 0.0827257544359598,
+      "bc": 0.453782076685503,
+      "bimodal": false
+    }
+  }
+}
