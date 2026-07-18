@@ -144,11 +144,22 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   band code); the gate-τ axis (τ is learned, not set) and a full θ×τ grid for E3.
 - **Effort.** Low (compute). **Risk.** Low; softened E7/E3 as expected (worth knowing).
 
-### 3b. Other topologies
+### 3b. Other topologies — ✅ **SUBSTRATE DONE** (see [`e0_topologies.md`](e0_topologies.md))
 - **What.** Characterise + re-run the two-line story on `smallworld` / `rgg` (E0 only did
   `lattice2d`; the design doc's `smallworld` default is unused).
 - **Why.** Tests generality of routing/timing and of the spiral band.
-- **Effort.** Medium. **Risk.** Medium — spirals/loops may behave differently off-lattice.
+- **What was built.** E0's two topology-agnostic observables re-run on `lattice2d`,
+  `smallworld`, and `rgg` at matched N=1600 and mean degree 12 (8 graph seeds, CIs).
+  **Both generalise cleanly:** a self-sustaining excitable band exists on all three
+  (`A_ss≈0.40` for θ=1–3, death by θ≈4–5), and the `period ~ τ` law holds essentially
+  identically (slope 0.98/0.99/1.01, r≈0.999 for lattice/smallworld/rgg) — so Line B's
+  `τ→period` control (which E2/E3/E5 timing rests on) is a property of the medium, not
+  the lattice. The substrate-generality half of the narrow-evidence tension is retired.
+- **Deferred.** The 2-D **spiral** (E7, C5–C7) is geometry-bound and has no off-lattice
+  analogue (out of scope). Porting the **learning tasks** (E1/E2/E5 recurrent substrate)
+  onto `smallworld`/`rgg` connectivity, and a degree/size sweep, remain.
+- **Effort.** Medium. **Risk.** Medium — realised: spiral is lattice-only; the excitable
+  dynamics generalise.
 
 ### 3c. Continual learning on one substrate
 - **What.** Can *one* substrate learn E1→E5 sequentially without catastrophic
@@ -365,13 +376,16 @@ lattice-CA strand's RNG remain. **3a core done (P1–P3)**
 ([`stats_sweeps_results.md`](stats_sweeps_results.md)) — n=50 CIs + operating-point
 sweeps: most headlines strengthen, E7/E3 soften as expected, E3 composition confirmed
 operating-point-contingent; only the σ-band headlines (P3b) and τ-axis sweeps remain.
-**4a attempted, paused** ([`e10_notes.md`](e10_notes.md))
+**3b substrate done** ([`e0_topologies.md`](e0_topologies.md)) — the self-sustaining
+band and `period~τ` law generalise cleanly to `smallworld`/`rgg` at matched degree
+(r≈0.999); the 2-D spiral is geometry-bound (out of scope) and the learning-task port
+remains. **4a attempted, paused** ([`e10_notes.md`](e10_notes.md))
 — the existing τ rule structurally can't build the hierarchy; it needs a new
 bidirectional τ-plasticity rule (mechanism design), and E9 de-risks only the *grouping*
 half, not the τ-value rule (earlier claim corrected). Remaining high-value, lower-risk
-options: **3b** (other topologies — the last untouched axis of the narrow-evidence
-tension) and **1b** (learned direction-selective readout). Return to **4a** only with
-appetite for mechanism design.
+options: **1b** (learned direction-selective readout), the **E1/E2/E5 learning-task
+port** onto non-lattice substrates (3b follow-on), and the deferred **3a P3b**
+σ-band headlines. Return to **4a** only with appetite for mechanism design.
 
 ## Process notes (apply to whatever is chosen)
 
