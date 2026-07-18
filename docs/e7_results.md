@@ -117,6 +117,16 @@ re-nucleates the spiral every trial (so it needs no persistence).
   context is random-but-valid (a coin-flip rotation readout), so the router emits a
   random legal action (~0.5) rather than going silent.
 
+> **Update (Track 3a, n=50 statistics).** The n=5 numbers above reproduce, but the
+> switching headline is small-sample: at **n=50** the intact mean is
+> **0.75 [0.70, 0.79]** (bootstrap 95% CI) — a low-seed tail pulls it below the
+> lucky-5 0.86 — still well clear of ablated **0.50** (Cohen d ≈ 2.2). An
+> operating-point sweep shows the dissociation is **robust across the excitable
+> band**: it holds at thresholds ≥2/≥3/≥4 active neighbours and collapses to the
+> ablated baseline only at the death threshold ≥5. So the headline softens in
+> magnitude but the mechanism is not knife-edge on the operating point. See
+> [`stats_sweeps_results.md`](stats_sweeps_results.md).
+
 ## Caveats / open items
 
 - **The direction-selective readout is computed, not emergent.** The chirality→

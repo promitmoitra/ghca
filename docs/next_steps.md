@@ -127,11 +127,22 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 
 ## Track 3 — Generalise / harden *(retires tension 2)*
 
-### 3a. Statistics & operating-point sweeps
+### 3a. Statistics & operating-point sweeps — ✅ **CORE DONE (P1–P3)** (see [`stats_sweeps_results.md`](stats_sweeps_results.md))
 - **What.** Many more seeds, CIs, and sweeps around every hand-chosen operating point.
 - **Why.** Turns "shown at n=5 at a point" into "robust across the regime" — directly
   answers the audit's scope caveat.
-- **Effort.** Low (compute). **Risk.** Low; may soften some headlines (worth knowing).
+- **What was built.** A seeded stats harness (`ghca_stats.py`: bootstrap/Wilson CIs,
+  effect size, an automated bimodality screen) and n=50 (publication-grade) re-runs of
+  every headline, plus two operating-point sweeps. **Outcome — tension 2 addressed with
+  evidence, not asserted away:** E2/E5/E9/E8 and C5 **strengthen** (tight, cleanly
+  separated CIs; E8, the thinnest series at n=3, is the *most* robust); **E7 switching
+  softens** (0.86 → 0.75 [0.70, 0.79]) but is **robust across the θ band**; and the one
+  genuinely fragile claim, **E3 composition**, is confirmed **operating-point-contingent**
+  (joint-success 0%–40% by target latency, 32% [21, 46] at the default, tracking the
+  substrate resonance map). E7/E3 result-doc headlines updated with n=50 notes.
+- **Deferred.** P3b — the C2/C3/C7 σ-band headlines (need a per-seed refactor of the
+  band code); the gate-τ axis (τ is learned, not set) and a full θ×τ grid for E3.
+- **Effort.** Low (compute). **Risk.** Low; softened E7/E3 as expected (worth knowing).
 
 ### 3b. Other topologies
 - **What.** Characterise + re-run the two-line story on `smallworld` / `rgg` (E0 only did
@@ -337,11 +348,11 @@ flicker."*
 
 | Goal | Do first | Then |
 |------|----------|------|
-| **Credibility** (retire the honesty gap) | **1a** emergent conjunctions | 1b, 3a |
+| **Credibility** (retire the honesty gap) | **1a** emergent conjunctions | 1b, 3a ✅ |
 | **Clean disambiguation** | **2a** predictive-coding foil | 1c |
 | **Scientific novelty** | **4a** emergent timescale hierarchy | 2b |
 | **External impact / reach** | **4b** causal testbed | 5a write-up, 2b |
-| **Lowest-risk strengthening** | **3a** stats/sweeps (**5b** hygiene ✅ done) | 1b, 3b |
+| **Lowest-risk strengthening** | **3a** stats/sweeps ✅ + **5b** hygiene ✅ done | 1b, 3b |
 
 **Progress.** **1a done (E9)** — retired the most-cited caveat. **1c / 2a done**
 ([`e8_hardening_results.md`](e8_hardening_results.md)) — online GVF prediction and the
@@ -350,13 +361,17 @@ the toy→data bridge, low cost, high reach. **4b core done**
 ([`causal_testbed.md`](causal_testbed.md)) — the reusable synthetic-SCM benchmark.
 **5b core done** (verified 2026-07-13) — the `perturb_tau` fix is landed and E0/E2/E3
 reproduce bit-identically; only a `reproduce-all` entry point and the original
-lattice-CA strand's RNG remain. **4a attempted, paused** ([`e10_notes.md`](e10_notes.md))
+lattice-CA strand's RNG remain. **3a core done (P1–P3)**
+([`stats_sweeps_results.md`](stats_sweeps_results.md)) — n=50 CIs + operating-point
+sweeps: most headlines strengthen, E7/E3 soften as expected, E3 composition confirmed
+operating-point-contingent; only the σ-band headlines (P3b) and τ-axis sweeps remain.
+**4a attempted, paused** ([`e10_notes.md`](e10_notes.md))
 — the existing τ rule structurally can't build the hierarchy; it needs a new
 bidirectional τ-plasticity rule (mechanism design), and E9 de-risks only the *grouping*
 half, not the τ-value rule (earlier claim corrected). Remaining high-value, lower-risk
-options: **3a** (stats/sweeps — directly retires the narrow-evidence tension), then
-**1b** (learned direction-selective readout) and **3b** (other topologies). Return to
-**4a** only with appetite for mechanism design.
+options: **3b** (other topologies — the last untouched axis of the narrow-evidence
+tension) and **1b** (learned direction-selective readout). Return to **4a** only with
+appetite for mechanism design.
 
 ## Process notes (apply to whatever is chosen)
 
