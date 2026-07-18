@@ -33,3 +33,25 @@ finding to justify a roadmap track. Both audits live on `main` with the work.
 - State the substrate/analysis boundary explicitly: what the *dynamics* do vs
   what a *readout/feature* does.
 - Keep a caveats section adjacent to every headline.
+
+## Available local skills
+
+The repository defines standardized, agent-agnostic skills under `.claude/skills/` to automate key tasks:
+
+1. **[`publish-viz`](.claude/skills/publish-viz/SKILL.md):**
+   - **Purpose:** Publish curated result documents, figures, and animation GIFs to the project's public GitHub Pages site.
+   - **How to run:** Uses standard git branching and MkDocs validation. Includes a direct helper shell script (`publish.sh`).
+2. **[`experiment-review`](.claude/skills/experiment-review/SKILL.md):**
+   - **Purpose:** Automate the dual-track review and planning passes (scanning for global RNG usage, scaffolding structured core/extensions reviews, and roadmap planning templates).
+   - **How to run:** Run the executable Python CLI helper:
+     ```bash
+     # Scan codebase for global NumPy/stdlib RNG usage
+     python3 .claude/skills/experiment-review/review_helper.py audit-rng
+
+     # Scaffold core or extensions review templates
+     python3 .claude/skills/experiment-review/review_helper.py scaffold-review --type [core|extensions] --output [path]
+
+     # Scaffold a fresh roadmap/planning template
+     python3 .claude/skills/experiment-review/review_helper.py scaffold-plan --output docs/next_steps.md
+     ```
+
