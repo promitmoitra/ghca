@@ -165,9 +165,57 @@ depends on task–substrate resonance), while **E7 switching is genuinely robust
 across the θ neighborhood. Both are honest, and both were invisible at n=5 at a
 single point.
 
+## P3 — E8 predictive series + C-series seed/CI
+
+Driver: `experiments/stats_p3.py`; figure: `experiments/stats_p3_figure.py`.
+
+### E8 — the thinnest series is actually the most robust
+
+E8 (E8.1–8.7) ran at n=3 with several deterministic ridge panels — the smallest
+seed counts in the repo. Scaled to n=50, every headline reproduces with
+**razor-tight CIs**, because ridge readouts on a fixed substrate are inherently
+low-variance:
+
+| E8 headline | n=50 mean | 95% CI |
+|---|:--:|:--:|
+| prediction — periodic | 1.000 | [1.000, 1.000] |
+| prediction — Markov α=0.9 / 0.5 / 0.1 | 0.913 / 0.564 / 0.211 | ±0.002 |
+| prediction — random-walk | 0.416 | [0.413, 0.420] |
+| integration window vs τ=4/8/14/20/26 | 0 / 1 / 3 / 5 / 7 tones | zero variance |
+| nested intact (τ_ctx=70) vs ablate (6) | 1.000 vs 0.551 | [0.549, 0.553] |
+| conditional grid+conj vs controls | 0.960 vs 0.143 / 0.155 | [0.958, 0.962] |
+
+![E8 at n=50](figures/stats_p3_e8.png)
+
+**Verdict:** the low seed count was adequate — E8's variance is genuinely tiny —
+so the narrow-evidence concern for E8 is retired rather than sharpened. (This is
+the opposite of E3, where more seeds exposed hidden bimodality.)
+
+### C-series (n=30, normal-approx CIs)
+
+C-series headlines are heavier spiral sims; C5 and C6 expose an `n_seeds`
+argument and return a SEM, so these are mean ± 1.96·SEM.
+
+| C headline | intact / target | control | 95% CI (target) |
+|---|:--:|:--:|:--:|
+| **C5** routing fat-hand — tracked reader | 0.790 | center 0.550 | [0.758, 0.822] |
+| **C6** necessity — switching | 0.730 | ablate 0.512 | [0.662, 0.798] |
+| **C6** necessity — single-rule (spared) | 0.787 | ablate 0.800 | [0.718, 0.857] |
+
+- **C5** confirms the behavioural fat-hand with CIs: the fixed-centre readout
+  collapses to ≈chance (0.55) while the topology-tracking reader holds (0.79),
+  CIs cleanly separated — the readout-locality result is robust.
+- **C6** reuses E7's `run_switching` verbatim, so it is the E7 dissociation under
+  C6's windowing, **not an independent result** — reported for completeness; it
+  tracks the E7 P1/P2 numbers (switching ≈0.73 vs ablate ≈0.51, single-rule
+  spared). The σ-band headlines (C2/C3 `do(W)` vs `do(θ)`, C7 outcome matrix) are
+  a different statistical object (achievable-range spreads, not dissociation
+  means) and are deferred to P3b.
+
 ## Next
 
-- **Substrate τ axis** for E7/E5 and a θ×τ grid for E3 (the τ axis is the harder
-  monkeypatch — gate τ is learned, not set).
-- **P3**: C-series + E8 seed/CI and sweeps; **P4**: fold these tables into the
-  result docs and apply the flagged E3/E7 headline edits (pending review).
+- **P3b** — C2/C3/C7 σ-band headlines (need a per-seed refactor of the band code).
+- **Substrate τ axis** for E7/E5 and a θ×τ grid for E3 (τ is learned, not set —
+  a harder handle).
+- **P4** — fold these tables into the result docs and apply the flagged E3/E7
+  headline edits (pending review).
