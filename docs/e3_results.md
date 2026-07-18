@@ -151,6 +151,19 @@ section previously rounded the result up to "~quadrupling (0.20→0.77), partly
 resolved"; that framing overstated a fragile, largely-at-chance result and has been
 corrected here.
 
+> **Update (Track 3a, n=50 statistics + latency sweep).** At **n=50** the
+> curriculum joint-success rate is **16/50 = 32% [21%, 46%]** (Wilson 95%) —
+> replacing the "1/5 seeds" anecdote with a real interval: a partial, unreliable
+> capability, neither the "~quadrupling" nor near-nothing. A **target-latency
+> sweep** confirms the operating-point contingency directly: joint-success swings
+> **0%–40%** and tracks the substrate's identity-vs-τ resonance map (high where the
+> required gate τ is identity-learnable, ≈chance in the τ13–16 dead zone), so the
+> default latency is a *favourable, not unique* point. Separately, the A-identity
+> arm the double dissociation rests on is **bimodal at n=50** (median 1.00, mean
+> 0.72, with a ~7/50 zero-failure cluster): A learns identity on most seeds but not
+> all — the n=5 "A=1.00 on all seeds" was a lucky sample. See
+> [`stats_sweeps_results.md`](stats_sweeps_results.md).
+
 ## Relation to the substrate's "spike vs wave" duality
 
 This experiment cleanly separates the two kinds of activity the GH substrate
