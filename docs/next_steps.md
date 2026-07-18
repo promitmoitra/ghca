@@ -127,7 +127,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 
 ## Track 3 — Generalise / harden *(retires tension 2)*
 
-### 3a. Statistics & operating-point sweeps — ✅ **CORE DONE (P1–P3)** (see [`stats_sweeps_results.md`](stats_sweeps_results.md))
+### 3a. Statistics & operating-point sweeps — ✅ **CORE DONE (P1–P3b)** (see [`stats_sweeps_results.md`](stats_sweeps_results.md))
 - **What.** Many more seeds, CIs, and sweeps around every hand-chosen operating point.
 - **Why.** Turns "shown at n=5 at a point" into "robust across the regime" — directly
   answers the audit's scope caveat.
@@ -140,8 +140,18 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   genuinely fragile claim, **E3 composition**, is confirmed **operating-point-contingent**
   (joint-success 0%–40% by target latency, 32% [21, 46] at the default, tracking the
   substrate resonance map). E7/E3 result-doc headlines updated with n=50 notes.
-- **Deferred.** P3b — the C2/C3/C7 σ-band headlines (need a per-seed refactor of the
-  band code); the gate-τ axis (τ is learned, not set) and a full θ×τ grid for E3.
+  **P3b** (`experiments/stats_p3b.py`, n=30) closed the σ-band/outcome-matrix gap:
+  C2's do(W) fat-hand gap holds (0.29σ vs 26.8σ); C4's outcome matrix is **exactly**
+  reproducible (bit-identical across all 30 seeds); C5's `tracked`/`global` readers
+  are tight, `center` is genuinely spread (not bimodal); and one real methodology
+  finding — C7's normalized `do(χ)→content` (0.11 at n=1) is noisy at n=30 (mean
+  0.56) because column-max normalisation is unstable when both handles have weak
+  raw effects, **not** because chirality's raw content effect grew (it stays modest
+  and smaller than `do(route)`'s raw effect throughout) — flagged as a normalization
+  caveat, not a reversal.
+- **Deferred.** P4b — fold the P3b table + the do(χ)→content normalization caveat
+  into the individual C-series result docs; the gate-τ axis (τ is learned, not set)
+  and a full θ×τ grid for E3.
 - **Effort.** Low (compute). **Risk.** Low; softened E7/E3 as expected (worth knowing).
 
 ### 3b. Other topologies — ✅ **DONE (dynamics + E1 learning)** (see [`e0_topologies.md`](e0_topologies.md))
@@ -375,10 +385,13 @@ the toy→data bridge, low cost, high reach. **4b core done**
 ([`causal_testbed.md`](causal_testbed.md)) — the reusable synthetic-SCM benchmark.
 **5b core done** (verified 2026-07-13) — the `perturb_tau` fix is landed and E0/E2/E3
 reproduce bit-identically; only a `reproduce-all` entry point and the original
-lattice-CA strand's RNG remain. **3a core done (P1–P3)**
+lattice-CA strand's RNG remain. **3a core done (P1–P3b)**
 ([`stats_sweeps_results.md`](stats_sweeps_results.md)) — n=50 CIs + operating-point
 sweeps: most headlines strengthen, E7/E3 soften as expected, E3 composition confirmed
-operating-point-contingent; only the σ-band headlines (P3b) and τ-axis sweeps remain.
+operating-point-contingent; P3b closed the σ-band/outcome-matrix gap (C2/C4/C5 hold
+or strengthen; C7's normalized `do(χ)→content` is noisy at n=30 for methodological,
+not substantive, reasons — a normalization caveat, not a reversal). Only the P4b
+doc fold-in and the τ-axis sweeps remain.
 **3b done** ([`e0_topologies.md`](e0_topologies.md)) — the self-sustaining band and
 `period~τ` law generalise cleanly to `smallworld`/`rgg` (r≈0.999), *and* E1 reward
 routing learns on every hidden medium (ring/smallworld/rgg, d=1.06–1.75); the 2-D

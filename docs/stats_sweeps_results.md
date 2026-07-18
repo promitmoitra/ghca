@@ -212,9 +212,105 @@ argument and return a SEM, so these are mean ± 1.96·SEM.
   a different statistical object (achievable-range spreads, not dissociation
   means) and are deferred to P3b.
 
+## P3b — σ-band and outcome-matrix headlines (C2/C3/C4/C5/C7)
+
+Driver: `experiments/stats_p3b.py`. The one thing P1–P3 explicitly deferred: the
+achievable-*band* statistics (C2/C3, an across-policy range divided by a pooled
+std — not a two-arm mean) and the outcome-*matrix* / macro-sufficiency headlines
+(C4/C7), because none of that code had an outer seed loop to bootstrap over. Each
+headline's own reusable primitives (`build`/`readouts`/`realize`/`decode`/
+`train_router` — unchanged, imported from the original scripts) are called in a
+fresh outer seed loop here; nothing in `c2/c3/c4/c5/c7`'s own files is edited, and
+their committed n=1..5 numbers still reproduce bit-identically. n=30 substrate
+seeds (C2/C3/C4), 30 realization-policy replicates (C5), 30 router-training seeds
+(C7).
+
+### Master table
+
+| headline | n | mean | 95% CI | shape |
+|---|:--:|:--:|:--:|---|
+| C2 achievable band — collective | 30 | 0.287 | [0.280, 0.295] | unimodal |
+| C2 achievable band — labeled-line | 30 | 26.82 | [25.79, 27.91] | unimodal |
+| C3 do(θ=14) response (collective) | 30 | 0.533 | [0.507, 0.557] | unimodal |
+| C4 outcome matrix — do(τ)→timing | 30 | 1.000 | [1.000, 1.000] | **point (SD=0)** |
+| C4 outcome matrix — do(τ)→identity | 30 | 0.000 | [0.000, 0.000] | point (SD=0) |
+| C4 outcome matrix — do(route)→identity | 30 | 1.000 | [1.000, 1.000] | point (SD=0) |
+| C4 outcome matrix — do(route)→timing | 30 | 0.056 | [0.056, 0.056] | **point (SD=0)** |
+| C4 macro-sufficiency — collective | 30 | 1.027 | [1.023, 1.032] | unimodal |
+| C4 macro-sufficiency — labeled | 30 | 0.087 | [0.068, 0.106] | unimodal |
+| C5 decode-band — center | 30 | 6.81 | [6.40, 7.32] | spread (right tail) |
+| C5 decode-band — tracked | 30 | 1.09 | [1.02, 1.16] | unimodal |
+| C5 decode-band — global | 30 | 2.646 | [2.646, 2.646] | **point (SD=0)** |
+| C7 outcome matrix — do(χ)→rule | 30 | 0.979 | [0.937, 1.000] | ceiling+1 outlier |
+| C7 outcome matrix — do(χ)→content | 30 | 0.562 | [0.423, 0.700] | spread (see below) |
+| C7 outcome matrix — do(route)→rule | 30 | 0.510 | [0.411, 0.610] | spread |
+| C7 outcome matrix — do(route)→content | 30 | 0.755 | [0.630, 0.871] | ceiling-leaning |
+| C7 screening — seed+, inject+ | 30 | 0.771 | [0.718, 0.822] | unimodal |
+| C7 screening — seed+, inject− | 30 | 0.182 | [0.154, 0.211] | unimodal |
+| C7 screening — seed−, inject+ | 30 | 0.771 | [0.719, 0.821] | spread |
+| C7 screening — seed−, inject− | 30 | 0.166 | [0.138, 0.196] | unimodal |
+
+### Verdicts
+
+**Confirmed robust, most strengthen.** C2's headline — do(W) is fat-handed for a
+labeled-line readout (26.8σ) and pinned for a collective one (0.29σ) — holds at
+n=30; the n=1 labeled-line estimate (33.1σ) was on the high side of a real spread,
+not a fluke of a single lucky/unlucky seed (still a ~93× gap either way). C4's
+outcome-relativity matrix is **exactly reproducible**: all four cells are
+**bit-identical across all 30 seeds** (SD=0) — a stronger confirmation than any CI
+could give, though it also means the automated bimodality screen fires spuriously
+on two of them (flagged `⚠bimodal`; Sarle's coefficient is ill-conditioned on a
+near-zero-variance array, the same failure mode noted for ceiling arms in P1, now
+at its degenerate limit — not a real two-mode split). C4 macro-sufficiency and C5's
+`tracked`/`global` bands are tight and unimodal (or, for `global`, also exactly
+bit-identical — the global-charge reader's accuracy pattern doesn't depend on
+which specific trials were drawn within a policy).
+
+**C5 `center`** is genuinely spread (4.86–11.98, right-skewed with a tail), not
+bimodal — the flag is the same BC-on-skewed-continuous false positive P1 already
+documented (a fixed-locus readout's fat-handedness is more variable across
+realization-policy draws than the topology-aware readers, but it is one
+continuous distribution, not two clusters).
+
+**C7 `do(χ)→rule`** is ceiling (29/30 seeds at 1.00) with one outlier at 0.37 — a
+single router that didn't fully learn the chirality-rule mapping, the familiar
+ceiling+tail shape (not bimodal), consistent with C7 A's headline.
+
+**The one genuine surprise — `do(χ)→content`, and why it isn't a reversal.** The
+n=1 headline (0.11, "epiphenomenal for content") does not survive as a tight point
+at n=30: the mean is **0.562 [0.423, 0.700]**, and the raw distribution has 12/30
+seeds sitting exactly at the outcome-matrix's column-normalisation ceiling (1.0)
+with 18/30 spread continuously below 0.72. Traced to the **unnormalized**
+per-handle effects (`experiments/stats_p3b.py`'s diagnostic, not saved to
+`result/stats/`): `do(χ)`'s raw effect on content is modest and stable across
+seeds (mean 0.246, sd 0.216) — it does **not** grow at the ceiling seeds (mean
+0.4 there, well within the overall spread). What changes is `do(route)`'s own raw
+content effect, which is *unusually small* in that seed's randomly-initialised
+router (mean 0.15 at the ceiling seeds vs 0.55 at the others). Because the matrix
+normalises each outcome column by its max-over-handles, a small-over-small ratio
+hits 1.0 regardless of `do(χ)`'s absolute magnitude. Averaged over all 30 seeds,
+`do(χ)`'s raw content effect (0.246) is **smaller** than `do(route)`'s (0.366) —
+the qualitative claim (chirality's raw effect on content is modest, and smaller
+than routing's) holds. What the seed-scale-up actually exposes is a **methodology
+fragility**: column-max normalisation is unstable when both handles have weak,
+noisy raw effects on an outcome, which is exactly `do(χ)`'s relationship to
+content. The **rule** column does not have this problem (`do(χ)`'s raw rule effect,
+0.594, is reliably the larger of the two — normalized mean 0.979, tight).
+
+### Recommended note (flagged, not yet applied to `c7_results.md`)
+
+The `do(χ)→content ≈ 0.11` headline should be qualified: robust in raw/absolute
+terms (modest, seed-to-seed stable, smaller than `do(route)`'s), but the
+**normalized** matrix entry is noisy at the individual-seed level and its n=1
+value undersold that noise — the honest statement is "chirality's effect on
+content is consistently smaller than its effect on rule and smaller than routing's
+own effect on content, but the normalized ratio itself is not a stable per-seed
+quantity for this weak-effect column."
+
 ## Next
 
-- **P3b** — C2/C3/C7 σ-band headlines (need a per-seed refactor of the band code).
+- **P4b** — fold the P3b master table + the `do(χ)→content` note into
+  `c2/c3/c4/c5/c7_results.md`; close the P3b item in `next_steps.md`.
 - **Substrate τ axis** for E7/E5 and a θ×τ grid for E3 (τ is learned, not set —
   a harder handle).
 - **P4** — fold these tables into the result docs and apply the flagged E3/E7

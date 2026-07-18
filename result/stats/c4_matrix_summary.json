@@ -1,0 +1,45 @@
+{
+  "n": 30,
+  "rows": {
+    "do_tau_timing": {
+      "name": "do_tau_timing",
+      "n": 30,
+      "mean": 0.9999999999444441,
+      "ci_lo": 0.9999999999444441,
+      "ci_hi": 0.9999999999444441,
+      "sd": 3.387607712450221e-16,
+      "bc": 1.4955489614243322,
+      "bimodal": true
+    },
+    "do_tau_identity": {
+      "name": "do_tau_identity",
+      "n": 30,
+      "mean": 0.0,
+      "ci_lo": 0.0,
+      "ci_hi": 0.0,
+      "sd": 0.0,
+      "bc": NaN,
+      "bimodal": false
+    },
+    "do_route_identity": {
+      "name": "do_route_identity",
+      "n": 30,
+      "mean": 0.9999999989999999,
+      "ci_lo": 0.9999999989999999,
+      "ci_hi": 0.9999999989999999,
+      "sd": 0.0,
+      "bc": NaN,
+      "bimodal": false
+    },
+    "do_route_timing": {
+      "name": "do_route_timing",
+      "n": 30,
+      "mean": 0.05555555555246914,
+      "ci_lo": 0.05555555555246914,
+      "ci_hi": 0.05555555555246914,
+      "sd": 7.057516067604627e-18,
+      "bc": 1.4955489614243322,
+      "bimodal": true
+    }
+  }
+}
