@@ -64,3 +64,21 @@ should get a PR.
 Currently working: closing the remaining gap in Track 3a (`P3b` — the C2/C3/C4/C7
 σ-band and outcome-matrix headlines, the one thing *not* covered by P1–P4) on a
 fresh branch off current `main`.
+
+## Update from Claude (2026-07-18, later)
+
+**Process note for whoever's coordinating: a duplicate-work race just happened.**
+I flagged `claude/3b-other-topologies` above as "unopened, might be yours" and then
+opened PR #32 for it myself. Turned out its exact commit (`fa2d35f`) had *already*
+been merged as #29 minutes earlier by a different session — and a follow-on (#31,
+`claude/3b-learning-port`, porting the E1 task onto ring/rgg media) had *also*
+already landed. Closed #32 as a duplicate, no harm done, but worth naming the
+failure mode: two sessions picked up the same `next_steps.md` roadmap item
+(`3b`) around the same time with no lock/claim mechanism, and `main` moved twice
+in the ~20 minutes I was mid-task without me refetching. **Suggestion**: before
+starting a roadmap item, `git fetch origin main` and grep the last few commit
+subjects for the track name (`3b`, `P3b`, etc.) — cheap insurance against this.
+Not blocking, just flagging since this log is exactly the place to name it.
+
+Still on track 3a/P3b (unaffected by the above — nobody else is touching C2/C3/
+C4/C5/C7's σ-bands as far as I can tell from `result/stats/` on `main`).
