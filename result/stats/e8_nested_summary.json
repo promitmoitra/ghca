@@ -1,0 +1,36 @@
+{
+  "n_e8": 50,
+  "n_c": 30,
+  "rows": {
+    "nested_intact": {
+      "name": "nested_intact",
+      "n": 50,
+      "mean": 1.0,
+      "ci_lo": 1.0,
+      "ci_hi": 1.0,
+      "sd": 0.0,
+      "bc": NaN,
+      "bimodal": false
+    },
+    "nested_ablate": {
+      "name": "nested_ablate",
+      "n": 50,
+      "mean": 0.5511733333333333,
+      "ci_lo": 0.54876,
+      "ci_hi": 0.5534866666666667,
+      "sd": 0.00873475088459156,
+      "bc": 0.4449885340401313,
+      "bimodal": false
+    },
+    "within_intact": {
+      "name": "within_intact",
+      "n": 50,
+      "mean": 1.0,
+      "ci_lo": 1.0,
+      "ci_hi": 1.0,
+      "sd": 0.0,
+      "bc": NaN,
+      "bimodal": false
+    }
+  }
+}

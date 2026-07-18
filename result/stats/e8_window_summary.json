@@ -1,0 +1,56 @@
+{
+  "n_e8": 50,
+  "n_c": 30,
+  "rows": {
+    "tau4": {
+      "name": "tau4",
+      "n": 50,
+      "mean": 0.0,
+      "ci_lo": 0.0,
+      "ci_hi": 0.0,
+      "sd": 0.0,
+      "bc": NaN,
+      "bimodal": false
+    },
+    "tau8": {
+      "name": "tau8",
+      "n": 50,
+      "mean": 1.0,
+      "ci_lo": 1.0,
+      "ci_hi": 1.0,
+      "sd": 0.0,
+      "bc": NaN,
+      "bimodal": false
+    },
+    "tau14": {
+      "name": "tau14",
+      "n": 50,
+      "mean": 3.0,
+      "ci_lo": 3.0,
+      "ci_hi": 3.0,
+      "sd": 0.0,
+      "bc": NaN,
+      "bimodal": false
+    },
+    "tau20": {
+      "name": "tau20",
+      "n": 50,
+      "mean": 5.0,
+      "ci_lo": 5.0,
+      "ci_hi": 5.0,
+      "sd": 0.0,
+      "bc": NaN,
+      "bimodal": false
+    },
+    "tau26": {
+      "name": "tau26",
+      "n": 50,
+      "mean": 7.0,
+      "ci_lo": 7.0,
+      "ci_hi": 7.0,
+      "sd": 0.0,
+      "bc": NaN,
+      "bimodal": false
+    }
+  }
+}
