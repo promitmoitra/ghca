@@ -73,3 +73,33 @@ narrow-evidence tension (single-substrate `lattice2d`), addressed with evidence.
    band generalise; its absolute θ does not (nor should it).
 4. **Small graphs, one size.** N=1600, one degree, 8 seeds. Robust at this point;
    a degree/size sweep is a further generalisation not attempted here.
+
+## Follow-on — does the *learned* result generalise, not just the dynamics?
+
+The above tests the raw excitable medium. The E-series learning already runs on a
+**small-world** hidden reservoir (`layered_graph`, `hh_topo='smallworld'`), so the
+sharper question is whether reward-driven routing survives swapping that medium.
+A non-breaking `hh_topo` knob (default unchanged; E1–E6 reproduce bit-identically)
+adds an **ordered ring** and a **random-geometric** hidden medium at matched mean
+degree ≈ 6; E1 conditioning is re-run on each at n=50 (`experiments/e1_topology_port.py`).
+
+| hidden medium | degree | Line A (routing) | Line B (control) | A-vs-B (Cohen d) |
+|---|:--:|:--:|:--:|:--:|
+| smallworld *(default)* | 6.0 | 0.926 [0.893, 0.955] | 0.461 | 1.75 |
+| ring (ordered) | 6.0 | 0.869 [0.788, 0.937] | 0.529 | 1.06 |
+| rgg (random-geometric) | 5.1 | 0.857 [0.781, 0.921] | 0.459 | 1.30 |
+
+![E1 across hidden media](figures/e1_topology_port.png)
+
+**Reward-driven routing learns on every medium** (Line A 0.86–0.93, all well above
+the Line-B control and chance), and the A-vs-B dissociation holds throughout
+(d = 1.06–1.75). The small-world default is modestly best; the ordered ring and
+random-geometric media cost ~0.06 but do not break the result. The `smallworld`
+arm reproduces E1's committed A=0.926 exactly — a cross-check that the port only
+changed the topology. (All arms are ceiling-with-tail, as E1 is at n=50; see
+[`stats_sweeps_results.md`](stats_sweeps_results.md).)
+
+**So both halves generalise:** the excitable *dynamics* (band, `period~τ`) and the
+*learned routing* dissociation are properties of a broad class of recurrent media,
+not the specific wiring. What remains substrate-specific is the 2-D **spiral**
+(E7/C5–C7), which is geometry-bound by construction.
