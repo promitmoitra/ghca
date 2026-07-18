@@ -26,7 +26,7 @@ from ghca_net import Network
 def layered_graph(n_s=12, n_h=150, n_m=12, K=2, A=2,
                   fanin_sh=8, fanin_hm=14, hh_k=6, hh_beta=0.2,
                   w_sh=1.0, w_hm=0.4, w_hh=0.25, channel_bias=0.85,
-                  init_jitter=0.15, seed=0):
+                  init_jitter=0.15, seed=0, hh_topo="smallworld"):
     """Build a S -> H -> M graph with a recurrent hidden medium.
 
     Layout of node indices:
@@ -68,14 +68,33 @@ def layered_graph(n_s=12, n_h=150, n_m=12, K=2, A=2,
         W[h, src] = w_sh * (1.0 + init_jitter * rng.standard_normal(len(src)))
         plastic[h, src] = True
 
-    # H -> H : recurrent small-world medium (fixed reservoir)
-    for a, h in enumerate(hidden):
-        for d in range(1, hh_k // 2 + 1):
-            for nb in (hidden[(a - d) % n_h], hidden[(a + d) % n_h]):
-                if rng.random() < hh_beta:
-                    nb = rng.choice(hidden)
-                if nb != h:
-                    W[h, nb] = w_hh
+    # H -> H : recurrent medium (fixed reservoir). Default small-world; `hh_topo`
+    # swaps the medium's topology for the 3b learning-generality test (ordered ring
+    # vs small-world vs random-geometric), holding mean degree ~ hh_k. The
+    # "smallworld" branch is unchanged, so E1-E6 reproduce bit-identically.
+    if hh_topo == "smallworld":
+        for a, h in enumerate(hidden):
+            for d in range(1, hh_k // 2 + 1):
+                for nb in (hidden[(a - d) % n_h], hidden[(a + d) % n_h]):
+                    if rng.random() < hh_beta:
+                        nb = rng.choice(hidden)
+                    if nb != h:
+                        W[h, nb] = w_hh
+    elif hh_topo == "ring":                       # ordered ring lattice, no rewiring
+        for a, h in enumerate(hidden):
+            for d in range(1, hh_k // 2 + 1):
+                for nb in (hidden[(a - d) % n_h], hidden[(a + d) % n_h]):
+                    if nb != h:
+                        W[h, nb] = w_hh
+    elif hh_topo == "rgg":                         # random-geometric medium
+        pos = rng.random((n_h, 2))
+        radius = float(np.sqrt(hh_k / (n_h * np.pi)))
+        dmat = np.sqrt(((pos[:, None, :] - pos[None, :, :]) ** 2).sum(-1))
+        for a, h in enumerate(hidden):
+            nbrs = hidden[(dmat[a] <= radius) & (dmat[a] > 0)]
+            W[h, nbrs] = w_hh
+    else:
+        raise ValueError(f"unknown hh_topo {hh_topo!r}")
 
     # H -> M : weak jittered readout (plastic)
     for c in range(A):
