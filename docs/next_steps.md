@@ -252,7 +252,41 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   *mechanism-design* task (a new bidirectional "τ tracks input period" rule + E9-style
   competition + balanced channel activity), **not** a reuse-E9 task — correcting the
   earlier de-risking claim. Resume from `e10_notes.md`.
-- **Connects to.** E2, E5, E8.5; E9 (competition, for the grouping half only).
+- **Proposed synthesis (2026-07-19, not yet attempted).** A design discussion
+  surfaced a third ingredient, prompted by asking whether making the **active**
+  duration `act` per-node/tunable (currently a global scalar; only the passive/
+  refractory tail is per-node) would help. It does **not** replace the required
+  fix above — the ratchet's root cause is self-referential (a node measuring its
+  *own* inter-fire interval, which is corrupted once τ overshoots the true period),
+  and that pathology reappears in any total-cycle parameter tuned from the same
+  signal, `act` included. But `act` is a genuinely useful **third, complementary**
+  lever if scoped narrowly:
+  - **Channel-conditioned, not freely learned.** Once E9-style k-WTA + conscience
+    assigns a node to a fast/slow channel, set `act` to a fixed small/large value
+    *for that channel* rather than inventing a new plasticity rule for it — lower
+    risk, and sidesteps the self-referential-measurement problem entirely (nothing
+    is learning `act` from its own behaviour).
+  - **Directly attacks diagnostic 2's actual failure.** The competitive prototype
+    died because the fast channel (33% active) swamped the slow channel (8%) in
+    the k-WTA competition. Shrinking `act` for the fast channel shrinks its active
+    *footprint* too, naturally rebalancing the competition instead of hand-tuning
+    drive amplitude/duty-cycle (the fix the original notes proposed).
+  - **A second, correlated separation axis.** Fast vs slow channels would then
+    differ in both `τ` *and* `act` (short pulse ↔ fast, long pulse ↔ slow), which
+    should make the bimodal clustering more robust than separating on `τ` alone.
+  - **New risk to check before building.** `act` also sets wavefront width / how
+    much drive a firing node hands its neighbours — this is exactly what E0's
+    threshold-range characterisation is about. Shrinking `act` too far for the
+    fast channel risks under-driving neighbours below θ and **breaking
+    propagation entirely**, not just changing rhythm. Any implementation needs an
+    E0-style check for a minimum viable `act` at the substrate's operating point
+    before assuming the fast channel can be made arbitrarily brief.
+  - Net: three ingredients, not two — (i) E9's grouping [already validated,
+    reusable as-is], (ii) channel-conditioned `act` [new, low-risk, fixes the
+    diagnostic-2 imbalance], (iii) the input-tracked `τ` rule [still the one
+    genuinely required change; unblocks nothing by itself if skipped].
+- **Connects to.** E2, E5, E8.5; E9 (competition, for the grouping half only); E0
+  (threshold-range scaling, for the proposed `act` floor constraint).
 
 ### 4b. Package the causal testbed — ✅ **CORE DONE** (see [`causal_testbed.md`](causal_testbed.md); spec/plan alongside)
 - **What.** Turn C0–C7 + the substrate into a reusable synthetic-SCM benchmark for the
