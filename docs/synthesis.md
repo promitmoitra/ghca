@@ -214,6 +214,14 @@ unification.
   artifact. So the unification is real *conceptually* — `θ` is where learning and
   causation coincide — but **bounded**: better causal credit does not buy better
   continual learning; capacity does. A clean negative that maps the edge of the claim.
+  The **positive complement** then closes the loop: holding credit fixed, adding
+  capacity resolves interference monotonically (shared → task-context → per-task
+  heads), and a **learned** (stimulus × context) conjunction basis — E9's
+  competitive-Hebbian mechanism — gives *essentially zero forgetting* (backward
+  transfer ≈ 0 at avg 0.78, approaching the hand-wired ceiling; a non-conjunctive
+  frozen basis can't even represent the tasks). So **afforded→learned (E9) and
+  continual learning (3c) are the same lever — learned conjunctive representation** —
+  not credit.
 
 ## State of the evidence — the honest ledger
 
