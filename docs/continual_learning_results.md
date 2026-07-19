@@ -318,9 +318,78 @@ interference (P4, bridge), and a *fixed* capacity is finite, so enough tasks res
 it (P5).** Credit was never the lever; representational capacity is — learnable
 (bridge) but bounded (here).
 
+## 3d (wired arm) — timescale diversity is a *second* capacity axis (a temporal one)
+
+P4/P5 and the bridge all worked one representational axis: a *spatial* (stimulus ×
+context) conjunction. 3d asks whether the substrate's other axis — **timescale**
+(`τ`) — buys continual-learning capacity a spatial basis can't, on tasks whose
+discriminative variable is **timing**. This is the **wired** (afforded) arm of 3d's
+ladder: timescale diversity is *hand-set*, not grown (the emergent arm waits on
+Track 4a's `τ`-rule). It is the cheap **go/no-go gate** for that 4a work.
+
+Task family (the E3 timed-response regime, stripped to its temporal core): a single
+stimulus pulse, a variable delay drawn from `K_delay=6` bins, then a probe; the
+correct action depends on the *delay bin*, not the stimulus. Each task is a balanced
+dichotomy over the delay bins (P5's nested/shared construction). A purely spatial
+code is blind here. Mechanism the wired basis exploits: hidden activity is not
+self-sustaining, so a stimulus leaves each fired node **refractory for `τ` steps** —
+at delay Δ the *rested* set (`τ < Δ`) is a thermometer code of elapsed time, but only
+if `τ` is diverse; a probe re-excites exactly the rested nodes, making it readable.
+(Primitive confirmed in isolation: delay-decode **1.00** for graded `τ` vs **0.53**
+for homogeneous.)
+
+Four arms — {homogeneous, graded `τ`} × {shared head, per-task heads}, `n_h=50`
+fixed, frozen representation, correlational credit, n=20:
+
+| T | homog+shared | graded+shared | homog+per-task | **graded+per-task** |
+|:-:|:--:|:--:|:--:|:--:|
+| 2 | 0.438 | 0.498 | 0.434 | **0.621 [0.592, 0.652]** |
+| 4 | 0.437 | 0.470 | 0.426 | **0.594 [0.574, 0.612]** |
+| 6 | 0.435 | 0.458 | 0.431 | **0.575 [0.556, 0.592]** |
+
+![timescale as a capacity axis](figures/continual_temporal_saturation.png)
+
+**Timescale diversity is the representational lever.** At *identical maximal
+capacity* (per-task heads), the graded-`τ` basis learns the temporal tasks
+(0.58–0.62, backward transfer ≈ 0, flat across T) while the homogeneous basis stays
+at the chance floor (~0.43) — no amount of readout capacity rescues it, because
+homogeneous `τ` has **no temporal code to read**. The ~0.15–0.19 gap (CIs
+well-separated) is purely the `τ` distribution. That isolates the effect as
+**representational, not capacity**: the timescale axis supplies a representation that
+the spatial substrate simply lacks for timing-defined tasks.
+
+**A fixed timescale basis + a shared head still forgets** — exactly as P5's fixed
+*spatial* basis did. `graded+shared` sits near chance (0.46–0.50) with negative
+backward transfer (−0.12 → −0.06): a single linear head cannot hold conflicting
+delay→action maps even when the temporal code is present. Per-task capacity resolves
+it (`graded+per-task`, bwt ≈ 0). So the P4/P5 capacity story generalises cleanly from
+the spatial to the temporal axis: representation must exist (timescale diversity
+here), *and* enough head capacity must be given, for interference to vanish.
+
+**Verdict — the 4a go/no-go gate is green.** A hand-set timescale-diverse basis
+buys genuine, forgetting-free continual-learning capacity on temporal tasks. That
+justifies building 4a's *emergent* hierarchy (a `τ` distribution grown by the
+input-tracked rule): the capacity payoff is real, so the harder mechanism-design work
+has a demonstrated reward. Had this wired arm come back null, the emergent arm would
+not have been worth attempting.
+
+Honest caveats: (1) this is the **wired** arm — `τ` is hand-set, so it does *not*
+retire the plastic-dynamics caveat; only the emergent (4a-grown) arm would. (2) The
+tested conjunction is essentially *(time)* — a single stimulus, so the full
+*(stimulus × context × time)* basis is a natural extension, not yet run. (3)
+`graded+per-task` declines mildly with T (0.62 → 0.58) at flat backward transfer —
+this is not forgetting but some delay-dichotomies being individually harder and the
+graded basis's finite delay-resolution; small, with partly-overlapping CIs. (4) Same
+substrate-vs-analysis boundary as P4/P5: fixed dynamics, plastic *readout*.
+
 ## Deferred / next
 
+- **Emergent timescale arm (Track 4a).** Now gated-in: grow the `τ` distribution with
+  4a's input-tracked rule + E9 grouping and repeat this sweep — the only arm that
+  retires the plastic-dynamics caveat.
+- **Full (stimulus × context × time) conjunction** — combine the spatial (P5) and
+  temporal (3d) axes in one task family.
 - **Partially-overlapping tasks** — the fair test of whether credit quality *ever*
-  matters, now that representation is shown to be the lever.
+  matters, now that representation (spatial *and* temporal) is shown to be the lever.
 - **Temporally-extended credit** — where a true hindsight (Mesnard) estimator would
   have a "future" to condition on.
