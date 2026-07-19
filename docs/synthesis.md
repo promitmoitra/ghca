@@ -181,6 +181,40 @@ where the claims can meet data or other methods.
   test their epiphenomenality / causal-discovery methods against ground truth. The
   externally most-reusable output of the programme.
 
+## Robustness, generality, and the boundary of the unification (Track 3)
+
+Track 3 stress-tests the programme along the audits' second tension (narrow
+evidence) and, in doing so, finds the **boundary** of the learning↔causality
+unification.
+
+- **[3a](stats_sweeps_results.md) — statistics & operating-point sweeps.** Every
+  headline dissociation re-run at **n=50** with bootstrap CIs, plus sweeps around the
+  hand-chosen operating points. Most *strengthen* (E2, E5, E9, E8, C5 — tight,
+  cleanly separated CIs; E8, the thinnest series at n=3, is the *most* robust). Two
+  *soften honestly*: E7 switching 0.86 → 0.75 (but robust across the whole θ band),
+  and E3's timed-identity arm is bimodal at scale. The marquee: **E3 composition is
+  operating-point-contingent** — joint-success swings 0–40% with target latency and
+  tracks the substrate resonance map, making the audit's "lucky resonance" caveat
+  quantitative (32% [21, 46] at the default point).
+- **[3b](e0_topologies.md) — off-lattice generality.** The substrate story is not a
+  lattice artifact: the self-sustaining band and the `period ~ τ` law hold on
+  `smallworld` and `rgg` at matched degree (slope ≈ 1, r ≈ 0.999), *and* E1 reward
+  routing learns on every hidden medium (ring / small-world / rgg). Both the
+  dynamics and the learned routing are properties of a broad class of recurrent
+  media. (The 2-D spiral, E7/C5–C7, is geometry-bound by construction — out of scope.)
+- **[3c](continual_learning_results.md) — learning *as* causal inference, and its
+  limit.** The two arcs connect at the mechanism level: node/weight-perturbation
+  learning *is* interventional `do(θ)` causal-effect estimation (Lansdell–Kording),
+  and C2/C3's well-posedness of `do(θ)` predicts causal credit should be a cleaner
+  learning signal. Tested on catastrophic interference (a shared substrate, conflicting
+  tasks), the prediction **fails, and the failure is informative**: causal credit —
+  even a low-variance estimator — does *not* reduce forgetting beyond an effective-
+  learning-rate effect; all credit rules trace **one stability–plasticity frontier**.
+  The interference is *representational* (a capacity limit), not a credit-assignment
+  artifact. So the unification is real *conceptually* — `θ` is where learning and
+  causation coincide — but **bounded**: better causal credit does not buy better
+  continual learning; capacity does. A clean negative that maps the edge of the claim.
+
 ## State of the evidence — the honest ledger
 
 The three tensions the audits raised, as they stand now:
@@ -190,11 +224,13 @@ The three tensions the audits raised, as they stand now:
    E7 direction readout (1b, parked — C5's readout-locality makes it genuinely
    risky), and the deeper step of making the *dynamics* (not just the readout)
    plastic.
-2. **Narrow evidence** — *still open.* Small n (3–5 seeds), a single substrate
-   family, hand-chosen operating points. Results are robust *at those points* (tight,
-   unimodal per-seed spreads — the specific E3 failure mode was checked for and is
-   absent in the extensions), but not shown *across the regime*. The cheap fix
-   (3a: seeds/CIs/sweeps) and generality checks (3b: other topologies) are not done.
+2. **Narrow evidence** — *substantially retired (Track 3).* 3a re-ran every headline
+   at n=50 with CIs and swept the operating points; 3b showed the dynamics *and* the
+   learned routing generalise off-lattice. Most headlines strengthened; two softened
+   honestly (E7 magnitude; E3-timed bimodality) and E3 composition was pinned as
+   operating-point-contingent — corrections, not fabrications. What remains is
+   genuinely small n on the *extension* σ-band headlines (3a P3b, deferred) and the
+   fact that these are still toy substrates (tension 3).
 3. **Illustrative, not proof** — *addressed by framing + artifacts.* The study is
    positioned as illustrative; 2b turns it into falsifiable data predictions and 4b
    into a reusable ground-truth benchmark. The toy substrates still illustrate rather
@@ -203,8 +239,10 @@ The three tensions the audits raised, as they stand now:
 **Corrections made (the culture, not just the results).** E3's A+B composition
 headline was walked back from "quadrupling / partly resolved" to the honest
 "0.11 → 0.48 ≈ chance → 0.56, joint on 1/5 seeds" (direction supported, not
-magnitude); a reproducibility bug (`perturb_tau` using the global RNG) was fixed and
-the affected numbers re-run; and 2a corrected E8's "not dissociable" claim. Two
+magnitude) — and 3a's n=50 rerun then replaced the 1/5 anecdote with a real interval,
+**joint-success 32% [21, 46], operating-point-contingent**; a reproducibility bug
+(`perturb_tau` using the global RNG) was fixed and the affected numbers re-run; and
+2a corrected E8's "not dissociable" claim. Two
 audit passes (an independent integrity/overreach review of E0–E6/C0–C4,
 [`core_review.md`](core_review.md), and a self-audit of the extensions,
 [`extensions_review.md`](extensions_review.md))
@@ -220,8 +258,12 @@ waves are real, informative, and sometimes causal, but as *readouts* whose statu
 contingent on reader and outcome. Where the first pass *afforded* capabilities with
 hand-built readouts, the later work *learns* them (E9, 1c); where it *asserted* a
 contrast with predictive coding, the later work makes it *empirical* — and, honestly,
-corrects it (2a). The programme's most durable outputs are the falsifiable spiral
-predictions (2b) and the ground-truth causal testbed (4b).
+corrects it (2a). Track 3 then showed the story is **robust** (n=50 CIs) and
+**general** (holds off-lattice), and mapped the unification's edge: learning and
+causation coincide in `θ`, but *causal credit does not buy continual learning* —
+there the limit is representational capacity, not credit. The programme's most durable
+outputs are the falsifiable spiral predictions (2b) and the ground-truth causal
+testbed (4b).
 
 ## Map of the work
 
@@ -238,6 +280,10 @@ predictions (2b) and the ground-truth causal testbed (4b).
   [`c6`](c6_results.md) · [`c7`](c7_results.md)
 - **Artifacts / outward:** [`spiral_predictions.md`](spiral_predictions.md) (2b) ·
   [`causal_testbed.md`](causal_testbed.md) + `ghca_testbed/` (4b)
+- **Track 3 (robustness / generality / limits):**
+  [`stats_sweeps_results.md`](stats_sweeps_results.md) (3a) ·
+  [`e0_topologies.md`](e0_topologies.md) (3b) ·
+  [`continual_learning_results.md`](continual_learning_results.md) (3c)
 - **Reviews / roadmap:** [`extensions_review.md`](extensions_review.md) ·
   [`next_steps.md`](next_steps.md) · 4a parked on branch
   `claude/e10-timescale-hierarchy` (`docs/e10_notes.md` — the τ-hierarchy negative
