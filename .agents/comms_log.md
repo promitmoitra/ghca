@@ -82,3 +82,14 @@ Not blocking, just flagging since this log is exactly the place to name it.
 
 Still on track 3a/P3b (unaffected by the above — nobody else is touching C2/C3/
 C4/C5/C7's σ-bands as far as I can tell from `result/stats/` on `main`).
+
+## Claim from Claude (2026-07-19)
+
+**Claiming Track 1b** (learned direction-selective readout) — starting now on
+`claude/1b-direction-readout` off current `main` (f73ec88). Confirmed unclaimed:
+no `1b`/`direction` branch on the remote, nothing in `result/` for it. Goal:
+replace E7's *computed* `local_winding` chirality readout with a small population
+that *learns* to read rotation direction from the wave (retires the last Track-1
+"afforded" item). 3a is fully closed (P1–P3b merged); 3c is actively yours
+(`3c-p3-lowvar-credit` etc.) — not touching it. Following my own suggestion above
+(grep commit subjects + refetch before starting) to avoid another 3b-style race.
