@@ -214,10 +214,16 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   single-head context rung ties directly to E9's conjunction mechanism. So 3c's answer
   is unambiguous: interference here is representational-capacity-limited, and the lever
   is conjunctive/contextual representation, not credit.
-- **Deferred.** Grow the (stimulus × context) basis with E9's competitive-Hebbian rule
-  (learned, not frozen-random — should push the single head toward the per-task
-  ceiling); **partially-overlapping tasks** as the fair test of whether credit quality
-  *ever* matters; temporally-extended credit for a true hindsight estimator.
+- **E9↔3c bridge done.** Grew the (stimulus × context) basis with E9's competitive-
+  Hebbian rule and ran the sequential reversal on E9's substrate: the **learned
+  (emergent) conjunction basis gives ≈zero forgetting** (backward transfer 0.001, avg
+  0.78), approaching the hand-**wired** ceiling (0.89), while a non-conjunctive
+  **frozen** basis can't even represent the tasks (0.24). Learned conjunctive tiling
+  is the lever — afforded→learned (E9) and continual learning (3c) are the *same*
+  mechanism, not credit.
+- **Deferred.** 3+ sequential tasks (where a fixed conjunction basis must saturate);
+  **partially-overlapping tasks** as the fair test of whether credit quality *ever*
+  matters; temporally-extended credit for a true hindsight estimator.
 - **Connects to.** E6 (frozen baseline), E9/E4 (WTA gating), C2/C3 (`do(θ)` well-posed),
   Line A/B plasticity.
 

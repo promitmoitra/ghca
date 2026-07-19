@@ -1,4 +1,4 @@
-# 3c Results — Continual Learning (P1 baselines · P2 causal credit · P3 low-variance · P4 capacity)
+# 3c Results — Continual Learning (P1 baselines · P2 causal credit · P3 low-variance · P4 capacity · E9 bridge)
 
 *Track 3c, Phase 1 (see [`continual_learning_plan.md`](continual_learning_plan.md)).
 Establishes the continual-learning harness, the metrics, and the two "what adapts"
@@ -221,13 +221,55 @@ The learning↔causality unification is real *conceptually* (perturbation learni
 interventional `do(θ)` estimation) but **bounded**: better causal credit does not buy
 continual learning — representational capacity does.
 
+## Bridge (E9 ↔ 3c) — a *learned* conjunction basis resolves the interference
+
+P4's context rung used a *frozen random* projection and only reached avg 0.66. The
+prediction: a **learned** (stimulus × context) conjunction basis should push the
+single shared head toward the per-task ceiling. E9 grows exactly that basis by a
+reward-free competitive-Hebbian rule, so this runs the **sequential reversal** on
+E9's substrate (its `trial_overlap` target `x ^ rule` makes rule 0 = identity, rule
+1 = reversal — the two reversal tasks), comparing three input bases with an
+otherwise-identical Line-A readout (n=10):
+
+| hidden basis | avg accuracy | backward transfer | task-0 retention after reversal |
+|---|:--:|:--:|:--:|
+| frozen (no conjunction) | 0.242 [0.216, 0.269] | — *(below chance: can't learn)* | — |
+| **emergent (learned)** | **0.779 [0.688, 0.861]** | **0.001 [−0.046, 0.053]** | 0.83 (≥ trained 0.82) |
+| wired (hand conjunction) | 0.890 [0.843, 0.936] | −0.024 [−0.053, −0.001] | 0.88 |
+
+![E9 ↔ 3c bridge](figures/continual_e9_bridge.png)
+
+**The learned conjunction basis gives essentially zero forgetting** (backward
+transfer 0.001; task 0 is retained at 0.83 *after* training the opposing reversal),
+at avg 0.78 — approaching the hand-wired ceiling (0.89) and vastly above the
+no-conjunction frozen basis (0.24, which cannot even represent the tasks). The
+mechanism is exactly the P4 insight made sharp: E9's conjunction cells are
+**(stimulus × context)-selective and tiled**, so each (stimulus, task) combination
+activates a *distinct* set of hidden units — the readout's task-2 updates land on
+different weights than task-1's, so there is nothing to overwrite. P4's
+frozen-random context lacked the tiling (overlapping representations), which is why
+it only got partway.
+
+**This closes the loop.** The same self-organised conjunction basis that E9 grew to
+convert an *afforded* capability into a *learned* one (tension 1) is precisely what
+gives the substrate the representational capacity to learn tasks **sequentially
+without forgetting** (3c). Afforded→learned and continual-learning are the same
+lever: *learned conjunctive representation*. Credit assignment was never the
+bottleneck (P2/P3); representation is (P4), and it can be **learned, not wired**
+(this bridge).
+
+Honest caveats: the *frozen* arm is a can't-represent failure (below chance), so its
+≈0 backward transfer is vacuous — the meaningful contrast is emergent (learned) vs
+wired (hand). These are 2 tasks; how many (stimulus × context) conjunctions a fixed
+hidden layer can tile before capacity saturates (3+ tasks) is the natural next probe.
+E9's substrate differs from P4's `layered_graph`, so absolute numbers are not directly
+comparable across the two — the story is qualitative and consistent.
+
 ## Deferred / next
 
-- **Learned conjunctive capacity.** The context rung used a *frozen random* projection
-  (avg 0.66). Growing the (stimulus × context) basis with E9's competitive-Hebbian
-  rule should push the single-head result toward the per-task ceiling — the direct
-  E9↔3c bridge.
-- **Partially-overlapping tasks** where a coexisting solution exists — the fair test
-  of whether credit quality *ever* matters, now that capacity is shown to be the lever.
+- **Capacity limit / more tasks.** 3+ sequential tasks to find where the learned
+  conjunction basis saturates (fixed hidden units can tile only so many combos).
+- **Partially-overlapping tasks** — the fair test of whether credit quality *ever*
+  matters, now that representation is shown to be the lever.
 - **Temporally-extended credit** — where a true hindsight (Mesnard) estimator would
   have a "future" to condition on.
