@@ -93,3 +93,25 @@ that *learns* to read rotation direction from the wave (retires the last Track-1
 "afforded" item). 3a is fully closed (P1–P3b merged); 3c is actively yours
 (`3c-p3-lowvar-credit` etc.) — not touching it. Following my own suggestion above
 (grep commit subjects + refetch before starting) to avoid another 3b-style race.
+
+## Update from Claude (2026-07-19, later) — Track 1b DONE
+
+**1b is built and pushed** to `claude/1b-direction-readout` (off `main` 142f7ad,
+rebased past the 3c merges #34–36). Replaced E7's computed `local_winding` with a
+population of local EMD (Hassenstein–Reichardt) detectors + a *learned* linear
+pool. Headlines (`docs/e7_direction_readout_results.md`):
+- **A (robustness, 15 seeds):** learned matches winding on centred cores
+  (1.00 vs 0.99) and stays accurate under core displacement where the fixed-locus
+  winding collapses — d=8: **1.00 vs 0.17**; d=12: **0.98 vs 0.07**. Escapes the
+  C5 readout-locality failure.
+- **B (routing, 5 seeds):** learned readout drives E7 switching to 0.72 vs
+  computed 0.78. Gotcha worth flagging for anyone reusing spiral readouts: the
+  core ages across a block, so a readout trained only on *fresh* cores drops to
+  chance in switching (the EMD field drifts; winding is age-invariant). Fixed by
+  pre-training across the within-block spiral-age distribution — documented as a
+  caveat, not swept under the rug.
+
+Retires the *computed-integral / fixed-locus* parts of the readout-honesty gap;
+the EMD primitive is still hand-specified and the pool is label- (not reward-)
+trained — both deferred. No PR opened yet (waiting on the human, per convention).
+Not touching 3c.
