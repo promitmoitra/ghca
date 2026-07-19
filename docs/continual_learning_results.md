@@ -1,4 +1,4 @@
-# 3c Results — Continual Learning (P1 baselines + P2 causal-credit test)
+# 3c Results — Continual Learning (P1 baselines · P2 causal credit · P3 low-variance)
 
 *Track 3c, Phase 1 (see [`continual_learning_plan.md`](continual_learning_plan.md)).
 Establishes the continual-learning harness, the metrics, and the two "what adapts"
@@ -122,12 +122,60 @@ to *interference resistance* on a capacity-limited shared readout. An honest, us
 negative: it rules out "just assign credit causally" as a continual-learning fix and
 points at capacity/representation as the real lever.
 
+## P3 — does *low-variance* causal credit move the frontier? (No.)
+
+P2 left one escape hatch: maybe causal credit only failed because raw weight-
+perturbation is *high-variance*. P3 tests a genuinely low-variance causal estimator
+— **antithetic central-difference weight-perturbation** averaged over M=4 pairs
+(`(r⁺ − r⁻)·ε`, baseline-free, the tractable stand-in for a Mesnard-style low-
+variance estimator). It learns better than P2's single-sided rule (reaches
+acquisition 0.79 vs the single-sided cap of ~0.72, no noise collapse). Re-run the
+stability–plasticity frontier with all three rules (n=15):
+
+![P3 frontier](figures/continual_p3.png)
+
+**All three credit rules trace one frontier.** At matched new-task acquisition the
+retention is identical (±0.02, n=15 noise): low-var causal @ acq 0.74 → retention
+0.28 vs correlational-interpolated 0.26; @ 0.79 → 0.20 vs 0.21; @ 0.69 → 0.30 vs
+0.31. The low-variance estimator reaches *higher* acquisition and is more robust,
+but it **slides along the frontier rather than moving it.**
+
+**Verdict — the P2 null was not a variance artifact.** The stability–plasticity
+frontier is a genuine **capacity boundary**: no credit rule (correlational, causal,
+or low-variance causal) beats it. Credit quality/variance sets *where on the
+frontier* you operate, not *the frontier itself*. Continual-learning interference on
+a shared readout is **representational**, and the lever is **capacity**, not credit.
+
+## What closes the 3c arc
+
+The learning-as-causal-inference unification is real *conceptually* (perturbation
+learning is interventional estimation; the substrate's Line-B rule already performs
+a `do(θ)` estimate) but, across P2 and P3, **causal credit — even low-variance
+causal credit — does not buy interference resistance.** That is a clean, useful
+negative: it redirects the "one homogeneous machine that genuinely learns
+continually" question away from *credit assignment* and toward *representational
+capacity* (WTA gating, per-task subspaces, conceptors — the CL literature's
+representational fixes).
+
+## Honest caveats
+
+- **The task is a hard capacity case by design.** K=2 anti-correlated reversal
+  fundamentally cannot be held on a shared linear head, so the frontier is close to
+  a wall. Whether credit quality *ever* matters is best tested on **partially-
+  overlapping** tasks that admit a coexisting solution — the sharper open question.
+- **Antithetic ≠ Mesnard hindsight literally.** The hindsight (future-conditional)
+  baseline is built for *multi-step* credit; in this single-step conditioning task
+  there is little "future" to condition on, so the antithetic central-difference
+  estimator is the appropriate low-variance test here. A temporally-extended task
+  would be needed to exercise the hindsight mechanism specifically.
+- **n=15 frontier**, 5 operating points per rule — enough to see the curves overlap,
+  not to resolve ±0.02 differences.
+
 ## Deferred / next
 
-- **v2 low-variance estimator.** The Mesnard hindsight (future-conditional) baseline
-  is *provably* low-variance; unlike raw perturbation it might move the frontier
-  rather than slide along it. The genuine open question.
-- **Native WTA gating** (E9 k-WTA / E4) — a representational, not credit-based, fix;
-  the CL literature's competitive-head route.
-- **Capacity.** Give the readout room to separate the tasks (per-task-subspace /
-  higher-dim / conceptor-style) — the setting where credit *quality* could matter.
+- **Capacity, not credit.** Give the readout room (per-task subspace / higher-dim /
+  conceptor-style / WTA gating) — the direction P2–P3 point at as the real lever.
+- **Partially-overlapping tasks** where a coexisting solution exists — the fair test
+  of whether credit quality ever matters.
+- **Temporally-extended credit** — the setting where a true hindsight estimator
+  would have something to condition on.

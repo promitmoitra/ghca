@@ -116,6 +116,33 @@ def causal_train_step(net, x, target, rng, bstate, pidx, lr=CAUSAL_LR, sigma=CAU
     return r
 
 
+CAUSAL_M = int(os.environ.get("STATS_CAUSAL_M", "4"))   # antithetic samples for low-var
+
+
+def causal_lowvar_step(net, x, target, rng, pidx, lr=CAUSAL_LR, sigma=CAUSAL_SIGMA, M=CAUSAL_M):
+    """P3 — a *low-variance* causal-credit update: antithetic central-difference
+    weight-perturbation, averaged over M perturbation pairs. The (r+ − r−)·ε
+    estimator is baseline-free (the difference cancels the baseline) and much lower
+    variance than the P2 single-sided rule — the tractable stand-in for the Mesnard
+    low-variance (hindsight) estimator. Tests whether *variance*, not credit quality,
+    was what pinned P2 to the correlational frontier.
+    """
+    w = net.W
+    grad = np.zeros(pidx[0].size)
+    for _ in range(M):
+        eps = sigma * rng.standard_normal(pidx[0].size)
+        w[pidx] += eps
+        r_plus = trial(net, x, target, rng, learn=False)
+        w[pidx] -= 2.0 * eps
+        r_minus = trial(net, x, target, rng, learn=False)
+        w[pidx] += eps                               # restore
+        grad += (r_plus - r_minus) * eps             # central difference (antithetic)
+    w[pidx] += lr * grad / M
+    np.clip(w, 0.0, None, out=w)
+    # report the +eps arm's reward on the last sample as a rough progress signal
+    return r_plus
+
+
 def run_sequence(seed, regime, credit="correlational", eta_w=None, causal_lr=CAUSAL_LR):
     """Train T0->T1->T2 on one net; return accuracy matrix R[after_task, eval_task].
 
@@ -137,6 +164,8 @@ def run_sequence(seed, regime, credit="correlational", eta_w=None, causal_lr=CAU
             x = int(rng.integers(K))
             if credit == "causal":
                 causal_train_step(net, x, m(x), rng, bstate, pidx, lr=causal_lr)
+            elif credit == "causal_lowvar":
+                causal_lowvar_step(net, x, m(x), rng, pidx, lr=causal_lr)
             else:
                 trial(net, x, m(x), rng, learn=True)
         just_trained[k] = evaluate(net, k, rng)
@@ -230,31 +259,29 @@ def main_frontier():
     """
     assert K == 2, "run frontier with STATS_K=2"
     nf = int(os.environ.get("STATS_NF", "15"))
-    corr_etas = [0.01, 0.02, 0.05, 0.1, 0.2]
-    caus_lrs = [0.5, 1.0, 2.0, 4.0, 8.0]
-    res = {"correlational": [], "causal": []}
-    for eta in corr_etas:
-        acq = np.zeros(nf); ret = np.zeros(nf)
-        for s in range(nf):
-            R, _ = run_sequence(s, "frozen", credit="correlational", eta_w=eta)
-            acq[s], ret[s] = R[1, 1], R[1, 0]
-        res["correlational"].append((eta, float(acq.mean()), float(ret.mean())))
-        print(f"  corr  eta={eta:<5}: new-task={acq.mean():.2f}  retention={ret.mean():.2f}", flush=True)
-    for lr in caus_lrs:
-        acq = np.zeros(nf); ret = np.zeros(nf)
-        for s in range(nf):
-            R, _ = run_sequence(s, "frozen", credit="causal", causal_lr=lr)
-            acq[s], ret[s] = R[1, 1], R[1, 0]
-        res["causal"].append((lr, float(acq.mean()), float(ret.mean())))
-        print(f"  caus  lr={lr:<5}: new-task={acq.mean():.2f}  retention={ret.mean():.2f}", flush=True)
-    with open(os.path.join(OUT, "continual_p2_frontier.json"), "w") as f:
-        json.dump({"nf": nf, "correlational": res["correlational"],
-                   "causal": res["causal"]}, f, indent=2)
-    np.savez(os.path.join(OUT, "continual_p2_frontier.npz"),
-             corr=np.array([r[1:] for r in res["correlational"]]),
-             caus=np.array([r[1:] for r in res["causal"]]),
-             corr_eta=np.array(corr_etas), caus_lr=np.array(caus_lrs))
-    print("\nwrote continual_p2_frontier.{json,npz}", flush=True)
+    sweeps = {
+        "correlational": ("eta_w", [0.01, 0.02, 0.05, 0.1, 0.2]),
+        "causal": ("causal_lr", [0.5, 1.0, 2.0, 4.0, 8.0]),
+        "causal_lowvar": ("causal_lr", [1.0, 2.0, 4.0, 8.0, 16.0]),
+    }
+    res = {}
+    for credit, (knob, vals) in sweeps.items():
+        res[credit] = []
+        for v in vals:
+            acq = np.zeros(nf); ret = np.zeros(nf)
+            kw = {knob: v}
+            for s in range(nf):
+                R, _ = run_sequence(s, "frozen", credit=credit, **kw)
+                acq[s], ret[s] = R[1, 1], R[1, 0]
+            res[credit].append((v, float(acq.mean()), float(ret.mean())))
+            print(f"  {credit:14s} {knob}={v:<5}: new-task={acq.mean():.2f}  "
+                  f"retention={ret.mean():.2f}", flush=True)
+    with open(os.path.join(OUT, "continual_p3_frontier.json"), "w") as f:
+        json.dump({"nf": nf, **res}, f, indent=2)
+    np.savez(os.path.join(OUT, "continual_p3_frontier.npz"),
+             **{f"{c}_pts": np.array([r[1:] for r in res[c]]) for c in res},
+             **{f"{c}_knob": np.array([r[0] for r in res[c]]) for c in res})
+    print("\nwrote continual_p3_frontier.{json,npz}", flush=True)
 
 
 if __name__ == "__main__":

@@ -174,7 +174,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 - **Effort.** Medium. **Risk.** Medium — realised: spiral is lattice-only; dynamics *and*
   E1 learning generalise.
 
-### 3c. Continual learning as causal credit assignment — ✅ **P1–P2 DONE (honest null)** (plan [`continual_learning_plan.md`](continual_learning_plan.md); results [`continual_learning_results.md`](continual_learning_results.md))
+### 3c. Continual learning as causal credit assignment — ✅ **P1–P3 DONE (null: capacity, not credit)** (plan [`continual_learning_plan.md`](continual_learning_plan.md); results [`continual_learning_results.md`](continual_learning_results.md))
 - **What.** Can *one* substrate learn E1→E2→E5 sequentially without catastrophic
   interference (rather than E6's post-hoc freeze)? **Re-scoped**: the CL literature
   shows frozen-substrate + per-head is the *easy* case (≈ E6, no interference), so the
@@ -201,9 +201,15 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   is an effective-learning-rate difference, not better credit. The interference is
   **representational** (a shared linear head can't hold two anti-correlated mappings),
   not a credit-assignment artifact. Rules out "assign credit causally" as a CL fix.
-- **Deferred (v2).** Mesnard low-variance hindsight estimator (might *move* the
-  frontier, not slide along it); native WTA gating (representational fix); a
-  capacity-relieved readout where credit quality could matter.
+- **P3 done — the null holds.** A low-variance causal estimator (antithetic central-
+  difference perturbation) reaches higher acquisition but **also lies on the same
+  frontier** — all three credit rules trace one stability–plasticity curve. So the P2
+  null was *not* a variance artifact: the frontier is a genuine **capacity boundary**,
+  and interference here is representational, not credit-assignment. Credit quality sets
+  *where* on the frontier you sit, not the frontier itself.
+- **Deferred.** The lever is **capacity, not credit**: WTA gating (E9 k-WTA / E4),
+  per-task subspaces / conceptors; and **partially-overlapping tasks** (a coexisting
+  solution exists) as the fair test of whether credit quality *ever* matters.
 - **Connects to.** E6 (frozen baseline), E9/E4 (WTA gating), C2/C3 (`do(θ)` well-posed),
   Line A/B plasticity.
 
