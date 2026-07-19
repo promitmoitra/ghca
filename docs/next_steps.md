@@ -229,9 +229,19 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   **frozen** basis can't even represent the tasks (0.24). Learned conjunctive tiling
   is the lever — afforded→learned (E9) and continual learning (3c) are the *same*
   mechanism, not credit.
-- **Deferred.** 3+ sequential tasks (where a fixed conjunction basis must saturate);
-  **partially-overlapping tasks** as the fair test of whether credit quality *ever*
-  matters; temporally-extended credit for a true hindsight estimator.
+- **P5 done — a fixed conjunction basis saturates.** Swept the number of sequential
+  tasks T (balanced-dichotomy tasks, K_stim=4, binary action, frozen substrate,
+  correlational credit, n=20). A fixed (stimulus × context) basis (n_h=50) matches
+  full capacity at T=2 (avg 0.64 ≈ per-task 0.61) but its average accuracy falls
+  **monotonically to the shared interference floor by T=6** (0.452 vs 0.451), while
+  per-task heads (capacity ∝ T) stay flat at ~0.61. Crossover at T≈3 (≈12 conjunctions
+  on 50 units) locates the basis's capacity. Closes the argument in both directions:
+  capacity is the lever (P4/bridge), learnable but **finite** — enough tasks restore
+  the interference. (Read avg accuracy, not backward transfer: as the basis saturates
+  there is less left to forget, so BWT drifts vacuously to 0 — the E9-frozen floor
+  artifact again.)
+- **Deferred.** **Partially-overlapping tasks** as the fair test of whether credit
+  quality *ever* matters; temporally-extended credit for a true hindsight estimator.
 - **Connects to.** E6 (frozen baseline), E9/E4 (WTA gating), C2/C3 (`do(θ)` well-posed),
   Line A/B plasticity.
 

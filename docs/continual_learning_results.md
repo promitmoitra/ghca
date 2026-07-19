@@ -265,10 +265,61 @@ hidden layer can tile before capacity saturates (3+ tasks) is the natural next p
 E9's substrate differs from P4's `layered_graph`, so absolute numbers are not directly
 comparable across the two — the story is qualitative and consistent.
 
+## P5 — a *fixed* conjunction basis must saturate (the bound on the bridge)
+
+The bridge showed a learned conjunction basis resolves interference for **2** tasks,
+and P4 showed the same for a frozen-random context basis. Both bases are
+**fixed-size**, and the tiling argument that explains why they work also predicts
+their limit: a basis of `n_h` hidden units can keep only so many (stimulus × task)
+conjunctions separable, so as tasks accumulate the combinations must eventually
+overlap and interference must return. This is the honest bound on the bridge's claim
+and the sharpest test of "capacity, not credit": when capacity is *fixed* the demand
+eventually overruns it; when capacity *grows with demand* it does not.
+
+Protocol: P4's frozen substrate and correlational credit, generalised past T=2. Each
+task is a distinct **balanced dichotomy** of `K_stim=4` stimuli (drawn once from a
+fixed task seed, so the sequence is shared across network seeds and nested across T);
+binary actions (chance 0.50) keep every task individually learnable so the signal is
+not masked by a many-way-readout floor. Sweep the number of sequential tasks T for
+three modes, identical everywhere else — `shared` (stimulus only, one head; the
+interference floor), `context` (one task-context input channel per task → a
+fixed-size (stimulus × context) basis over the *same* `n_h=50` hidden units), and
+`per-task` (a separate H→M head per task; capacity that *grows* with T). n=20:
+
+| T | shared avg | **context avg** | per-task avg |
+|:-:|:--:|:--:|:--:|
+| 2 | 0.520 [0.470, 0.570] | **0.642 [0.599, 0.687]** | 0.606 [0.570, 0.644] |
+| 3 | 0.495 [0.463, 0.526] | **0.575 [0.541, 0.606]** | 0.606 [0.575, 0.634] |
+| 4 | 0.434 [0.420, 0.449] | **0.514 [0.494, 0.534]** | 0.610 [0.582, 0.638] |
+| 5 | 0.449 [0.431, 0.468] | **0.492 [0.469, 0.514]** | 0.598 [0.564, 0.629] |
+| 6 | 0.451 [0.438, 0.465] | **0.452 [0.434, 0.470]** | 0.606 [0.577, 0.634] |
+
+![fixed conjunction basis saturates](figures/continual_saturation.png)
+
+**The fixed conjunction basis saturates.** At T=2 it matches full capacity (context
+0.64 ≈ per-task 0.61); as tasks accumulate its average accuracy falls monotonically
+and lands **exactly on the shared interference floor by T=6** (0.452 vs 0.451), while
+`per-task` — capacity that scales with the number of tasks — stays flat at ~0.61
+throughout. The advantage of the conjunction basis over the no-conjunction shared
+head collapses (+0.12 → +0.00) and the gap to per-task heads grows (−0.04 → +0.15),
+crossing at **T ≈ 3** — roughly 12 (stimulus × task) conjunctions on 50 hidden units.
+That crossover *is* the capacity of this fixed basis.
+
+Caveat — read the **average-accuracy** panel, not backward transfer, as the
+headline. As the conjunction basis saturates its accuracy falls toward the shared
+floor, so there is progressively *less left to forget*, and backward transfer drifts
+vacuously toward 0 (the same floor artifact that made the E9 *frozen* arm's ≈0
+backward transfer meaningless). Retention looking "fine" while average accuracy
+collapses is precisely the saturation signature. `per-task`'s flat ~0.61 is the
+control that rules out a generic hardening of the task with T.
+
+This completes the capacity argument in both directions: **capacity resolves
+interference (P4, bridge), and a *fixed* capacity is finite, so enough tasks restore
+it (P5).** Credit was never the lever; representational capacity is — learnable
+(bridge) but bounded (here).
+
 ## Deferred / next
 
-- **Capacity limit / more tasks.** 3+ sequential tasks to find where the learned
-  conjunction basis saturates (fixed hidden units can tile only so many combos).
 - **Partially-overlapping tasks** — the fair test of whether credit quality *ever*
   matters, now that representation is shown to be the lever.
 - **Temporally-extended credit** — where a true hindsight (Mesnard) estimator would
