@@ -1,4 +1,4 @@
-# 3c Results — Continual Learning (P1: harness + interference baselines)
+# 3c Results — Continual Learning (P1 baselines + P2 causal-credit test)
 
 *Track 3c, Phase 1 (see [`continual_learning_plan.md`](continual_learning_plan.md)).
 Establishes the continual-learning harness, the metrics, and the two "what adapts"
@@ -68,11 +68,66 @@ condition: it needs *per-task* heads, not a shared one.
 - **Absolute accuracy is modest** (single-task ~0.6–0.7 at K=A=3 with a shared
   head); the study is about *relative* interference, not ceiling performance.
 
-## Next (P2)
+## P2 — causal vs correlational credit (and the control that decides it)
 
-The headline contrast: add the **causal `do(θ)` node-perturbation** credit rule to
-the plastic regime and test whether it reduces backward interference below the
-correlational floor (−0.17). The C-series predicts it should (θ is the well-posed
-handle); a null would say the interference is representational, not a credit-
-assignment artifact. Optional: the substrate's native competitive gating
-(E9 k-WTA / E4 WTA) as an independent interference-control condition.
+**Result: an honest null.** Causal `do(θ)` credit does *not* reduce interference
+beyond an effective-learning-rate effect. This is the outcome the plan flagged as
+acceptable, and it is well-controlled.
+
+**Setup.** The causal rule (weight-perturbation on the plastic couplings — an
+interventional `do(w+ε)` estimator, à la Lansdell–Kording) only learns when
+restricted to the low-dimensional **H→M readout** and at **K=2** (perturbing the
+full plastic set, or K=3, is too high-variance to learn even one task — the known
+weakness of perturbation methods, and the reason the low-variance hindsight
+estimator exists). So P2 is run in the cleanest fair setting: **K=2 two-task
+reversal** (identity → reversal), **frozen representation** so only the shared H→M
+head adapts — both rules act on the *same* parameters, isolating the credit rule.
+n=30.
+
+**The apparent effect.** At the fixed default operating point, causal credit looks
+like it halves forgetting:
+
+| credit rule | backward transfer | new-task acq / task-0 retention |
+|---|:--:|:--:|
+| correlational (eligibility) | −0.778 [−0.856, −0.683] | 0.82 / 0.18 |
+| causal `do(θ)` (perturbation) | −0.376 [−0.493, −0.261] | 0.71 / 0.29 |
+
+Cohen d = 1.36, CIs cleanly separated. Taken alone this would "support" the
+hypothesis.
+
+**The control that kills it.** Sweeping each rule's plasticity knob (correlational
+η, causal lr) traces a **stability–plasticity frontier** (retention vs new-task
+acquisition). The two rules lie on the **same frontier**: causal @ lr=2 sits at
+(acq 0.71, retention 0.29) exactly where a *slow* correlational learner (η≈0.03)
+sits; correlational @ default η is just further along the same curve (acq 0.82,
+retention 0.18). At **matched acquisition, retention is identical.**
+
+![P2: apparent effect vs frontier control](figures/continual_p2.png)
+
+**Verdict.** The apparent "causal forgets less" is entirely an *effective-learning-
+rate* difference — causal weight-perturbation is simply slower, and any slow learner
+forgets less. It does **not** assign credit in a way that interferes less at matched
+plasticity. So in this setting the interference is **representational**: a shared
+linear readout cannot simultaneously hold two anti-correlated mappings (a capacity
+limit), and better credit assignment does not fix a capacity limit. (Causal is if
+anything strictly worse — it caps at ~0.72 acquisition; higher lr just adds noise.)
+
+## What this means for the two-arcs unification
+
+The arcs connect *conceptually* — perturbation learning **is** interventional
+causal-effect estimation, and the substrate's Line-B rule already performs a
+`do(θ)` estimate. But **causal credit ≠ better continual learning here.** The
+C-series prediction (well-posed `do(θ)` → better learning signal) does not transfer
+to *interference resistance* on a capacity-limited shared readout. An honest, useful
+negative: it rules out "just assign credit causally" as a continual-learning fix and
+points at capacity/representation as the real lever.
+
+## Deferred / next
+
+- **v2 low-variance estimator.** The Mesnard hindsight (future-conditional) baseline
+  is *provably* low-variance; unlike raw perturbation it might move the frontier
+  rather than slide along it. The genuine open question.
+- **Native WTA gating** (E9 k-WTA / E4) — a representational, not credit-based, fix;
+  the CL literature's competitive-head route.
+- **Capacity.** Give the readout room to separate the tasks (per-task-subspace /
+  higher-dim / conceptor-style) — the setting where credit *quality* could matter.
