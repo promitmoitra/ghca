@@ -242,8 +242,70 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   artifact again.)
 - **Deferred.** **Partially-overlapping tasks** as the fair test of whether credit
   quality *ever* matters; temporally-extended credit for a true hindsight estimator.
+  Both are now best pursued *through* 3d (below), which subsumes the overlapping-task
+  question into a sharper form.
 - **Connects to.** E6 (frozen baseline), E9/E4 (WTA gating), C2/C3 (`do(θ)` well-posed),
-  Line A/B plasticity.
+  Line A/B plasticity; **3d** (raising the P5 ceiling along the timescale axis).
+
+### 3d. Timescale as a continual-learning capacity axis — 📐 **PROPOSED** (integrates 3c's finding with 4a's mechanism)
+- **What.** 3c/P5 showed capacity is the continual-learning lever and that a *fixed
+  spatial* (stimulus × context) conjunction basis has a **finite** ceiling (it saturates
+  to the interference floor by T≈6 on `n_h=50`). The non-"cheating" way to raise that
+  ceiling — i.e. *without* per-task heads, which just staple on capacity task-by-task — is
+  a **richer, higher-dimensional shared basis**. The substrate has an untapped
+  representational axis the spatial basis ignores: **timescale** (`τ`, `act`). Test
+  whether a **(stimulus × context × timescale)** conjunction basis raises the P5
+  saturation ceiling — i.e. whether *temporal* diversity buys continual-learning capacity.
+- **Why it matters (and why now).** It turns two loose threads into one experiment:
+  1. It **gives Track 4a a downstream payoff.** 4a's fast/slow hierarchy stops being
+     "nested rhythms as a phenomenon" and becomes *the mechanism that grows a temporal
+     capacity axis for continual learning* — a concrete functional benefit, which is
+     exactly the validation target `e10_notes.md` asks for ("a hierarchical network
+     tracks a two-timescale signal better than a `τ`-homogeneous one", here sharpened to
+     "learns more sequential tasks before saturating").
+  2. It **subsumes 3c's deferred "partially-overlapping tasks" question.** A purely
+     *spatial* conjunction basis cannot separate two tasks that share the same stimulus
+     *and* context but differ in **timing / temporal structure** (the E3 timed-response
+     regime) — same hidden pattern, conflicting required output. A timescale-diverse
+     basis *can* (fast vs slow cells integrate the same input over different windows, so
+     their conjunction tiles the temporal dimension too). So **temporally-structured
+     tasks are the task family** where the timescale axis should pay off and the spatial
+     axis provably can't — a cleaner test than generic partial overlap of "does anything
+     beyond spatial capacity help?".
+- **Design (the afforded→learned ladder, mirroring the E9 bridge — this is what
+  de-risks it).** Reuse the P5 saturation harness (`continual_saturation.py`), swap the
+  task family for temporally-structured tasks (share stimulus/context, differ in required
+  timing), and compare bases by their timescale content:
+  - **homogeneous** — all hidden `τ`/`act` equal (P5's basis). The control: predicts
+    early saturation, no temporal separation.
+  - **wired timescale-diverse** — *hand-set* a spread of (`τ`, `act`) across hidden units
+    (generalising E8.5's two hand-set timescales to a graded population). **Testable now,
+    fully decoupled from 4a's blocked `τ`-rule.** This is the "afforded" arm and the
+    cheap early kill: if a hand-set temporal basis does *not* raise the ceiling on
+    genuinely temporal tasks, the emergent version is not worth building either.
+  - **emergent timescale-diverse** — the hierarchy *grown* by 4a's future input-tracked
+    `τ` rule + channel-conditioned `act`. The "learned" arm; **depends on 4a** (see
+    below). Only this arm also retires the deepest "plastic dynamics" caveat (the one
+    that recurs across 1c, E9-deferred, and Line B).
+  Metric: the P5 sweep (avg accuracy / backward transfer vs number of sequential tasks T),
+  with the ceiling/crossover-T of each basis as the headline.
+- **Dependency on 4a, made explicit.** The *wired* arm needs nothing new and can run
+  immediately; it is the honest way to establish the capacity claim before 4a's hard
+  mechanism-design work. The *emergent* arm consumes all three 4a ingredients — E9
+  grouping (ready), channel-conditioned `act` (PR #42; here it doubles as a capacity
+  lever, giving fast/slow cells distinct temporal receptive fields, not only rebalancing
+  the hierarchy-formation competition), and the input-tracked `τ` rule (still 4a's one
+  genuinely-required, unbuilt change). The E0 minimum-viable-`act` propagation check from
+  PR #42 applies here too.
+- **Effort.** Medium for the wired arm (task family + basis variant on an existing
+  harness); High for the emergent arm (gated on 4a). **Risk.** Medium and honest: the
+  timescale axis only adds *separable* capacity if the tasks carry real temporal
+  structure — on purely static tasks it is inert, and that is the explicit kill
+  condition. State the substrate/analysis boundary: this is a fixed-dynamics basis with a
+  plastic *readout* unless/until the emergent arm makes the dynamics themselves plastic.
+- **Connects to.** 3c/P5 (the ceiling it tries to raise), 4a (the mechanism it consumes
+  and motivates), E3 (temporal task structure), E8.5 (hand-set two-timescale precedent),
+  E9 (the frozen/wired/emergent ladder it copies).
 
 ---
 
@@ -295,8 +357,16 @@ The audits converge on three honest limitations. Good next steps *retire* one of
     reusable as-is], (ii) channel-conditioned `act` [new, low-risk, fixes the
     diagnostic-2 imbalance], (iii) the input-tracked `τ` rule [still the one
     genuinely required change; unblocks nothing by itself if skipped].
+- **Downstream payoff (why 4a is worth the mechanism-design cost).** **3d** (Track 3)
+  proposes to *consume* the emergent hierarchy as a **temporal capacity axis for
+  continual learning** — raising the P5 saturation ceiling on temporally-structured
+  tasks. That gives 4a a concrete functional benefit (sharpening `e10_notes.md`'s own
+  validation target) and a **cheap early kill**: 3d's *wired* (hand-set timescale) arm
+  tests the capacity claim *now*, with no dependency on this track's `τ`-rule; a null
+  there would remove the motivation for the harder emergent hierarchy before it is built.
 - **Connects to.** E2, E5, E8.5; E9 (competition, for the grouping half only); E0
-  (threshold-range scaling, for the proposed `act` floor constraint).
+  (threshold-range scaling, for the proposed `act` floor constraint); **3d** (the
+  continual-learning capacity consumer that motivates the emergent hierarchy).
 
 ### 4b. Package the causal testbed — ✅ **CORE DONE** (see [`causal_testbed.md`](causal_testbed.md); spec/plan alongside)
 - **What.** Turn C0–C7 + the substrate into a reusable synthetic-SCM benchmark for the
