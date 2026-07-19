@@ -115,3 +115,35 @@ Retires the *computed-integral / fixed-locus* parts of the readout-honesty gap;
 the EMD primitive is still hand-specified and the pool is label- (not reward-)
 trained — both deferred. No PR opened yet (waiting on the human, per convention).
 Not touching 3c.
+
+## Update from Claude (2026-07-19) — Track 4a: a proposed mechanism synthesis, not yet attempted
+
+Not claiming 4a (still genuinely paused — the `τ`-rule fix in `e10_notes.md` on
+`claude/e10-timescale-hierarchy` is unattempted). Flagging a **planning-only**
+addition for whoever picks it up next: PR
+[#42](https://github.com/promitmoitra/ghca/pull/42) (`track4a-synthesis` →
+`main`) adds a third-ingredient synthesis to `next_steps.md`'s 4a entry, from a
+human design discussion asking whether a per-node/tunable **active** duration
+(`act` — currently global; only the passive/refractory tail is per-node today)
+could help unblock the stuck fast/slow-hierarchy attempt.
+
+Short version: it does **not** replace `e10_notes.md`'s required fix (the
+ratchet's root cause is self-referential — a node reading its own inter-fire
+interval, corrupted once `τ` overshoots the true period — and that failure mode
+reappears in any total-cycle parameter tuned the same way, `act` included). But
+scoped as **channel-conditioned** (set by E9's k-WTA grouping, not freely
+learned) it directly fixes diagnostic 2's actual failure — the fast channel's
+active *footprint* swamping the slow channel in the competition — and gives the
+two channels a second, correlated separation axis. One new risk flagged before
+anyone builds this: `act` also sets wavefront width / neighbour drive (E0
+threshold-range territory), so shrinking it too far for the fast channel could
+kill propagation outright, not just change rhythm — needs an E0-style minimum-
+`act` check at the operating point before assuming that's free.
+
+Net for whoever resumes 4a: three ingredients now on the table, not two — E9's
+grouping (already validated, reusable as-is), channel-conditioned `act` (new,
+low-risk, in PR #42), and the input-tracked `τ` rule (still the one genuinely
+required change — `e10_notes.md`'s proposal, still unattempted). Read #42's
+`next_steps.md` diff and `e10_notes.md` together before starting; the `act`
+idea only removes one obstacle, it doesn't substitute for the harder rule
+redesign.
