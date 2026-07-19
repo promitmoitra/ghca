@@ -63,14 +63,22 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   than an imposed k-WTA — see the E9 caveats.
 - **Connects to.** E1, E4 (WTA), E5, E8.5/8.7.
 
-### 1b. A learned direction-selective readout
+### 1b. A learned direction-selective readout — ✅ **DONE** (see [`e7_direction_readout_results.md`](e7_direction_readout_results.md))
 - **What.** Replace E7's *computed* local-winding readout with a small population that
   *learns* to read rotation direction from the wave (direction-selective cells via
   reward/Hebbian).
 - **Why.** Makes E7's "read the wave" genuinely on-substrate; maps onto real cortical
   direction selectivity.
-- **Takes.** A motion/phase-gradient-sensitive readout population + a learning rule;
-  show it recovers chirality and drives routing without the god's-eye winding.
+- **What was built.** A population of local elementary motion detectors (EMD,
+  Hassenstein–Reichardt: delayed coincidence `active[t−1] at i AND active[t] at i+d`,
+  coarse-grained) with a **learned** linear pool. It recovers chirality as well as
+  `local_winding` on a centred core (1.00 vs 0.99) and — because it pools local
+  detectors instead of reading one locus — stays perfect under core displacement
+  (d=8: **1.00 vs 0.17**; d=12: **0.98 vs 0.07**), escaping the [C5](c5_results.md)
+  fixed-locus collapse. Dropped into E7's switching it drives routing to **0.72**
+  (vs computed 0.78). **Retires** the *computed-integral* and *fixed-locus* parts of
+  the readout-honesty gap; the EMD primitive itself is still hand-specified and the
+  pool is label- (not reward-) trained — both deferred.
 - **Effort.** Medium. **Risk.** Medium — direction selectivity from a meandering core is
   noisy (C5 showed the readout-locality problem).
 - **Connects to.** E7, C5 (readout-relativity).
@@ -418,13 +426,18 @@ flicker."*
 
 | Goal | Do first | Then |
 |------|----------|------|
-| **Credibility** (retire the honesty gap) | **1a** emergent conjunctions | 1b, 3a ✅ |
+| **Credibility** (retire the honesty gap) | **1a** emergent conjunctions | 1b ✅, 3a ✅ |
 | **Clean disambiguation** | **2a** predictive-coding foil | 1c |
 | **Scientific novelty** | **4a** emergent timescale hierarchy | 2b |
 | **External impact / reach** | **4b** causal testbed | 5a write-up, 2b |
-| **Lowest-risk strengthening** | **3a** stats/sweeps ✅ + **5b** hygiene ✅ done | 1b, 3b |
+| **Lowest-risk strengthening** | **3a** stats/sweeps ✅ + **5b** hygiene ✅ done | 1b ✅, 3b ✅ |
 
-**Progress.** **1a done (E9)** — retired the most-cited caveat. **1c / 2a done**
+**Progress.** **1a done (E9)** — retired the most-cited caveat. **1b done**
+([`e7_direction_readout_results.md`](e7_direction_readout_results.md)) — a learned
+population of local motion detectors replaces E7's computed winding readout, matching
+it on centred cores and staying robust under core displacement where the fixed-locus
+integral collapses (retires the computed-integral / fixed-locus honesty gap; C5 escaped).
+**1c / 2a done**
 ([`e8_hardening_results.md`](e8_hardening_results.md)) — online GVF prediction and the
 predictive-coding foil. **2b done** ([`spiral_predictions.md`](spiral_predictions.md)) —
 the toy→data bridge, low cost, high reach. **4b core done**
@@ -445,9 +458,9 @@ spiral is geometry-bound (out of scope) and only the E2/E5 port remains. **4a at
 — the existing τ rule structurally can't build the hierarchy; it needs a new
 bidirectional τ-plasticity rule (mechanism design), and E9 de-risks only the *grouping*
 half, not the τ-value rule (earlier claim corrected). Remaining high-value, lower-risk
-options: **1b** (learned direction-selective readout), the **E2/E5 port** onto
-non-lattice substrates (3b follow-on; E1 done), and the deferred **3a P3b** σ-band
-headlines. Return to **4a** only with appetite for mechanism design.
+options: the **E2/E5 port** onto non-lattice substrates (3b follow-on; E1 done), and
+the deferred **3a P4b** doc fold-in / τ-axis sweeps. Return to **4a** only with
+appetite for mechanism design.
 
 ## Process notes (apply to whatever is chosen)
 
