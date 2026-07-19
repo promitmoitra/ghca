@@ -1,4 +1,4 @@
-# 3c Results — Continual Learning (P1 baselines · P2 causal credit · P3 low-variance)
+# 3c Results — Continual Learning (P1 baselines · P2 causal credit · P3 low-variance · P4 capacity)
 
 *Track 3c, Phase 1 (see [`continual_learning_plan.md`](continual_learning_plan.md)).
 Establishes the continual-learning harness, the metrics, and the two "what adapts"
@@ -171,11 +171,63 @@ representational fixes).
 - **n=15 frontier**, 5 operating points per rule — enough to see the curves overlap,
   not to resolve ±0.02 differences.
 
+## P4 — capacity, not credit (the positive complement)
+
+P2/P3 showed no credit rule beats the frontier; the limit is capacity. P4 confirms
+it directly: **hold the credit rule fixed** (the correlational eligibility trace that
+catastrophically forgot in P1/P2) and **vary capacity**. Because the two tasks are
+anti-correlated, raw dimensionality can't help — a stimulus-only hidden pattern
+forces the shared head to emit opposite actions for the same pattern. The capacity
+that matters is **task-context / conjunctive**. Three rungs (frozen representation,
+correlational credit, K=2 reversal, n=30):
+
+| rung | avg accuracy | backward transfer | task-0 retention after reversal |
+|---|:--:|:--:|:--:|
+| shared head (stimulus only) | 0.500 [0.490, 0.509] | −0.778 [−0.856, −0.683] | 0.18 |
+| shared head **+ task-context** | 0.661 [0.596, 0.723] | −0.263 [−0.359, −0.170] | 0.55 |
+| per-task heads (full capacity) | 0.959 [0.941, 0.976] | 0.004 [−0.003, 0.012] | 0.96 |
+
+![capacity ladder](figures/continual_capacity.png)
+
+**Interference collapses monotonically with capacity, credit held fixed** —
+backward transfer −0.78 → −0.26 → 0.00, average accuracy 0.50 → 0.66 → 0.96, CIs
+cleanly separated between rungs. The insightful rung is the middle one: a **single
+shared head** with a task-context input (so hidden patterns are (stimulus × context)
+conjunctive — the E9 conjunction mechanism) cuts forgetting ~3× without any separate
+heads. It doesn't fully resolve (avg 0.66) because the *frozen random* S→H gives
+imperfect conjunctive separability — which is itself the pointer: a *learned*
+conjunctive basis (E9) would separate the contexts better. Per-task heads (the
+trivial full-capacity bracket) eliminate interference entirely.
+
+**This closes the 3c arc.** The same correlational credit that catastrophically
+forgot on a shared readout is progressively rescued by capacity alone. Combined with
+P2/P3 (no credit rule moves the frontier), the verdict is unambiguous:
+**continual-learning interference on this substrate is a representational-capacity
+problem, not a credit-assignment problem.** The lever is conjunctive/contextual
+representation — exactly the E9 "afforded → learned" mechanism — not better credit.
+
+## What the whole 3c arc establishes
+
+- **P1:** catastrophic interference is real; freezing the representation doesn't help
+  (the conflict is at the shared readout).
+- **P2:** causal `do(θ)` credit *appears* to halve forgetting, but a frontier control
+  shows it's an effective-learning-rate effect — a null.
+- **P3:** even a low-variance causal estimator stays on the same frontier — the null
+  is not a variance artifact; the frontier is a capacity boundary.
+- **P4:** holding credit fixed, capacity (task-context conjunction → per-task heads)
+  monotonically resolves the interference.
+
+The learning↔causality unification is real *conceptually* (perturbation learning is
+interventional `do(θ)` estimation) but **bounded**: better causal credit does not buy
+continual learning — representational capacity does.
+
 ## Deferred / next
 
-- **Capacity, not credit.** Give the readout room (per-task subspace / higher-dim /
-  conceptor-style / WTA gating) — the direction P2–P3 point at as the real lever.
+- **Learned conjunctive capacity.** The context rung used a *frozen random* projection
+  (avg 0.66). Growing the (stimulus × context) basis with E9's competitive-Hebbian
+  rule should push the single-head result toward the per-task ceiling — the direct
+  E9↔3c bridge.
 - **Partially-overlapping tasks** where a coexisting solution exists — the fair test
-  of whether credit quality ever matters.
-- **Temporally-extended credit** — the setting where a true hindsight estimator
-  would have something to condition on.
+  of whether credit quality *ever* matters, now that capacity is shown to be the lever.
+- **Temporally-extended credit** — where a true hindsight (Mesnard) estimator would
+  have a "future" to condition on.

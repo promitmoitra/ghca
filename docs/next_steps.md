@@ -174,7 +174,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 - **Effort.** Medium. **Risk.** Medium — realised: spiral is lattice-only; dynamics *and*
   E1 learning generalise.
 
-### 3c. Continual learning as causal credit assignment — ✅ **P1–P3 DONE (null: capacity, not credit)** (plan [`continual_learning_plan.md`](continual_learning_plan.md); results [`continual_learning_results.md`](continual_learning_results.md))
+### 3c. Continual learning as causal credit assignment — ✅ **P1–P4 DONE (capacity, not credit)** (plan [`continual_learning_plan.md`](continual_learning_plan.md); results [`continual_learning_results.md`](continual_learning_results.md))
 - **What.** Can *one* substrate learn E1→E2→E5 sequentially without catastrophic
   interference (rather than E6's post-hoc freeze)? **Re-scoped**: the CL literature
   shows frozen-substrate + per-head is the *easy* case (≈ E6, no interference), so the
@@ -207,9 +207,17 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   null was *not* a variance artifact: the frontier is a genuine **capacity boundary**,
   and interference here is representational, not credit-assignment. Credit quality sets
   *where* on the frontier you sit, not the frontier itself.
-- **Deferred.** The lever is **capacity, not credit**: WTA gating (E9 k-WTA / E4),
-  per-task subspaces / conceptors; and **partially-overlapping tasks** (a coexisting
-  solution exists) as the fair test of whether credit quality *ever* matters.
+- **P4 done — capacity, not credit (positive complement).** Holding the correlational
+  credit rule fixed and varying *capacity*, interference collapses monotonically:
+  backward transfer −0.78 (shared head) → −0.26 (shared head + task-context conjunction)
+  → 0.00 (per-task heads); avg acc 0.50 → 0.66 → 0.96 (n=30, CIs separated). The
+  single-head context rung ties directly to E9's conjunction mechanism. So 3c's answer
+  is unambiguous: interference here is representational-capacity-limited, and the lever
+  is conjunctive/contextual representation, not credit.
+- **Deferred.** Grow the (stimulus × context) basis with E9's competitive-Hebbian rule
+  (learned, not frozen-random — should push the single head toward the per-task
+  ceiling); **partially-overlapping tasks** as the fair test of whether credit quality
+  *ever* matters; temporally-extended credit for a true hindsight estimator.
 - **Connects to.** E6 (frozen baseline), E9/E4 (WTA gating), C2/C3 (`do(θ)` well-posed),
   Line A/B plasticity.
 
