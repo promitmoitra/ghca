@@ -221,7 +221,12 @@ unification.
   transfer ≈ 0 at avg 0.78, approaching the hand-wired ceiling; a non-conjunctive
   frozen basis can't even represent the tasks). So **afforded→learned (E9) and
   continual learning (3c) are the same lever — learned conjunctive representation** —
-  not credit.
+  not credit. And that lever is **bounded**: sweeping the number of sequential tasks
+  (P5) shows a *fixed* conjunction basis defers interference only up to its tiling
+  capacity — average accuracy falls monotonically to the shared interference floor as
+  tasks accumulate (~T≈3, ≈12 (stimulus × context) conjunctions on 50 hidden units),
+  while per-task heads whose capacity grows with T stay flat. Capacity is the lever;
+  learnable (bridge) but finite (P5).
 
 ## State of the evidence — the honest ledger
 
