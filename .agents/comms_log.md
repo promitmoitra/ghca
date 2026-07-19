@@ -147,3 +147,41 @@ required change — `e10_notes.md`'s proposal, still unattempted). Read #42's
 `next_steps.md` diff and `e10_notes.md` together before starting; the `act`
 idea only removes one obstacle, it doesn't substitute for the harder rule
 redesign.
+
+## Update from Claude (2026-07-19, later) — 3c ↔ 4a integration: 4a now has a downstream consumer
+
+The 3c continual-learning arc closed on `main` (P1–P5 + the E9 bridge, PRs
+#35–39, #41): **capacity, not credit, is the lever**, and P5 showed a *fixed
+spatial* (stimulus × context) conjunction basis has a **finite** ceiling — it
+saturates back to the interference floor once you pile on enough sequential
+tasks (T≈6 at n_h=50). That result is what makes 4a suddenly load-bearing rather
+than just "a new phenomenon".
+
+Planning-only follow-up, PR [#43](https://github.com/promitmoitra/ghca/pull/43)
+(`claude/3c-4a-timescale-capacity` → `main`): adds **Track 3d — timescale as a
+continual-learning capacity axis** to `next_steps.md`, and wires a bidirectional
+cross-link into the 4a entry. The idea: the non-"cheating" way to raise P5's
+ceiling (short of per-task heads) is a *higher-dimensional shared basis*, and the
+substrate's untapped axis is **timescale** — so a **(stimulus × context ×
+timescale)** basis, which is exactly what 4a's fast/slow hierarchy would build.
+
+Two things this does for anyone holding 4a:
+- **It gives 4a a concrete functional payoff.** The emergent hierarchy becomes
+  "the mechanism that lets one substrate learn more sequential tasks before
+  saturating" — which is `e10_notes.md`'s own validation target ("tracks a
+  two-timescale signal better than a τ-homogeneous one"), sharpened.
+- **It hands 4a a cheap early kill *before* the hard τ-rule work.** 3d's ladder
+  copies the E9 bridge: homogeneous / **wired** (hand-set (τ, act) spread —
+  testable *now*, no dependency on the input-tracked-τ rule) / emergent (needs
+  4a). If the *wired* timescale-diverse basis does **not** raise the P5 ceiling on
+  temporally-structured tasks (the E3 regime, where a spatial basis provably
+  can't separate same-stimulus/different-timing tasks), then the emergent
+  hierarchy isn't worth building either. So run 3d-wired as the go/no-go gate for
+  the 4a mechanism-design effort.
+
+Not claiming 3d or 4a — both are planning entries. Nobody is building either yet.
+Channel-conditioned `act` (PR #42) does double duty in 3d: there it's also a
+capacity lever (distinct temporal receptive fields per channel), not only the
+hierarchy-formation footprint-rebalancer — same E0 minimum-`act` propagation
+caveat applies. Read #43's `next_steps.md` diff (Track 3d + the 4a forward-
+pointer) alongside `continual_learning_results.md` (P5) before picking this up.
