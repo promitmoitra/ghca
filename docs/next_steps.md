@@ -174,7 +174,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 - **Effort.** Medium. **Risk.** Medium — realised: spiral is lattice-only; dynamics *and*
   E1 learning generalise.
 
-### 3c. Continual learning as causal credit assignment — 🔨 **P1 DONE** (plan [`continual_learning_plan.md`](continual_learning_plan.md); results [`continual_learning_results.md`](continual_learning_results.md))
+### 3c. Continual learning as causal credit assignment — ✅ **P1–P2 DONE (honest null)** (plan [`continual_learning_plan.md`](continual_learning_plan.md); results [`continual_learning_results.md`](continual_learning_results.md))
 - **What.** Can *one* substrate learn E1→E2→E5 sequentially without catastrophic
   interference (rather than E6's post-hoc freeze)? **Re-scoped**: the CL literature
   shows frozen-substrate + per-head is the *easy* case (≈ E6, no interference), so the
@@ -193,8 +193,17 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   triple on one substrate): catastrophic interference is real (backward transfer
   −0.17…−0.26; avg acc ≈ chance), and **freezing the representation does not rescue it**
   (frozen ≈ or worse than plastic) because the tasks conflict on the shared head — the
-  reservoir "freezing helps" claim needs per-task heads. Large interference gap left for
-  P2's causal-θ credit rule to try to close.
+  reservoir "freezing helps" claim needs per-task heads.
+- **P2 done — honest null.** Causal `do(θ)` (weight-perturbation) credit vs the
+  correlational eligibility trace on the K=2 reversal (head-only regime, n=30): causal
+  *appears* to halve forgetting (BWT −0.38 vs −0.78, d=1.36), but the stability–
+  plasticity **frontier control** shows both rules lie on the *same* curve — the effect
+  is an effective-learning-rate difference, not better credit. The interference is
+  **representational** (a shared linear head can't hold two anti-correlated mappings),
+  not a credit-assignment artifact. Rules out "assign credit causally" as a CL fix.
+- **Deferred (v2).** Mesnard low-variance hindsight estimator (might *move* the
+  frontier, not slide along it); native WTA gating (representational fix); a
+  capacity-relieved readout where credit quality could matter.
 - **Connects to.** E6 (frozen baseline), E9/E4 (WTA gating), C2/C3 (`do(θ)` well-posed),
   Line A/B plasticity.
 
