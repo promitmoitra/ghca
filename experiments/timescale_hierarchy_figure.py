@@ -44,24 +44,22 @@ def main():
     a.set_xlabel("learned τ"); a.set_title("Single-rhythm controls (new rule):\nunimodal at the driven period")
     a.legend(fontsize=8)
 
-    # panel 2: BC across conditions
+    # panel 2: the honest discriminator — fraction of τ AT each true period.
+    # (BC alone misleads: the old ratcheting rule also clears 5/9, but with NO fast
+    # cluster — near_f = 0. Placement at the fundamentals is what matters.)
     a = axes[2]
     keys = ["input+emergent+two", "input+wired+two", "own+emergent+two",
             "own+wired+two", "input+emergent+fast", "input+emergent+slow"]
-    labs = ["new/emergent\n(two)", "new/wired\n(two)", "old/emergent\n(two)",
-            "old/wired\n(two)", "new\n(fast only)", "new\n(slow only)"]
-    means, los, his, cols = [], [], [], []
-    for k in keys:
-        m, lo, hi = st.bootstrap_ci(d[f"{k}_bc"])
-        means.append(m); los.append(m - lo); his.append(hi - m)
-        cols.append("seagreen" if k.startswith("input+emergent+two")
-                    or k.startswith("input+wired+two") else
-                    ("crimson" if k.startswith("own") else "slategray"))
-    x = np.arange(len(keys))
-    a.bar(x, means, yerr=[los, his], capsize=4, color=cols)
-    a.axhline(5 / 9, ls=":", color="k", label="bimodality threshold 5/9")
+    labs = ["new/emerg\n(two)", "new/wired\n(two)", "old/emerg\n(two)",
+            "old/wired\n(two)", "new\n(fast)", "new\n(slow)"]
+    nf = [float(d[f"{k}_near_f"].mean()) for k in keys]
+    ns = [float(d[f"{k}_near_s"].mean()) for k in keys]
+    x = np.arange(len(keys)); w = 0.38
+    a.bar(x - w / 2, nf, w, color="royalblue", label=f"near P_f={P_F}")
+    a.bar(x + w / 2, ns, w, color="darkorange", label=f"near P_s={P_S}")
     a.set_xticks(x); a.set_xticklabels(labs, fontsize=7)
-    a.set_ylabel("Sarle bimodality coefficient"); a.set_title("Bimodality by condition (n=%d)" % int(d["n"]))
+    a.set_ylabel("fraction of τ at the period"); a.set_ylim(0, 1)
+    a.set_title("Clusters AT the drive periods (n=%d)\n(old rule: no fast cluster)" % int(d["n"]))
     a.legend(fontsize=8)
 
     fig.suptitle("3e.2 — an input-timing-driven τ rule GROWS a fast/slow hierarchy where the "

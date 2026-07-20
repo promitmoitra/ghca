@@ -248,7 +248,15 @@ unification.
   the `τ` distribution accumulate coverage rather than overwrite it). So the
   representation-vs-capacity logic recurs a third time: interference appears wherever
   something plastic is shared, and capacity is what softens it — readout (3c), spatial
-  basis (P5), and now the temporal dynamics themselves.
+  basis (P5), and now the temporal dynamics themselves. And the *same* input-timing rule,
+  fed a two-rhythm drive, grows a genuine **fast/slow timescale hierarchy** — τ clusters
+  at both drive periods, fully self-organised via a conscience-balanced competition
+  (3e.2 / [`timescale_hierarchy_results.md`](timescale_hierarchy_results.md)) — closing
+  the mechanism half of the long-paused Track 4a (the old self-referential rule could
+  only ratchet τ to the ceiling; theta–gamma *coupling* remains, needing an
+  inter-population pathway). So plastic timescales are not just a capacity axis but a
+  *structured* one: the substrate learns a multi-scale temporal organisation from its
+  input statistics.
 
 ## State of the evidence — the honest ledger
 
