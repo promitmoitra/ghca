@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One restless medium — a walkthrough</title>
+<meta name="description" content="A scrolling walkthrough of the Greenberg–Hastings learning substrate: how memory, attention and control can be read out of a single excitable medium — no built-in parts.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0b0d'/%3E%3Ccircle cx='16' cy='16' r='8' fill='%23d4171c'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#0b0b0d;          /* near-black */
+    --panel:#141418;
+    --ink:#ececee;         /* off-white */
+    --muted:#9a9aa2;
+    --red:#d4171c;         /* the substrate's "active" colour */
+    --red-deep:#73000d;    /* refractory head */
+    --rested:#e6e6e6;
+    --maxw:640px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:19px;line-height:1.65;-webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--red);text-decoration:none;border-bottom:1px solid rgba(212,23,28,.4)}
+  a:hover{border-bottom-color:var(--red)}
+  img{max-width:100%;display:block}
+
+  /* top scroll-progress bar */
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--red);z-index:100;transition:width .05s linear}
+
+  /* persistent "notebook" link */
+  #tonotebook{position:fixed;top:14px;right:16px;z-index:100;font-size:13px;
+    background:rgba(20,20,24,.72);border:1px solid #2a2a30;border-radius:999px;
+    padding:6px 13px;color:var(--muted);backdrop-filter:blur(6px)}
+  #tonotebook:hover{color:var(--ink)}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;
+    justify-content:center;align-items:center;text-align:center;overflow:hidden;padding:6vh 22px}
+  .hero .bg{position:absolute;inset:0;background:url("../figures/demo_lattice.gif") center/cover no-repeat;
+    opacity:.16;filter:saturate(1.1) blur(1px);transform:scale(1.08)}
+  .hero .veil{position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,transparent 0%,var(--bg) 78%)}
+  .hero .inner{position:relative;max-width:760px}
+  .kicker{color:var(--red);letter-spacing:.22em;text-transform:uppercase;font-size:13px;font-weight:700;margin-bottom:20px}
+  .hero h1{font-size:clamp(34px,6.4vw,68px);line-height:1.05;margin:0 0 20px;font-weight:800;letter-spacing:-.02em}
+  .hero p{font-size:clamp(18px,2.2vw,23px);color:var(--muted);max-width:560px;margin:0 auto}
+  .scrollcue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:13px;letter-spacing:.15em;text-transform:uppercase}
+  .scrollcue::after{content:"";display:block;width:1px;height:26px;background:var(--muted);margin:8px auto 0;animation:cue 1.8s ease-in-out infinite}
+  @keyframes cue{0%,100%{opacity:.2;transform:scaleY(.6)}50%{opacity:1;transform:scaleY(1)}}
+
+  /* ---------- beats ---------- */
+  .beat{max-width:900px;margin:0 auto;padding:16vh 22px}
+  .beat .num{color:var(--red);font-weight:700;font-size:14px;letter-spacing:.15em;margin-bottom:10px}
+  .beat h2{font-size:clamp(26px,3.6vw,40px);line-height:1.12;margin:0 0 22px;font-weight:800;letter-spacing:-.015em;max-width:16ch}
+  .beat p{max-width:var(--maxw);margin:0 0 20px}
+  .beat .lead{font-size:clamp(20px,2.4vw,25px);color:var(--ink)}
+  .muted{color:var(--muted)}
+
+  /* autoplay beats: two columns — graphic pins in one, text scrolls in the other */
+  .stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:44px;
+    align-items:start;max-width:1120px}
+  .stage .viz{position:sticky;top:12vh;margin:0}
+  .stage .prose{padding-top:4vh;min-width:0}
+  .stage .prose h2{max-width:none}
+  .stage .viz figcaption{color:var(--muted);font-size:14px;text-align:center;margin-top:12px}
+  .viz .frame{border:1px solid #26262c;border-radius:10px;overflow:hidden;background:#0f0f12;box-shadow:0 18px 60px rgba(0,0,0,.5)}
+
+  /* scrub sections: taller, sticky canvas driven by scroll */
+  .scrub{min-height:300vh}
+  .scrub .pin{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:18px;padding:20px}
+  .scrub canvas{max-width:min(560px,88vw);width:100%;height:auto;border:1px solid #26262c;
+    border-radius:10px;background:#0f0f12;image-rendering:pixelated;box-shadow:0 18px 60px rgba(0,0,0,.5)}
+  .scrub .cap{max-width:600px;text-align:center;color:var(--muted);font-size:15px}
+  .scrub .cap b{color:var(--ink)}
+  .scrub .hint{color:var(--red);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+
+  /* collapsible jargon aside */
+  details.aside{max-width:var(--maxw);margin:4px 0 26px;border-left:2px solid var(--red);
+    background:var(--panel);border-radius:0 8px 8px 0;padding:2px 18px}
+  details.aside summary{cursor:pointer;color:var(--red);font-size:14px;font-weight:600;
+    padding:12px 0;list-style:none;letter-spacing:.02em}
+  details.aside summary::-webkit-details-marker{display:none}
+  details.aside summary::before{content:"＋ ";font-weight:700}
+  details.aside[open] summary::before{content:"− "}
+  details.aside .body{font-size:16px;color:var(--muted);padding-bottom:14px}
+  details.aside .body code{background:#000;padding:1px 6px;border-radius:4px;color:#f0d5d5;font-size:14px}
+
+  hr.sep{border:0;border-top:1px solid #22222a;max-width:900px;margin:0 auto}
+
+  /* closing / integrity */
+  .closer{max-width:820px;margin:0 auto;padding:16vh 22px 20vh}
+  .closer h2{font-size:clamp(26px,3.6vw,40px);font-weight:800;letter-spacing:-.015em;margin:0 0 24px}
+  .honest{background:var(--panel);border:1px solid #26262c;border-radius:12px;padding:22px 26px;margin:12px 0 34px}
+  .honest h3{margin:0 0 10px;color:var(--red);font-size:16px;letter-spacing:.04em}
+  .honest p{margin:0 0 12px;color:var(--muted);font-size:17px;max-width:none}
+  .honest p:last-child{margin-bottom:0}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  .card{display:block;background:var(--panel);border:1px solid #26262c;border-radius:12px;padding:18px 20px;color:var(--ink)}
+  .card:hover{border-color:var(--red)}
+  .card .t{font-weight:700;margin-bottom:4px}
+  .card .d{color:var(--muted);font-size:15px}
+  footer{color:var(--muted);font-size:14px;text-align:center;padding:0 22px 12vh;max-width:720px;margin:0 auto}
+  @media (max-width:900px){
+    .stage{grid-template-columns:1fr;gap:8px;max-width:900px}
+    .stage .viz{position:relative;top:0;max-width:min(560px,92vw);margin:0 auto 8px}
+    .stage .prose{padding-top:0}
+  }
+  @media (max-width:640px){
+    body{font-size:17px}
+    .cards{grid-template-columns:1fr}
+    .scrub{min-height:260vh}
+  }
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<a id="tonotebook" href="../">Read the lab notebook →</a>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="bg"></div><div class="veil"></div>
+  <div class="inner">
+    <div class="kicker">Greenberg–Hastings learning substrate</div>
+    <h1>Your brain isn't a box of parts.<br>It's one restless medium.</h1>
+    <p>Memory, attention, control — this is a walkthrough of how all three can come out of a <em>single</em> excitable medium, with nothing built in. Scroll to watch it happen.</p>
+  </div>
+  <div class="scrollcue">scroll</div>
+</header>
+
+<!-- ================= 1 · HOOK ================= -->
+<section class="beat">
+  <div class="num">01 — THE IDEA</div>
+  <h2>One medium, many faces</h2>
+  <p class="lead">The usual picture of the brain is a set of modules: a memory chip, an attention spotlight, a control unit, wired together like an appliance.</p>
+  <p>This project explores the opposite hunch. Start with one uniform, twitchy medium — think of a vast field of grass where a gust can start a wave that ripples across it. Don't add any special machinery. Then ask: <b>how much of what looks like memory, attention, and control is already lurking in the way that field moves?</b></p>
+  <p class="muted">The surprising answer, below, is: a lot. The same medium, asked different questions, gives you all three.</p>
+</section>
+
+<hr class="sep">
+
+<!-- ================= 2 · RAW MATERIAL (SCRUB) ================= -->
+<section class="beat scrub" data-scrub="emergence">
+  <div class="pin">
+    <div class="hint">↓ scroll to run time forward</div>
+    <canvas data-sheet="assets/emergence.png" data-frames="55" data-cols="8" data-fw="308" data-fh="308" width="308" height="308"></canvas>
+    <div class="cap"><b>Nobody drew these.</b> Start every cell off at random and let the simple local rule run — spiral waves organise themselves out of the noise and keep turning.</div>
+  </div>
+</section>
+<section class="beat">
+  <div class="num">02 — THE RAW MATERIAL</div>
+  <h2>The medium makes its own patterns</h2>
+  <p class="lead">Each cell does one dumb thing: rest, briefly fire when enough neighbours are firing, then go quiet for a while before it can fire again — like grass that burns, then needs time to regrow before it can catch again.</p>
+  <p>Give a whole grid of these cells a random shove and the firing doesn't fizzle out and doesn't blow up. It settles into <b>rotating spiral waves</b> that sustain themselves indefinitely. This churning repertoire of patterns is the raw material for everything that follows — it's what reward will later shape, and what an observer will later read.</p>
+  <details class="aside"><summary>The technical version</summary>
+    <div class="body">This is a Greenberg–Hastings excitable medium at its organised operating point (<code>range r=2</code>, active window <code>a=6</code>, threshold <code>θ≈4</code>). A cell cycles <code>rest → active (1…a) → refractory (a+1…τ) → rest</code>; <code>τ</code> is the recovery time. Colour = state: pale grey rested, bright <span style="color:var(--red)">red</span> active crest, darkening tail through refractory. See <a href="../e0_results/">E0 — substrate characterisation</a>.</div>
+  </details>
+</section>
+
+<hr class="sep">
+
+<!-- ================= 3 · REWARD ================= -->
+<section class="beat">
+  <div class="num">03 — WHAT SHAPES IT</div>
+  <h2>Reward doesn't build — it selects</h2>
+  <p class="lead">The medium already produces a zoo of patterns on its own. Learning here isn't about installing a new circuit. It's about a single reward signal quietly <b>keeping the patterns that happen to be useful</b> and letting the rest fade.</p>
+  <p>That's the whole move, borrowed from two ideas: the brain works <em>inside-out</em>, generating activity first and matching it to the world second (Buzsáki); and a bare scalar reward is enough to select behaviour (Sutton). Everything below is one of these selected patterns, seen in motion.</p>
+  <details class="aside"><summary>The technical version</summary>
+    <div class="body">Two plasticity lines act on the substrate: conduction weights (Line A) and local timescales (Line B), both driven by reward-modulated updates rather than a supervised target. The conditioning result is <a href="../e1_results/">E1</a>. No pattern below is hand-wired; each is a readout of the trained medium.</div>
+  </details>
+</section>
+
+<hr class="sep">
+
+<!-- ================= 4 · MEMORY (E2) ================= -->
+<section class="beat stage">
+  <figure class="viz"><div class="frame"><img src="../figures/e2_ring_memory.gif" alt="Two rings; the left sustains a rotating pulse, the right dies out"></div>
+    <figcaption>Left ring remembers; right ring forgets. Same wiring — only the recovery time differs.</figcaption></figure>
+  <div class="prose">
+  <div class="num">04 — MEMORY</div>
+  <h2>Memory is a loop that doesn't stop</h2>
+  <p class="lead">Where do you keep something in mind? Here, in a wave that keeps going around a loop.</p>
+  <p>Two identical rings are lit the same way. The only difference is how fast each cell recovers. On the left, cells recover just in time for the wave to come back around — so the pulse keeps circling, and the signal is <b>held</b>. On the right, cells recover a touch too slowly; the wave runs into its own not-yet-ready tail and dies within a lap — the signal is <b>lost</b>.</p>
+  <p class="muted">Memory isn't a storage module here. It's a loop the medium has been tuned to forget slowly.</p>
+  <details class="aside"><summary>The technical version</summary>
+    <div class="body">Reentry on a directed ring of length <code>L</code>. Sustains when the recovery time <code>τ &lt; L</code> (the wavefront always meets rested cells); collapses when <code>τ ≥ L</code> (the refractory tail blocks reentry). Tuning one timescale flips remembering vs forgetting. Full result: <a href="../e2_results/">E2 — working memory</a>.</div>
+  </details>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ================= 5 · ATTENTION (E4) ================= -->
+<section class="beat stage">
+  <figure class="viz"><div class="frame"><img src="../figures/e4_annihilation.gif" alt="Two waves travel inward, collide, and cancel"></div>
+    <figcaption>Two waves race inward and cancel where they meet. A small head start decides who wins the middle.</figcaption></figure>
+  <div class="prose">
+  <div class="num">05 — ATTENTION</div>
+  <h2>Attention is two waves that cancel</h2>
+  <p class="lead">Picking one thing over another usually gets explained with an "inhibition" circuit that suppresses the loser. Here there's no such circuit.</p>
+  <p>Two waves start at opposite ends and travel toward each other. When they collide they <b>wipe each other out</b> — each runs into the other's spent, still-recovering wake and can't continue. Give the attended side a tiny head start and the collision lands off-centre, so the attended wave claims the middle. Winner-take-all falls out of the physics.</p>
+  <p class="muted">The competition <em>is</em> the recovery period. Nothing was added to make one side lose.</p>
+  <details class="aside"><summary>The technical version</summary>
+    <div class="body">Colliding travelling waves annihilate in each other's refractory wake — no inhibitory weights. A top-down bias shifts the collision point, so the biased stream captures the centre node. See <a href="../e4_results/">E4 — attention</a>.</div>
+  </details>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ================= 6 · CONTROL (E5) ================= -->
+<section class="beat stage">
+  <figure class="viz"><div class="frame"><img src="../figures/e5_options.gif" alt="One of two context loops rotates at a time, setting the rule"></div>
+    <figcaption>Which loop is spinning is the rule in force. At the next block they swap.</figcaption></figure>
+  <div class="prose">
+  <div class="num">06 — CONTROL</div>
+  <h2>Control is choosing which loop spins</h2>
+  <p class="lead">"Executive control" sounds like a manager sitting above everything. Here it's just: which memory loop is currently running.</p>
+  <p>Two context loops sit ready. Only one turns at a time (the same don't-stop trick from memory). Whichever one is spinning quietly <b>sets the rule</b> for how incoming signals get routed to responses. When the task switches, the other loop lights up and takes over. The "controller" is nothing but a standing pattern that biases everything downstream.</p>
+  <details class="aside"><summary>The technical version</summary>
+    <div class="body">The active rule is instantiated as a persistent context ring (the E2 mechanism, <code>τ &lt; L</code>) that gates the fast stimulus→response mapping — control as a selectable <em>option</em>, not a dedicated module. See <a href="../e5_results/">E5 — executive control</a>.</div>
+  </details>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ================= 7 · THE RULE IS THE SPIN (E7) ================= -->
+<section class="beat stage">
+  <figure class="viz"><div class="frame"><img src="../figures/e7_spiral_rule.gif" alt="Two spirals of opposite handedness encode two rules"></div>
+    <figcaption>Two spirals, opposite spin. The direction of turning is the rule itself.</figcaption></figure>
+  <div class="prose">
+  <div class="num">07 — THE RULE, IN 2-D</div>
+  <h2>The rule can be a direction of spin</h2>
+  <p class="lead">Lift that idea off the 1-D loop and onto the full 2-D medium, and the "which loop" choice becomes something more striking: <b>which way a spiral turns</b>.</p>
+  <p>Two spirals are seeded with opposite handedness — one turning counter-clockwise, one clockwise — and each holds its spin for hundreds of steps. Make counter-clockwise mean one task rule and clockwise the other, and now the instruction the system is following is written purely in the <b>direction of rotation</b>. This echoes real cortical recordings where the direction a wave rotates carries task-relevant information.</p>
+  <details class="aside"><summary>The technical version</summary>
+    <div class="body">Genuine spiral waves with a phase-singularity core on the organised-band lattice (no-flux boundaries); the two chiralities (net topological charge ±1) serve as the two rules. Connects to rotating-wave neuroscience (Xu/Gong 2023; Ye/Steinmetz 2026). See <a href="../e7_results/">E7 — spiral-core option</a>.</div>
+  </details>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ================= 8 · THE HONESTY TWIST (C5) ================= -->
+<section class="beat stage">
+  <figure class="viz"><div class="frame"><img src="../figures/c5_fixed_vs_tracked.gif" alt="A fixed reader misreads the spin; a tracking reader gets it right"></div>
+    <figcaption>Same spiral, two readers. Watch the wrong spot and you get the spin backwards.</figcaption></figure>
+  <div class="prose">
+  <div class="num">08 — THE HARD QUESTION</div>
+  <h2>Is the spin real — or just where you're looking?</h2>
+  <p class="lead">It's tempting to stop here and say "the spin is the rule." But a careful scientist has to ask: is that spin actually <em>doing</em> anything, or does it just look meaningful from a convenient vantage point?</p>
+  <p>Here's the trap, made visible. One spiral, one true spin. Two observers read it at the same time: one parked at a fixed spot, one that follows the spiral's core. The core drifts away from the fixed observer, who then reads the <b>wrong</b> direction — while the observer who tracks the core stays right. Same reality, opposite verdicts, decided only by <em>where you look</em>.</p>
+  <p class="muted">This is the honesty check the whole causal series is built around: a pattern is only a real handle on behaviour if you can show it isn't an artefact of the measurement.</p>
+  <details class="aside"><summary>The technical version</summary>
+    <div class="body">A fixed-locus winding readout at the lattice centre vs a core-tracking readout. The fixed reader watches the outer wave, not the core, and misreports chirality once the core displaces — the concrete form of the C-series caution that a wave variable is well-posed only for a matched reader. See <a href="../c5_results/">C5 — do(chirality)</a>.</div>
+  </details>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ================= 9 · THE TEST (SCRUB, C6) ================= -->
+<section class="beat scrub" data-scrub="necessity">
+  <div class="pin">
+    <div class="hint">↓ scroll to run both worlds forward</div>
+    <canvas data-sheet="assets/necessity.png" data-frames="55" data-cols="8" data-fw="495" data-fh="240" width="495" height="240"></canvas>
+    <div class="cap"><b>Left: intact. Right: one number changed.</b> Both start as the same spiral. On the right, the medium is made slightly harder to excite — and its spiral quietly dies, taking the rule with it.</div>
+  </div>
+</section>
+<section class="beat">
+  <div class="num">09 — THE TEST</div>
+  <h2>Change the recipe, not the dish</h2>
+  <p class="lead">So how do you prove the pattern matters? Not by poking the wave directly — that's clumsy, and (beat 8) you might just be fooling your own reader. You change one <b>ingredient of the recipe</b> and watch whether the behaviour survives.</p>
+  <p>Both sides are seeded as the same spiral. The only difference is a single dial — how easily a cell catches fire. Nudge it on the right and the spiral can't sustain its core; it fades to nothing within moments, and the rule it was carrying is gone. The left, untouched, holds the rule the whole way. Same starting pattern, one parameter apart — and that parameter alone decides whether the context is still there to be used later.</p>
+  <p class="muted">The takeaway: a rotating core isn't just a pretty side-effect. It has to <em>persist</em> for the system to use it — the persistence is necessary, not decorative.</p>
+  <details class="aside"><summary>The technical version</summary>
+    <div class="body">A well-posed generative intervention, <code>do(θ)</code>: two spirals with identical nucleation differing only in lattice threshold. Raising <code>θ</code> kills the persistent core, so rule-switching collapses (0.85 → 0.52) while a re-nucleated single-rule control is spared (0.90 vs 0.89) — the persistent core is <em>necessary</em>. See <a href="../c6_results/">C6 — do(θ_χ)</a>.</div>
+  </details>
+</section>
+
+<hr class="sep">
+
+<!-- ================= CLOSER ================= -->
+<section class="closer">
+  <div class="num" style="color:var(--red);font-weight:700;font-size:14px;letter-spacing:.15em;margin-bottom:10px">10 — SO WHAT</div>
+  <h2>Faculties are questions you ask a medium, not machines you install</h2>
+  <p class="muted" style="font-size:clamp(18px,2.2vw,22px);max-width:var(--maxw)">Memory was a loop. Attention was two waves cancelling. Control was choosing which loop spins. None of them were built in — each was the <em>same</em> excitable medium, answering a different question. That's the whole thesis, made watchable.</p>
+
+  <div class="honest">
+    <h3>What this is — and what it isn't</h3>
+    <p>This is an <b>exploratory</b> computational study, not a claim about real neurons. The animations <em>illustrate</em> mechanisms; they don't prove the brain works this way.</p>
+    <p>Every headline here has a caveats section in the notebook, and the whole program has been through an independent integrity review — checking each number against the code, flagging what's overstated, and documenting one real reproducibility bug that was found and fixed. Accessible framing shouldn't mean overclaiming, so the honest limits travel with the story.</p>
+  </div>
+
+  <div class="cards">
+    <a class="card" href="../animations/"><div class="t">Watch the full gallery →</div><div class="d">Every animation, with the precise mechanism described.</div></a>
+    <a class="card" href="../synthesis/"><div class="t">Read the synthesis →</div><div class="d">How the learning and causal series tie together.</div></a>
+    <a class="card" href="../core_review/"><div class="t">The integrity review →</div><div class="d">What reproduces, what's overstated, the bug that was fixed.</div></a>
+    <a class="card" href="../"><div class="t">The lab notebook →</div><div class="d">E-series, C-series, methods, and the roadmap.</div></a>
+  </div>
+</section>
+
+<footer>
+  Greenberg–Hastings learning substrate · a scrolling walkthrough of the animation gallery.
+  Every visual here is rendered from the same simulated medium described in the notebook.
+</footer>
+
+<script>
+(function(){
+  // ---- top progress bar ----
+  var bar=document.getElementById('progress');
+  function docProgress(){
+    var h=document.documentElement;
+    var max=h.scrollHeight-h.clientHeight;
+    return max>0?(h.scrollTop||document.body.scrollTop)/max:0;
+  }
+
+  // ---- scroll-scrubbed canvases ----
+  var scrubs=[].slice.call(document.querySelectorAll('canvas[data-sheet]')).map(function(cv){
+    var img=new Image();
+    img.src=cv.getAttribute('data-sheet');
+    return {
+      canvas:cv, ctx:cv.getContext('2d'), img:img, loaded:false,
+      n:+cv.getAttribute('data-frames'), cols:+cv.getAttribute('data-cols'),
+      fw:+cv.getAttribute('data-fw'), fh:+cv.getAttribute('data-fh'),
+      section:cv.closest('section'), last:-1
+    };
+  });
+  scrubs.forEach(function(s){
+    s.img.onload=function(){ s.loaded=true; draw(s,0); };
+  });
+  function draw(s,frame){
+    if(!s.loaded||frame===s.last) return;
+    s.last=frame;
+    var c=frame%s.cols, r=Math.floor(frame/s.cols);
+    s.ctx.clearRect(0,0,s.fw,s.fh);
+    s.ctx.drawImage(s.img, c*s.fw, r*s.fh, s.fw, s.fh, 0,0, s.fw,s.fh);
+  }
+  function frameFor(s){
+    var rect=s.section.getBoundingClientRect();
+    var vh=window.innerHeight;
+    var total=rect.height-vh;                 // scrollable span while pinned
+    var p=total>0 ? (-rect.top)/total : 0;
+    p=Math.max(0,Math.min(1,p));
+    return Math.min(s.n-1, Math.floor(p*s.n));
+  }
+
+  var ticking=false;
+  function onScroll(){
+    if(ticking) return; ticking=true;
+    requestAnimationFrame(function(){
+      bar.style.width=(docProgress()*100).toFixed(2)+'%';
+      scrubs.forEach(function(s){ draw(s, frameFor(s)); });
+      ticking=false;
+    });
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onScroll);
+  onScroll();
+})();
+</script>
+</body>
+</html>

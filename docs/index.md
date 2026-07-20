@@ -9,6 +9,11 @@ dynamical patterns, and a strict scalar reward (Sutton) selects and stabilises a
 subset through action. Memory, attention and executive function are treated as
 categories **read out** from one homogeneous substrate — not as built-in modules.
 
+!!! tip "New here? Take the guided walkthrough"
+    [**One restless medium →**](scroll/){target=_self} — a scrolling, plain-language
+    walkthrough that builds the whole story one idea at a time, with the animations
+    playing as you go. Start there if you want the intuition before the lab notebook.
+
 <div class="grid cards" markdown>
 
 - :material-play-circle: **[Watch the substrate](animations.md)**

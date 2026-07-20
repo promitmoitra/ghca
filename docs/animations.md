@@ -170,7 +170,9 @@ python3 experiments/c6_animation.py         # docs/figures/c6_necessity.gif
   `τ`, `θ`, bias, ring length `L`, etc., re-rendering the substrate in the browser
   — turning these fixed GIFs into something you can drive. Needs either a small JS
   reimplementation of the GH update rule or a pre-rendered parameter sweep. Deferred.
-- **Scrollytelling narration.** The same walkthrough as a single scrolling page
-  where each animation plays alongside the claim it supports.
+- ~~**Scrollytelling narration.**~~ **Shipped** → [One restless medium](scroll/):
+  a single scrolling, plain-language walkthrough where each animation plays
+  alongside the claim it supports, with two beats (spiral emergence, `do(θ)`
+  necessity) driven frame-by-frame off the scroll position.
 - **C-series causal animation.** `do(θ) → W → B` vs the fat-handed `do(W)` as a
   side-by-side dynamic, to give the causal argument the same watchable treatment.
