@@ -320,6 +320,64 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   and motivates), E3 (temporal task structure), E8.5 (hand-set two-timescale precedent),
   E9 (the frozen/wired/emergent ladder it copies).
 
+### 3e. What the *emergent* timescale mechanism opens up — 📐 **PROPOSED** (directions unlocked once 3d's emergent arm lands)
+- **The honest boundary first.** For the narrow capacity claim ("does timescale
+  diversity buy continual-learning capacity?"), the *emergent* arm adds nothing the
+  *wired* arm didn't already prove — a hand-set graded-`τ` basis suffices. The emergent
+  arm's value is elsewhere, and it is what makes these directions possible:
+  1. **It retires the deepest open tension (plastic *dynamics*).** Every "learned"
+     result so far — E1 routing, E9 conjunctions, E8/1c prediction — is a plastic
+     *readout* over *fixed* dynamics; even E9 left the timescales hand-set. The emergent
+     arm is the first time the substrate's **own dynamics** (`τ`) are shaped by
+     experience: *afforded dynamics + learned readout* → **learned dynamics**. This is
+     the "plastic dynamics deferred" caveat (1c, E9, Line B) finally addressed.
+  2. **The rule is the scientific content.** It shows the 4a ratchet was never intrinsic
+     to GH timescale plasticity — only to the *self-referential* signal (a node reading
+     its own inter-fire interval). An **external** teaching signal (the probe delay) +
+     a bidirectional update dissolves it. Transferable, and what actually unblocks 4a.
+  3. **Self-calibration.** The wired basis needs a designer who knows the delay
+     statistics in advance (hand-set `linspace`); the emergent basis *discovers* the
+     relevant timescale range from the input stream — the inside-out thesis doing real
+     work.
+- **Directions it unlocks** (ranked by how much they exploit what wired categorically
+  cannot do):
+  1. **Re-tiling under a shifting delay distribution — the killer app.** If the tasks
+     migrate to new delays, an emergent basis should *reallocate* `τ`; a wired one is
+     frozen. This opens a new regime where **both** the representation *and* the readout
+     are plastic, so 3c-style interference could appear *in the representation itself* —
+     does the timescale basis have its own stability–plasticity frontier? Directly
+     extends the 3c arc one level down. **Effort** medium (reuses the emergent harness +
+     a distribution-shift schedule). **Highest-value follow-up.**
+  2. **Bimodal hierarchy from two-rhythm drive — *completes* original 4a.** The delay
+     rule tiles a continuum because the delays are spread; feed it `e10_notes.md`'s
+     two-rhythm drive and the same rule should cluster `τ` at the two periods → a genuine
+     fast/slow split, then test for theta–gamma-style cross-frequency coupling. Turns 4a
+     from *gated-in* to *closed*. **Effort** medium. **Risk** medium (may need the
+     channel-conditioned-`act` ingredient from PR #42 to balance channel activity).
+  3. **Concurrent co-adaptation (end-to-end inside-out).** Both 3d-emergent and E9 use a
+     phase split (grow representation, freeze, learn readout). Run emergent-`τ` and the
+     reward readout *together* — do they co-adapt or fight? The strongest form of "one
+     homogeneous machine learning end-to-end"; retires the last E9/3d phase-split caveat.
+     **Effort** medium–high. **Risk** high (two plastic loops can destabilise).
+  4. **Supply E2/E3's temporal machinery from experience.** The emergent basis is a
+     self-organised population of *time cells* tiling a delay — exactly what E2 (working
+     memory) and E3 (timed response) hand-built. Could retire *their* afforded components,
+     extending afforded→learned beyond conjunction cells into temporal cognition.
+     **Effort** medium. **Connects** tension 1 to the memory/timing experiments.
+  5. **A falsifiable neuroscience prediction (Track 2 / tension 3).** If delays are
+     non-uniform, does the rule allocate more `τ`-resolution where intervals are common?
+     That is adaptive/efficient temporal coding — a concrete prediction that biological
+     time cells tile *experienced* interval statistics, not uniform time. **Effort** low
+     (a non-uniform-delay variant of the existing sweep + a tiling-vs-statistics readout).
+- **Conceptual thread (ties the two arcs tighter).** C3 established do(`θ`) — intervening
+  on timescales — is the well-posed causal handle. The emergent rule is the substrate
+  performing **self-directed do(`θ`)**: adjusting its own `τ` from input timing. So `θ`
+  is both *the* causal handle (C-series) and the variable that self-organises (E-series)
+  — a sharper form of the "learning as causal inference" framing, and a candidate 5a
+  synthesis note once 3d-emergent lands.
+- **Connects to.** 3d (the arm that unlocks these), 4a (direction 2 closes it), 3c
+  (direction 1 extends it), E2/E3 (direction 4), C3/`do(θ)` (the conceptual thread).
+
 ---
 
 ## Track 4 — New territory *(novelty)*
