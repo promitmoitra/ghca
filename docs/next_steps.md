@@ -353,13 +353,18 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      work.
 - **Directions it unlocks** (ranked by how much they exploit what wired categorically
   cannot do):
-  1. **Re-tiling under a shifting delay distribution — the killer app.** If the tasks
-     migrate to new delays, an emergent basis should *reallocate* `τ`; a wired one is
-     frozen. This opens a new regime where **both** the representation *and* the readout
-     are plastic, so 3c-style interference could appear *in the representation itself* —
-     does the timescale basis have its own stability–plasticity frontier? Directly
-     extends the 3c arc one level down. **Effort** medium (reuses the emergent harness +
-     a distribution-shift schedule). **Highest-value follow-up.**
+  1. **Re-tiling under a shifting delay distribution — ✅ DONE** (`continual_temporal_retile.py`,
+     n=20; results [`continual_learning_results.md`](continual_learning_results.md)). Under
+     a SHORT→LONG→SHORT delay schedule the emergent basis **re-tiles** (LONG-decode
+     0.50→0.92; `τ` migrates bodily; wired-static frozen at 0.50 — the adaptation a
+     hand-set basis cannot do). And the plastic **representation has its own
+     stability–plasticity frontier**: adapting to LONG costs SHORT (representation
+     backward transfer −0.069 [−0.093, −0.045]) — 3c-style interference one level down,
+     in the dynamics not the readout. But it is **graceful, not catastrophic** (−0.07 vs
+     the readout's −0.4…−0.8; SHORT recovers, LONG partly retained): distributing the
+     load across `n_h` units *accumulates* coverage rather than overwriting — capacity
+     again softens interference. Deeper form deferred: a fully-online concurrent (not
+     phase-split) version.
   2. **Bimodal hierarchy from two-rhythm drive — *completes* original 4a.** The delay
      rule tiles a continuum because the delays are spread; feed it `e10_notes.md`'s
      two-rhythm drive and the same rule should cluster `τ` at the two periods → a genuine
