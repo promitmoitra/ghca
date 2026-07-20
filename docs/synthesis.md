@@ -226,7 +226,13 @@ unification.
   capacity — average accuracy falls monotonically to the shared interference floor as
   tasks accumulate (~T≈3, ≈12 (stimulus × context) conjunctions on 50 hidden units),
   while per-task heads whose capacity grows with T stay flat. Capacity is the lever;
-  learnable (bridge) but finite (P5).
+  learnable (bridge) but finite (P5). And it is not one-dimensional: 3d (wired arm)
+  shows **timescale** is a *second, temporal* capacity axis — a hand-set graded-`τ`
+  basis learns delay-keyed tasks a homogeneous one cannot represent at any head
+  capacity (per-task 0.58–0.62 vs chance floor 0.43, n=20), replicating the same
+  representation-then-capacity logic on the time axis and turning Track 4a's emergent
+  timescale hierarchy into a *justified* build (its capacity payoff is now demonstrated,
+  not assumed).
 
 ## State of the evidence — the honest ledger
 

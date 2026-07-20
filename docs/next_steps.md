@@ -247,7 +247,20 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 - **Connects to.** E6 (frozen baseline), E9/E4 (WTA gating), C2/C3 (`do(θ)` well-posed),
   Line A/B plasticity; **3d** (raising the P5 ceiling along the timescale axis).
 
-### 3d. Timescale as a continual-learning capacity axis — 📐 **PROPOSED** (integrates 3c's finding with 4a's mechanism)
+### 3d. Timescale as a continual-learning capacity axis — ✅ **WIRED ARM DONE (gate green)**; emergent arm gated-in on 4a (results [`continual_learning_results.md`](continual_learning_results.md))
+- **Wired arm done (n=20).** A *hand-set* timescale-diverse (graded `τ`) basis buys
+  genuine, forgetting-free continual-learning capacity on temporal (delay-keyed) tasks
+  that a homogeneous basis cannot represent at *any* head capacity: graded+per-task
+  0.58–0.62 (bwt ≈ 0, flat over T) vs homog+per-task ~0.43 (chance floor). The gap is
+  purely the `τ` distribution → **representational, not capacity**. A shared head over
+  the fixed graded basis still forgets (graded+shared ~0.46–0.50, bwt −0.12→−0.06),
+  replicating P5's spatial-axis interference on the temporal axis. **The 4a go/no-go
+  gate is therefore green** — the emergent hierarchy has a demonstrated capacity payoff,
+  so the mechanism-design work is justified. (Mechanism: stimulus → per-node
+  refractoriness for `τ` steps → a thermometer code of elapsed time, readable only when
+  `τ` is diverse; delay-decode 1.00 graded vs 0.53 homogeneous.) Caveat: wired `τ` does
+  not retire the plastic-dynamics caveat — only the emergent arm would; and the tested
+  conjunction is essentially *(time)*, not the full *(stimulus × context × time)*.
 - **What.** 3c/P5 showed capacity is the continual-learning lever and that a *fixed
   spatial* (stimulus × context) conjunction basis has a **finite** ceiling (it saturates
   to the interference floor by T≈6 on `n_h=50`). The non-"cheating" way to raise that
@@ -278,11 +291,11 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   timing), and compare bases by their timescale content:
   - **homogeneous** — all hidden `τ`/`act` equal (P5's basis). The control: predicts
     early saturation, no temporal separation.
-  - **wired timescale-diverse** — *hand-set* a spread of (`τ`, `act`) across hidden units
-    (generalising E8.5's two hand-set timescales to a graded population). **Testable now,
-    fully decoupled from 4a's blocked `τ`-rule.** This is the "afforded" arm and the
-    cheap early kill: if a hand-set temporal basis does *not* raise the ceiling on
-    genuinely temporal tasks, the emergent version is not worth building either.
+  - **wired timescale-diverse** — ✅ **done** (`continual_temporal_saturation.py`,
+    n=20). *Hand-set* graded `τ` across hidden units; decoupled from 4a's blocked
+    `τ`-rule. The cheap early kill returned **green**: the graded basis learns temporal
+    tasks (per-task 0.58–0.62, bwt ≈ 0) where homogeneous `τ` floors at chance (~0.43)
+    at any head capacity — timescale diversity is the representational lever.
   - **emergent timescale-diverse** — the hierarchy *grown* by 4a's future input-tracked
     `τ` rule + channel-conditioned `act`. The "learned" arm; **depends on 4a** (see
     below). Only this arm also retires the deepest "plastic dynamics" caveat (the one
@@ -357,13 +370,14 @@ The audits converge on three honest limitations. Good next steps *retire* one of
     reusable as-is], (ii) channel-conditioned `act` [new, low-risk, fixes the
     diagnostic-2 imbalance], (iii) the input-tracked `τ` rule [still the one
     genuinely required change; unblocks nothing by itself if skipped].
-- **Downstream payoff (why 4a is worth the mechanism-design cost).** **3d** (Track 3)
-  proposes to *consume* the emergent hierarchy as a **temporal capacity axis for
-  continual learning** — raising the P5 saturation ceiling on temporally-structured
-  tasks. That gives 4a a concrete functional benefit (sharpening `e10_notes.md`'s own
-  validation target) and a **cheap early kill**: 3d's *wired* (hand-set timescale) arm
-  tests the capacity claim *now*, with no dependency on this track's `τ`-rule; a null
-  there would remove the motivation for the harder emergent hierarchy before it is built.
+- **Downstream payoff — now demonstrated (gate green).** **3d** (Track 3) *consumes*
+  the emergent hierarchy as a **temporal capacity axis for continual learning**. Its
+  *wired* (hand-set timescale) arm has now run (n=20) and returned **green**: a
+  graded-`τ` basis buys forgetting-free continual-learning capacity on temporal tasks
+  that a homogeneous basis cannot represent at any head capacity. So 4a's emergent
+  hierarchy has a **demonstrated functional payoff** (sharpening `e10_notes.md`'s own
+  validation target), and the go/no-go check that could have killed it *before* the hard
+  `τ`-rule work instead cleared it. Building the emergent hierarchy is justified.
 - **Connects to.** E2, E5, E8.5; E9 (competition, for the grouping half only); E0
   (threshold-range scaling, for the proposed `act` floor constraint); **3d** (the
   continual-learning capacity consumer that motivates the emergent hierarchy).
