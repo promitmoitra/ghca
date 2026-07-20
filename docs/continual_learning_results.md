@@ -382,11 +382,71 @@ this is not forgetting but some delay-dichotomies being individually harder and 
 graded basis's finite delay-resolution; small, with partly-overlapping CIs. (4) Same
 substrate-vs-analysis boundary as P4/P5: fixed dynamics, plastic *readout*.
 
+## 3d (emergent arm) — the timescale basis, *grown* not hand-set
+
+The wired arm left `τ` hand-set — so the *dynamics* were still afforded, not learned.
+This arm grows the `τ` spread with a local, reward-free plasticity rule, the previously
+**blocked** part of Track 4a. `e10_notes.md` diagnosed the block: the old Line B rule
+`τ ← τ + η(interfire − τ)` reads a node's *own* inter-fire interval, which reports a
+*multiple* of the period once `τ` overshoots, so `τ` only ratchets upward — no fast
+population can form. The fix (proposed there, implemented here): a **bidirectional,
+input-timing-driven** rule — each node nudges its `τ` toward the *delays it is
+externally probed at*, gated by whether it actually responds (rested), with E9's k-WTA
++ DeSieno conscience so nodes specialise to different delays. The teaching signal is
+external and the update is bidirectional, so the ratchet never arises. Self-organisation
+is reward- and label-free; `τ` is grown once per seed, then frozen for the same sweep.
+
+Primitive first: from a near-homogeneous start the grown basis reaches **delay-decode
+0.94** (vs homogeneous 0.53, wired 1.00). Then the continual-learning sweep, three
+bases — homogeneous / **emergent (grown)** / wired (hand-set) — under both head modes,
+n=20:
+
+| T | homog+pt | **emergent+pt** | wired+pt | | homog+sh | emergent+sh | wired+sh |
+|:-:|:--:|:--:|:--:|:-:|:--:|:--:|:--:|
+| 2 | 0.434 | **0.555 [0.510, 0.596]** | 0.621 | | 0.438 | 0.492 | 0.498 |
+| 4 | 0.426 | **0.531 [0.510, 0.551]** | 0.594 | | 0.437 | 0.472 | 0.470 |
+| 6 | 0.431 | **0.529 [0.505, 0.551]** | 0.575 | | 0.435 | 0.466 | 0.458 |
+
+![emergent vs wired timescale basis](figures/continual_temporal_emergent.png)
+
+**A learned τ basis works — the 4a ratchet is escaped.** Under per-task heads the
+*grown* basis (emergent, 0.53–0.56, flat over T, backward transfer ≈ 0) sits well above
+the homogeneous floor (0.43; CIs cleanly separated) — a reward-free, input-timing-driven
+rule discovers a functional temporal representation from a near-homogeneous start, with
+no designer specifying the delay range. Under a shared head it shows the same
+interference as the wired basis (emergent+shared ≈ wired+shared, negative bwt), so the
+representation-then-capacity logic is intact. This is the **first result in the
+programme where the substrate's own *dynamics* (not a readout) are shaped by
+experience** — the "plastic dynamics deferred" caveat (1c, E9, Line B), addressed.
+
+**Honest gap: emergent < wired.** The grown basis recovers ~70% of the
+wired-over-homogeneous capacity gap (per-task ≈ 0.53 vs wired 0.59 vs floor 0.43), not
+all of it — tracking the primitive (delay-decode 0.94 vs 1.00). The `τ` histogram shows
+why: the rule spreads most units across the delay range but leaves a residual cluster
+near the `τ≈8` initialisation (units that never won the competition), so the tiling is
+coarser than the hand-set uniform spread. Closing that gap (a schedule that recruits the
+idle units, or a light homeostatic pressure off the init value) is a tuning item, not a
+mechanism problem — the mechanism is demonstrated. Other caveats carry over from the
+wired arm: still *(time)* not full *(stimulus × context × time)*; `act` fixed
+(deliberately — it is not gradient-learned, per the 4a diagnosis); phase-split
+(self-organise then freeze), so concurrent co-adaptation is untested (Track 3e).
+
+**What this does to Track 4a.** 4a was *paused* on exactly this rule. The delay-tiling
+setting is not the two-rhythm hierarchy 4a originally targeted, but it establishes the
+load-bearing fact 4a was stuck on: **timescale plasticity works once the teaching signal
+is external, not self-referential.** Feeding the same rule a two-rhythm drive to test for
+a *bimodal* `τ` split (a genuine fast/slow hierarchy) + cross-frequency coupling is now
+the direct path to closing 4a — see Track 3e.
+
 ## Deferred / next
 
-- **Emergent timescale arm (Track 4a).** Now gated-in: grow the `τ` distribution with
-  4a's input-tracked rule + E9 grouping and repeat this sweep — the only arm that
-  retires the plastic-dynamics caveat.
+- **Re-tiling under a shifting delay distribution (Track 3e.1)** — the capability the
+  wired basis provably lacks: does the emergent basis *reallocate* `τ` when the tasks
+  migrate, and does the plastic representation then have its *own* stability–plasticity
+  frontier? The highest-value follow-up.
+- **Bimodal hierarchy from two-rhythm drive (Track 3e.2 / closes 4a)** — feed the grown
+  rule periodic two-timescale drive; test for a fast/slow `τ` split + cross-frequency
+  coupling.
 - **Full (stimulus × context × time) conjunction** — combine the spatial (P5) and
   temporal (3d) axes in one task family.
 - **Partially-overlapping tasks** — the fair test of whether credit quality *ever*
