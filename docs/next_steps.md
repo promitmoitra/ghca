@@ -247,7 +247,18 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 - **Connects to.** E6 (frozen baseline), E9/E4 (WTA gating), C2/C3 (`do(θ)` well-posed),
   Line A/B plasticity; **3d** (raising the P5 ceiling along the timescale axis).
 
-### 3d. Timescale as a continual-learning capacity axis — ✅ **WIRED ARM DONE (gate green)**; emergent arm gated-in on 4a (results [`continual_learning_results.md`](continual_learning_results.md))
+### 3d. Timescale as a continual-learning capacity axis — ✅ **WIRED + EMERGENT ARMS DONE** (results [`continual_learning_results.md`](continual_learning_results.md))
+- **Emergent arm done (n=20) — the 4a ratchet is escaped.** A local, reward-free,
+  **input-timing-driven** `τ`-plasticity rule (each node nudges `τ` toward the *external*
+  probe delays it responds to — not its own inter-fire interval — with E9 k-WTA +
+  conscience) *grows* a temporal basis from a near-homogeneous start: delay-decode 0.94
+  (vs homog 0.53, wired 1.00), and continual-learning per-task 0.53–0.56 — well above the
+  homogeneous floor (0.43), recovering ~70% of the wired basis's capacity (0.59). This is
+  the **first result where the substrate's own *dynamics* (not a readout) are shaped by
+  experience** → the plastic-dynamics caveat (1c/E9/Line B), addressed; and it unblocks
+  Track 4a (timescale plasticity works once the teaching signal is external). Gap to
+  wired (grown tiling is coarser — a residual cluster at the `τ` init) is a tuning item,
+  not a mechanism problem. Follow-ups in **3e**.
 - **Wired arm done (n=20).** A *hand-set* timescale-diverse (graded `τ`) basis buys
   genuine, forgetting-free continual-learning capacity on temporal (delay-keyed) tasks
   that a homogeneous basis cannot represent at *any* head capacity: graded+per-task
@@ -296,10 +307,11 @@ The audits converge on three honest limitations. Good next steps *retire* one of
     `τ`-rule. The cheap early kill returned **green**: the graded basis learns temporal
     tasks (per-task 0.58–0.62, bwt ≈ 0) where homogeneous `τ` floors at chance (~0.43)
     at any head capacity — timescale diversity is the representational lever.
-  - **emergent timescale-diverse** — the hierarchy *grown* by 4a's future input-tracked
-    `τ` rule + channel-conditioned `act`. The "learned" arm; **depends on 4a** (see
-    below). Only this arm also retires the deepest "plastic dynamics" caveat (the one
-    that recurs across 1c, E9-deferred, and Line B).
+  - **emergent timescale-diverse** — ✅ **done** (`continual_temporal_emergent.py`,
+    n=20). Grown by the input-timing-driven `τ` rule + E9 grouping (the input-tracked
+    rule 4a was blocked on, implemented for the delay-tiling setting). Per-task 0.53–0.56
+    vs homog 0.43 vs wired 0.59 — recovers most of the capacity and **retires the
+    plastic-dynamics caveat** (dynamics, not just readout, shaped by experience).
   Metric: the P5 sweep (avg accuracy / backward transfer vs number of sequential tasks T),
   with the ceiling/crossover-T of each basis as the headline.
 - **Dependency on 4a, made explicit.** The *wired* arm needs nothing new and can run
@@ -320,7 +332,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   and motivates), E3 (temporal task structure), E8.5 (hand-set two-timescale precedent),
   E9 (the frozen/wired/emergent ladder it copies).
 
-### 3e. What the *emergent* timescale mechanism opens up — 📐 **PROPOSED** (directions unlocked once 3d's emergent arm lands)
+### 3e. What the *emergent* timescale mechanism opens up — 📐 **PROPOSED** (directions now unlocked — 3d's emergent arm has landed)
 - **The honest boundary first.** For the narrow capacity claim ("does timescale
   diversity buy continual-learning capacity?"), the *emergent* arm adds nothing the
   *wired* arm didn't already prove — a hand-set graded-`τ` basis suffices. The emergent
@@ -382,19 +394,22 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 
 ## Track 4 — New territory *(novelty)*
 
-### 4a. Emergent timescale hierarchy / cross-frequency coupling — ⏸ **ATTEMPTED, PAUSED** (see [`e10_notes.md`](e10_notes.md))
+### 4a. Emergent timescale hierarchy / cross-frequency coupling — 🔓 **UNBLOCKED by 3d-emergent; two-rhythm variant remaining** (see [`e10_notes.md`](e10_notes.md))
 - **What.** With per-node τ plastic, do learned τ distributions self-organise into a
   fast/slow hierarchy with theta–gamma-style cross-frequency coupling?
 - **Why.** Deepest genuinely-new phenomenon the substrate could show; connects to the
   nested-waves literature (E8.5 only used two hand-set timescales).
-- **Status.** The `Medium–high` risk was realised: the existing Line B resonance rule
-  **structurally cannot** build the hierarchy — it only ratchets τ *upward* toward
-  multiples of a drive period, never down to a fundamental, so no fast (small-τ)
-  population forms (confirmed decisively in the ideal isolated-node case; see
-  `experiments/e10_diagnostics.py` on branch `claude/e10-timescale-hierarchy`). 4a is a
-  *mechanism-design* task (a new bidirectional "τ tracks input period" rule + E9-style
-  competition + balanced channel activity), **not** a reuse-E9 task — correcting the
-  earlier de-risking claim. Resume from `e10_notes.md`.
+- **Status — the blocker is resolved.** The pause was on the `τ`-value learning rule:
+  the old Line B resonance rule `structurally` only ratchets τ *upward* (self-referential
+  — reads a node's own inter-fire interval, corrupted once τ overshoots; see
+  `experiments/e10_diagnostics.py` on `claude/e10-timescale-hierarchy`). **3d's emergent
+  arm implemented and validated the proposed fix** — a bidirectional, *input-timing-driven*
+  rule + E9 competition — and showed it grows a functional graded-τ basis (delay-decode
+  0.94; continual-learning per-task 0.53–0.56 vs homogeneous floor 0.43, n=20). So the
+  mechanism 4a was blocked on **works**. What remains is the *specific* two-rhythm
+  variant: feed the same rule periodic fast+slow drive and test for a **bimodal** τ split
+  (a genuine hierarchy) + cross-frequency coupling, with channel-conditioned `act` (PR
+  #42) to balance channel activity (diagnostic-2's failure). This is Track **3e.2**.
 - **Proposed synthesis (2026-07-19, not yet attempted).** A design discussion
   surfaced a third ingredient, prompted by asking whether making the **active**
   duration `act` per-node/tunable (currently a global scalar; only the passive/

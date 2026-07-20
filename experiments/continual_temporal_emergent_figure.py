@@ -49,7 +49,8 @@ def main():
         ax.set_xticks(T); ax.set_title(ttl); ax.legend(fontsize=8)
 
     fig.suptitle("3d (emergent) — a reward-free, input-timing-driven rule GROWS a τ basis "
-                 "that matches the hand-set one (n=%d)" % int(d["n"]), fontsize=12)
+                 "that recovers most of the hand-set basis's temporal capacity (n=%d)"
+                 % int(d["n"]), fontsize=12)
     fig.tight_layout()
     out = os.path.join(FIG, "continual_temporal_emergent.png")
     fig.savefig(out, dpi=110)

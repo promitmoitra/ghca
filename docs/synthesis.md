@@ -232,17 +232,28 @@ unification.
   capacity (per-task 0.58–0.62 vs chance floor 0.43, n=20), replicating the same
   representation-then-capacity logic on the time axis and turning Track 4a's emergent
   timescale hierarchy into a *justified* build (its capacity payoff is now demonstrated,
-  not assumed).
+  not assumed). And the emergent arm then *grew* that timescale basis with a local,
+  reward-free, **input-timing-driven** rule (each node tunes `τ` toward the external
+  delays it is probed at, not its own firing — escaping the self-referential ratchet that
+  had blocked Track 4a): the grown basis recovers ~70% of the hand-set basis's capacity
+  (per-task 0.53–0.56 vs wired 0.59 vs floor 0.43, n=20). This is the **first point in the
+  programme where the substrate's own dynamics, not merely a readout, are shaped by
+  experience** — the deepest "afforded → learned" step (tension 1), and it makes `θ` both
+  the well-posed causal handle (C3) and a self-organising variable (self-directed
+  do(`θ`)), tightening the learning↔causality knot.
 
 ## State of the evidence — the honest ledger
 
 The three tensions the audits raised, as they stand now:
 
-1. **Afforded vs learned** — *substantially retired.* E9 (conjunctions) and 1c
-   (prediction) convert the two biggest afforded capabilities to learned. Open: the
-   E7 direction readout (1b, parked — C5's readout-locality makes it genuinely
-   risky), and the deeper step of making the *dynamics* (not just the readout)
-   plastic.
+1. **Afforded vs learned** — *substantially retired, and now reaching the dynamics.*
+   E9 (conjunctions) and 1c (prediction) convert the two biggest afforded *representation/
+   readout* capabilities to learned; 1b (learned EMD direction readout) retires the
+   computed-winding part. The deepest step — making the *dynamics* themselves plastic, not
+   just the readout — is now **taken for timescales**: 3d-emergent grows the per-node `τ`
+   basis with a local reward-free rule (recovering ~70% of the hand-set capacity). Open:
+   the same for *couplings* under a concurrent (non-phase-split) process, and closing the
+   emergent-vs-wired tiling gap.
 2. **Narrow evidence** — *substantially retired (Track 3).* 3a re-ran every headline
    at n=50 with CIs and swept the operating points; 3b showed the dynamics *and* the
    learned routing generalise off-lattice. Most headlines strengthened; two softened
