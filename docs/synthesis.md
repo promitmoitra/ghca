@@ -240,7 +240,15 @@ unification.
   programme where the substrate's own dynamics, not merely a readout, are shaped by
   experience** — the deepest "afforded → learned" step (tension 1), and it makes `θ` both
   the well-posed causal handle (C3) and a self-organising variable (self-directed
-  do(`θ`)), tightening the learning↔causality knot.
+  do(`θ`)), tightening the learning↔causality knot. And because the basis is now
+  *plastic*, it can **re-tile** when the task's temporal statistics shift (3e.1:
+  delay-decode 0.50→0.92 on a shifted regime, which a hand-set basis cannot follow) — at
+  the cost of a *graceful* representation-level interference (backward transfer −0.07,
+  far milder than the readout's catastrophic −0.4…−0.8, because spare hidden units let
+  the `τ` distribution accumulate coverage rather than overwrite it). So the
+  representation-vs-capacity logic recurs a third time: interference appears wherever
+  something plastic is shared, and capacity is what softens it — readout (3c), spatial
+  basis (P5), and now the temporal dynamics themselves.
 
 ## State of the evidence — the honest ledger
 

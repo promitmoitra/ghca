@@ -1,0 +1,42 @@
+{
+  "n": 20,
+  "stages": [
+    "SHORT",
+    "LONG",
+    "SHORT"
+  ],
+  "regimes": [
+    "SHORT",
+    "LONG"
+  ],
+  "rows": {
+    "emergent": {
+      "after_SHORT_0": {
+        "SHORT": 0.6335,
+        "LONG": 0.49749999999999994
+      },
+      "after_LONG_1": {
+        "SHORT": 0.5644999999999999,
+        "LONG": 0.9184999999999999
+      },
+      "after_SHORT_2": {
+        "SHORT": 0.6615,
+        "LONG": 0.6059999999999999
+      }
+    },
+    "wired-static": {
+      "after_SHORT_0": {
+        "SHORT": 0.8275,
+        "LONG": 0.49799999999999994
+      },
+      "after_LONG_1": {
+        "SHORT": 0.8240000000000002,
+        "LONG": 0.5000000000000001
+      },
+      "after_SHORT_2": {
+        "SHORT": 0.834,
+        "LONG": 0.5085
+      }
+    }
+  }
+}

@@ -438,12 +438,55 @@ is external, not self-referential.** Feeding the same rule a two-rhythm drive to
 a *bimodal* `τ` split (a genuine fast/slow hierarchy) + cross-frequency coupling is now
 the direct path to closing 4a — see Track 3e.
 
+## 3e.1 — re-tiling under a shifting delay distribution (interference *in the representation*)
+
+The capability the wired basis provably lacks is adaptation. Here the delay
+distribution *shifts* between regimes and we ask what only a plastic basis can answer:
+does it **reallocate** `τ`, and does adapting **cost** the old regime — i.e. does the
+plastic *representation* have its own stability–plasticity frontier, the 3c interference
+story one level down (in the dynamics, not the readout)? Protocol: from a
+near-homogeneous start, self-organise `τ` (the 3d-emergent rule) through
+SHORT → LONG → SHORT delay regimes; after each stage measure delay-decode on *both*
+regimes. Baseline: a wired-static basis (τ hand-set to tile SHORT, frozen). n=20:
+
+| after stage | emergent: SHORT | emergent: LONG | | wired-static: SHORT | wired-static: LONG |
+|:--|:--:|:--:|:-:|:--:|:--:|
+| SHORT | 0.63 | 0.50 | | 0.83 | 0.50 |
+| LONG  | 0.56 | **0.92** | | 0.82 | 0.50 |
+| SHORT | 0.66 | 0.61 | | 0.83 | 0.51 |
+
+![re-tiling under a shifting delay distribution](figures/continual_temporal_retile.png)
+
+**It re-tiles.** Trained on LONG, the emergent basis's LONG-decode jumps 0.50 → **0.92**
+(the `τ` histogram migrates bodily from the SHORT range into the LONG range), while the
+wired-static basis is frozen at 0.50 — the adaptation a hand-set basis categorically
+cannot do.
+
+**The plastic representation has its own stability–plasticity frontier.** Adapting to
+LONG *costs* SHORT: representation-level backward transfer **−0.069 [−0.093, −0.045]**
+(SHORT-decode after LONG minus after the first SHORT; CI excludes 0). So catastrophic
+interference is not unique to a plastic *readout* (3c) — a plastic *representation*
+exhibits it too. The wired-static basis shows none (bwt −0.004) precisely because it
+does not adapt: no plasticity, no forgetting — the frontier made visible.
+
+**But the interference is *graceful*, not catastrophic.** The cost is modest (−0.07,
+not the −0.4…−0.8 of the 3c readout), SHORT *recovers* when the schedule returns to it
+(0.66), and LONG is *partly retained* thereafter (0.61 vs 0.50 baseline) — the basis
+*accumulates* range coverage rather than overwriting it. That gentler frontier is
+itself a finding: distributing the load across `n_h` units with a competitive rule
+buffers interference in a way a single shared linear head cannot. It also connects
+straight back to the arc: capacity (here, spare hidden units to spread `τ` across both
+ranges) is again the lever that softens interference.
+
+Caveats: the emergent SHORT-decode (0.63) is below wired-static's (0.83) — the same
+grown-is-coarser gap as 3d (the rule tiles SHORT's tight range less sharply than a
+hand-set `linspace`). Still a fixed-`act`, phase-split (self-organise then freeze at
+each stage) protocol; a fully-online concurrent version is the deeper form. Decode is a
+nearest-centroid readout of the representation, not the reward task — it measures what
+the basis *can* represent, deliberately isolating the representation from the readout.
+
 ## Deferred / next
 
-- **Re-tiling under a shifting delay distribution (Track 3e.1)** — the capability the
-  wired basis provably lacks: does the emergent basis *reallocate* `τ` when the tasks
-  migrate, and does the plastic representation then have its *own* stability–plasticity
-  frontier? The highest-value follow-up.
 - **Bimodal hierarchy from two-rhythm drive (Track 3e.2 / closes 4a)** — feed the grown
   rule periodic two-timescale drive; test for a fast/slow `τ` split + cross-frequency
   coupling.
