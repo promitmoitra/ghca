@@ -485,11 +485,46 @@ each stage) protocol; a fully-online concurrent version is the deeper form. Deco
 nearest-centroid readout of the representation, not the reward task — it measures what
 the basis *can* represent, deliberately isolating the representation from the readout.
 
+## 3e.3 — concurrent co-adaptation (grow τ *while* the readout learns)
+
+3d-emergent and E9 both use a **phase split**: self-organise the representation
+reward-free, freeze it, then let reward carve the readout. The oldest deferred item in
+the programme (E9 caveats, 1c) is the *concurrent* case — representation and readout
+plastic together, the strongest form of "one homogeneous machine learning end-to-end".
+This tests it on the temporal axis: the τ rule's teaching signal (the probe delay) is
+present on every reward trial, so a single trial can drive *both* the Line-A readout and
+the competitive τ update. Three arms, per-task heads, n=20:
+
+| T | homogeneous | **concurrent** | phase-split |
+|:-:|:--:|:--:|:--:|
+| 2 | 0.434 | 0.513 [0.476, 0.551] | 0.555 |
+| 4 | 0.426 | 0.494 [0.475, 0.512] | 0.531 |
+| 6 | 0.431 | 0.465 [0.435, 0.493] | 0.529 |
+
+![concurrent co-adaptation](figures/continual_temporal_concurrent.png)
+
+**Concurrent co-adaptation works — but at a real cost.** Growing τ *while* the readout
+learns lands the substrate well above the homogeneous floor (0.43): it *can* co-adapt
+representation and readout end-to-end, no phase split required. But it stays **below**
+the phase-split optimum (0.53), and the gap **widens with the number of tasks** (barely
+separated at T=2, cleanly separated by T=6). The interpretation is mechanistic: the
+readout is chasing a *moving* basis — early reward updates land on a not-yet-tiled τ
+representation, and every later τ adjustment partially invalidates what the readout
+already learned; more tasks compound the mismatch. So the phase split is a genuine
+*efficiency* aid (learn on a settled basis), not a *necessity* — the honest reading is
+"end-to-end co-adaptation is possible here, and imperfect", which points at the obvious
+fixes (anneal the τ learning rate, or a brief settling curriculum) as the next tuning
+step rather than any missing mechanism.
+
+Caveats: per-task heads throughout (isolating the representation question, as in 3d);
+the τ rule shares its teaching signal with the task structure (delays), so concurrency
+is *feasible* precisely because the temporal statistics are stationary across tasks — a
+non-stationary delay distribution (cf. 3e.1) would make concurrency harder. `act` fixed.
+
 ## Deferred / next
 
-- **Bimodal hierarchy from two-rhythm drive (Track 3e.2 / closes 4a)** — feed the grown
-  rule periodic two-timescale drive; test for a fast/slow `τ` split + cross-frequency
-  coupling.
+- **Anneal / curriculum the concurrent τ rule** — close the 3e.3 gap to phase-split by
+  settling the basis early (decaying τ learning rate) — a tuning step, not new mechanism.
 - **Full (stimulus × context × time) conjunction** — combine the spatial (P5) and
   temporal (3d) axes in one task family.
 - **Partially-overlapping tasks** — the fair test of whether credit quality *ever*
