@@ -404,7 +404,15 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 
 ## Track 4 — New territory *(novelty)*
 
-### 4a. Emergent timescale hierarchy / cross-frequency coupling — ✅ **HIERARCHY DONE (bimodal split); CFC remaining** (results [`timescale_hierarchy_results.md`](timescale_hierarchy_results.md); orig. diagnosis [`e10_notes.md`](e10_notes.md))
+### 4a. Emergent timescale hierarchy / cross-frequency coupling — ✅ **DONE (hierarchy + theta–gamma CFC)** (results [`timescale_hierarchy_results.md`](timescale_hierarchy_results.md); orig. diagnosis [`e10_notes.md`](e10_notes.md))
+- **CFC done (3e.2b, n=20).** Adding the standard theta–gamma pathway — the slow
+  population modulates the fast nodes' excitability — yields phase–amplitude coupling on
+  the self-organised hierarchy: PAC modulation index 0.000 (uncoupled, fast fires
+  uniformly across slow phase) → **0.594 (coupled**, fast bursts nested in the
+  slow-active phase). Honest scope: the hierarchy/timescales are *learned* (3e.2); the
+  coupling pathway is *structural* (added, not learned) — so the substrate *supports*
+  CFC on its emergent hierarchy. Making the coupling itself plastic, and a concurrent
+  (non-phase-split) stack (3e.3), are the residuals.
 - **What.** With per-node τ plastic, do learned τ distributions self-organise into a
   fast/slow hierarchy with theta–gamma-style cross-frequency coupling?
 - **Why.** Deepest genuinely-new phenomenon the substrate could show; connects to the

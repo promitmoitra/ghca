@@ -252,11 +252,15 @@ unification.
   fed a two-rhythm drive, grows a genuine **fast/slow timescale hierarchy** — τ clusters
   at both drive periods, fully self-organised via a conscience-balanced competition
   (3e.2 / [`timescale_hierarchy_results.md`](timescale_hierarchy_results.md)) — closing
-  the mechanism half of the long-paused Track 4a (the old self-referential rule could
-  only ratchet τ to the ceiling; theta–gamma *coupling* remains, needing an
-  inter-population pathway). So plastic timescales are not just a capacity axis but a
-  *structured* one: the substrate learns a multi-scale temporal organisation from its
-  input statistics.
+  the long-paused Track 4a (the old self-referential rule could only ratchet τ to the
+  ceiling). And linking the hierarchy's two populations by a standard excitability
+  pathway yields **theta–gamma-style cross-frequency coupling** (3e.2b: phase–amplitude
+  modulation index 0 → 0.59, fast bursts nesting in the slow-active phase) — the
+  substrate *supports* CFC on its self-organised hierarchy (the timescales are learned;
+  the coupling pathway is structural). So plastic timescales are not just a capacity
+  axis but a *structured, cross-frequency-couplable* one: the substrate learns a
+  multi-scale temporal organisation from its input statistics, and that organisation can
+  carry nested rhythms.
 
 ## State of the evidence — the honest ledger
 
