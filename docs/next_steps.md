@@ -376,11 +376,15 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      theta–gamma-style **cross-frequency coupling**, which needs an added inter-population
      pathway (E8.5 nested-waves direction) this pool lacks — the coupling, not the
      hierarchy, is what's left.
-  3. **Concurrent co-adaptation (end-to-end inside-out).** Both 3d-emergent and E9 use a
-     phase split (grow representation, freeze, learn readout). Run emergent-`τ` and the
-     reward readout *together* — do they co-adapt or fight? The strongest form of "one
-     homogeneous machine learning end-to-end"; retires the last E9/3d phase-split caveat.
-     **Effort** medium–high. **Risk** high (two plastic loops can destabilise).
+  3. **Concurrent co-adaptation (end-to-end inside-out) — ✅ DONE**
+     (`continual_temporal_concurrent.py`, n=20; results [`continual_learning_results.md`](continual_learning_results.md)).
+     Growing `τ` *while* the reward readout learns co-adapts end-to-end (no phase split)
+     to **well above floor** (per-task ~0.47–0.51 vs floor 0.43) — but **below** the
+     phase-split optimum (~0.53), with the gap **widening with T** (the readout chases a
+     moving basis; later `τ` updates partially invalidate earlier readout learning). So
+     the phase split is an *efficiency* aid, not a *necessity*: end-to-end co-adaptation
+     is possible but imperfect. Residual (tuning, not mechanism): anneal the `τ` learning
+     rate / a brief settling curriculum to close the gap.
   4. **Supply E2/E3's temporal machinery from experience.** The emergent basis is a
      self-organised population of *time cells* tiling a delay — exactly what E2 (working
      memory) and E3 (timed response) hand-built. Could retire *their* afforded components,
