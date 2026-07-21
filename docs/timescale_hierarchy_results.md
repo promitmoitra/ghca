@@ -80,12 +80,47 @@ two clusters in the two-rhythm case are the two rhythms, not an artifact of the 
   hierarchy is a property of the learned `τ` distribution, measured directly (not via a
   downstream readout).
 
+## Cross-frequency coupling (3e.2b) — theta–gamma nesting on the emergent hierarchy
+
+The pool above has no inter-population pathway, so the hierarchy alone shows no
+coupling. This adds the standard theta–gamma mechanism — the **slow population
+modulates the fast nodes' excitability** (its activity lowers their firing threshold),
+so the fast rhythm is expressed only around the slow-active phase — and measures
+phase–amplitude coupling (PAC, Tort modulation index of mean fast amplitude across
+slow phase). Non-commensurate periods (P_f=5, P_s=23) so the baseline has no
+period-alignment artifact. n=20:
+
+| condition | PAC modulation index | mean fast amplitude |
+|---|:--:|:--:|
+| uncoupled (fast supra-driven, fixed threshold) | 0.000 | 0.200 |
+| **coupled (slow modulates fast excitability)** | **0.594** | 0.018 |
+
+![cross-frequency coupling on the emergent hierarchy](figures/timescale_cfc.png)
+
+**The hierarchy supports theta–gamma nesting.** Uncoupled, the fast population fires
+every fast cycle uniformly across slow phase (PAC = 0.000 — the clean control).
+Coupled, fast firing collapses onto the slow-active phase (PAC = 0.594; the
+phase–amplitude profile shows fast amplitude concentrated in the first ~20% of the slow
+cycle and near zero elsewhere) — gamma-like bursts nested in the theta-like slow
+rhythm. The values are seed-invariant because the dynamics are deterministic (`p_s=0`);
+the CIs are zero-width by construction, so this is a mechanism demonstration, not a
+statistical estimate.
+
+**Honest scope.** The two populations and their timescales are *learned* (3e.2's
+self-organised hierarchy, reused verbatim); the excitability pathway that couples them
+is **structural — added, not learned**. So this shows the substrate *supports*
+cross-frequency coupling on its self-organised hierarchy, given a standard coupling
+pathway; it does not claim the coupling itself emerges. Making the coupling plastic
+(e.g. Hebbian slow→fast on top of the grown hierarchy) is the natural next step.
+
 ## What it closes
 
-The mechanism 4a was paused on — a timescale-learning rule that can build a fast/slow
-hierarchy rather than ratchet to the ceiling — **works**, and the hierarchy
-self-organises. Combined with 3d (timescale diversity is a continual-learning capacity
-axis) and 3e.1 (the plastic basis re-tiles), the timescale axis is now a *learned,
-adaptive, and hierarchically-structured* part of the substrate. Remaining for a full 4a
-close: adding inter-population coupling to test for cross-frequency (theta–gamma)
-nesting.
+Both halves of Track 4a are now demonstrated: the fast/slow **hierarchy
+self-organises** (the mechanism the track was paused on — the input-timing rule builds
+it where the old self-referential rule ratcheted to the ceiling), and that hierarchy
+**supports theta–gamma cross-frequency coupling** when its populations are linked by an
+excitability pathway. Combined with 3d (timescale diversity is a continual-learning
+capacity axis) and 3e.1 (the plastic basis re-tiles), the timescale axis is now a
+*learned, adaptive, hierarchically-structured, and cross-frequency-couplable* part of
+the substrate. Residual: making the coupling pathway itself plastic (above), and a
+concurrent (non-phase-split) version of the whole stack (Track 3e.3).
