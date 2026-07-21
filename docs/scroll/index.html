@@ -162,9 +162,29 @@
 
 <hr class="sep">
 
-<!-- ================= 3 · REWARD ================= -->
+<!-- ================= 3 · THE EDGE (SCRUB, E0 triptych) ================= -->
+<section class="beat scrub" data-scrub="triptych">
+  <div class="pin">
+    <div class="hint">↓ scroll to run all three forward</div>
+    <canvas data-sheet="assets/triptych.png" data-frames="100" data-cols="8" data-fw="552" data-fh="176" width="552" height="176"></canvas>
+    <div class="cap"><b>One dial, three fates.</b> The same medium at three settings of how easily a cell catches fire: too calm (left) and it dies out; just right (middle) and it organises into a spiral; too twitchy (right) and it boils over.</div>
+  </div>
+</section>
 <section class="beat">
-  <div class="num">03 — WHAT SHAPES IT</div>
+  <div class="num">03 — THE EDGE</div>
+  <h2>Alive only on a knife-edge</h2>
+  <p class="lead">Those spirals aren't a given. They appear only in a narrow band between two ways of failing.</p>
+  <p>Turn a single dial — how easily each cell catches fire from its neighbours. Set it too high and a spark can't spread: the medium goes dark and stays there. Set it too low and everything ignites at once — a formless boil with no structure to read. Only in between does it stay <b>poised</b>: alive, structured, never settling down. That knife-edge is where every behaviour in this story lives.</p>
+  <details class="aside"><summary>The technical version</summary>
+    <div class="body">One knob — the excitation threshold <code>θ</code> — at a fixed substrate point (<code>r=2, a=6, τ=14</code>, no spontaneous firing). <code>θ≈6</code> is subcritical (activity dies); <code>θ≈4</code> is the organised band (self-sustaining spiral cores); <code>θ≈2</code> is supercritical (saturated/turbulent). The middle is the classic excitable-media critical band. See <a href="../e0_results/">E0 — substrate characterisation</a>.</div>
+  </details>
+</section>
+
+<hr class="sep">
+
+<!-- ================= 4 · REWARD ================= -->
+<section class="beat">
+  <div class="num">04 — WHAT SHAPES IT</div>
   <h2>Reward doesn't build — it selects</h2>
   <p class="lead">The medium already produces a zoo of patterns on its own. Learning here isn't about installing a new circuit. It's about a single reward signal quietly <b>keeping the patterns that happen to be useful</b> and letting the rest fade.</p>
   <p>That's the whole move, borrowed from two ideas: the brain works <em>inside-out</em>, generating activity first and matching it to the world second (Buzsáki); and a bare scalar reward is enough to select behaviour (Sutton). Everything below is one of these selected patterns, seen in motion.</p>
@@ -180,7 +200,7 @@
   <figure class="viz"><div class="frame"><img src="../figures/e2_ring_memory.gif" alt="Two rings; the left sustains a rotating pulse, the right dies out"></div>
     <figcaption>Left ring remembers; right ring forgets. Same wiring — only the recovery time differs.</figcaption></figure>
   <div class="prose">
-  <div class="num">04 — MEMORY</div>
+  <div class="num">05 — MEMORY</div>
   <h2>Memory is a loop that doesn't stop</h2>
   <p class="lead">Where do you keep something in mind? Here, in a wave that keeps going around a loop.</p>
   <p>Two identical rings are lit the same way. The only difference is how fast each cell recovers. On the left, cells recover just in time for the wave to come back around — so the pulse keeps circling, and the signal is <b>held</b>. On the right, cells recover a touch too slowly; the wave runs into its own not-yet-ready tail and dies within a lap — the signal is <b>lost</b>.</p>
@@ -198,7 +218,7 @@
   <figure class="viz"><div class="frame"><img src="../figures/e4_annihilation.gif" alt="Two waves travel inward, collide, and cancel"></div>
     <figcaption>Two waves race inward and cancel where they meet. A small head start decides who wins the middle.</figcaption></figure>
   <div class="prose">
-  <div class="num">05 — ATTENTION</div>
+  <div class="num">06 — ATTENTION</div>
   <h2>Attention is two waves that cancel</h2>
   <p class="lead">Picking one thing over another usually gets explained with an "inhibition" circuit that suppresses the loser. Here there's no such circuit.</p>
   <p>Two waves start at opposite ends and travel toward each other. When they collide they <b>wipe each other out</b> — each runs into the other's spent, still-recovering wake and can't continue. Give the attended side a tiny head start and the collision lands off-centre, so the attended wave claims the middle. Winner-take-all falls out of the physics.</p>
@@ -216,7 +236,7 @@
   <figure class="viz"><div class="frame"><img src="../figures/e5_options.gif" alt="One of two context loops rotates at a time, setting the rule"></div>
     <figcaption>Which loop is spinning is the rule in force. At the next block they swap.</figcaption></figure>
   <div class="prose">
-  <div class="num">06 — CONTROL</div>
+  <div class="num">07 — CONTROL</div>
   <h2>Control is choosing which loop spins</h2>
   <p class="lead">"Executive control" sounds like a manager sitting above everything. Here it's just: which memory loop is currently running.</p>
   <p>Two context loops sit ready. Only one turns at a time (the same don't-stop trick from memory). Whichever one is spinning quietly <b>sets the rule</b> for how incoming signals get routed to responses. When the task switches, the other loop lights up and takes over. The "controller" is nothing but a standing pattern that biases everything downstream.</p>
@@ -233,7 +253,7 @@
   <figure class="viz"><div class="frame"><img src="../figures/e7_spiral_rule.gif" alt="Two spirals of opposite handedness encode two rules"></div>
     <figcaption>Two spirals, opposite spin. The direction of turning is the rule itself.</figcaption></figure>
   <div class="prose">
-  <div class="num">07 — THE RULE, IN 2-D</div>
+  <div class="num">08 — THE RULE, IN 2-D</div>
   <h2>The rule can be a direction of spin</h2>
   <p class="lead">Lift that idea off the 1-D loop and onto the full 2-D medium, and the "which loop" choice becomes something more striking: <b>which way a spiral turns</b>.</p>
   <p>Two spirals are seeded with opposite handedness — one turning counter-clockwise, one clockwise — and each holds its spin for hundreds of steps. Make counter-clockwise mean one task rule and clockwise the other, and now the instruction the system is following is written purely in the <b>direction of rotation</b>. This echoes real cortical recordings where the direction a wave rotates carries task-relevant information.</p>
@@ -245,12 +265,30 @@
 
 <hr class="sep">
 
-<!-- ================= 8 · THE HONESTY TWIST (C5) ================= -->
+<!-- ================= 9 · THE REVEAL (E6 horde) ================= -->
+<section class="beat stage">
+  <figure class="viz"><div class="frame"><img src="../figures/e6_horde.gif" alt="One frozen medium on the left; three meters on the right each track a different question"></div>
+    <figcaption>One unchanging medium (left). Three readers (right) each ask a different question of the whole thing — and each is answered.</figcaption></figure>
+  <div class="prose">
+  <div class="num">09 — THE REVEAL</div>
+  <h2>They were three questions all along</h2>
+  <p class="lead">Here's the payoff for everything so far. Take one medium, freeze it — never change a thing — then attach three simple readers, each watching the whole medium and asking one question.</p>
+  <p>On the left, one substrate runs three motifs at once: a memory pulse that sometimes dies, two attention waves colliding, a slow control clock sweeping round. On the right, three identical readers each track one question live — <em>am I still remembering? who's winning? is a switch coming?</em> — and each answer rises and falls with the truth. The readers share no special wiring. What makes one a "memory" reader and another an "attention" reader is only the <b>question it asks</b>.</p>
+  <p class="muted">That's the whole thesis in a single frame: memory, attention, and control were never parts bolted into the medium. They're questions you can put to it.</p>
+  <details class="aside"><summary>The technical version</summary>
+    <div class="body">Three linear GVF (general value function) demons read the same whole-network active mask from one frozen substrate; only their cumulant and discount differ. A generic full-substrate probe does about as well as a region-restricted oracle, and the three learned weight vectors are near-orthogonal (cosine ≈ 0) — genuinely distinct questions, no function-specific sub-network. See <a href="../e6_results/">E6 — emergent categories</a>.</div>
+  </details>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ================= 10 · THE HONESTY TWIST (C5) ================= -->
 <section class="beat stage">
   <figure class="viz"><div class="frame"><img src="../figures/c5_fixed_vs_tracked.gif" alt="A fixed reader misreads the spin; a tracking reader gets it right"></div>
     <figcaption>Same spiral, two readers. Watch the wrong spot and you get the spin backwards.</figcaption></figure>
   <div class="prose">
-  <div class="num">08 — THE HARD QUESTION</div>
+  <div class="num">10 — THE HARD QUESTION</div>
   <h2>Is the spin real — or just where you're looking?</h2>
   <p class="lead">It's tempting to stop here and say "the spin is the rule." But a careful scientist has to ask: is that spin actually <em>doing</em> anything, or does it just look meaningful from a convenient vantage point?</p>
   <p>Here's the trap, made visible. One spiral, one true spin. Two observers read it at the same time: one parked at a fixed spot, one that follows the spiral's core. The core drifts away from the fixed observer, who then reads the <b>wrong</b> direction — while the observer who tracks the core stays right. Same reality, opposite verdicts, decided only by <em>where you look</em>.</p>
@@ -272,7 +310,7 @@
   </div>
 </section>
 <section class="beat">
-  <div class="num">09 — THE TEST</div>
+  <div class="num">11 — THE TEST</div>
   <h2>Change the recipe, not the dish</h2>
   <p class="lead">So how do you prove the pattern matters? Not by poking the wave directly — that's clumsy, and (beat 8) you might just be fooling your own reader. You change one <b>ingredient of the recipe</b> and watch whether the behaviour survives.</p>
   <p>Both sides are seeded as the same spiral. The only difference is a single dial — how easily a cell catches fire. Nudge it on the right and the spiral can't sustain its core; it fades to nothing within moments, and the rule it was carrying is gone. The left, untouched, holds the rule the whole way. Same starting pattern, one parameter apart — and that parameter alone decides whether the context is still there to be used later.</p>
@@ -286,9 +324,9 @@
 
 <!-- ================= CLOSER ================= -->
 <section class="closer">
-  <div class="num" style="color:var(--red);font-weight:700;font-size:14px;letter-spacing:.15em;margin-bottom:10px">10 — SO WHAT</div>
+  <div class="num" style="color:var(--red);font-weight:700;font-size:14px;letter-spacing:.15em;margin-bottom:10px">12 — SO WHAT</div>
   <h2>Faculties are questions you ask a medium, not machines you install</h2>
-  <p class="muted" style="font-size:clamp(18px,2.2vw,22px);max-width:var(--maxw)">Memory was a loop. Attention was two waves cancelling. Control was choosing which loop spins. None of them were built in — each was the <em>same</em> excitable medium, answering a different question. That's the whole thesis, made watchable.</p>
+  <p class="muted" style="font-size:clamp(18px,2.2vw,22px);max-width:var(--maxw)">Memory was a loop. Attention was two waves cancelling. Control was choosing which loop spins — and you just watched all three read out of one frozen medium at once, by three readers that differed only in the question they asked. None of them were built in. That's the whole thesis, made watchable.</p>
 
   <div class="honest">
     <h3>What this is — and what it isn't</h3>
