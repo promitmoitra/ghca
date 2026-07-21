@@ -365,12 +365,17 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      load across `n_h` units *accumulates* coverage rather than overwriting — capacity
      again softens interference. Deeper form deferred: a fully-online concurrent (not
      phase-split) version.
-  2. **Bimodal hierarchy from two-rhythm drive — *completes* original 4a.** The delay
-     rule tiles a continuum because the delays are spread; feed it `e10_notes.md`'s
-     two-rhythm drive and the same rule should cluster `τ` at the two periods → a genuine
-     fast/slow split, then test for theta–gamma-style cross-frequency coupling. Turns 4a
-     from *gated-in* to *closed*. **Effort** medium. **Risk** medium (may need the
-     channel-conditioned-`act` ingredient from PR #42 to balance channel activity).
+  2. **Bimodal hierarchy from two-rhythm drive — ✅ DONE, hierarchy half of 4a closed**
+     (`timescale_hierarchy.py`, n=20; results [`timescale_hierarchy_results.md`](timescale_hierarchy_results.md)).
+     The input-timing rule clusters `τ` at *both* drive periods (near-P_f/near-P_s
+     fractions 0.50/0.50; fully **emergent** — nodes fan in from both sources, a
+     population conscience splits them ~50/50 and each group locks to its channel),
+     where the old self-referential rule forms **no fast cluster** (near-P_f 0.00 — the
+     e10 ratchet, reproduced and overturned). The conscience — not channel-conditioned
+     `act` — sufficed to fix diagnostic-2's swamping. **Remaining for a *full* 4a close:**
+     theta–gamma-style **cross-frequency coupling**, which needs an added inter-population
+     pathway (E8.5 nested-waves direction) this pool lacks — the coupling, not the
+     hierarchy, is what's left.
   3. **Concurrent co-adaptation (end-to-end inside-out).** Both 3d-emergent and E9 use a
      phase split (grow representation, freeze, learn readout). Run emergent-`τ` and the
      reward readout *together* — do they co-adapt or fight? The strongest form of "one
@@ -399,22 +404,23 @@ The audits converge on three honest limitations. Good next steps *retire* one of
 
 ## Track 4 — New territory *(novelty)*
 
-### 4a. Emergent timescale hierarchy / cross-frequency coupling — 🔓 **UNBLOCKED by 3d-emergent; two-rhythm variant remaining** (see [`e10_notes.md`](e10_notes.md))
+### 4a. Emergent timescale hierarchy / cross-frequency coupling — ✅ **HIERARCHY DONE (bimodal split); CFC remaining** (results [`timescale_hierarchy_results.md`](timescale_hierarchy_results.md); orig. diagnosis [`e10_notes.md`](e10_notes.md))
 - **What.** With per-node τ plastic, do learned τ distributions self-organise into a
   fast/slow hierarchy with theta–gamma-style cross-frequency coupling?
 - **Why.** Deepest genuinely-new phenomenon the substrate could show; connects to the
   nested-waves literature (E8.5 only used two hand-set timescales).
-- **Status — the blocker is resolved.** The pause was on the `τ`-value learning rule:
-  the old Line B resonance rule `structurally` only ratchets τ *upward* (self-referential
-  — reads a node's own inter-fire interval, corrupted once τ overshoots; see
-  `experiments/e10_diagnostics.py` on `claude/e10-timescale-hierarchy`). **3d's emergent
-  arm implemented and validated the proposed fix** — a bidirectional, *input-timing-driven*
-  rule + E9 competition — and showed it grows a functional graded-τ basis (delay-decode
-  0.94; continual-learning per-task 0.53–0.56 vs homogeneous floor 0.43, n=20). So the
-  mechanism 4a was blocked on **works**. What remains is the *specific* two-rhythm
-  variant: feed the same rule periodic fast+slow drive and test for a **bimodal** τ split
-  (a genuine hierarchy) + cross-frequency coupling, with channel-conditioned `act` (PR
-  #42) to balance channel activity (diagnostic-2's failure). This is Track **3e.2**.
+- **Status — hierarchy delivered (3e.2).** The blocker was the `τ`-value rule: the old
+  Line B rule only ratchets τ *upward* (self-referential — reads a node's own inter-fire
+  interval, corrupted once τ overshoots). 3d-emergent's fix (bidirectional,
+  *input-timing-driven*) + a population conscience now **grows the fast/slow hierarchy**
+  under two-rhythm drive: τ clusters at *both* drive periods (near-P_f/near-P_s 0.50/0.50,
+  n=20), fully emergent (nodes fan in from both sources; conscience splits them ~50/50 —
+  the fix for diagnostic-2 swamping), where the old rule forms **no fast cluster**
+  (near-P_f 0.00). Read the near-period fractions, not Sarle BC (the old rule clears BC
+  too, but with its clusters ratcheted to high τ, not at the fundamentals). **Remaining:**
+  theta–gamma **cross-frequency coupling** — this pool has no inter-population pathway, so
+  none is expected; adding one (E8.5 nested-waves direction) is the last piece for a
+  *full* 4a close.
 - **Proposed synthesis (2026-07-19, not yet attempted).** A design discussion
   surfaced a third ingredient, prompted by asking whether making the **active**
   duration `act` per-node/tunable (currently a global scalar; only the passive/
