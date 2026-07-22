@@ -226,41 +226,78 @@ unification.
   capacity — average accuracy falls monotonically to the shared interference floor as
   tasks accumulate (~T≈3, ≈12 (stimulus × context) conjunctions on 50 hidden units),
   while per-task heads whose capacity grows with T stay flat. Capacity is the lever;
-  learnable (bridge) but finite (P5). And it is not one-dimensional: 3d (wired arm)
-  shows **timescale** is a *second, temporal* capacity axis — a hand-set graded-`τ`
-  basis learns delay-keyed tasks a homogeneous one cannot represent at any head
-  capacity (per-task 0.58–0.62 vs chance floor 0.43, n=20), replicating the same
-  representation-then-capacity logic on the time axis and turning Track 4a's emergent
-  timescale hierarchy into a *justified* build (its capacity payoff is now demonstrated,
-  not assumed). And the emergent arm then *grew* that timescale basis with a local,
-  reward-free, **input-timing-driven** rule (each node tunes `τ` toward the external
-  delays it is probed at, not its own firing — escaping the self-referential ratchet that
-  had blocked Track 4a): the grown basis recovers ~70% of the hand-set basis's capacity
-  (per-task 0.53–0.56 vs wired 0.59 vs floor 0.43, n=20). This is the **first point in the
-  programme where the substrate's own dynamics, not merely a readout, are shaped by
-  experience** — the deepest "afforded → learned" step (tension 1), and it makes `θ` both
-  the well-posed causal handle (C3) and a self-organising variable (self-directed
-  do(`θ`)), tightening the learning↔causality knot. And because the basis is now
-  *plastic*, it can **re-tile** when the task's temporal statistics shift (3e.1:
-  delay-decode 0.50→0.92 on a shifted regime, which a hand-set basis cannot follow) — at
-  the cost of a *graceful* representation-level interference (backward transfer −0.07,
-  far milder than the readout's catastrophic −0.4…−0.8, because spare hidden units let
-  the `τ` distribution accumulate coverage rather than overwrite it). So the
-  representation-vs-capacity logic recurs a third time: interference appears wherever
-  something plastic is shared, and capacity is what softens it — readout (3c), spatial
-  basis (P5), and now the temporal dynamics themselves. And the *same* input-timing rule,
-  fed a two-rhythm drive, grows a genuine **fast/slow timescale hierarchy** — τ clusters
-  at both drive periods, fully self-organised via a conscience-balanced competition
-  (3e.2 / [`timescale_hierarchy_results.md`](timescale_hierarchy_results.md)) — closing
-  the long-paused Track 4a (the old self-referential rule could only ratchet τ to the
-  ceiling). And linking the hierarchy's two populations by a standard excitability
-  pathway yields **theta–gamma-style cross-frequency coupling** (3e.2b: phase–amplitude
-  modulation index 0 → 0.59, fast bursts nesting in the slow-active phase) — the
-  substrate *supports* CFC on its self-organised hierarchy (the timescales are learned;
-  the coupling pathway is structural). So plastic timescales are not just a capacity
-  axis but a *structured, cross-frequency-couplable* one: the substrate learns a
-  multi-scale temporal organisation from its input statistics, and that organisation can
-  carry nested rhythms.
+  learnable (bridge) but finite (P5). And it is not one-dimensional — the same
+  representation-then-capacity logic extends to a *temporal* axis (timescale), which the
+  next section develops into a full arc that also closes Track 4a.
+
+## The timescale axis, made learned (3d–3e.3 / closing Track 4a)
+
+Line B was always the programme's second plasticity line — local timescales `τ` — but
+until now `τ` was either hand-set (E8.5's two timescales) or governed by a rule that
+did not work (the Track 4a pause). The 3d–3e arc turns `τ` into a *learned, adaptive,
+structured* substrate variable, and in doing so takes the deepest "afforded → learned"
+step (tension 1) and closes the mechanism of Track 4a. All results in
+[`continual_learning_results.md`](continual_learning_results.md) and
+[`timescale_hierarchy_results.md`](timescale_hierarchy_results.md); n=20 throughout.
+
+The arc has one spine — **the substrate learns its own temporal structure from input
+timing** — and six steps:
+
+1. **Timescale is a capacity axis (3d, wired).** On tasks whose discriminative variable
+   is *timing* (a stimulus, a variable delay, a probe), a hand-set graded-`τ` basis
+   learns what a homogeneous one cannot represent *at any readout capacity* (per-task
+   0.58–0.62 vs a 0.43 chance floor). Mechanism: a stimulus leaves each node refractory
+   for `τ` steps, so a spread of `τ` is a thermometer code of elapsed time. This is the
+   *temporal* analogue of P5's spatial (stimulus × context) capacity — representation,
+   not credit, again the lever.
+2. **The basis can be grown, not wired (3d, emergent) — and this escapes the 4a
+   ratchet.** A local, reward-free, **input-timing-driven** rule — each node tunes `τ`
+   toward the *external* delays it is probed at, sensed regardless of its own refractory
+   state — grows the graded basis from a near-homogeneous start (delay-decode 0.94;
+   per-task 0.53–0.56, ~70% of the wired capacity). The old Line B rule failed because it
+   read a node's *own* inter-fire interval (corrupted once `τ` overshoots → a one-way
+   ratchet); teaching from *input* timing removes the corruption. **This is the first
+   point in the programme where the substrate's own dynamics — not a readout — are shaped
+   by experience.**
+3. **The learned basis is adaptive (3e.1).** When the task's delay distribution shifts,
+   the emergent basis **re-tiles** (`τ` migrates; delay-decode 0.50→0.92 on the new
+   regime, which a frozen basis cannot follow). Adapting *costs* the old regime — a
+   plastic *representation* has its own stability–plasticity frontier — but the cost is
+   **graceful** (backward transfer −0.07 vs the readout's catastrophic −0.4…−0.8),
+   because spare units let the `τ` distribution accumulate coverage rather than overwrite.
+4. **Fed rhythms, it self-organises a hierarchy (3e.2) — closing 4a's mechanism.** Under
+   a two-rhythm drive the *same* rule, plus a population conscience that balances channel
+   commitment ~50/50 (the fix for the fast-swamps-slow imbalance), grows a **bimodal `τ`
+   distribution** locked to both drive periods — a genuine fast/slow hierarchy, fully
+   self-organised — where the old rule forms no fast cluster at all.
+5. **The hierarchy carries nested rhythms (3e.2b).** Linking the two populations by a
+   standard excitability pathway (slow modulates fast threshold) yields **theta–gamma-
+   style cross-frequency coupling** — phase–amplitude modulation index 0 → 0.59, fast
+   bursts nesting in the slow-active phase. The timescales are *learned*; the coupling
+   pathway is *structural* — an honest split.
+6. **It can co-adapt end-to-end (3e.3).** Growing `τ` *while* the reward readout learns
+   (no phase split) works — well above floor — but below the phase-split optimum, the gap
+   widening with task count (the readout chases a moving basis). So the phase split is an
+   *efficiency* aid, not a *necessity*: one homogeneous machine can learn representation
+   and readout together, imperfectly.
+
+Two through-lines connect this back to the whole programme. First, the
+**representation-vs-capacity** logic now recurs on three distinct plastic media —
+readout (3c), spatial conjunction basis (P5), and temporal dynamics (3e.1) — always with
+the same moral: interference appears wherever something plastic is shared, and *capacity*
+(spare representational room) is what softens it. Second, and sharper: the emergent-`τ`
+rule is the substrate performing **self-directed do(`θ`)** — adjusting its own timescales
+from input timing. C3 proved `θ` is the well-posed causal handle; the E-series now shows
+`θ` is also what the substrate self-organises. The learned variable and the causal handle
+were already shown to coincide (the central synthesis idea); here the substrate closes
+the loop by *intervening on that handle itself*.
+
+Status: this **closes the mechanism half of Track 4a** (the hierarchy self-organises;
+the ratchet is overturned) and delivers the **cross-frequency coupling** on top. What a
+*full* 4a close still lacks is CFC from an *intrinsically-generated* fast rhythm rather
+than a structural pathway (the E8.5 nested-waves direction), and the concurrent arm's
+gap to phase-split is a tuning residual (anneal `τ` / a settling curriculum), not a
+missing mechanism.
 
 ## State of the evidence — the honest ledger
 
@@ -270,10 +307,12 @@ The three tensions the audits raised, as they stand now:
    E9 (conjunctions) and 1c (prediction) convert the two biggest afforded *representation/
    readout* capabilities to learned; 1b (learned EMD direction readout) retires the
    computed-winding part. The deepest step — making the *dynamics* themselves plastic, not
-   just the readout — is now **taken for timescales**: 3d-emergent grows the per-node `τ`
-   basis with a local reward-free rule (recovering ~70% of the hand-set capacity). Open:
-   the same for *couplings* under a concurrent (non-phase-split) process, and closing the
-   emergent-vs-wired tiling gap.
+   just the readout — is now **taken for timescales** (the 3d–3e arc): a local reward-free
+   rule grows the per-node `τ` basis (3d), which re-tiles under distribution shift (3e.1),
+   self-organises into a fast/slow hierarchy closing Track 4a's mechanism (3e.2) that
+   carries cross-frequency coupling (3e.2b), and can co-adapt with the readout end-to-end
+   (3e.3, imperfectly). Open: the same for *couplings*; CFC from an intrinsically-generated
+   (not structurally-wired) fast rhythm; and closing the emergent-vs-wired tiling gap.
 2. **Narrow evidence** — *substantially retired (Track 3).* 3a re-ran every headline
    at n=50 with CIs and swept the operating points; 3b showed the dynamics *and* the
    learned routing generalise off-lattice. Most headlines strengthened; two softened
@@ -311,8 +350,12 @@ contrast with predictive coding, the later work makes it *empirical* — and, ho
 corrects it (2a). Track 3 then showed the story is **robust** (n=50 CIs) and
 **general** (holds off-lattice), and mapped the unification's edge: learning and
 causation coincide in `θ`, but *causal credit does not buy continual learning* —
-there the limit is representational capacity, not credit. The programme's most durable
-outputs are the falsifiable spiral predictions (2b) and the ground-truth causal
+there the limit is representational capacity, not credit. That capacity is not only
+spatial: the 3d–3e arc makes the **timescales** `θ` themselves *learned* — grown from
+input timing, adaptive under drift, self-organising into a fast/slow hierarchy (closing
+Track 4a) that carries nested cross-frequency rhythms — so the substrate does not just
+*have* a causal handle, it *self-directs interventions on it*. The programme's most
+durable outputs are the falsifiable spiral predictions (2b) and the ground-truth causal
 testbed (4b).
 
 ## Map of the work
@@ -333,8 +376,9 @@ testbed (4b).
 - **Track 3 (robustness / generality / limits):**
   [`stats_sweeps_results.md`](stats_sweeps_results.md) (3a) ·
   [`e0_topologies.md`](e0_topologies.md) (3b) ·
-  [`continual_learning_results.md`](continual_learning_results.md) (3c)
+  [`continual_learning_results.md`](continual_learning_results.md) (3c–3e.1, 3e.3) ·
+  [`timescale_hierarchy_results.md`](timescale_hierarchy_results.md) (3e.2 / 3e.2b, closes 4a)
 - **Reviews / roadmap:** [`extensions_review.md`](extensions_review.md) ·
-  [`next_steps.md`](next_steps.md) · 4a parked on branch
-  `claude/e10-timescale-hierarchy` (`docs/e10_notes.md` — the τ-hierarchy negative
-  result and the new-rule it needs)
+  [`next_steps.md`](next_steps.md) · 4a mechanism now closed (3e.2 hierarchy + 3e.2b CFC);
+  original negative diagnosis in `docs/e10_notes.md` on branch
+  `claude/e10-timescale-hierarchy`
