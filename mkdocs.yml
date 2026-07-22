@@ -71,5 +71,8 @@ nav:
       - Extensions self-audit: extensions_review.md
       - Next steps / roadmap: next_steps.md
       - Review & planning process: process.md
+  - Timescale & continual learning (3d–3e):
+      - Continual learning & timescale capacity: continual_learning_results.md
+      - Emergent timescale hierarchy (closes 4a): timescale_hierarchy_results.md
   - Synthesis: synthesis.md
   - Core series review: core_review.md

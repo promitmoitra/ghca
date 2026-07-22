@@ -181,20 +181,145 @@ where the claims can meet data or other methods.
   test their epiphenomenality / causal-discovery methods against ground truth. The
   externally most-reusable output of the programme.
 
+## Robustness, generality, and the boundary of the unification (Track 3)
+
+Track 3 stress-tests the programme along the audits' second tension (narrow
+evidence) and, in doing so, finds the **boundary** of the learning↔causality
+unification.
+
+- **[3a](https://github.com/promitmoitra/ghca/blob/main/docs/stats_sweeps_results.md) — statistics & operating-point sweeps.** Every
+  headline dissociation re-run at **n=50** with bootstrap CIs, plus sweeps around the
+  hand-chosen operating points. Most *strengthen* (E2, E5, E9, E8, C5 — tight,
+  cleanly separated CIs; E8, the thinnest series at n=3, is the *most* robust). Two
+  *soften honestly*: E7 switching 0.86 → 0.75 (but robust across the whole θ band),
+  and E3's timed-identity arm is bimodal at scale. The marquee: **E3 composition is
+  operating-point-contingent** — joint-success swings 0–40% with target latency and
+  tracks the substrate resonance map, making the audit's "lucky resonance" caveat
+  quantitative (32% [21, 46] at the default point).
+- **[3b](https://github.com/promitmoitra/ghca/blob/main/docs/e0_topologies.md) — off-lattice generality.** The substrate story is not a
+  lattice artifact: the self-sustaining band and the `period ~ τ` law hold on
+  `smallworld` and `rgg` at matched degree (slope ≈ 1, r ≈ 0.999), *and* E1 reward
+  routing learns on every hidden medium (ring / small-world / rgg). Both the
+  dynamics and the learned routing are properties of a broad class of recurrent
+  media. (The 2-D spiral, E7/C5–C7, is geometry-bound by construction — out of scope.)
+- **[3c](continual_learning_results.md) — learning *as* causal inference, and its
+  limit.** The two arcs connect at the mechanism level: node/weight-perturbation
+  learning *is* interventional `do(θ)` causal-effect estimation (Lansdell–Kording),
+  and C2/C3's well-posedness of `do(θ)` predicts causal credit should be a cleaner
+  learning signal. Tested on catastrophic interference (a shared substrate, conflicting
+  tasks), the prediction **fails, and the failure is informative**: causal credit —
+  even a low-variance estimator — does *not* reduce forgetting beyond an effective-
+  learning-rate effect; all credit rules trace **one stability–plasticity frontier**.
+  The interference is *representational* (a capacity limit), not a credit-assignment
+  artifact. So the unification is real *conceptually* — `θ` is where learning and
+  causation coincide — but **bounded**: better causal credit does not buy better
+  continual learning; capacity does. A clean negative that maps the edge of the claim.
+  The **positive complement** then closes the loop: holding credit fixed, adding
+  capacity resolves interference monotonically (shared → task-context → per-task
+  heads), and a **learned** (stimulus × context) conjunction basis — E9's
+  competitive-Hebbian mechanism — gives *essentially zero forgetting* (backward
+  transfer ≈ 0 at avg 0.78, approaching the hand-wired ceiling; a non-conjunctive
+  frozen basis can't even represent the tasks). So **afforded→learned (E9) and
+  continual learning (3c) are the same lever — learned conjunctive representation** —
+  not credit. And that lever is **bounded**: sweeping the number of sequential tasks
+  (P5) shows a *fixed* conjunction basis defers interference only up to its tiling
+  capacity — average accuracy falls monotonically to the shared interference floor as
+  tasks accumulate (~T≈3, ≈12 (stimulus × context) conjunctions on 50 hidden units),
+  while per-task heads whose capacity grows with T stay flat. Capacity is the lever;
+  learnable (bridge) but finite (P5). And it is not one-dimensional — the same
+  representation-then-capacity logic extends to a *temporal* axis (timescale), which the
+  next section develops into a full arc that also closes Track 4a.
+
+## The timescale axis, made learned (3d–3e.3 / closing Track 4a)
+
+Line B was always the programme's second plasticity line — local timescales `τ` — but
+until now `τ` was either hand-set (E8.5's two timescales) or governed by a rule that
+did not work (the Track 4a pause). The 3d–3e arc turns `τ` into a *learned, adaptive,
+structured* substrate variable, and in doing so takes the deepest "afforded → learned"
+step (tension 1) and closes the mechanism of Track 4a. All results in
+[`continual_learning_results.md`](continual_learning_results.md) and
+[`timescale_hierarchy_results.md`](timescale_hierarchy_results.md); n=20 throughout.
+
+The arc has one spine — **the substrate learns its own temporal structure from input
+timing** — and six steps:
+
+1. **Timescale is a capacity axis (3d, wired).** On tasks whose discriminative variable
+   is *timing* (a stimulus, a variable delay, a probe), a hand-set graded-`τ` basis
+   learns what a homogeneous one cannot represent *at any readout capacity* (per-task
+   0.58–0.62 vs a 0.43 chance floor). Mechanism: a stimulus leaves each node refractory
+   for `τ` steps, so a spread of `τ` is a thermometer code of elapsed time. This is the
+   *temporal* analogue of P5's spatial (stimulus × context) capacity — representation,
+   not credit, again the lever.
+2. **The basis can be grown, not wired (3d, emergent) — and this escapes the 4a
+   ratchet.** A local, reward-free, **input-timing-driven** rule — each node tunes `τ`
+   toward the *external* delays it is probed at, sensed regardless of its own refractory
+   state — grows the graded basis from a near-homogeneous start (delay-decode 0.94;
+   per-task 0.53–0.56, ~70% of the wired capacity). The old Line B rule failed because it
+   read a node's *own* inter-fire interval (corrupted once `τ` overshoots → a one-way
+   ratchet); teaching from *input* timing removes the corruption. **This is the first
+   point in the programme where the substrate's own dynamics — not a readout — are shaped
+   by experience.**
+3. **The learned basis is adaptive (3e.1).** When the task's delay distribution shifts,
+   the emergent basis **re-tiles** (`τ` migrates; delay-decode 0.50→0.92 on the new
+   regime, which a frozen basis cannot follow). Adapting *costs* the old regime — a
+   plastic *representation* has its own stability–plasticity frontier — but the cost is
+   **graceful** (backward transfer −0.07 vs the readout's catastrophic −0.4…−0.8),
+   because spare units let the `τ` distribution accumulate coverage rather than overwrite.
+4. **Fed rhythms, it self-organises a hierarchy (3e.2) — closing 4a's mechanism.** Under
+   a two-rhythm drive the *same* rule, plus a population conscience that balances channel
+   commitment ~50/50 (the fix for the fast-swamps-slow imbalance), grows a **bimodal `τ`
+   distribution** locked to both drive periods — a genuine fast/slow hierarchy, fully
+   self-organised — where the old rule forms no fast cluster at all.
+5. **The hierarchy carries nested rhythms (3e.2b).** Linking the two populations by a
+   standard excitability pathway (slow modulates fast threshold) yields **theta–gamma-
+   style cross-frequency coupling** — phase–amplitude modulation index 0 → 0.59, fast
+   bursts nesting in the slow-active phase. The timescales are *learned*; the coupling
+   pathway is *structural* — an honest split.
+6. **It can co-adapt end-to-end (3e.3).** Growing `τ` *while* the reward readout learns
+   (no phase split) works — well above floor — but below the phase-split optimum, the gap
+   widening with task count (the readout chases a moving basis). So the phase split is an
+   *efficiency* aid, not a *necessity*: one homogeneous machine can learn representation
+   and readout together, imperfectly.
+
+Two through-lines connect this back to the whole programme. First, the
+**representation-vs-capacity** logic now recurs on three distinct plastic media —
+readout (3c), spatial conjunction basis (P5), and temporal dynamics (3e.1) — always with
+the same moral: interference appears wherever something plastic is shared, and *capacity*
+(spare representational room) is what softens it. Second, and sharper: the emergent-`τ`
+rule is the substrate performing **self-directed do(`θ`)** — adjusting its own timescales
+from input timing. C3 proved `θ` is the well-posed causal handle; the E-series now shows
+`θ` is also what the substrate self-organises. The learned variable and the causal handle
+were already shown to coincide (the central synthesis idea); here the substrate closes
+the loop by *intervening on that handle itself*.
+
+Status: this **closes the mechanism half of Track 4a** (the hierarchy self-organises;
+the ratchet is overturned) and delivers the **cross-frequency coupling** on top. What a
+*full* 4a close still lacks is CFC from an *intrinsically-generated* fast rhythm rather
+than a structural pathway (the E8.5 nested-waves direction), and the concurrent arm's
+gap to phase-split is a tuning residual (anneal `τ` / a settling curriculum), not a
+missing mechanism.
+
 ## State of the evidence — the honest ledger
 
 The three tensions the audits raised, as they stand now:
 
-1. **Afforded vs learned** — *substantially retired.* E9 (conjunctions) and 1c
-   (prediction) convert the two biggest afforded capabilities to learned. Open: the
-   E7 direction readout (1b, parked — C5's readout-locality makes it genuinely
-   risky), and the deeper step of making the *dynamics* (not just the readout)
-   plastic.
-2. **Narrow evidence** — *still open.* Small n (3–5 seeds), a single substrate
-   family, hand-chosen operating points. Results are robust *at those points* (tight,
-   unimodal per-seed spreads — the specific E3 failure mode was checked for and is
-   absent in the extensions), but not shown *across the regime*. The cheap fix
-   (3a: seeds/CIs/sweeps) and generality checks (3b: other topologies) are not done.
+1. **Afforded vs learned** — *substantially retired, and now reaching the dynamics.*
+   E9 (conjunctions) and 1c (prediction) convert the two biggest afforded *representation/
+   readout* capabilities to learned; 1b (learned EMD direction readout) retires the
+   computed-winding part. The deepest step — making the *dynamics* themselves plastic, not
+   just the readout — is now **taken for timescales** (the 3d–3e arc): a local reward-free
+   rule grows the per-node `τ` basis (3d), which re-tiles under distribution shift (3e.1),
+   self-organises into a fast/slow hierarchy closing Track 4a's mechanism (3e.2) that
+   carries cross-frequency coupling (3e.2b), and can co-adapt with the readout end-to-end
+   (3e.3, imperfectly). Open: the same for *couplings*; CFC from an intrinsically-generated
+   (not structurally-wired) fast rhythm; and closing the emergent-vs-wired tiling gap.
+2. **Narrow evidence** — *substantially retired (Track 3).* 3a re-ran every headline
+   at n=50 with CIs and swept the operating points; 3b showed the dynamics *and* the
+   learned routing generalise off-lattice. Most headlines strengthened; two softened
+   honestly (E7 magnitude; E3-timed bimodality) and E3 composition was pinned as
+   operating-point-contingent — corrections, not fabrications. What remains is
+   genuinely small n on the *extension* σ-band headlines (3a P3b, deferred) and the
+   fact that these are still toy substrates (tension 3).
 3. **Illustrative, not proof** — *addressed by framing + artifacts.* The study is
    positioned as illustrative; 2b turns it into falsifiable data predictions and 4b
    into a reusable ground-truth benchmark. The toy substrates still illustrate rather
@@ -203,8 +328,10 @@ The three tensions the audits raised, as they stand now:
 **Corrections made (the culture, not just the results).** E3's A+B composition
 headline was walked back from "quadrupling / partly resolved" to the honest
 "0.11 → 0.48 ≈ chance → 0.56, joint on 1/5 seeds" (direction supported, not
-magnitude); a reproducibility bug (`perturb_tau` using the global RNG) was fixed and
-the affected numbers re-run; and 2a corrected E8's "not dissociable" claim. Two
+magnitude) — and 3a's n=50 rerun then replaced the 1/5 anecdote with a real interval,
+**joint-success 32% [21, 46], operating-point-contingent**; a reproducibility bug
+(`perturb_tau` using the global RNG) was fixed and the affected numbers re-run; and
+2a corrected E8's "not dissociable" claim. Two
 audit passes (an independent integrity/overreach review of E0–E6/C0–C4,
 [`core_review.md`](core_review.md), and a self-audit of the extensions,
 [`extensions_review.md`](extensions_review.md))
@@ -220,8 +347,16 @@ waves are real, informative, and sometimes causal, but as *readouts* whose statu
 contingent on reader and outcome. Where the first pass *afforded* capabilities with
 hand-built readouts, the later work *learns* them (E9, 1c); where it *asserted* a
 contrast with predictive coding, the later work makes it *empirical* — and, honestly,
-corrects it (2a). The programme's most durable outputs are the falsifiable spiral
-predictions (2b) and the ground-truth causal testbed (4b).
+corrects it (2a). Track 3 then showed the story is **robust** (n=50 CIs) and
+**general** (holds off-lattice), and mapped the unification's edge: learning and
+causation coincide in `θ`, but *causal credit does not buy continual learning* —
+there the limit is representational capacity, not credit. That capacity is not only
+spatial: the 3d–3e arc makes the **timescales** `θ` themselves *learned* — grown from
+input timing, adaptive under drift, self-organising into a fast/slow hierarchy (closing
+Track 4a) that carries nested cross-frequency rhythms — so the substrate does not just
+*have* a causal handle, it *self-directs interventions on it*. The programme's most
+durable outputs are the falsifiable spiral predictions (2b) and the ground-truth causal
+testbed (4b).
 
 ## Map of the work
 
@@ -238,7 +373,12 @@ predictions (2b) and the ground-truth causal testbed (4b).
   [`c6`](c6_results.md) · [`c7`](c7_results.md)
 - **Artifacts / outward:** [`spiral_predictions.md`](https://github.com/promitmoitra/ghca/blob/main/docs/spiral_predictions.md) (2b) ·
   [`causal_testbed.md`](causal_testbed.md) + `ghca_testbed/` (4b)
+- **Track 3 (robustness / generality / limits):**
+  [`stats_sweeps_results.md`](https://github.com/promitmoitra/ghca/blob/main/docs/stats_sweeps_results.md) (3a) ·
+  [`e0_topologies.md`](https://github.com/promitmoitra/ghca/blob/main/docs/e0_topologies.md) (3b) ·
+  [`continual_learning_results.md`](continual_learning_results.md) (3c–3e.1, 3e.3) ·
+  [`timescale_hierarchy_results.md`](timescale_hierarchy_results.md) (3e.2 / 3e.2b, closes 4a)
 - **Reviews / roadmap:** [`extensions_review.md`](extensions_review.md) ·
-  [`next_steps.md`](next_steps.md) · 4a parked on branch
-  `claude/e10-timescale-hierarchy` (`docs/e10_notes.md` — the τ-hierarchy negative
-  result and the new-rule it needs)
+  [`next_steps.md`](next_steps.md) · 4a mechanism now closed (3e.2 hierarchy + 3e.2b CFC);
+  original negative diagnosis in `docs/e10_notes.md` on branch
+  `claude/e10-timescale-hierarchy`
