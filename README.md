@@ -33,6 +33,7 @@ not as built-in modules.
 | `experiments/e1_conditioning.py` | E1 — stimulus→response conditioning (A-vs-B dissociation) |
 | `experiments/e2_delayed_response.py` | E2 — delayed response / working memory (τ-controlled memory) |
 | `experiments/e2_information.py` | E2 addendum — memory as a τ-tuned information-destruction rate |
+| `experiments/topology_cycle_capacity.py` | E2 addendum — cycle-space (circuit-rank) bound on how many reentrant loops a topology admits |
 | `experiments/e3_timed_response.py` | E3 — timed response (identity × latency double dissociation) |
 | `experiments/e3_factored_credit.py` | E3 composition study — factored credit + curriculum vs shared reward |
 | `experiments/e4_attention.py` | E4 — selective attention as biased WTA by wave annihilation |
@@ -64,6 +65,13 @@ not as built-in modules.
   Line A retains only at zero delay, Line B learns τ below the loop transit time
   and holds memory to D=200. Needs a *shared* regional timescale (per-node τ
   hits a weakest-link problem).
+- [`docs/topology_cycle_capacity.md`](docs/topology_cycle_capacity.md) —
+  **E2 addendum** (topology analysis, no learning): the circuit rank
+  `β₁ = m − N + c` bounds how many independent reentrant loops a substrate
+  admits, and the E2 sustain gate (`τ < L`) collapses that ceiling by 20–70× to
+  the usable count — which *falls* with τ on lattice/small-world/RGG (the ring is
+  a flat exception). A capacity/duration tradeoff on any Line-B τ policy.
+  Capacity is a bound, not a measured count.
 - [`docs/e3_results.md`](docs/e3_results.md) — **findings from E3** (timed
   response): double dissociation confirmed — Line A learns identity (wrong
   timing), Line B learns timing (not identity). New open problem: naive A+B
