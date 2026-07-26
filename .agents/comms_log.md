@@ -185,3 +185,104 @@ capacity lever (distinct temporal receptive fields per channel), not only the
 hierarchy-formation footprint-rebalancer — same E0 minimum-`act` propagation
 caveat applies. Read #43's `next_steps.md` diff (Track 3d + the 4a forward-
 pointer) alongside `continual_learning_results.md` (P5) before picking this up.
+
+## Status from Claude (2026-07-26) — #51/#53 merged & published; #54/#55/#56 UNREVIEWED (review aborted); working-tree collision warning
+
+**Paused mid-task by the user. Writing down state so nothing here is mistaken for
+a finished review.**
+
+### Landed on `main` (reviewed, reproduced, published)
+
+- **PR [#51](https://github.com/promitmoitra/ghca/pull/51)** — topology cycle-space
+  capacity (E2 addendum), squashed as `6e0a0d4`. I ran the full adversarial pass
+  from `docs/process.md`: stdout identical across reruns, `.npz` **byte-identical**
+  across reruns *and* matching the committed blob, doc table cell-for-cell, ratio
+  range `20.2×–69.8×` @τ=8 (min `15.7×` over the sweep), E2 gate reproduced
+  (τ<24 persist, τ=24 marginal, τ≥26 die). β₁ is a rigorous ceiling over a
+  rigorous greedy lower bound. Greedy seed-sensitivity stress-tested over seeds
+  0–7: spread 0 everywhere except lattice τ=3 (±1), so single-seed reporting is
+  justified. Verdict: approve.
+- **PR [#53](https://github.com/promitmoitra/ghca/pull/53)** — that review recorded
+  as a dated addendum in `docs/extensions_review.md`, squashed as `81fbd72`
+  (review-artifact convention: audits land on `main` beside the work).
+- **Site deploy** — `docs/topology_cycle_capacity.md` + figure published to
+  `deploy-viz-page` (`d905601`), nav wired under E-series, deploy Action green,
+  page returns HTTP 200. The E2 back-link was added **surgically**, which
+  preserved the deploy-branch-only `e2_ring_memory.gif` that `main` does not
+  carry — a blind `git checkout main -- docs/e2_results.md` would have silently
+  deleted it. Guardrail now written into the skill.
+- **Issue [#52](https://github.com/promitmoitra/ghca/issues/52)** filed:
+  `ghca_main.py:100/101/103` still use the **global** NumPy RNG
+  (`np.random.randint`/`shuffle`) — the `perturb_tau`-class violation. Pre-existing,
+  untouched by #51, but it keeps `audit-rng` red, which masks future regressions.
+  Unclaimed; take it if you want a cheap, well-scoped win.
+
+### ⚠️ #54, #55, #56 are UNREVIEWED — my review run aborted
+
+I launched a 5-lens adversarial review workflow over #54 and #55. **All six agents
+died on an org monthly spend limit.** It returned zero findings, and *zero findings
+here means no evidence was gathered* — not a clean bill of health. Nothing was
+reproduced, no citation was checked, no bash was tested. **Do not read my empty
+result as approval.** Nothing was merged.
+
+Carrying forward, as *unverified suspicions only*, for whoever reviews
+**PR [#54](https://github.com/promitmoitra/ghca/pull/54)** (GGH winding number as
+the exact sustain criterion):
+
+1. **The 45/45 headline may be partly definitional.** `probe()` reads the winding
+   from the *same run* whose persistence is the ground truth, at steady state. On a
+   directed ring with `p_s=0`, a dead ring has all `phi==0` ⇒ angles all 0 ⇒
+   winding **necessarily** 0; a single circulating pulse appears to *force* a
+   nonzero winding. If so, "winding ≠ 0" and "alive" are equivalent **by
+   construction** on this substrate, and 45/45 is a re-description rather than a
+   prediction. This is the same failure mode `extensions_review.md` already flags
+   for E7's rotation→rule decode (1.00, "near-tautological"). The doc does say
+   winding "requires dynamics" and cannot replace the length gate in a
+   pre-dynamical bound — but it still calls it an "exact sustain **predictor**".
+   Worth deciding whether that framing needs hedging. **Test it by hunting for any
+   (L, τ) — or `theta > 1`, or another seed — where `alive` and `winding ≠ 0`
+   disagree.** If none exists, say so in the doc.
+2. **The load-bearing citation is unverified by me**: Greenberg, Greene & Hastings,
+   *A combinatorial problem arising in the study of reaction-diffusion equations*,
+   SIAM J. Alg. Disc. Meth. **1**(1), 1980 — check it exists *and* that it actually
+   introduces the winding number of a continuous cycle as claimed.
+3. **"Undercounts by exactly the `tau == L` cycles"** — check whether any topology
+   in `topology_cycle_capacity.py`'s sweep even *has* a cycle of length exactly τ.
+   If not, the practical impact on every reported `K_dyn` is **zero**, and the doc
+   should say that rather than leaving it open.
+
+For **PR [#55](https://github.com/promitmoitra/ghca/pull/55)** (mine — publish-viz
+worktree convention): it is tooling + docs, no research numbers, but it is
+**self-authored and therefore self-reviewed, which does not count**. Please have
+someone else check the bash: empty-array expansion `${MKDOCS[*]:-mkdocs}` under
+`set -u`; the idempotent-refresh path when the worktree has uncommitted edits;
+`git worktree add -B` when `deploy-viz-page` is already checked out somewhere;
+`git rev-parse --show-toplevel` if invoked from *inside* `.publish-worktree`; and
+the fact that the build check is now **non-fatal** while `SKILL.md` still says
+"do not skip".
+
+**PR [#56](https://github.com/promitmoitra/ghca/pull/56)** appeared during this
+session and I have not looked at it at all.
+
+### 🚨 Working-tree collision — two actors in one checkout
+
+An autonomous agent is committing in the **same** working directory I am. It moved
+`/home/dognosis/Documents/ghca` three times mid-task (last seen on
+`claude/scaling-capacities` @ `983f73b`), and one of its `checkout`s landed between
+my `git add` and `git commit`, so a commit of mine went onto **local `main`**
+instead of its feature branch. I caught it, pinned the commit, pushed it to its own
+branch (#55), and safe-reset local `main` back to `origin/main` with
+`git reset --keep` — no work lost, but that was luck, not design.
+
+**Mitigations, please adopt:**
+
+- **Never `git checkout` in the shared root.** Do all branch work in a
+  `git worktree` (this is now the documented convention for deploys — see #55 —
+  and it applies just as much to experiments).
+- **Verify `git branch --show-current` immediately before every `git commit`**, not
+  just at the start of a task.
+- I also left a stray worktree registered from the crashed review agent —
+  `scratchpad/wt-winding-repro` (detached `a059144`). If you see it, clear it with
+  `git worktree remove --force`.
+
+Not claiming #54 or #56. Not merging anything until the user resumes.
