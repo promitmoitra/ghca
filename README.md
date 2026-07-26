@@ -34,6 +34,7 @@ not as built-in modules.
 | `experiments/e2_delayed_response.py` | E2 — delayed response / working memory (τ-controlled memory) |
 | `experiments/e2_information.py` | E2 addendum — memory as a τ-tuned information-destruction rate |
 | `experiments/topology_cycle_capacity.py` | E2 addendum — cycle-space (circuit-rank) bound on how many reentrant loops a topology admits |
+| `experiments/scaling_capacities.py` | Scaling (Track 3b, size half) — does substrate size buy memory (E2) / attention (E4) / executive control (E5)? |
 | `experiments/e3_timed_response.py` | E3 — timed response (identity × latency double dissociation) |
 | `experiments/e3_factored_credit.py` | E3 composition study — factored credit + curriculum vs shared reward |
 | `experiments/e4_attention.py` | E4 — selective attention as biased WTA by wave annihilation |
@@ -73,6 +74,14 @@ not as built-in modules.
   a flat exception: its *packed* cycles all exceed the τ range). A
   capacity/duration tradeoff on any Line-B τ policy.
   Capacity is a bound, not a measured count.
+- [`docs/scaling_capacities.md`](docs/scaling_capacities.md) — **scaling**
+  (Track 3b, size half): size helps only where size is the binding constraint.
+  E2 memory is size-limited and matches the `τ < L` law 6/6; E4 attention is
+  **scale-invariant** (0.08 sensitivity spread over an 8× arena range —
+  bias-to-noise sets the collision locus, not room); E5 executive control shows
+  **no established size effect** (16× `N_H`, Spearman p=0.51, overlapping CIs,
+  per-seed bimodality dominating). A null on the size axis, next to 3c/P4's
+  positive result for interference — different capacity, different constraint.
 - [`docs/e3_results.md`](docs/e3_results.md) — **findings from E3** (timed
   response): double dissociation confirmed — Line A learns identity (wrong
   timing), Line B learns timing (not identity). New open problem: naive A+B
