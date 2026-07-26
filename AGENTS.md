@@ -40,7 +40,8 @@ The repository defines standardized, agent-agnostic skills under `.claude/skills
 
 1. **[`publish-viz`](.claude/skills/publish-viz/SKILL.md):**
    - **Purpose:** Publish curated result documents, figures, and animation GIFs to the project's public GitHub Pages site.
-   - **How to run:** Uses standard git branching and MkDocs validation. Includes a direct helper shell script (`publish.sh`).
+   - **How to run:** Cherry-picks files onto the dedicated `deploy-viz-page` branch and validates with `mkdocs build --strict`. Includes a helper (`publish.sh`).
+   - **Convention:** every deploy runs in an **isolated git worktree** (gitignored `.publish-worktree/`), never by switching your main checkout's branch — `main` never moves during a publish. The helper sets this up; see the skill's "Deploy from an isolated worktree" section.
 2. **[`experiment-review`](.claude/skills/experiment-review/SKILL.md):**
    - **Purpose:** Automate the dual-track review and planning passes (scanning for global RNG usage, scaffolding structured core/extensions reviews, and roadmap planning templates).
    - **How to run:** Run the executable Python CLI helper:
