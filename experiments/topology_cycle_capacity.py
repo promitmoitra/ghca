@@ -213,7 +213,7 @@ def plot(dims, K, gate):
     ax1.set_xlabel(r"local timescale $\tau$")
     ax1.set_ylabel(r"edge-disjoint loops longer than $\tau$  (lower bound)")
     ax1.set_title("Usable loop capacity falls with $\\tau$ on 3 of 4 topologies\n"
-                  "(ring is flat: its cycles all exceed the $\\tau$ range)",
+                  "(ring is flat: its packed cycles all exceed the $\\tau$ range)",
                   loc="left", fontsize=8)
     ax1.legend(frameon=False, fontsize=6.5, ncol=2, loc="upper right")
     ax1.margins(y=0.12)

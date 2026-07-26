@@ -83,10 +83,12 @@ Computed on the repo's own constructors (`ring`, `lattice2d`, `smallworld`,
    *longer* retention — this is a tradeoff the substrate imposes on any
    Line-B timescale policy: τ buys duration and spends simultaneous capacity.
 3. **The ring is flat, and that is the informative exception.** `ring(60, k=3)`
-   holds 6 loops at every τ tested, because a k=3 ring's cycles all exceed the
-   τ range — no cycle is ever disqualified. The gate only bites once τ reaches
-   the cycle-length distribution, so the tradeoff is a property of the
-   *interaction* between τ and topology, not of τ alone.
+   holds 6 loops at every τ tested. Not because it has no short cycles — its
+   girth is 3 — but because the cycles the greedy packing *accepts* are long
+   (lengths 29, 29, 30, 30, 30, 32), so every one of them still exceeds the
+   largest τ swept (21) and none is ever disqualified. The gate bites only once
+   τ reaches the length distribution of the *packed* cycles, so the tradeoff is
+   a property of the *interaction* between τ and topology, not of τ alone.
 
 ## Caveats
 

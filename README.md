@@ -70,7 +70,8 @@ not as built-in modules.
   `β₁ = m − N + c` bounds how many independent reentrant loops a substrate
   admits, and the E2 sustain gate (`τ < L`) collapses that ceiling by 20–70× to
   the usable count — which *falls* with τ on lattice/small-world/RGG (the ring is
-  a flat exception). A capacity/duration tradeoff on any Line-B τ policy.
+  a flat exception: its *packed* cycles all exceed the τ range). A
+  capacity/duration tradeoff on any Line-B τ policy.
   Capacity is a bound, not a measured count.
 - [`docs/e3_results.md`](docs/e3_results.md) — **findings from E3** (timed
   response): double dissociation confirmed — Line A learns identity (wrong
