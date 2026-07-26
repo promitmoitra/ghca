@@ -153,6 +153,18 @@ information loss (`I(B;W)` vs `I(B;S)`, [`c4_results.md`](c4_results.md)): the
 same currency (bits about the behaviourally-relevant variable) lost either over
 time (here) or under macro compression (C4). See [`synthesis.md`](synthesis.md).
 
+## Addendum — how many loops? a topological capacity bound
+
+*See [`topology_cycle_capacity.md`](topology_cycle_capacity.md)
+(`experiments/topology_cycle_capacity.py`).* The mechanism above fixes the
+**duration** of *one* reentrant loop (it sustains while `τ < L`); the companion
+addendum bounds **how many** independent loops a topology can hold at once — the
+multi-item ceiling this task leaves open, since E2's `K` rings are hand-built,
+one per stimulus. The circuit rank `β₁ = m − N + c` is the topological ceiling,
+and the same sustain gate (`τ < L`) collapses it by 20–70× to the usable count,
+which itself *falls* with `τ` — a capacity/duration tradeoff on any Line-B
+timescale policy. (A capacity *bound* from graph analysis, not a dynamical run.)
+
 ## Reproduce
 
 ```
