@@ -93,5 +93,7 @@ Next (see SKILL.md) — all IN THE WORKTREE:
   3. git add -A && git commit -m "publish: <what> to the docs site"
      git push origin $DEPLOY_BRANCH
   4. Confirm the "Deploy docs" Actions run is green.
-  5. cd "$REPO_ROOT" && git worktree remove .publish-worktree   # clean up
+  5. cd "$REPO_ROOT" && git worktree remove --force .publish-worktree   # clean up
+     (--force: after the push nothing is at risk, and it sidesteps a spurious
+      "working trees containing submodules" refusal from a transient nested .git)
 EOF

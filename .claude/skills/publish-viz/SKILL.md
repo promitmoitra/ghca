@@ -50,7 +50,7 @@ git fetch origin deploy-viz-page
 git worktree add -B deploy-viz-page .publish-worktree origin/deploy-viz-page
 cd .publish-worktree          # do ALL publish steps in here
 # … stage, wire nav, build --strict, commit, push …
-cd - && git worktree remove .publish-worktree   # clean up when the deploy is green
+cd - && git worktree remove --force .publish-worktree   # clean up when green
 ```
 
 `.publish-worktree/` is in `.gitignore`; it is a local staging area only and is
@@ -118,9 +118,11 @@ to publish (a result doc, its figures, any new animation GIFs).
    `build` and `deploy` jobs should succeed. The site updates at the URL above
    (allow a minute for CDN propagation).
 
-6. **Clean up the worktree.**
+6. **Clean up the worktree.** Use `--force`: after the push nothing in the
+   worktree is at risk, and it sidesteps a spurious "working trees containing
+   submodules" refusal that a transient nested `.git` can trigger.
    ```
-   cd .. && git worktree remove .publish-worktree
+   cd .. && git worktree remove --force .publish-worktree
    ```
 
 ## First-time setup (only if the site was never deployed)
