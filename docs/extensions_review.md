@@ -159,3 +159,88 @@ control fails at chance. So the conjunction is now *learned*, not afforded. The
 residual computed readouts (E7's topological winding; the E8 delay-line/trace
 reservoirs) and the imposed competition (k-WTA) in E9 itself remain on the far side
 of the frontier.
+
+---
+
+## Addendum review — E2 cycle-space capacity (PR #51), 2026-07-26
+
+*A standalone adversarial review of the E2-addendum
+`experiments/topology_cycle_capacity.py` /
+[`topology_cycle_capacity.md`](topology_cycle_capacity.md), applying the same
+process the audits above use: re-run from scratch, verify every number against
+regenerated data, audit overreach, draw the substrate/analysis line, check the
+citation and the seeding.*
+
+Method: re-ran the experiment twice in an isolated worktree on the branch's own
+locked env; compared stdout and the `.npz` across reruns and against the
+committed data; stress-tested the greedy packing's seed sensitivity; traced the
+E2-gate reimplementation against `ghca_net.Network` and
+`e2_delayed_response.two_ring()`.
+
+### Bottom line
+
+**Reproduces exactly and is honestly caveated — mergeable.** stdout is identical
+across reruns, the `.npz` is byte-identical across reruns, and the regenerated
+arrays match the committed `.npz` exactly. Every quantitative claim in the doc
+verifies. The result is a *rigorous* topological ceiling (β₁) over a *rigorous*
+lower bound (greedy edge-disjoint packing), both framed as such; no overreach
+beyond what the caveats section already discloses.
+
+### Reproducibility — exact
+
+| check | result |
+|---|---|
+| stdout, run-to-run | identical |
+| `.npz` byte-identity across reruns | identical (`sha 150e2a0a…`) |
+| regenerated arrays vs committed `.npz` | all keys match |
+| doc table vs the script's "verbatim" printout | cell-for-cell match |
+| β₁ overcount `20.2×–69.8×` @τ=8, min `15.7×` over all swept τ | matches doc "20–70×" / "~16×" |
+| trends: lattice 39→21, rgg 21→4, small-world 19→11→7, ring flat 6 | monotone non-increasing, as the true max must be |
+| E2 gate (directed ring L=24): τ<24 persist, τ=24 marginal, τ≥26 die | reproduced; matches [`e2_results.md`](e2_results.md) |
+
+### Correctness / boundary
+
+- **β₁ = m − N + c is a rigorous ceiling.** Edge-disjoint cycles are linearly
+  independent in the cycle space, so any packing ≤ β₁. Asserted three equivalent
+  ways (Euler / `m − rank(L)` / `m − rank(B)`); all agree.
+- **Greedy packing is a rigorous lower bound** (each accepted cycle is real,
+  length > τ, edge-disjoint). Correctly labelled; NP-hardness of the true maximum
+  disclosed.
+- **The one dynamical claim (E2 gate) is faithful.** `tau = act + pas` ⇒
+  `act=2, pas=τ−2` sets recovery = τ, giving the sustain condition τ < L; the
+  directed-ring construction matches `two_ring()`. The packing filter
+  `len(cyc) > tau` is **strict**, correctly excluding the τ = L death boundary the
+  gate flags as marginal — internally consistent and conservative.
+- **Substrate/analysis line drawn explicitly and repeatedly:** this is analysis
+  of the `W` matrices, not a dynamical run; `K_dyn` is a bound, not a measured
+  count; distinct from 3c/P4 *representational* capacity (stated in the doc).
+
+### Seeding
+
+`default_rng(0)` threaded; no global RNG in the new code. The greedy is
+seed-dependent in principle, so I ran seeds 0–7: the packed count's spread is
+**0 everywhere except lattice τ=3 (moves by 1)**. Single-seed reporting is
+justified.
+
+### Citation
+
+Gallier & Quaintance, *Algebra, Topology, Differential Calculus, and Optimization
+Theory for CS and ML* — real (UPenn manuscript). The load-bearing content (the
+circuit rank / first Betti number) is textbook-standard algebraic graph theory
+and correct independent of the citation, which is a non-load-bearing "see e.g."
+pointer, characterized accurately.
+
+### Non-blocking
+
+- **Wording nit:** "the ring's cycles all exceed the τ range" is loosely stated
+  (short cycles do exist; the operative fact is that the *6 packed* cycles all
+  exceed τ_max = 21, so none is disqualified as τ rises). Cosmetic.
+- **Out of scope, surfaced by the RNG audit:** `ghca_main.py:100–103` (legacy
+  lattice `Population`) uses global `np.random.randint` / `np.random.shuffle` —
+  the `perturb_tau`-class pattern the house rules forbid. **Pre-existing on
+  `main`, untouched by PR #51**; filed as #52.
+
+### Verdict
+
+**Approve.** Reproducible, rigorous, and caveated to the project's standard; the
+substrate/analysis boundary is kept visible throughout.
