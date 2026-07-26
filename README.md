@@ -34,6 +34,7 @@ not as built-in modules.
 | `experiments/e2_delayed_response.py` | E2 — delayed response / working memory (τ-controlled memory) |
 | `experiments/e2_information.py` | E2 addendum — memory as a τ-tuned information-destruction rate |
 | `experiments/topology_cycle_capacity.py` | E2 addendum — cycle-space (circuit-rank) bound on how many reentrant loops a topology admits |
+| `experiments/topology_winding_capacity.py` | E2 addendum — the GGH (1980) winding number as the exact sustain criterion; calibrates the length gate above |
 | `experiments/e3_timed_response.py` | E3 — timed response (identity × latency double dissociation) |
 | `experiments/e3_factored_credit.py` | E3 composition study — factored credit + curriculum vs shared reward |
 | `experiments/e4_attention.py` | E4 — selective attention as biased WTA by wave annihilation |
@@ -73,6 +74,13 @@ not as built-in modules.
   a flat exception: its *packed* cycles all exceed the τ range). A
   capacity/duration tradeoff on any Line-B τ policy.
   Capacity is a bound, not a measured count.
+- [`docs/topology_winding_capacity.md`](docs/topology_winding_capacity.md) —
+  **E2 addendum** (calibration of the above): the winding number of a continuous
+  cycle, the invariant from Greenberg, Greene & Hastings (1980), is an *exact*
+  sustain criterion (45/45) where the length gate scores 40/45 — and every
+  length-gate miss is `τ = L`, the marginal death boundary. Winding is a
+  *dynamical* quantity, so it calibrates the topological bound rather than
+  replacing it; read too early it underperforms the gate.
 - [`docs/e3_results.md`](docs/e3_results.md) — **findings from E3** (timed
   response): double dissociation confirmed — Line A learns identity (wrong
   timing), Line B learns timing (not identity). New open problem: naive A+B
