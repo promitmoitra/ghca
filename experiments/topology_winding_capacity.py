@@ -29,7 +29,7 @@ What this establishes
    strict `>`. Winding resolves that boundary from first principles instead of
    sidestepping it.
 3. **Measurement timing matters, and is a real caveat.** Winding must be read at
-   steady state. Measured too early (t=5) it scores 39/45 -- WORSE than the
+   steady state. Measured too early (t=5) it scores 35/45 -- WORSE than the
    length gate -- because a slow pulse has not yet wrapped enough of the ring to
    register a full turn. This is a property of the measurement, not of the
    invariant, and it is why the criterion is applied here to settled dynamics.
@@ -141,8 +141,9 @@ def main():
           f"   misses {miss_len}")
     print(f"  winding, steady     : {acc_ss:.3f}  ({n - len(miss_ss)}/{n})"
           f"   misses {miss_ss}")
-    print(f"  winding, read early : {acc_early:.3f}  (caveat: too-early reads"
-          f" underperform the length gate)")
+    print(f"  winding, read early : {acc_early:.3f}  "
+          f"({round(acc_early * n)}/{n})   caveat: too-early reads underperform"
+          f" the length gate")
     print(f"  every length-gate miss is tau == L: "
           f"{all(L == t for L, t in miss_len)}")
 
