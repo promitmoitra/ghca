@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "ghca",
+  "project_id": "3218a74f-fa41-4a10-bad3-4092b63edf13"
+}

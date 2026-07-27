@@ -157,9 +157,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   raw effects, **not** because chirality's raw content effect grew (it stays modest
   and smaller than `do(route)`'s raw effect throughout) — flagged as a normalization
   caveat, not a reversal.
-- **Deferred.** P4b — fold the P3b table + the do(χ)→content normalization caveat
-  into the individual C-series result docs; the gate-τ axis (τ is learned, not set)
-  and a full θ×τ grid for E3.
+- **P4b Fold-in & Harness Done (5b completed).** Folded the P3b table + the `do(χ)→content` normalization caveat into individual C-series result docs (`c2_results.md`, `c3_results.md`, `c4_results.md`, `c5_results.md`, `c7_results.md`). Fixed global NumPy RNG usage in `ghca_main.py` (`review_helper.py audit-rng` now passes with 0 violations). Created unified `reproduce_all.py` assertion suite verifying RNG audit, synthetic-SCM unit tests, and `.npz` archive integrity (100% pass).
 - **Effort.** Low (compute). **Risk.** Low; softened E7/E3 as expected (worth knowing).
 
 ### 3b. Other topologies — ✅ **DONE (dynamics + E1 learning)** (see [`e0_topologies.md`](e0_topologies.md))
@@ -685,6 +683,26 @@ half, not the τ-value rule (earlier claim corrected). Remaining high-value, low
 options: the **E2/E5 port** onto non-lattice substrates (3b follow-on; E1 done), and
 the deferred **3a P4b** doc fold-in / τ-axis sweeps. Return to **4a** only with
 appetite for mechanism design.
+
+## Proposed Next Research Tracks (Options 1 & 2)
+
+Following the completion of Option 3 (documentation fold-in, RNG audit, and unified `reproduce_all.py` test harness), two forward-looking tracks are proposed for future work:
+
+### Proposal Track A (Option 1): Substrate vs. Readout Boundary & Closed-Loop Plastic Dynamics
+- **Goal:** Address the core conceptual tension: *"is learning occurring inside the substrate's own physical dynamics, or is it merely a readout fitted on top of a fixed substrate?"*
+- **Background & Basis:** Track 3d emergent arm showed that local, reward-free, input-timing driven `τ`-plasticity can grow a timescale hierarchy and recover ~70% of hand-wired capacity. This provided the first demonstration where experience modifies the substrate's internal dynamical parameters (`τ`), rather than just readout weights.
+- **Proposed Sub-tracks:**
+  - **1a. Unified Multi-Axis Plasticity:** Combine local `τ`-adaptation (timescale tuning) and synaptic $W_{\text{rec}}$-adaptation (coupling scale) into a single closed-loop learning substrate.
+  - **1b. Substrate-Level Credit Assignment:** Test whether closed-loop plastic dynamics eliminate catastrophic forgetting during sequential learning without requiring frozen representations or external task-context heads.
+
+### Proposal Track B (Option 2): Neuroscience Bridge & Empirical Data Validation *(High Scientific Reach)*
+- **Goal:** Bridge the computational and causal theory of excitable media / rotating spiral waves directly to empirical neurophysiology datasets (Gong et al. 2023, Steinmetz/Ye 2026, Muller et al. 2018).
+- **Background & Basis:**
+  - **Predictive Coding Foil ([`e8_hardening_results.md`](e8_hardening_results.md)):** Demonstrated that standard observational tests (top-down lesion, error localization) do *not* distinguish predictive coding from wave prediction. The true empirical discriminators are structural (intrinsic error units + generative feedback vs global scalar surprise + passive readout + $do(\tau)$ temporal window).
+  - **Six Testable Predictions ([`spiral_predictions.md`](spiral_predictions.md)):** P1 (Persistent rule code), P2 (Flexibility & phase cores), P3 (Outcome relativity), P4 (Decoder failure under core drift), P5 (Causal mediation via nucleation), and P6 (Anatomical boundary localization).
+- **Proposed Sub-tracks:**
+  - **2c. Empirical Data Validation Pipeline (Testing P4):** Build an open analysis pipeline to detect topological phase singularities in Neuropixels / widefield calcium imaging datasets (e.g. Steinmetz or Ye 2026 open data) and test whether fixed-ROI decoders collapse under core drift while core-tracking decoders hold.
+  - **2d. In Vivo Optogenetic Intervention Protocols (Testing P3/P5):** Formalize optogenetic / patterned-stimulation experiment protocols contrasting $do(\theta_{\text{seed}})$ (nucleating phase field wavefronts) vs $do(W)$ (bulk surface illumination), quantifying fat-handedness and behavioral variance in experimental models.
 
 ## Process notes (apply to whatever is chosen)
 

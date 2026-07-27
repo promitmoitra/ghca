@@ -4,3 +4,9 @@ __pycache__/
 # publish-viz deploys run in an isolated worktree here (see
 # .claude/skills/publish-viz/SKILL.md); it is local-only, never committed.
 .publish-worktree/
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
+.beads/proxieddb/

@@ -39,6 +39,8 @@ chirality mid-way (rows = seed, columns = injected χ):
 
 ![C7 outcome-relativity](figures/c7_outcome_relativity.png)
 
+> **Update (Track 3a, P3b n=30 statistics & normalization caveat).** At **n=30** router-training seeds: `do(χ)→rule` = **0.979 [0.937, 1.000]** (29/30 seeds at ceiling); `do(route)→content` = **0.755 [0.630, 0.871]**; screening mediation is **0.771 [0.718, 0.822]** (seed+, inject+) vs **0.182 [0.154, 0.211]** (seed+, inject−). **Methodology Note:** The `do(χ)→content` normalized mean is **0.562 [0.423, 0.700]** (vs n=1 0.11) because column-max normalization is sensitive to small-over-small ratios when `do(route)`'s raw content effect is weak; unnormalized raw effects confirm `do(χ)`'s raw effect on content is modest and stable (mean 0.246) and smaller than `do(route)`'s (0.366). See [`stats_sweeps_results.md`](stats_sweeps_results.md).
+
 `O_rule` tracks the **injected** chirality (columns: + → ~0.84, − → ~0.16) and is
 **independent of the nucleation seed** (rows are nearly identical). So the seed acts
 on behaviour *only through* the chirality: intercepting and re-setting `χ` overrides

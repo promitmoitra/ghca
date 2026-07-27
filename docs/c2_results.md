@@ -39,6 +39,8 @@ typical realization spread at `t=0` is `0.015 σ` (collective) vs `2.09 σ`
   propagates (the attractor is realization-independent), washing out by `t≈8`.
   The collective readout stays pinned throughout.
 
+> **Update (Track 3a, P3b n=30 statistics).** At **n=30** substrate seeds, the achievable band is **0.287 σ [0.280, 0.295]** (collective) vs **26.82 σ [25.79, 27.91]** (labeled-line). The ~93× ratio confirms the fat-handedness of `do(W)` for labeled-line codes across seeds with tight, unimodal distributions. See [`stats_sweeps_results.md`](stats_sweeps_results.md).
+
 ## Interpretation — the constitution soft spot, demonstrated
 
 This is the concrete form of the critique of the paper's framework. `do(W)`
