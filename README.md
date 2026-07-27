@@ -34,6 +34,7 @@ not as built-in modules.
 | `experiments/e2_delayed_response.py` | E2 — delayed response / working memory (τ-controlled memory) |
 | `experiments/e2_information.py` | E2 addendum — memory as a τ-tuned information-destruction rate |
 | `experiments/topology_cycle_capacity.py` | E2 addendum — cycle-space (circuit-rank) bound on how many reentrant loops a topology admits |
+| `experiments/topology_winding_capacity.py` | E2 addendum — the GGH (1980) winding number as the exact sustain criterion; calibrates the length gate above |
 | `experiments/scaling_capacities.py` | Scaling (Track 3b, size half) — does substrate size buy memory (E2) / attention (E4) / executive control (E5)? |
 | `experiments/lattice_capacities.py` | Representation + `lattice2d` port of all three capacity mechanisms; shows E5's hidden layer has **0** recurrent edges |
 | `experiments/lattice_animation.py` | GIFs for the three lattice mechanisms (reentry, wave annihilation, held option) |
@@ -76,6 +77,13 @@ not as built-in modules.
   a flat exception: its *packed* cycles all exceed the τ range). A
   capacity/duration tradeoff on any Line-B τ policy.
   Capacity is a bound, not a measured count.
+- [`docs/topology_winding_capacity.md`](docs/topology_winding_capacity.md) —
+  **E2 addendum** (calibration of the above): the winding number of a continuous
+  cycle, the invariant from Greenberg, Greene & Hastings (1980), is an *exact*
+  sustain criterion (45/45) where the length gate scores 40/45 — and every
+  length-gate miss is `τ = L`, the marginal death boundary. Winding is a
+  *dynamical* quantity, so it calibrates the topological bound rather than
+  replacing it; read too early it underperforms the gate.
 - [`docs/scaling_capacities.md`](docs/scaling_capacities.md) — **scaling**
   (Track 3b, size half): size helps only where size is the binding constraint.
   E2 memory is size-limited and matches the `τ < L` law 6/6; E4 attention is
