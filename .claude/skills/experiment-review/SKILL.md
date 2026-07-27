@@ -7,7 +7,7 @@ description: >-
 # Experiment-Review Dual-Track Workflow
 
 ## Overview
-This skill implements the Greenberg–Hastings Causal Analysis (GHCA) project's decoupled, sequential **Review and Planning** meta-passes. It enforces maximum scientific integrity and skeptical objectivity during audits, ensuring every headline is honest and reproducible, and uses these audited findings as the inputs for generative roadmap planning.
+This skill implements the Greenberg–Hastings Cellular Automata (GHCA) project's decoupled, sequential **Review and Planning** meta-passes. It enforces maximum scientific integrity and skeptical objectivity during audits, ensuring every headline is honest and reproducible, and uses these audited findings as the inputs for generative roadmap planning.
 
 ## Dependencies
 - **`publish-viz` (`.claude/skills/publish-viz/SKILL.md`):** Used to publish the finalized review (`core_review.md` or `extensions_review.md`) and planning (`next_steps.md`) documents to the public MkDocs pages.
