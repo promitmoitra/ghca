@@ -35,6 +35,9 @@ not as built-in modules.
 | `experiments/e2_information.py` | E2 addendum — memory as a τ-tuned information-destruction rate |
 | `experiments/topology_cycle_capacity.py` | E2 addendum — cycle-space (circuit-rank) bound on how many reentrant loops a topology admits |
 | `experiments/topology_winding_capacity.py` | E2 addendum — the GGH (1980) winding number as the exact sustain criterion; calibrates the length gate above |
+| `experiments/scaling_capacities.py` | Scaling (Track 3b, size half) — does substrate size buy memory (E2) / attention (E4) / executive control (E5)? |
+| `experiments/lattice_capacities.py` | Representation + `lattice2d` port of all three capacity mechanisms; shows E5's hidden layer has **0** recurrent edges |
+| `experiments/lattice_animation.py` | GIFs for the three lattice mechanisms (reentry, wave annihilation, held option) |
 | `experiments/e3_timed_response.py` | E3 — timed response (identity × latency double dissociation) |
 | `experiments/e3_factored_credit.py` | E3 composition study — factored credit + curriculum vs shared reward |
 | `experiments/e4_attention.py` | E4 — selective attention as biased WTA by wave annihilation |
@@ -81,6 +84,23 @@ not as built-in modules.
   length-gate miss is `τ = L`, the marginal death boundary. Winding is a
   *dynamical* quantity, so it calibrates the topological bound rather than
   replacing it; read too early it underperforms the gate.
+- [`docs/scaling_capacities.md`](docs/scaling_capacities.md) — **scaling**
+  (Track 3b, size half): size helps only where size is the binding constraint.
+  E2 memory is size-limited and matches the `τ < L` law 6/6; E4 attention is
+  **scale-invariant** (0.08 sensitivity spread over an 8× arena range —
+  bias-to-noise sets the collision locus, not room); E5 executive control shows
+  **no established size effect** (16× `N_H`, Spearman p=0.51, overlapping CIs,
+  per-seed bimodality dominating). A null on the size axis, next to 3c/P4's
+  positive result for interference — different capacity, different constraint.
+- [`docs/lattice_capacities.md`](docs/lattice_capacities.md) —
+  **representation + 2-D port** (with animations): each capacity uses a
+  *different* substrate primitive (reentrant loop / colliding waves / held option
+  gating a feedforward conjunction), and E5's context ring is E2's loop reused.
+  E5's hidden layer has **0 H→H edges** — purely feedforward AND-gates, which is
+  *why* the `N_H` null holds. E2's `τ < L` law ports to the 2-D torus **28/28**;
+  E4's psychometric curve ports unchanged and stays size-invariant. E5 shows a
+  **threshold** at the option's sustain boundary and no graded size dependence
+  above it, on either knob.
 - [`docs/e3_results.md`](docs/e3_results.md) — **findings from E3** (timed
   response): double dissociation confirmed — Line A learns identity (wrong
   timing), Line B learns timing (not identity). New open problem: naive A+B
