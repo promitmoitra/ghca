@@ -39,6 +39,8 @@ parameter, not the wave aggregate.
 
 ![C3 do(theta)](figures/c3_do_theta.png)
 
+> **Update (Track 3a, P3b n=30 statistics).** At **n=30** substrate seeds, `do(θ=14)` active-fraction response is **0.533 [0.507, 0.557]** (collective), confirming the single-valued, reproducible causal response of the generative handle `θ` with a tight, unimodal distribution. See [`stats_sweeps_results.md`](stats_sweeps_results.md).
+
 ## Interpretation — the resolution of the constitution problem
 
 C2 + C3 together make the argument concrete:

@@ -51,7 +51,7 @@ class Population:
         
 
     """
-    def __init__(self,act=1,pas=1,r=1,size=1,i_0=0.0,r_0=None,periodic=False,p=None):
+    def __init__(self,act=1,pas=1,r=1,size=1,i_0=0.0,r_0=None,periodic=False,p=None,seed=None,rng=None):
         """
         Parameters
         ----------
@@ -73,6 +73,9 @@ class Population:
                 <desc>
 
         """
+        if rng is None:
+            rng = np.random.default_rng(seed)
+        self.rng = rng
         self.act=act
         self.pas=pas
         self.tau0=self.act+self.pas
@@ -97,10 +100,10 @@ class Population:
 
 ##            self.p[0:endi0] = 1
 ##            self.p[endi0:endr0] = self.act+1
-            self.p[0:endi0] = np.random.randint(1,self.act+1)
-            self.p[endi0:endr0] = np.random.randint(self.act+1,self.tau0+1)
+            self.p[0:endi0] = self.rng.integers(1,self.act+1)
+            self.p[endi0:endr0] = self.rng.integers(self.act+1,self.tau0+1)
 
-            np.random.shuffle(self.p)
+            self.rng.shuffle(self.p)
             self.p = self.p.reshape(self.size,self.size)
         else:
             self.p = p

@@ -55,6 +55,8 @@ band tracks the decode band.
   readout is unconditionally well-posed, but the tracked (topology-aware) one is the
   least fat-handed.
 
+> **Update (Track 3a, P3b n=30 statistics).** At **n=30** realization-policy replicates, decode bands are **6.81 σ [6.40, 7.32]** (center), **1.09 σ [1.02, 1.16]** (tracked), and **2.646 σ** (global, SD=0). The tracked reader's topological well-posedness holds firmly at scale. See [`stats_sweeps_results.md`](stats_sweeps_results.md).
+
 ## Interpretation
 
 C5 refines C2 rather than merely repeating it. C2's lesson was "a constituted

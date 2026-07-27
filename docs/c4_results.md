@@ -36,6 +36,8 @@ chance):
 
 ![C4 outcome-relativity](figures/c4_outcome_relativity.png)
 
+> **Update (Track 3a, P3b n=30 statistics).** At **n=30** substrate seeds, the outcome-effect matrix is **bit-identical across all 30 seeds (SD=0)**: `do(τ_gate)→timing` = 1.000, `do(τ_gate)→identity` = 0.000, `do(g_route)→identity` = 1.000, `do(g_route)→timing` = 0.056. Macro-sufficiency is **1.027 [1.023, 1.032]** (collective) vs **0.087 [0.068, 0.106]** (labeled-line). See [`stats_sweeps_results.md`](stats_sweeps_results.md).
+
 For a **collective** code the macro variable retains essentially all the
 behaviourally-relevant information despite the astronomical `S→W` degeneracy —
 `W` *screens off* `S`, and the coarse-graining is a genuine causal-emergence:
