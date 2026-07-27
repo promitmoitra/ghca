@@ -116,18 +116,38 @@ def check_stats_sweeps_archives():
     assert np.isclose(suff_coll, 1.027, atol=0.05), f"C4 suff_coll {suff_coll} != ~1.027"
     assert np.isclose(suff_lbl, 0.087, atol=0.05), f"C4 suff_lbl {suff_lbl} != ~0.087"
 
+def check_closed_loop_plasticity_archives():
+    p2 = np.load("result/closed_loop_plasticity/phase2_single_task.npz", allow_pickle=True)
+    assert "data" in p2, "phase2_single_task.npz missing 'data' key"
+    p2_data = p2["data"].item()
+    assert "E1_Sensorimotor" in p2_data and "E5_Executive_Switch" in p2_data
+
+    p3 = np.load("result/closed_loop_plasticity/phase3_sequential_learning.npz", allow_pickle=True)
+    assert "data" in p3, "phase3_sequential_learning.npz missing 'data' key"
+    p3_data = p3["data"].item()
+    assert "Closed-Loop Multi-Axis (Tau, Theta, W)" in p3_data
+
+def check_unittests():
+    cmd = [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"]
+    res = subprocess.run(cmd, capture_output=True, text=True)
+    if res.returncode != 0:
+        raise RuntimeError(f"Unit tests failed:\n{res.stdout}\n{res.stderr}")
+
 def main():
     print("==================================================")
     print("  GHCA Reproducibility & Integrity Assertion Suite  ")
     print("==================================================")
     run_step("1. Global RNG Usage Audit", check_rng_audit)
     run_step("2. Synthetic-SCM Unit Tests (test_ctestbed.py)", check_ctestbed_tests)
-    run_step("3. C-Series (.npz) Archive Integrity", check_c_series_archives)
-    run_step("4. E-Series (.npz) Archive Integrity", check_e_series_archives)
-    run_step("5. P3b Statistical Sweeps Integrity", check_stats_sweeps_archives)
+    run_step("3. Full Unit Test Suite", check_unittests)
+    run_step("4. C-Series (.npz) Archive Integrity", check_c_series_archives)
+    run_step("5. E-Series (.npz) Archive Integrity", check_e_series_archives)
+    run_step("6. P3b Statistical Sweeps Integrity", check_stats_sweeps_archives)
+    run_step("7. Closed-Loop Plasticity Archives Integrity", check_closed_loop_plasticity_archives)
     print("==================================================")
     print("  ALL REPRODUCIBILITY CHECKS PASSED SUCCESSFULLY  ")
     print("==================================================")
 
 if __name__ == "__main__":
     main()
+
