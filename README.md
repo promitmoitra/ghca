@@ -28,6 +28,7 @@ not as built-in modules.
 | `ghca_plot.py` | Persistence-probability maps over `(active, passive)` space |
 | `ghca_net.py` | **GH dynamics on a graph**: per-node timescales, weighted-threshold excitation, spontaneous firing, homeostatic threshold; topology builders and order-parameter observables |
 | `ghca_learn.py` | **Reward-modulated learner**: eligibility-trace conduction (Line A) and timescale (Line B) plasticity, order-parameter critic, layered-graph builder |
+| `ghca_plasticity.py` | **Multi-axis closed-loop engine**: tri-axis ($\tau$-adaptation, $\theta$-homeostasis, $W$-routing) substrate adaptation |
 | `ghca_causal.py` | **Causal instrumentation** (C-series): partial-observation `S_obs`, wave variables `W=f(S)`, and `do(S)` / `do(W)` / `do(θ)` intervention operators |
 | `experiments/e0_characterization.py` | E0 — substrate characterisation (find the self-sustaining band) |
 | `experiments/e1_conditioning.py` | E1 — stimulus→response conditioning (A-vs-B dissociation) |
@@ -48,7 +49,9 @@ not as built-in modules.
 | `experiments/c2_fat_handed.py` | C2 — `do(W)` is fat-handed when `W=f(S)` (achievable-band of behaviour) |
 | `experiments/c3_do_theta.py` | C3 — `do(θ)` (timescales/couplings) is the well-posed causal handle |
 | `experiments/c4_outcome_relativity.py` | C4 — outcome-relativity & degeneracy (causal-emergence cap) |
-| `result/` | Saved simulation outputs (`.npy`) and experiment data |
+| `experiments/closed_loop_plasticity.py` | **Closed-loop plasticity**: single-task benchmark evaluating Readout Independence Ratio (RIR) |
+| `experiments/sequential_closed_loop.py` | **Sequential learning**: Task A $\to$ Task B $\to$ Task A reversal learning evaluating anti-forgetting |
+| `result/` | Saved simulation outputs (`.npy`/`.npz`) and experiment data |
 
 ## Documentation
 
@@ -187,16 +190,18 @@ not as built-in modules.
 - [x] **C3** — `do(θ)` is the well-posed causal handle (ambiguity 0.014σ vs 33σ; `θ→W→B`)
 - [x] **C4** — outcome-relativity (diagonal `do(θ)` matrix) & degeneracy (macro-sufficiency 1.03 vs 0.11) — **C-series complete**
 
-Both series are complete. See [`docs/synthesis.md`](docs/synthesis.md) for how the
-E-series and C-series tie together into one argument.
+**Closed-Loop Substrate Plasticity** (see [`docs/closed_loop_plasticity_results.md`](docs/closed_loop_plasticity_results.md)):
+
+- [x] **Multi-Axis Plasticity** — tri-axis closed-loop engine ($\tau$-adaptation, $\theta$-homeostasis, $W$-routing) achieves RIR = $0.851 \pm 0.111$ on E1
+- [x] **Substrate Credit Assignment & Anti-Forgetting** — Task A $\to$ Task B $\to$ Task A sequential reversal learning yields **70.0% ± 13.8%** retention (vs 29.6% ± 31.2% weight-only) via topological loop protection
+
+Both E/C series and closed-loop substrate plasticity tracks are complete. See [`docs/synthesis.md`](docs/synthesis.md) for how E-series and C-series tie together.
 
 ## Reproduce
 
-```
-python3 -m pip install numpy matplotlib scipy networkx scikit-learn
-python3 experiments/e0_characterization.py    # writes docs/figures/e0_*.png, result/e0/
-python3 experiments/e5_executive.py           # writes docs/figures/e5_*.png, result/e5/
-python3 experiments/e6_horde.py               # writes docs/figures/e6_horde.png, result/e6/
+```bash
+uv sync
+python3 reproduce_all.py                      # runs 8-step automated test & verification harness
 ```
 
 Each `experiments/*.py` is self-contained and writes its figures to `docs/figures/`

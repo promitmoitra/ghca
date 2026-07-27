@@ -688,14 +688,13 @@ appetite for mechanism design.
 
 Following the completion of Option 3 (documentation fold-in, RNG audit, and unified `reproduce_all.py` test harness), two forward-looking tracks are proposed for future work:
 
-### Proposal Track A (Option 1): Substrate vs. Readout Boundary & Closed-Loop Plastic Dynamics
+### Proposal Track A (Option 1): Substrate vs. Readout Boundary & Closed-Loop Plastic Dynamics — ✅ **DONE** (see [`closed_loop_plasticity_results.md`](closed_loop_plasticity_results.md))
 - **Goal:** Address the core conceptual tension: *"is learning occurring inside the substrate's own physical dynamics, or is it merely a readout fitted on top of a fixed substrate?"*
-- **Background & Basis:** Track 3d emergent arm showed that local, reward-free, input-timing driven `τ`-plasticity can grow a timescale hierarchy and recover ~70% of hand-wired capacity. This provided the first demonstration where experience modifies the substrate's internal dynamical parameters (`τ`), rather than just readout weights.
-- **Proposed Sub-tracks:**
-  - **1a. Unified Multi-Axis Plasticity:** Combine local `τ`-adaptation (timescale tuning) and synaptic $W_{\text{rec}}$-adaptation (coupling scale) into a single closed-loop learning substrate.
-  - **1b. Substrate-Level Credit Assignment:** Test whether closed-loop plastic dynamics eliminate catastrophic forgetting during sequential learning without requiring frozen representations or external task-context heads.
+- **What was built:**
+  - **1a. Unified Multi-Axis Plasticity (`ghca_plasticity.py`, `experiments/closed_loop_plasticity.py`):** Combined local $\tau$-adaptation (timescale tuning), $\theta$-homeostasis, and $W$-routing into a closed-loop engine. Achieved RIR = $0.851 \pm 0.111$ on E1, proving self-organized dynamical adaptation.
+  - **1b. Substrate-Level Credit Assignment & Anti-Forgetting (`experiments/sequential_closed_loop.py`):** Tested Task A $\to$ Task B $\to$ Task A reversal learning without task-context heads or weight freezing. Closed-loop multi-axis plasticity retained Task A accuracy at **70.0% ± 13.8%** (vs 29.6% ± 31.2% for weight-only adaptation), demonstrating topological loop protection.
 
-### Proposal Track B (Option 2): Neuroscience Bridge & Empirical Data Validation *(High Scientific Reach)*
+### Proposed Next Research Track: Proposal Track B (Option 2): Neuroscience Bridge & Empirical Data Validation *(High Scientific Reach)*
 - **Goal:** Bridge the computational and causal theory of excitable media / rotating spiral waves directly to empirical neurophysiology datasets (Gong et al. 2023, Steinmetz/Ye 2026, Muller et al. 2018).
 - **Background & Basis:**
   - **Predictive Coding Foil ([`e8_hardening_results.md`](e8_hardening_results.md)):** Demonstrated that standard observational tests (top-down lesion, error localization) do *not* distinguish predictive coding from wave prediction. The true empirical discriminators are structural (intrinsic error units + generative feedback vs global scalar surprise + passive readout + $do(\tau)$ temporal window).
