@@ -58,8 +58,12 @@ Evaluated across $n=30$ independent random seeds (`default_rng(seed)`):
 *All cells generated from `result/closed_loop_plasticity/phase2_single_task.npz`
 by `scripts/print_phase2_table.py` — do not hand-edit (`--check` guards this in
 `reproduce_all.py`). $RIR$ is the per-seed mean of `fixed_acc / trained_acc`,
-which is not identical to the ratio of the two column means; here the two agree
-to within 0.006 in every row, so the columns can be read as its derivation.*
+which is not identical to the ratio of the two column means. The two agree to
+within 0.015 in every row. On E1 they are identical to 3 decimals, because
+`trained_acc` is pinned at the ~100% ceiling and a near-constant denominator
+leaves no room for the two orderings to diverge; the whole (small) gap sits in
+E5, where `trained_acc` genuinely varies across seeds — largest for Axis $W$
+Only (ratio-of-means 1.131 vs $RIR$ 1.146).*
 
 ### Framing & Interpretation:
 - **E1 Sensorimotor Routing:** Demonstrates a true, learning-driven gain in Readout Independence. Unlearned substrates ($RIR = 0.471$) fail to route signal to target motor units, whereas Closed-Loop Multi-Axis self-organizes functional pathways ($RIR = 0.851 \pm 0.111$).
