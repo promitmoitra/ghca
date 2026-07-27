@@ -170,6 +170,46 @@ def e5_ring_sweep(seeds=E5_SEEDS, n_h=120):
     return out
 
 
+def margin_controlled_loops(margin=4, delays=(0, 25, 50, 100, 200, 400, 800),
+                            e5_seeds=10):
+    """Is EITHER capacity graded in loop length once the sustain margin is fixed?
+
+    The naive sweep confounds two things: crossing the sustain boundary (a
+    threshold) and having a longer loop (a size effect). Holding tau = L - margin
+    keeps every arm equally far inside the sustaining regime, so any remaining
+    trend is a genuine size effect.
+
+    Returns (e2_rows, e5_rows). Finding: BOTH are flat -- E2 retains at every
+    delay for every L, and E5's accuracy is flat within per-seed spread. The
+    apparent ring-length effect is entirely the threshold crossing.
+    """
+    e2_rows = []
+    for L in [8, 12, 16, 24, 32, 48]:
+        tau = max(4, L - margin)
+        ret = []
+        for D in delays:
+            W = np.zeros((L, L))
+            for i in range(L):
+                W[i, (i - 1) % L] = 1.0
+            net = Network(W, act=2, pas=tau - 2, theta=1.0, p_s=0.0, seed=0)
+            net.phi[:] = 0
+            net.phi[0] = 1
+            ret.append(int(net.run(int(D) + 5, record=False)["A"][-3:].mean() > 0))
+        e2_rows.append((L, tau, ret))
+
+    nh0, lr0, ts0 = e5.N_H, e5.L_RING, e5.TAU_SLOW
+    e5.N_H = 120
+    e5_rows = []
+    for lr in RING_LS:
+        e5.L_RING = lr
+        e5.TAU_SLOW = max(4, lr - margin)
+        accs = [e5.run_switching(seed=s, n_blocks=20, block_len=18)[0].mean()
+                for s in range(e5_seeds)]
+        e5_rows.append((lr, e5.TAU_SLOW, np.array(accs)))
+    e5.N_H, e5.L_RING, e5.TAU_SLOW = nh0, lr0, ts0
+    return e2_rows, e5_rows
+
+
 def main():
     hh, ring_edges = e5_hidden_recurrence()
     print("E5 mechanism — is the hidden 'medium' recurrent?")
@@ -212,6 +252,21 @@ def main():
     print(f"   ring-length span in accuracy: {span:.3f}"
           f"   (cf. the N_H sweep's 0.043 over a 16x range)")
 
+    print("\nMargin-controlled test — is EITHER capacity graded in loop length")
+    print("once the sustain margin is held fixed (tau = L - 4)?")
+    e2_rows, e5_rows = margin_controlled_loops()
+    for L, tau, ret in e2_rows:
+        print(f"   E2  L={L:>3} tau={tau:>3}  retention over delays = {ret}")
+    for lr, ts, accs in e5_rows:
+        print(f"   E5  L_ring={lr:>3} tau={ts:>3}  acc={accs.mean():.3f}"
+              f"  spread=[{accs.min():.2f},{accs.max():.2f}]")
+    e2_flat = all(all(r) for _, _, r in e2_rows)
+    e5_span = (max(a.mean() for _, _, a in e5_rows)
+               - min(a.mean() for _, _, a in e5_rows))
+    print(f"   => E2 retains everywhere: {e2_flat};  E5 span at fixed margin:"
+          f" {e5_span:.3f} (vs 0.484 when the threshold is crossed)")
+    print("   => the ring-length 'effect' is the THRESHOLD, not size.")
+
     plot(torus, law, arena, rings)
 
     np.savez(os.path.join(DATADIR, "lattice_capacities.npz"),
@@ -223,7 +278,15 @@ def main():
              ring_Ls=np.array(lrs),
              ring_acc=np.array([rings[l].mean() for l in lrs]),
              ring_acc_all=np.array([rings[l] for l in lrs]),
-             e5_tau_slow=e5.TAU_SLOW)
+             e5_tau_slow=e5.TAU_SLOW,
+             margin_e2_Ls=np.array([r[0] for r in e2_rows]),
+             margin_e2_taus=np.array([r[1] for r in e2_rows]),
+             margin_e2_retention=np.array([r[2] for r in e2_rows]),
+             margin_e5_Ls=np.array([r[0] for r in e5_rows]),
+             margin_e5_taus=np.array([r[1] for r in e5_rows]),
+             margin_e5_acc=np.array([r[2].mean() for r in e5_rows]),
+             margin_e5_acc_all=np.array([r[2] for r in e5_rows]),
+             margin_e5_span=e5_span)
     print("\nwrote", os.path.join(DATADIR, "lattice_capacities.npz"))
 
 

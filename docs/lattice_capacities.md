@@ -20,10 +20,40 @@ property of the medium:
 
 Three things follow, and each is checked numerically below.
 
-**E2's primitive is reused by E5.** E5's context ring *is* an E2 loop — same
-`tau < L` law, same failure mode — used as a switch rather than as a store. The
-`TAU_SLOW = 12` / `TAU_DEAD = 18` pair in `e5_executive.py` against `L_RING = 16`
-is exactly E2's sustain boundary, applied to hold a rule for a block.
+**E5 reuses E2's loop, but not E2's capacity axis — and the distinction matters.**
+The two loops are the same *dynamical object*: both are directed rings obeying
+the same sustain law (verified in isolation, and the boundary is `tau <= L`, with
+`tau == L` marginal-but-alive at L ∈ {8,12,16,24,32} — independently
+corroborating the winding-number result in
+[`topology_winding_capacity.md`](topology_winding_capacity.md), which found the
+strict `tau < L` gate's only misses are exactly `tau == L`).
+
+But **what the loop encodes differs**, and that changes what scaling it buys:
+
+| | E2 | E5 |
+|---|---|---|
+| what the ring holds | the **remembered item** — *which* ring is lit encodes which stimulus | the **rule/context** — ring identity selects which conjunction subpopulation exists |
+| ring length is | the memory's duration budget | the option's survival budget |
+| graded axis | **`tau` (retention demand)** — capacity is *how slow a node the loop tolerates* | none found |
+
+The decisive test is to hold the **sustain margin** fixed (`tau = L − 4`) and
+sweep `L` in each system's own task:
+
+- **E2**: retains at *every* delay tested (to D=800) for **every** L from 8 to
+  48. Flat.
+- **E5**: switching accuracy 0.608, 0.675, 0.604, 0.649, 0.526 for
+  `L_ring` = 8…32 (n=10). **Flat within per-seed spread.**
+
+So neither is graded in loop length once the margin is controlled. **The 0.484
+"span" reported below is entirely the threshold crossing**, not a size effect —
+which is why §4's honest statement is a threshold, not a gradient. E2's genuinely
+graded axis is `tau`: at fixed margin the largest holdable `tau` tracks `L`
+exactly (8→8, 12→12, … 48→48), which is `scaling_capacities.md`'s 6/6 result
+seen from the other side.
+
+The practical reading for a composite architecture: E5 does not get *more*
+executive control from a bigger loop, it gets the option's *existence*. E2 does
+get more memory from a bigger loop, but only measured in `tau`, not in `L`.
 
 **Attention needs no inhibition.** The competition is refractory annihilation:
 two wavefronts extinguish each other where they meet, and a top-down timing bias
@@ -92,16 +122,20 @@ Sweeping the context-ring length (E5's only recurrent structure) at fixed
 | per-seed spread | [0.17, 0.24] | [0.50, 0.86] | [0.18, 0.82] | [0.50, 0.92] | [0.24, 0.80] |
 | `TAU_SLOW=12 < L_ring`? | no | no | yes | yes | yes |
 
-**Span 0.484, against 0.043 for the 16× `N_H` sweep — an 11× larger effect from
-the structure that actually carries state.**
-
-Read this carefully, though: the dominant feature is the **collapse at
-`L_ring = 8`**, where the option cannot survive (`tau=12 > L=8`) and accuracy
+Span 0.484, against 0.043 for the 16× `N_H` sweep. **But that span is a
+threshold crossing, not a size effect.** The dominant feature is the **collapse
+at `L_ring = 8`**, where the option cannot survive (`tau=12 > L=8`) and accuracy
 falls to 0.202 — *below* the 0.5 chance line, because a dead ring silences the
 conjunction gates and the motor channel mostly fails to fire at all rather than
 guessing. That is a mechanism failure, not graded capacity. Above the boundary
 (`L_ring ≥ 12`) the curve is **flat within its per-seed spread** (0.565–0.685,
-and every arm bimodal). So the honest statement is:
+and every arm bimodal).
+
+Controlling for it directly — holding the sustain margin fixed at `tau = L − 4`
+so every arm sits equally far inside the sustaining regime — **the span falls
+from 0.484 to 0.149** (0.608, 0.675, 0.604, 0.649, 0.526 for `L_ring` = 8…32,
+n=10), which is still inside the per-seed spread of a single arm. So the honest
+statement is:
 
 > E5 has a **threshold** at the option's sustain boundary, and no measurable
 > graded size dependence above it — on either knob.
