@@ -1,6 +1,11 @@
 __pycache__/
 *.pyc
 
+# setuptools build artifacts (the project is now installable; see pyproject.toml)
+build/
+dist/
+*.egg-info/
+
 # publish-viz deploys run in an isolated worktree here (see
 # .claude/skills/publish-viz/SKILL.md); it is local-only, never committed.
 .publish-worktree/

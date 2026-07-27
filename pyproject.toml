@@ -12,3 +12,36 @@ dependencies = [
     "scikit-learn>=1.9.0",
     "scipy>=1.18.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]
+
+# Make the project installable so `uv sync` puts the code on sys.path.
+# Previously this was a "virtual" project (no [build-system]): uv installed the
+# dependencies but never the code, so `ghca_testbed` and the root `ghca_*`
+# modules only imported when Python happened to add the script's directory to
+# sys.path. That breaks under `python -P` / PYTHONSAFEPATH=1, when running from
+# another directory, and under pytest's rootdir handling -- which is why
+# `reproduce_all.py` step 2 could fail with ModuleNotFoundError: ghca_testbed.
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["ghca_testbed"]
+py-modules = [
+    "ghca_core",
+    "ghca_net",
+    "ghca_learn",
+    "ghca_plasticity",
+    "ghca_causal",
+    "ghca_main",
+    "ghca_net_viz",
+    "ghca_plot",
+    "ghca_stats",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "test_ctestbed.py"]
