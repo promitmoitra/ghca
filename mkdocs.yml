@@ -55,6 +55,7 @@ nav:
       - E7 — spiral-core option: e7_results.md
       - E8 — predictive dynamics: e8_results.md
       - E9 — emergent conjunction cells: e9_results.md
+      - Closed-loop plasticity: closed_loop_plasticity_results.md
   - C-series (causality):
       - Plan: causal_experiments.md
       - C0 — instrumentation: c0_results.md
