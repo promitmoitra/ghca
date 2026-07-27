@@ -12,3 +12,7 @@
    - Ensure `reproduce_all.py` includes new experiments if they form core baseline capabilities.
 5. **Documentation & Review:**
    - Document results in `docs/<track>_results.md` including per-seed spreads, substrate vs readout boundary, and caveats.
+6. **Visualization & Site Deployment:**
+   - Refer to [`docs/process.md`](../docs/process.md) and [`.claude/skills/publish-viz/SKILL.md`](../.claude/skills/publish-viz/SKILL.md) for publishing visualizations and site updates.
+   - Visualization/site deployment PRs and publishing commits (e.g. scrollytelling site assets, animations, and docs pages) must target the `deploy-viz-page` branch, not `main`.
+
