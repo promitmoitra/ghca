@@ -67,9 +67,25 @@ def rows():
     return out
 
 
+def max_jensen_gap():
+    """Largest |ratio-of-column-means - mean-of-per-seed-ratios| over all rows."""
+    data = np.load(NPZ, allow_pickle=True)["data"].item()
+    return max(abs(float(np.mean(v["fixed_acc"])) / float(np.mean(v["trained_acc"]))
+                   - float(v["mean_rir"]))
+               for conds in data.values() for v in conds.values())
+
+
 def check():
-    """Verify every generated row appears verbatim in the committed doc."""
+    """Verify every generated row appears verbatim in the committed doc, and
+    that the footnote's stated agreement bound is not tighter than the data."""
     doc = open(DOC, encoding="utf-8").read()
+    m = re.search(r"agree to\s+within (\d*\.\d+) in every row", doc)
+    if m:
+        stated, actual = float(m.group(1)), max_jensen_gap()
+        if actual > stated:
+            print("Footnote claims rows agree to within %.3f, but the largest gap "
+                  "in the archive is %.4f." % (stated, actual))
+            return 1
     norm = lambda s: re.sub(r"\s+", " ", s).strip()
     doc_norm = norm(doc)
     missing = [r for r in rows() if norm(r) not in doc_norm]
