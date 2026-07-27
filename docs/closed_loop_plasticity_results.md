@@ -44,16 +44,22 @@ Evaluated across $n=30$ independent random seeds (`default_rng(seed)`):
 
 | Benchmark | Condition | Fixed Readout Acc (%) | Trained Readout Acc (%) | Readout Independence Ratio ($RIR$) |
 | :--- | :--- | :---: | :---: | :---: |
-| **E1 Sensorimotor Routing** | Control (No Plasticity) | $47.1\% \pm 34.7\%$ | $34.1\% \pm 10.5\%$ | $0.471 \pm 0.347$ |
-| | Axis $W$ Only | $78.7\% \pm 29.9\%$ | $81.5\% \pm 11.4\%$ | $0.787 \pm 0.299$ |
-| | Axis $\tau$ Only | $46.9\% \pm 34.6\%$ | $48.2\% \pm 13.9\%$ | $0.469 \pm 0.346$ |
-| | Axis $\theta$ Only | $49.8\% \pm 18.5\%$ | $41.0\% \pm 11.8\%$ | $0.500 \pm 0.185$ |
-| | **Closed-Loop Multi-Axis** | **84.6% ± 10.9%** | **88.2% ± 9.8%** | **0.851 ± 0.111** |
-| **E5 Executive Switch** | Control (No Plasticity) | $50.1\% \pm 15.2\%$ | $30.2\% \pm 9.1\%$ | $1.152 \pm 0.152$ |
-| | Axis $W$ Only | $50.0\% \pm 15.6\%$ | $32.1\% \pm 10.1\%$ | $1.146 \pm 0.156$ |
-| | Axis $\tau$ Only | $49.5\% \pm 12.2\%$ | $31.0\% \pm 9.5\%$ | $1.105 \pm 0.122$ |
-| | Axis $\theta$ Only | $43.0\% \pm 11.6\%$ | $29.8\% \pm 8.9\%$ | $0.926 \pm 0.116$ |
-| | **Closed-Loop Multi-Axis** | **47.0% ± 9.4%** | **31.5% ± 9.0%** | **0.957 ± 0.094** |
+| **E1 Sensorimotor Routing** | Control (No Plasticity) | $47.1\% \pm 34.7\%$ | $100.0\% \pm 0.0\%$ | $0.471 \pm 0.347$ |
+| | Axis $W$ Only | $78.7\% \pm 29.9\%$ | $100.0\% \pm 0.0\%$ | $0.787 \pm 0.299$ |
+| | Axis $\tau$ Only | $46.9\% \pm 34.6\%$ | $100.0\% \pm 0.0\%$ | $0.469 \pm 0.346$ |
+| | Axis $\theta$ Only | $49.8\% \pm 18.5\%$ | $99.6\% \pm 0.5\%$ | $0.500 \pm 0.185$ |
+| | **Closed-Loop Multi-Axis** | **84.6% ± 10.9%** | **99.4% ± 0.7%** | **0.851 ± 0.111** |
+| **E5 Executive Switch** | Control (No Plasticity) | $50.1\% \pm 4.1\%$ | $44.0\% \pm 4.9\%$ | $1.152 \pm 0.152$ |
+| | Axis $W$ Only | $50.0\% \pm 3.9\%$ | $44.2\% \pm 5.0\%$ | $1.146 \pm 0.156$ |
+| | Axis $\tau$ Only | $49.5\% \pm 3.7\%$ | $45.1\% \pm 3.7\%$ | $1.105 \pm 0.122$ |
+| | Axis $\theta$ Only | $43.0\% \pm 3.5\%$ | $46.7\% \pm 3.8\%$ | $0.926 \pm 0.116$ |
+| | **Closed-Loop Multi-Axis** | **47.0% ± 3.2%** | **49.4% ± 4.1%** | **0.957 ± 0.094** |
+
+*All cells generated from `result/closed_loop_plasticity/phase2_single_task.npz`
+by `scripts/print_phase2_table.py` — do not hand-edit (`--check` guards this in
+`reproduce_all.py`). $RIR$ is the per-seed mean of `fixed_acc / trained_acc`,
+which is not identical to the ratio of the two column means; here the two agree
+to within 0.006 in every row, so the columns can be read as its derivation.*
 
 ### Framing & Interpretation:
 - **E1 Sensorimotor Routing:** Demonstrates a true, learning-driven gain in Readout Independence. Unlearned substrates ($RIR = 0.471$) fail to route signal to target motor units, whereas Closed-Loop Multi-Axis self-organizes functional pathways ($RIR = 0.851 \pm 0.111$).

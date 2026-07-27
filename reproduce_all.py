@@ -127,6 +127,15 @@ def check_closed_loop_plasticity_archives():
     p3_data = p3["data"].item()
     assert "Closed-Loop Multi-Axis (Tau, Theta, W)" in p3_data
 
+def check_phase2_table_fresh():
+    """Guard the one failure mode the archive checks cannot see: a results table
+    hand-transcribed out of step with the .npz it claims to report."""
+    cmd = [sys.executable, "scripts/print_phase2_table.py", "--check"]
+    res = subprocess.run(cmd, capture_output=True, text=True)
+    if res.returncode != 0:
+        raise RuntimeError(f"Phase-2 results table is stale:\n{res.stdout}\n{res.stderr}")
+
+
 def check_unittests():
     cmd = [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"]
     res = subprocess.run(cmd, capture_output=True, text=True)
@@ -144,6 +153,7 @@ def main():
     run_step("5. E-Series (.npz) Archive Integrity", check_e_series_archives)
     run_step("6. P3b Statistical Sweeps Integrity", check_stats_sweeps_archives)
     run_step("7. Closed-Loop Plasticity Archives Integrity", check_closed_loop_plasticity_archives)
+    run_step("8. Phase-2 Results Table Matches Archive", check_phase2_table_fresh)
     print("==================================================")
     print("  ALL REPRODUCIBILITY CHECKS PASSED SUCCESSFULLY  ")
     print("==================================================")
