@@ -146,10 +146,11 @@ is genuinely bimodal and seed-dependent — so it isn't done here.
 
 ## Reproduce all
 
-The animator (`ghca_net_viz.py`) and the `e*_animation.py` scripts live in the
-repository on the `main` branch. From a `main` checkout (`pip install
+The animator (`ghca_net_viz.py`), the `e*_animation.py` scripts, and the
+scrollytelling-page render scripts (`e6_animation.py`, `scroll_sprites.py`) all
+live in the repository on the `main` branch. From a `main` checkout (`pip install
 mkdocs-material` pulls in matplotlib + Pillow for GIF rendering), regenerate
-every GIF:
+every GIF and sprite sheet:
 
 ```
 python3 ghca_net_viz.py                     # docs/figures/demo_lattice.gif
@@ -159,6 +160,10 @@ python3 experiments/e5_animation.py         # docs/figures/e5_options.gif
 python3 experiments/e7_animation.py         # docs/figures/e7_spiral_rule.gif
 python3 experiments/c5_animation.py         # docs/figures/c5_fixed_vs_tracked.gif
 python3 experiments/c6_animation.py         # docs/figures/c6_necessity.gif
+
+# bespoke visuals for the scrollytelling walkthrough (docs/scroll/):
+python3 experiments/e6_animation.py         # docs/figures/e6_horde.gif  (E6 "three questions" climax)
+python3 experiments/scroll_sprites.py       # docs/scroll/assets/{emergence,triptych,necessity}.png  (scroll-scrub sheets)
 ```
 
 *(This `deploy-viz-page` branch carries only the site — Markdown + rendered GIFs
