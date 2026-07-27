@@ -33,7 +33,7 @@ if os.path.exists(p2_file):
     bars = ax_a.bar(x, fixed_means, yerr=fixed_stds, capsize=4, color="#1f77b4", alpha=0.85, width=0.55)
     
     rir_val = e1_data["Closed-Loop Multi-Axis"]["mean_rir"]
-    ax_a.set_title(f"(A) E1 Sensorimotor Routing (RIR = {rir_val:.3f})", fontsize=11, fontweight="bold")
+    ax_a.set_title(f"(A) E1 Sensorimotor Routing (Multi-Axis RIR = {rir_val:.3f})", fontsize=11, fontweight="bold")
     ax_a.set_ylabel("Fixed Readout Accuracy (%)", fontsize=10)
     ax_a.set_xticks(x)
     ax_a.set_xticklabels(cond_names, fontsize=9)
@@ -57,7 +57,7 @@ if os.path.exists(p2_file):
     bars_b = ax_b.bar(x, e5_fixed_means, yerr=e5_fixed_stds, capsize=4, color="#2ca02c", alpha=0.85, width=0.55)
     
     e5_rir_val = e5_data["Closed-Loop Multi-Axis"]["mean_rir"]
-    ax_b.set_title(f"(B) E5 Executive Context-Switching (RIR = {e5_rir_val:.3f})", fontsize=11, fontweight="bold")
+    ax_b.set_title(f"(B) E5 Executive Context-Switching (Multi-Axis RIR = {e5_rir_val:.3f})", fontsize=11, fontweight="bold")
     ax_b.set_ylabel("Fixed Readout Accuracy (%)", fontsize=10)
     ax_b.set_xticks(x)
     ax_b.set_xticklabels(cond_names, fontsize=9)
@@ -86,7 +86,7 @@ if os.path.exists(p3_file):
     
     bars_c = ax_c.bar(labels, retentions, yerr=ret_stds, capsize=5, color=colors, alpha=0.85, width=0.55)
     ax_c.axhline(80.0, color="gray", linestyle="--", label="Target Threshold (80%)")
-    ax_c.set_title("(C) Sequential Learning: Task A Retention", fontsize=11, fontweight="bold")
+    ax_c.set_title("(C) Sequential Learning: Task A Retention & Variance Collapse", fontsize=11, fontweight="bold")
     ax_c.set_ylabel("Task A Retention (%)", fontsize=10)
     ax_c.set_ylim(0, 105)
     
