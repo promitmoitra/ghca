@@ -1,2 +1,6 @@
 __pycache__/
 *.pyc
+
+# publish-viz deploys run in an isolated worktree here (see
+# .claude/skills/publish-viz/SKILL.md); it is local-only, never committed.
+.publish-worktree/
