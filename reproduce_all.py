@@ -127,6 +127,16 @@ def check_closed_loop_plasticity_archives():
     p3_data = p3["data"].item()
     assert "Closed-Loop Multi-Axis (Tau, Theta, W)" in p3_data
 
+    # Extensions Archives
+    seq_k = np.load("result/closed_loop_plasticity/sequential_k_tasks.npz", allow_pickle=True)
+    assert len(seq_k.files) > 0, "sequential_k_tasks.npz archive empty"
+
+    struct_g = np.load("result/closed_loop_plasticity/structural_plasticity.npz", allow_pickle=True)
+    assert len(struct_g.files) > 0, "structural_plasticity.npz archive empty"
+
+    consol = np.load("result/closed_loop_plasticity/tau_consolidation.npz", allow_pickle=True)
+    assert len(consol.files) > 0, "tau_consolidation.npz archive empty"
+
 def check_phase2_table_fresh():
     """Guard the one failure mode the archive checks cannot see: a results table
     hand-transcribed out of step with the .npz it claims to report."""

@@ -55,6 +55,7 @@ class ClosedLoopPlasticityEngine(GHLearner):
                  gamma_theta=0.05, target_activity=0.10,
                  theta_min=1.0, theta_max=10.0,
                  w_max=4.0, tau_min=2, tau_max=25,
+                 w_prune=0.05, w_sprout=0.10, max_sprouts=5,
                  lam=0.9, gamma=0.95, alpha_v=0.1,
                  seed=0, **kwargs):
         
@@ -63,7 +64,7 @@ class ClosedLoopPlasticityEngine(GHLearner):
 
         # Initialize base GHLearner
         line_str = ""
-        if "w" in self.axes:
+        if "w" in self.axes or "g" in self.axes:
             line_str += "A"
         if "tau" in self.axes:
             line_str += "B"
@@ -77,6 +78,11 @@ class ClosedLoopPlasticityEngine(GHLearner):
         self.gamma_theta = float(gamma_theta)
         self.target_activity = float(target_activity)
         self.theta_bounds = (float(theta_min), float(theta_max))
+
+        # Axis G Structural Plasticity Parameters
+        self.w_prune = float(w_prune)
+        self.w_sprout = float(w_sprout)
+        self.max_sprouts = int(max_sprouts)
 
         # Per-node activity trace tracking for homeostatic threshold plasticity
         self.activity_trace = np.full(self.N, self.target_activity, dtype=float)
@@ -101,7 +107,7 @@ class ClosedLoopPlasticityEngine(GHLearner):
             self.theta = np.clip(self.theta + d_theta_homeo, *self.theta_bounds)
 
         # Axis W: edge eligibility (pre = active neighbour j, post = i just fired)
-        if "w" in self.axes:
+        if "w" in self.axes or "g" in self.axes:
             self.E *= self.lam
             fi, aj = np.where(fired)[0], np.where(active_prev)[0]
             if fi.size and aj.size:
@@ -122,7 +128,7 @@ class ClosedLoopPlasticityEngine(GHLearner):
         db = delta if delta_b is None else delta_b
 
         # 1. Axis W (Structural Routing Plasticity)
-        if "w" in self.axes:
+        if "w" in self.axes or "g" in self.axes:
             dW = self.eta_w * delta * self.E
             if "tau" in self.axes:
                 # Metaplastic protection: longer timescale tau stabilizes synaptic weights
@@ -163,6 +169,41 @@ class ClosedLoopPlasticityEngine(GHLearner):
             d_theta_reward = -self.eta_theta * delta * self.activity_trace
             self.theta = np.clip(self.theta + d_theta_reward, *self.theta_bounds)
 
+        # 4. Axis G (Reward-Modulated Structural Rewiring: Edge Pruning & Sprouting)
+        if "g" in self.axes:
+            # Edge Pruning: zero out plastic connections that dropped below w_prune
+            prune_mask = self.plastic & (self.W < self.w_prune) & (self.W > 0)
+            if np.any(prune_mask):
+                self.W[prune_mask] = 0.0
+                self.plastic[prune_mask] = False
+
+            # Co-Activity Sprouting: when reward error delta > 0, sprout new weak plastic connections
+            if delta > 0:
+                coactive = (self.activity_trace > self.target_activity)
+                coactive_pairs = np.outer(coactive, coactive)
+                candidates = coactive_pairs & (~self.plastic) & (self.W == 0) & (~np.eye(self.N, dtype=bool))
+                cand_i, cand_j = np.where(candidates)
+                if len(cand_i) > 0:
+                    n_sprout = min(len(cand_i), self.max_sprouts)
+                    sprout_idx = self.rng.choice(len(cand_i), size=n_sprout, replace=False)
+                    sprout_i, sprout_j = cand_i[sprout_idx], cand_j[sprout_idx]
+                    self.W[sprout_i, sprout_j] = self.w_sprout
+                    self.plastic[sprout_i, sprout_j] = True
+
+            self.adj = self.W > 0
+
+    def consolidate_tau(self, decay_rate=0.02):
+        """
+        Offline consolidation / sleep phase:
+        Slowly decays refractoriness tau back towards tau_min for non-protected pathways,
+        recycling capacity without eroding metaplastically protected pathways.
+        """
+        tau_prot = 1.0 / (1.0 + 0.30 * (self.tau - self.tau_min))
+        # Non-protected nodes decay faster
+        d_decay = decay_rate * (self.tau_base - self.tau_min) * tau_prot
+        self.tau_base = np.clip(self.tau_base - d_decay, self.tau_min, self.tau_max)
+        self.tau = self.tau_base.copy()
+
     def reset_traces(self):
         """Reset eligibility traces and activity memory between trials."""
         super().reset_traces()
@@ -182,6 +223,21 @@ def compute_readout_independence_ratio(fixed_acc, trained_acc, eps=1e-6):
     if trained_acc < eps:
         return 0.0
     return float(fixed_acc / (trained_acc + eps))
+
+
+def compute_graph_modularity(W):
+    """
+    Compute graph modularity Q based on adjacency degree matrix.
+    Q = (1 / 2m) * sum_ij (W_ij - k_i k_j / 2m) * delta(c_i, c_j)
+    """
+    m = W.sum()
+    if m < 1e-6:
+        return 0.0
+    k_in = W.sum(axis=1)
+    k_out = W.sum(axis=0)
+    expected = np.outer(k_in, k_out) / m
+    B = W - expected
+    return float(np.trace(B @ B.T) / (4.0 * m * m))
 
 
 def make_closed_loop_learner(axes=("tau", "theta", "w"), seed=0, cfg=None):
@@ -210,3 +266,4 @@ def make_closed_loop_learner(axes=("tau", "theta", "w"), seed=0, cfg=None):
         eta_theta=cfg.get("eta_theta", 0.02),
         seed=seed
     )
+
