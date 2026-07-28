@@ -146,6 +146,14 @@ def check_phase2_table_fresh():
         raise RuntimeError(f"Phase-2 results table is stale:\n{res.stdout}\n{res.stderr}")
 
 
+def check_phase3_table_fresh():
+    """Guard against Phase-3 extensions results table drift."""
+    cmd = [sys.executable, "scripts/print_extensions_table.py", "--check"]
+    res = subprocess.run(cmd, capture_output=True, text=True)
+    if res.returncode != 0:
+        raise RuntimeError(f"Phase-3 results table is stale:\n{res.stdout}\n{res.stderr}")
+
+
 def check_unittests():
     cmd = [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"]
     res = subprocess.run(cmd, capture_output=True, text=True)
@@ -164,6 +172,7 @@ def main():
     run_step("6. P3b Statistical Sweeps Integrity", check_stats_sweeps_archives)
     run_step("7. Closed-Loop Plasticity Archives Integrity", check_closed_loop_plasticity_archives)
     run_step("8. Phase-2 Results Table Matches Archive", check_phase2_table_fresh)
+    run_step("9. Phase-3 Results Table Matches Archive", check_phase3_table_fresh)
     print("==================================================")
     print("  ALL REPRODUCIBILITY CHECKS PASSED SUCCESSFULLY  ")
     print("==================================================")

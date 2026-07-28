@@ -66,11 +66,11 @@ Where:
 
 *Figure 2: Impact of Axis G reward-modulated structural rewiring and offline tau-consolidation on 5-task retention ($n=30$ seeds). Structural plasticity with consolidation achieves 100.7% retention, completely eliminating catastrophic forgetting.*
 
-| Condition | Task 1 Initial Acc | Task 1 Post Test Acc | Task 1 Retention % | Final Graph Modularity ($Q$) |
-| :--- | :--- | :--- | :--- | :--- |
-| **Multi-Axis Base ($\tau, \theta, W$)** | $0.498 \pm 0.065$ | $0.511 \pm 0.078$ | $94.1\% \pm 5.5\%$ | $0.0001$ |
-| **Multi-Axis + Axis $G$ Rewiring** | $0.507 \pm 0.057$ | $0.490 \pm 0.066$ | $97.8\% \pm 2.9\%$ | $0.0001$ |
-| **Multi-Axis + Axis $G$ + Consolidation** | $0.507 \pm 0.057$ | $0.507 \pm 0.093$ | **$100.7\% \pm 3.4\%$** | $0.0001$ |
+| Plasticity & Consolidation Regime | Task 1 Initial Acc | Task 1 Post-Test Acc | Raw Retention % | Chance-Corr Retention % | Modularity Q (Init → Final) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Multi-Axis Base (Tau, Theta, W)** | 0.885 ± 0.097 | 0.470 ± 0.063 | 53.8% ± 1.8% | -9.4% ± 3.3% | 0.0001 → 0.0001 |
+| **Multi-Axis + Axis G Rewiring (Tau, Theta, W, G)** | 0.858 ± 0.141 | 0.511 ± 0.061 | 62.3% ± 3.4% | 1.1% ± 2.8% | 0.0001 → 0.0001 |
+| **Multi-Axis + Axis G + Consolidation** | 0.858 ± 0.141 | 0.507 ± 0.050 | 61.8% ± 3.4% | 0.6% ± 2.4% | 0.0001 → 0.0001 |
 
 ---
 

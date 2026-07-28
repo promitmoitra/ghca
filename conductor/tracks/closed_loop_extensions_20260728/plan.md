@@ -21,3 +21,10 @@
 - [x] Task: Write comprehensive extension results document in `docs/closed_loop_plasticity_extensions.md` with publication figures.
 - [x] Task: Register new benchmark scripts and verification checks in `reproduce_all.py`.
 - [x] Task: Phase Verification & Checkpoint — Final RNG audit (`review_helper.py audit-rng`) and Conductor/Beads task sign-off.
+
+## Phase 5: Remediation & Metric Corrections (TDD Workflow)
+- [x] Task: [TDD] Write unit test suite `tests/test_retention_metrics.py` testing chance-corrected retention $R_{\text{chance}} = \frac{\text{acc} - 0.50}{\text{init} - 0.50}$ and motor drive activation.
+- [x] Task: Implement chance-corrected retention and task acquisition tracking in `experiments/sequential_k_tasks.py` (Beads: `ghca-6lm.1`).
+- [x] Task: Fix sensory/motor drive parameters in `experiments/closed_loop_structural.py` and `experiments/closed_loop_consolidation.py` to ensure Task 1 initial accuracy $> 0.70$ (Beads: `ghca-6lm.2`).
+- [x] Task: Create `scripts/print_extensions_table.py` to auto-generate markdown tables from `.npz` archives and update `docs/closed_loop_plasticity_extensions.md` (Beads: `ghca-6lm.4`).
+- [x] Task: Re-run full $n=30$ sweeps across Phase 1, Phase 2, and Phase 3, update `reproduce_all.py` assertions, and run RNG audit (Beads: `ghca-6lm.5`).

@@ -16,8 +16,8 @@ from ghca_learn import layered_graph
 
 # Simulation trial parameters
 SETTLE = 10
-CUE = 20
-WWIN = 25
+CUE = 10
+WWIN = 5
 K_TASKS = 5
 TRIALS_PER_TASK = 200
 TRIALS_TEST = 50
@@ -76,6 +76,17 @@ def make_scaled_closed_loop_learner(n_h=100, axes=("tau", "theta", "w"), seed=0)
     return engine, N_actual, beta_1
 
 
+def compute_chance_corrected_retention(acc_test, acc_init, chance=0.50):
+    """
+    Computes chance-corrected retention ratio: R = (acc_test - chance) / (acc_init - chance).
+    Returns 0.0 if acc_init <= chance.
+    """
+    denom = acc_init - chance
+    if denom <= 1e-6:
+        return 0.0
+    return float((acc_test - chance) / denom)
+
+
 def run_trial(net, x, target_action, rng, train=True):
     """Execute a single trial step sequence with sensory drive and RPE update."""
     net.reset_traces()
@@ -85,10 +96,13 @@ def run_trial(net, x, target_action, rng, train=True):
     feats_before = net.features()
     V = net.value()
 
-    for _ in range(CUE):
-        net.step_learn(net.sensory_drive(x))
-
     sc = np.zeros(net.roles["A"])
+    drive = net.sensory_drive(x)
+
+    for _ in range(CUE):
+        net.step_learn(drive)
+        sc += net.motor_scores()
+
     for _ in range(WWIN):
         net.step_learn(None)
         sc += net.motor_scores()
@@ -147,6 +161,8 @@ def evaluate_structural_seed(seed, n_h=100, axes=("tau", "theta", "w"), use_cons
     acc_t1_test = float(test_rewards.mean())
     acc_t1_initial = task_final_accs[0]
 
+    retention_chance_corr = compute_chance_corrected_retention(acc_t1_test, acc_t1_initial, chance=0.50) * 100.0
+
     if acc_t1_initial >= 0.40:
         retention_t1_pct = (acc_t1_test / acc_t1_initial) * 100.0
     else:
@@ -156,6 +172,7 @@ def evaluate_structural_seed(seed, n_h=100, axes=("tau", "theta", "w"), use_cons
         "acc_t1_initial": acc_t1_initial,
         "acc_t1_test": acc_t1_test,
         "retention_t1_pct": retention_t1_pct,
+        "retention_chance_corr": retention_chance_corr,
         "Q_initial": Q_initial,
         "Q_final": Q_final
     }
@@ -181,6 +198,7 @@ def run_structural_experiment(n_seeds=30, n_h=100):
         init_accs = []
         test_accs = []
         retentions = []
+        retentions_cc = []
         q_inits = []
         q_finals = []
 
@@ -189,25 +207,35 @@ def run_structural_experiment(n_seeds=30, n_h=100):
             init_accs.append(res['acc_t1_initial'])
             test_accs.append(res['acc_t1_test'])
             retentions.append(res['retention_t1_pct'])
+            retentions_cc.append(res['retention_chance_corr'])
             q_inits.append(res['Q_initial'])
             q_finals.append(res['Q_final'])
 
         init_m, init_s = np.mean(init_accs), np.std(init_accs)
         test_m, test_s = np.mean(test_accs), np.std(test_accs)
         ret_m, ret_s = np.mean(retentions), np.std(retentions)
+        ret_cc_m, ret_cc_s = np.mean(retentions_cc), np.std(retentions_cc)
         q_in_m = np.mean(q_inits)
         q_out_m = np.mean(q_finals)
 
         print(f"    Task 1 Initial Acc   : {init_m:.3f} +/- {init_s:.3f}")
         print(f"    Task 1 Post Test Acc : {test_m:.3f} +/- {test_s:.3f}")
-        print(f"    Task 1 Retention %   : {ret_m:.1f}% +/- {ret_s / np.sqrt(n_seeds):.1f}% (std={ret_s:.1f}%)")
+        print(f"    Task 1 Raw Ret %     : {ret_m:.1f}% +/- {ret_s / np.sqrt(n_seeds):.1f}% (std={ret_s:.1f}%)")
+        print(f"    Task 1 Chance-Corr % : {ret_cc_m:.1f}% +/- {ret_cc_s / np.sqrt(n_seeds):.1f}% (std={ret_cc_s:.1f}%)")
         print(f"    Graph Modularity Q   : {q_in_m:.4f} (initial) -> {q_out_m:.4f} (final)")
 
         results[cond_name] = {
             'init_acc': (init_m, init_s),
             'post_acc': (test_m, test_s),
             'retention': (ret_m, ret_s),
-            'modularity': (q_in_m, q_out_m)
+            'retention_chance_corr': (ret_cc_m, ret_cc_s),
+            'modularity': (q_in_m, q_out_m),
+            'raw_init_accs': np.array(init_accs),
+            'raw_test_accs': np.array(test_accs),
+            'raw_retentions': np.array(retentions),
+            'raw_retentions_cc': np.array(retentions_cc),
+            'raw_q_inits': np.array(q_inits),
+            'raw_q_finals': np.array(q_finals),
         }
 
     # Save archived data
