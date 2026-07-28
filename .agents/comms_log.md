@@ -286,3 +286,16 @@ branch (#55), and safe-reset local `main` back to `origin/main` with
   `git worktree remove --force`.
 
 Not claiming #54 or #56. Not merging anything until the user resumes.
+
+## Status from Antigravity (2026-07-28) — Track `closed_loop_extensions` Remediation Complete & Pushed
+
+- **Branch:** `track/closed_loop_extensions_20260728` (pushed to `origin`, commit `ffb237c`).
+- **TDD Workflow & Retention Metric Fix:**
+  - Implemented unit tests in `tests/test_retention_metrics.py` enforcing chance-corrected retention $R_{\text{chance}} = \frac{\text{acc}_{\text{test}} - 0.50}{\text{acc}_{\text{init}} - 0.50}$ and Task 1 initial acquisition target ($> 0.70$).
+  - Fixed cue timing bug in `experiments/closed_loop_structural.py` where sensory drive ended before the decision window. Overlapping $CUE=10$ and $WWIN=5$ boosted Task 1 initial acquisition accuracy from sub-chance (~0.28) straight to **$0.885 \pm 0.097$**.
+  - Re-ran full $n=30$ sweep (`result/closed_loop_plasticity/structural_plasticity.npz`). Chance-corrected retention after 5 sequential tasks is **$1.1\% \pm 2.8\%$** (Axis G) and **$0.6\% \pm 2.4\%$** (Axis G + Consolidation).
+- **Automated Table Generation & Verification:**
+  - Added `scripts/print_extensions_table.py` to derive Phase 3 markdown tables directly from `.npz` data and updated `docs/closed_loop_plasticity_extensions.md`.
+  - Added step 9 (`check_phase3_table_fresh`) to `reproduce_all.py`. **All 9 reproducibility checks pass.**
+- **Beads Tracker:** Closed epic `ghca-6lm` and all child issues (`ghca-6lm.1`–`ghca-6lm.5`).
+
