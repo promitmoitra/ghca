@@ -18,6 +18,7 @@ Conduct a comprehensive GitOps pre-pruning audit of all local and remote branche
 > 6. `track/closed_loop_extensions_20260728` / `origin/track/closed_loop_extensions_20260728` — Active track branch containing TDD remediation commit `ffb237c`.
 > 7. `feat/experiment-review-and-uv` / `origin/feat/experiment-review-and-uv` — Project skill tooling & `uv` environment configuration.
 > 8. `publish-viz-skill` / `origin/publish-viz-skill` — Standardized visualization publishing skill definition.
+> 9. `claude/harness-resolve-helper-from-git` / `origin/claude/harness-resolve-helper-from-git` — Active open PR #70 (`12ba4ba`).
 
 ---
 
@@ -25,7 +26,7 @@ Conduct a comprehensive GitOps pre-pruning audit of all local and remote branche
 
 Below is the complete classification for all local and remote branches identified across the repository:
 
-### 1. Protected Core & Infrastructure Branches (KEEP / DO NOT DELETE)
+### 1. Protected Core, Active PRs & Infrastructure Branches (KEEP / DO NOT DELETE)
 
 | Branch Name | Status | Rationale / Protected Purpose |
 | :--- | :--- | :--- |
@@ -33,10 +34,12 @@ Below is the complete classification for all local and remote branches identifie
 | `deploy-viz-page` | Protected | Public GitHub Pages site deployment branch (`5d5bb0b`). |
 | `planning-and-review` | Protected | Core roadmap & process review branch (`3403858`). |
 | `project-config` | Protected | Agent config, `.agents`, `GEMINI.md` initial setup (`2ba9b72`). |
-| `agent-comms-log` | Protected | Cross-agent comms log (`0c6e0e7` on origin). |
+| `agent-comms-log` | Protected | Cross-agent comms log (`0c6e0e7` / `503385c` on origin). |
 | `track/closed_loop_extensions_20260728` | Active Track | Closed-loop extensions TDD remediation (`ffb237c`). |
 | `feat/experiment-review-and-uv` | Infrastructure | `experiment-review` skill & `uv` lockfile setup (`08a4cb2`). |
 | `publish-viz-skill` | Infrastructure | `publish-viz` skill definition (`1d0b8bb`). |
+| `claude/harness-resolve-helper-from-git` | Active PR #70 | Open PR #70 (`12ba4ba`); contains `_resolve_review_helper` fix. |
+| `__dolt_remote_info__` | Dolt Metadata | Dolt system tracking ref (`e482d38`). |
 
 ---
 
@@ -46,16 +49,16 @@ All local tracking branches below correspond to Pull Requests that have already 
 
 | Local Branch | HEAD Commit | Target Action | Status / PR Reference |
 | :--- | :---: | :--- | :--- |
-| `claude/comms-followup-remediation` | `9660e99` | Delete Local | Merged into `agent-comms-log` via PR #69 (`0c6e0e7`). |
-| `claude/track-c-composite-task` | `c4266aa` | Delete Local | Merged into `main` via PR #68 (`6aa86bb`). |
-| `claude/comms-feedback-closed-loop-ext` | `73bc6a3` | Delete Local | Merged into `agent-comms-log` via PR #67 (`4dd01e1`). |
-| `claude/scroll-narrative-repair` | `feb7ff1` | Delete Local | Merged into `main` & `deploy-viz-page` via PR #66 (`5d5bb0b`). |
-| `claude/harness-resolve-helper-from-git` | `6aa86bb` | Delete Local | Equivalent to `origin/main` (`6aa86bb`). |
-| `docs/correct-e5-rir-and-variance-framing` | `7f0092d` | Delete Local | Merged into `main` via PR #60. |
-| `claude/phase2-table-from-archive` | `c2d730f` | Delete Local | Merged into `main` via PR #62. |
-| `claude/packaging-importable` | `55ff0bc` | Delete Local | Merged into `main` via PR #61. |
-| `claude/loop-margin-control` | `e6c6e51` | Delete Local | Merged into `main` via PR #57. |
-| `review-54` | `a059144` | Delete Local | Stale review worktree branch (PR #54 handled). |
+| `claude/comms-followup-remediation` | `9660e99` | Delete Local (`-d`) | Merged into `agent-comms-log` via PR #69 (`0c6e0e7`). |
+| `claude/track-c-composite-task` | `c4266aa` | Delete Local (`-d`) | Merged into `main` via PR #68 (`6aa86bb`). |
+| `claude/comms-feedback-closed-loop-ext` | `73bc6a3` | Delete Local (`-D`) | Pre-rebase local orphan (`73bc6a3`); remote ref `4ea9fe2` merged via PR #67. |
+| `claude/scroll-narrative-repair` | `feb7ff1` | Delete Local (`-d`) | Merged into `main` & `deploy-viz-page` via PR #66 (`5d5bb0b`). |
+| `docs/correct-e5-rir-and-variance-framing` | `7f0092d` | Delete Local (`-d`) | Merged into `main` via PR #60. |
+| `claude/phase2-table-from-archive` | `c2d730f` | Delete Local (`-d`) | Merged into `main` via PR #62. |
+| `claude/packaging-importable` | `55ff0bc` | Delete Local (`-d`) | Merged into `main` via PR #61. |
+| `claude/loop-margin-control` | `e6c6e51` | Delete Local (`-d`) | Merged into `main` via PR #57. |
+| `review-54` | `a059144` | Delete Local (`-D`) | Stale review worktree branch; files byte-identical to `main`. |
+
 
 ---
 
@@ -130,16 +133,17 @@ git checkout track/closed_loop_extensions_20260728
 
 ### Step 2: Safe Local Branch Cleanup (Merged Feature Branches)
 ```bash
-# Delete fully merged local tracking branches
+# Delete fully merged local tracking branches (-d)
 git branch -d claude/comms-followup-remediation \
                claude/track-c-composite-task \
-               claude/comms-feedback-closed-loop-ext \
                claude/scroll-narrative-repair \
-               claude/harness-resolve-helper-from-git \
                docs/correct-e5-rir-and-variance-framing \
                claude/phase2-table-from-archive \
                claude/packaging-importable \
-               claude/loop-margin-control \
+               claude/loop-margin-control
+
+# Delete orphan/stale local tracking branches (-D)
+git branch -D claude/comms-feedback-closed-loop-ext \
                review-54
 ```
 
