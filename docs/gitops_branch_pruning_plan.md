@@ -117,6 +117,21 @@ The following remote branches correspond to completed, merged PRs (#1–#65) and
 
 ## Step-by-Step Execution Sequence
 
+### Step 0: Open PR Consolidation & Active Track Landing
+```bash
+# 1. Merge PR #70 (harness: resolve review_helper.py from git) into main
+gh pr merge 70 --squash --delete-branch=false
+
+# 2. Merge PR #71 (comms: review of the GitOps pruning plan) into agent-comms-log
+gh pr merge 71 --squash --delete-branch=false
+
+# 3. Create PR and merge active track/closed_loop_extensions_20260728 into main
+gh pr create --head track/closed_loop_extensions_20260728 --base main \
+  --title "track: closed loop extensions motor-drive cue timing remediation & retention metrics" \
+  --body "Remediates cue timing, adds chance-corrected retention metrics, unit tests, and automated table generator."
+gh pr merge --squash
+```
+
 ### Step 1: Harmonize & Fast-Forward Core Local Branches
 ```bash
 # 1. Fast-forward local main to origin/main
@@ -126,9 +141,6 @@ git merge --ff-only origin/main
 # 2. Fast-forward local agent-comms-log to origin/agent-comms-log
 git checkout agent-comms-log
 git merge --ff-only origin/agent-comms-log
-
-# 3. Return to active track branch
-git checkout track/closed_loop_extensions_20260728
 ```
 
 ### Step 2: Safe Local Branch Cleanup (Merged Feature Branches)
@@ -161,7 +173,16 @@ git push origin --delete \
   claude/phase2-table-from-archive \
   claude/packaging-importable \
   claude/loop-margin-control \
-  docs/correct-e5-rir-and-variance-framing
+  docs/correct-e5-rir-and-variance-framing \
+  claude/comms-review-pruning-plan
+```
+
+### Step 4: Branch Out for Next Development Track
+```bash
+# Checkout clean updated main and branch out for next track
+git checkout main
+git pull --ff-only origin main
+git checkout -b track/closed_loop_phase1_3_rerun
 ```
 
 ---
@@ -175,3 +196,4 @@ git push origin --delete \
 
 ### Manual Verification
 - Verify that `main`, `deploy-viz-page`, `planning-and-review`, `project-config`, and `agent-comms-log` remain completely intact and protected.
+
