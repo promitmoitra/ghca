@@ -11,7 +11,9 @@ Checks:
 
 import sys
 import os
+import contextlib
 import subprocess
+import tempfile
 import numpy as np
 
 # Auto-switch to .venv/bin/python if sklearn is not available in current python
@@ -31,11 +33,46 @@ def run_step(name, func):
         print(f"FAILED\n  Error: {e}")
         sys.exit(1)
 
+HELPER = ".claude/skills/experiment-review/review_helper.py"
+
+
+def _resolve_review_helper(stack):
+    """Return a path to review_helper.py, extracting it from git if the working
+    copy is missing.
+
+    The helper is tracked, but on some setups a background process clears the
+    working-tree copy of `.claude/` (observed repeatedly on 2026-07-28: the files
+    are removed within seconds of `git restore`, tracked and untracked alike,
+    with no git ignore rule involved -- and inside linked worktrees too). The
+    harness then failed at step 1 for a reason unrelated to reproducibility,
+    while CI -- which checks out fresh -- passed.
+
+    Falling back to `git show HEAD:<path>` runs the audit from the committed
+    content, which is the authoritative version anyway. If the file is genuinely
+    absent from the commit too, that is a real error and still raises.
+    """
+    if os.path.exists(HELPER):
+        return HELPER
+    res = subprocess.run(["git", "show", f"HEAD:{HELPER}"],
+                         capture_output=True, text=True)
+    if res.returncode != 0 or not res.stdout:
+        raise RuntimeError(
+            f"{HELPER} is missing from the working tree AND from HEAD:\n{res.stderr}")
+    tmp = stack.enter_context(tempfile.TemporaryDirectory())
+    path = os.path.join(tmp, "review_helper.py")
+    with open(path, "w") as fh:
+        fh.write(res.stdout)
+    print(f"      (working-tree copy missing; using HEAD:{HELPER})")
+    return path
+
+
 def check_rng_audit():
-    cmd = [sys.executable, ".claude/skills/experiment-review/review_helper.py", "audit-rng"]
-    res = subprocess.run(cmd, capture_output=True, text=True)
-    if res.returncode != 0:
-        raise RuntimeError(f"RNG audit failed:\n{res.stdout}\n{res.stderr}")
+    with contextlib.ExitStack() as stack:
+        helper = _resolve_review_helper(stack)
+        res = subprocess.run([sys.executable, helper, "audit-rng"],
+                             capture_output=True, text=True)
+        if res.returncode != 0:
+            raise RuntimeError(f"RNG audit failed:\n{res.stdout}\n{res.stderr}")
 
 def check_ctestbed_tests():
     cmd = [sys.executable, "test_ctestbed.py"]
