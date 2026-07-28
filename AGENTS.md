@@ -33,6 +33,9 @@ finding to justify a roadmap track. Both audits live on `main` with the work.
 - State the substrate/analysis boundary explicitly: what the *dynamics* do vs
   what a *readout/feature* does.
 - Keep a caveats section adjacent to every headline.
+- **Collaborative Staging & Untracked Files:** Never delete (`rm -rf`) untracked files or directories in the repository. Multiple agents and human collaborators work on this repo simultaneously; untracked files may belong to active parallel tasks or background processes.
+- **Explicit File Staging:** Always stage specific target files explicitly (`git add <file1> <file2> ...`). Do not use broad wildcards or clean up un-staged changes belonging to other tasks.
+- **Cross-Agent Context:** If unsure about the context or ownership of modified/untracked files, inspect the `agent-comms-log` branch or check agent communication logs before touching shared files.
 
 ## Available local skills
 

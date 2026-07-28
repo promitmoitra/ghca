@@ -164,6 +164,16 @@ def check_closed_loop_plasticity_archives():
     p3_data = p3["data"].item()
     assert "Closed-Loop Multi-Axis (Tau, Theta, W)" in p3_data
 
+    # Extensions Archives
+    seq_k = np.load("result/closed_loop_plasticity/sequential_k_tasks.npz", allow_pickle=True)
+    assert len(seq_k.files) > 0, "sequential_k_tasks.npz archive empty"
+
+    struct_g = np.load("result/closed_loop_plasticity/structural_plasticity.npz", allow_pickle=True)
+    assert len(struct_g.files) > 0, "structural_plasticity.npz archive empty"
+
+    consol = np.load("result/closed_loop_plasticity/tau_consolidation.npz", allow_pickle=True)
+    assert len(consol.files) > 0, "tau_consolidation.npz archive empty"
+
 def check_phase2_table_fresh():
     """Guard the one failure mode the archive checks cannot see: a results table
     hand-transcribed out of step with the .npz it claims to report."""
@@ -171,6 +181,14 @@ def check_phase2_table_fresh():
     res = subprocess.run(cmd, capture_output=True, text=True)
     if res.returncode != 0:
         raise RuntimeError(f"Phase-2 results table is stale:\n{res.stdout}\n{res.stderr}")
+
+
+def check_phase3_table_fresh():
+    """Guard against Phase-3 extensions results table drift."""
+    cmd = [sys.executable, "scripts/print_extensions_table.py", "--check"]
+    res = subprocess.run(cmd, capture_output=True, text=True)
+    if res.returncode != 0:
+        raise RuntimeError(f"Phase-3 results table is stale:\n{res.stdout}\n{res.stderr}")
 
 
 def check_unittests():
@@ -191,6 +209,7 @@ def main():
     run_step("6. P3b Statistical Sweeps Integrity", check_stats_sweeps_archives)
     run_step("7. Closed-Loop Plasticity Archives Integrity", check_closed_loop_plasticity_archives)
     run_step("8. Phase-2 Results Table Matches Archive", check_phase2_table_fresh)
+    run_step("9. Phase-3 Results Table Matches Archive", check_phase3_table_fresh)
     print("==================================================")
     print("  ALL REPRODUCIBILITY CHECKS PASSED SUCCESSFULLY  ")
     print("==================================================")
