@@ -653,6 +653,7 @@ flicker."*
 | **Scientific novelty** | **4a** emergent timescale hierarchy | 2b |
 | **External impact / reach** | **4b** causal testbed | 5a write-up, 2b |
 | **Lowest-risk strengthening** | **3a** stats/sweeps ✅ + **5b** hygiene ✅ done | 1b ✅, 3b ✅ |
+| **Architecture / design principles** | **C1** composite memory × attention (dynamics only, with ablation controls) | C2 add control, C3 modular vs monolithic |
 
 **Progress.** **1a done (E9)** — retired the most-cited caveat. **1b done**
 ([`e7_direction_readout_results.md`](e7_direction_readout_results.md)) — a learned
@@ -702,6 +703,87 @@ Following the completion of Option 3 (documentation fold-in, RNG audit, and unif
 - **Proposed Sub-tracks:**
   - **2c. Empirical Data Validation Pipeline (Testing P4):** Build an open analysis pipeline to detect topological phase singularities in Neuropixels / widefield calcium imaging datasets (e.g. Steinmetz or Ye 2026 open data) and test whether fixed-ROI decoders collapse under core drift while core-tracking decoders hold.
   - **2d. In Vivo Optogenetic Intervention Protocols (Testing P3/P5):** Formalize optogenetic / patterned-stimulation experiment protocols contrasting $do(\theta_{\text{seed}})$ (nucleating phase field wavefronts) vs $do(W)$ (bulk surface illumination), quantifying fat-handedness and behavioral variance in experimental models.
+
+### Proposal Track C (Option 4): Composite Multi-Capacity Task & Modular Design Principles — 📐 **PROPOSED**
+
+- **Goal:** Every E-series capacity was established *in isolation*, on its own
+  purpose-built substrate. Ask the question the series has never asked: **when one
+  task demands several capacities at once, does each module keep its operating
+  point, or do they interfere the way Line A and Line B did in E3?** If they
+  compose, the substrate supports modular architecture; if they interfere, the
+  interference pattern tells us which shared resource is the bottleneck.
+
+- **Why now — the scaling and lattice results make this a sharp question, not a
+  vague one** (see [`scaling_capacities.md`](scaling_capacities.md) and
+  [`lattice_capacities.md`](lattice_capacities.md)):
+  - **Each capacity has a different binding constraint.** E2 memory is bounded by
+    loop transit length (largest holdable $\tau$ tracks $L$ exactly: 6/6). E4
+    attention is bounded by the *bias-to-noise ratio* and is scale-invariant
+    (0.08 sensitivity spread over an 8× arena range in 1-D, and it ports to 2-D
+    unchanged). E5 executive control is bounded by the option's *existence*, not
+    by any graded size axis — 16× `N_H` moves the mean 0.043 (Spearman
+    $p = 0.51$), and once the sustain margin is held fixed the ring-length span
+    collapses from 0.484 to 0.149, inside a single arm's per-seed spread.
+  - **Different constraints is the argument for separate modules.** A single wider
+    medium cannot serve all three: widening buys E2 nothing in $L$-terms and E5
+    nothing at all, while E4 needs signal-to-noise rather than room.
+  - **The substrate already contains a worked example of composition.** E5's
+    hidden layer has **0 H→H edges** — it is a feedforward conjunction gated by a
+    context ring, and that ring *is* E2's reentrant loop reused as a switch rather
+    than a store. Composition on this substrate has precedent; the question is
+    whether it generalises past two capacities.
+
+- **Proposed sub-tracks:**
+  - **C1. Composite task design (memory × attention).** The minimal composite: a
+    delayed-response trial in which the cue that must be *held* (E2) arrives on one
+    of two competing streams that must first be *selected* (E4). Both capacities
+    are load-bearing on the same trial and their constraints are known to be
+    independent, so the prediction is clean: **each module should keep its own
+    operating point.** Measure E2's `τ < L` sustain boundary and E4's psychometric
+    sensitivity *in situ* and compare to the isolated values. A shift in either is
+    interference; no shift is composition.
+  - **C2. Add executive control (memory × attention × control).** Extend C1 so a
+    held context ring selects *which* stream is task-relevant. This is the first
+    three-capacity task on the substrate and the first test of whether E5's option
+    mechanism survives when the thing it gates is itself a composite. Expect the
+    option's sustain threshold to be the binding constraint, per
+    `lattice_capacities.md` §4.
+  - **C3. Modular vs monolithic architecture comparison.** Same composite task,
+    two substrates: (i) **modular** — separate media per capacity, each at its own
+    operating point, wired at defined interfaces; (ii) **monolithic** — one medium
+    of matched total node count carrying all three. The scaling nulls predict the
+    monolith underperforms *not* because it is smaller but because one operating
+    point cannot satisfy three different constraints. Matched-$N$ is the control
+    that makes this a claim about architecture rather than capacity.
+  - **C4. Interference decomposition (if C1–C3 show interference).** Reuse the E3
+    apparatus: is the interference in the *shared scalar reward*, in the *shared
+    outcome space*, or in *substrate resource contention* (loops competing for
+    edge-disjoint cycles, per [`topology_cycle_capacity.md`](topology_cycle_capacity.md))?
+    The cycle-space bound gives a falsifiable prediction for the third: composite
+    tasks needing $k$ simultaneous loops should degrade when $k$ approaches
+    $K_{\text{dyn}}$ for that topology.
+
+- **What would make this fail (state upfront):** if the composite task is
+  separable — if a readout can solve it by attending to one capacity's output
+  alone — then nothing has been composed and the result is uninformative. C1 must
+  include an **ablation control per capacity** (lesion the loop → memory arm
+  fails; remove the bias → attention arm fails) demonstrating both are load-bearing
+  *before* any composition claim is made. This is the E3 double-dissociation
+  discipline applied at the task level.
+
+- **Substrate/analysis boundary:** C1–C2 can be run as **pure dynamics plus a fixed
+  readout** — no plasticity — which isolates what the medium can *do* from what a
+  learner can *find*. Only add learning in C3/C4, and state clearly which arm is
+  which. The scaling doc's warning applies directly: a null in a learning arm could
+  be the medium or the learning rule, and the two are not distinguishable without
+  the dynamics-only baseline.
+
+- **Risk / cost:** low compute (all three capacities run in seconds per trial at
+  current sizes), but **high design risk** — the composite task is the deliverable,
+  and a badly-posed one produces confidently meaningless numbers. Budget the
+  ablation controls (C1) before the headline comparisons (C3). Prior art for the
+  failure mode: the E3 surrogate needed three redesigns before it reproduced the
+  real double dissociation.
 
 ## Process notes (apply to whatever is chosen)
 
