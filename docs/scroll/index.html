@@ -167,7 +167,7 @@
   <div class="pin">
     <div class="hint">↓ scroll to run all three forward</div>
     <canvas data-sheet="assets/triptych.png" data-frames="100" data-cols="8" data-fw="560" data-fh="240" width="560" height="240"></canvas>
-    <div class="cap"><b>One dial, three fates.</b> Compare the three panels as you scroll: <b>1. Subcritical (&theta;=6.0)</b> dies out completely into darkness; <b>2. Critical (&theta;=4.0)</b> maintains a self-sustaining spiral; <b>3. Supercritical (&theta;=2.0)</b> boils over into chaotic, saturated noise.</div>
+    <div class="cap"><b>One dial, three fates.</b> The same medium at three settings of how easily a cell catches fire. <b>Left:</b> too calm — the activity dies out into darkness. <b>Middle:</b> just right — it organises into a self-sustaining spiral. <b>Right:</b> too twitchy — it boils over into noise.</div>
   </div>
 </section>
 <section class="beat">
@@ -301,22 +301,32 @@
 
 <hr class="sep">
 
-<!-- ================= 9 · THE TEST (SCRUB, C6) ================= -->
+<!-- ================= 11 · THE TEST (SCRUB, C6) ================= -->
 <section class="beat scrub" data-scrub="necessity">
   <div class="pin">
     <div class="hint">↓ scroll to run both worlds forward</div>
     <canvas data-sheet="assets/necessity.png" data-frames="55" data-cols="8" data-fw="500" data-fh="304" width="500" height="304"></canvas>
-    <div class="cap"><b>Left: Intact. Right: Causally Ablated (do(&theta;&rarr;6.0)).</b> As you scroll forward, watch the right panel: raising excitation threshold &theta; causes the spiral wave to collapse and extinguish completely (Step 25+), proving that substrate excitation is causally necessary to sustain the rule.</div>
+    <div class="cap"><b>Left: untouched. Right: one number changed.</b> Both sides start as the same spiral. On the right the medium is made slightly harder to excite — and about a third of the way through, its spiral quietly dies, taking the rule with it. The left holds the rule the whole way.</div>
   </div>
+</section>
+<section class="beat">
+  <div class="num">11 — THE TEST</div>
+  <h2>Change the recipe, not the dish</h2>
+  <p class="lead">So how do you prove the pattern matters? Not by poking the wave directly — that's clumsy, and as <i>The hard question</i> showed, you might just be fooling your own reader. You change one <b>ingredient of the recipe</b> and watch whether the behaviour survives.</p>
+  <p>Both sides are seeded as the same spiral. The only difference is a single dial — how easily a cell catches fire. Nudge it on the right and the spiral can't sustain its core; it fades to nothing within moments, and the rule it was carrying is gone. The left, untouched, holds the rule the whole way. Same starting pattern, one parameter apart — and that parameter alone decides whether the context is still there to be used later.</p>
+  <p class="muted">The takeaway: a rotating core isn't just a pretty side-effect. It has to <em>persist</em> for the system to use it — the persistence is necessary, not decorative.</p>
+  <details class="aside"><summary>The technical version</summary>
+    <div class="body">A well-posed generative intervention, <code>do(&theta;)</code>: two spirals with identical nucleation differing only in lattice threshold. Raising <code>&theta;</code> to 6.0 kills the persistent core, so rule-switching collapses (0.85 → 0.52) while a re-nucleated single-rule control is spared (0.90 vs 0.89) — the persistent core is <em>necessary</em>. See <a href="../c6_results/">C6 — do(θ_χ)</a>.</div>
+  </details>
 </section>
 <hr class="sep">
 
 <!-- ================= 12 · THE SUBSTRATE ADAPTS ITSELF (SCRUB, plasticity) ================= -->
 <section class="beat scrub" data-scrub="plasticity">
   <div class="pin">
-    <div class="hint">↓ scroll to compare unlearned vs weight-only vs tri-axis closed-loop</div>
+    <div class="hint">↓ scroll to compare three substrates learning the same task</div>
     <canvas data-sheet="assets/plasticity.png" data-frames="50" data-cols="8" data-fw="480" data-fh="208" width="480" height="208"></canvas>
-    <div class="cap"><b>Left: Unlearned. Middle: Weight-only (RIR=0.79). Right: Tri-axis closed-loop (RIR=0.85).</b> Watch the green ring at top-left (S0). On the right (Tri-Axis), adapting node timescales (&tau;) and thresholds (&theta;) self-organizes a direct wavefront straight to target motor node M0 without needing a trained decoder.</div>
+    <div class="cap"><b>Left: no learning. Middle: only the wiring adapts. Right: the wiring, the timing, and the thresholds all adapt.</b> Watch the green ring at top left — that's where the signal enters. On the right, the medium carves a direct path to the target on its own, with nothing trained to read it out.</div>
   </div>
 </section>
 <section class="beat">
@@ -325,7 +335,7 @@
   <p class="lead">Up until now, reward tuned conduction paths ($W$) while node timescales (&tau;) remained fixed. But a physical substrate adapts its own local dynamics.</p>
   <p>When we let nodes adjust their own recovery times (&tau;) and firing thresholds (&theta;) continuously alongside weights ($W$), the medium self-organizes without needing an external observer or trained decoder. Signals route directly to physical motor effectors — achieving an <b>85% Readout Independence Ratio</b> ($RIR = 0.851 \pm 0.111$). Learning is no longer on top of the medium; it is built into the medium's physical time.</p>
   <details class="aside"><summary>The technical version</summary>
-    <div class="body">The tri-axis local plasticity engine ($W, \tau, \theta$). Axis $W$ implements Hebbian routing; Axis $\tau$ adapts refractory durations with metaplastic protection ($\tau_{\text{prot}}$); Axis $\theta$ maintains homeostatic firing probability ($p_s \sim 10^{-3}$). Replaces external readout layers with physical substrate credit assignment. See <a href="../closed_loop_plasticity_results/">Closed-Loop Plasticity Results</a>.</div>
+    <div class="body">The tri-axis local plasticity engine ($W, \tau, \theta$). Axis $W$ implements Hebbian routing; Axis $\tau$ adapts refractory durations with metaplastic protection ($\tau_{\text{prot}}$); Axis $\theta$ maintains homeostatic firing probability ($p_s \sim 10^{-3}$). E1 Readout Independence Ratio by arm: unlearned control $0.471$, weight-only $0.787$, tri-axis $0.851 \pm 0.111$ ($n=30$). Replaces external readout layers with physical substrate credit assignment. On E5 the same metric is $\ge 0.92$ in every arm including the unlearned control ($1.152$), so it reflects the hardwired ring topology there rather than a plasticity gain. See <a href="../closed_loop_plasticity_results/">Closed-Loop Plasticity Results</a>.</div>
   </details>
 </section>
 
@@ -336,7 +346,7 @@
   <div class="pin">
     <div class="hint">↓ scroll to test Task A retention after Task B</div>
     <canvas data-sheet="assets/retention.png" data-frames="50" data-cols="8" data-fw="324" data-fh="208" width="324" height="208"></canvas>
-    <div class="cap"><b>Left: Weight-Only (Task A memory collapses to 29.6%). Right: Tri-Axis Closed-Loop (Task A retained at 70.0%).</b> High-&tau; loops fossilize Task A, forcing Task B to flow through unassigned low-&tau; channels.</div>
+    <div class="cap"><b>Left: only the wiring adapts — the first task is mostly forgotten. Right: the timing adapts too — most of the first task survives.</b> On the right, the loops carrying the first task have slowed down, and the second task is pushed through the faster channels that were left free.</div>
   </div>
 </section>
 <section class="beat">
@@ -346,7 +356,7 @@
   <p>In our multi-axis substrate, active rewarded Task A nodes expand their recovery time (&tau;), "fossilizing" into a topologically protected loop. Task B cannot erode these high-&tau; channels and is forced to flow through unassigned low-&tau; nodes. Without task-context cues or artificial weight freezing, the substrate retains <b>70.0% &plusmn; 13.8%</b> of Task A memory, collapsing seed variance by over $2\times$.</p>
   <p class="muted">The substrate holds onto the past not by locking weights, but by carving past memory into local node time.</p>
   <details class="aside"><summary>The technical version</summary>
-    <div class="body">Sequential reversal protocol ($A \to B \to A$). Metaplastic protection ($\tau_{\text{prot}}$) shields high-$\tau$ reentrant loops from interference during Task B, routing new learning into unassigned low-$\tau$ channels without external task heads or weight freezing. See <a href="../closed_loop_plasticity_results/">Closed-Loop Plasticity Results</a>.</div>
+    <div class="body">Sequential reversal protocol ($A \to B \to A$). Task A retention: weight-only $29.6\% \pm 31.2\%$ vs multi-axis $70.0\% \pm 13.8\%$ (SD, $n=30$) — the seed spread also collapses $2.3\times$. Metaplastic protection ($\tau_{\text{prot}}$) shields high-$\tau$ reentrant loops from interference during Task B, routing new learning into unassigned low-$\tau$ channels without external task heads or weight freezing. See <a href="../closed_loop_plasticity_results/">Closed-Loop Plasticity Results</a>.</div>
   </details>
 </section>
 
