@@ -132,9 +132,51 @@ In the repo's **Settings -> Pages**, set **Source: GitHub Actions**. Then, under
 `deploy-viz-page` (or "All branches"), otherwise the deploy job fails immediately
 with an environment/branch-policy error.
 
+## Scrollytelling page conventions (`docs/scroll/`)
+
+The `docs/scroll/index.html` walkthrough is **hand-authored HTML copied verbatim**
+by MkDocs — it is *not* a Markdown page and is *not* run through MkDocs extensions.
+Two consequences bite if forgotten (both have caused real regressions):
+
+- **No Markdown, no MathJax on this page.** `$...$` / `$$...$$` LaTeX renders as
+  literal dollar-signs and backslashes here (arithmatex + MathJax only apply to the
+  MkDocs *markdown* notebook). Use plain Unicode — `τ θ ρ ± ≥ ≤ → × ≈ ⁻³` — and
+  `<code>` for variable-ish terms, matching the page's existing asides. Keep it
+  self-contained: inline CSS/JS, no external CDNs.
+- **Scrub sprites are clean pixel-art — never bake text into a frame.** Frames are
+  `ghca_net_viz.state_colors` output, nearest-upscaled. *All* narration (titles,
+  status text, per-node labels, badges) lives in the HTML `.cap`/`.hint` beside the
+  `<canvas>`, never burned into the PNG by matplotlib — baked-in labels are tiny,
+  and on side-by-side sheets they overlap and garble. A frame needing a legend gets
+  it in HTML, not in the image.
+
+Other scroll-page rules:
+
+- **Render scripts live on `main`** (`experiments/scroll_sprites*.py`,
+  `experiments/e6_animation.py`); the sprite/GIF **outputs** live on
+  `deploy-viz-page`. Always regenerate outputs from the *committed* script — never
+  hand-edit a sprite or publish one from an uncommitted variant, or `main` can no
+  longer reproduce what is live.
+- **When a regenerated sprite's dimensions change, update the `<canvas>`
+  attributes** — `data-frames` / `data-cols` / `data-fw` / `data-fh` (and
+  `width`/`height`). The scroll scrubber reads its geometry from those; a stale
+  value scrubs the wrong region.
+- **Lay a substrate out by its structure**, not by convenience: e.g. render a
+  layered graph sensory → hidden → motor, not 198 nodes padded into a square that
+  hides the architecture.
+- **Illustrative ≠ overclaiming.** If an effect is a many-trial statistical average
+  (not visible in one rollout), let the animation show the mechanism/response and
+  keep the number in the prose — never cherry-pick a seed to fake a visible
+  difference. The caption must describe what is actually on screen.
+
 ## Guardrails
 
 - Only publish content you were asked to publish. The public site is outward-facing.
+- **`mkdocs build --strict` validates links and nav — not that anything *renders*.**
+  Before publishing a scroll-page, animation, or math change, open the built page in
+  a browser (Chromium + Playwright are preinstalled; drive `_site/` over a local
+  `http.server`) and actually look: scrubs advance frame-by-frame, no baked/garbled
+  text, no raw `$...$`, math typesets on notebook pages, images load, links resolve.
 - Keep binaries lean; prefer GIFs under ~1 MB (tune frame count / `stride` / `dpi`
   in the animation scripts).
 - Do not merge `deploy-viz-page` into `main`.
