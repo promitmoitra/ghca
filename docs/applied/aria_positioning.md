@@ -156,3 +156,109 @@ such.
    improves the mechanism line, and it is a prerequisite for any Workstream C bid.
 3. Appetite: feedback-only (days, shapes the call, no commitment), or feedback plus
    the H1–H3 preliminary experiment (weeks, and the thing a real bid needs)?
+
+---
+
+## Addendum — spiking chemical sensors as the hardware target (Komoto et al., *ACS Nano* 2026)
+
+*Reference: Komoto, Yokota, Hsu, Garoli, Douaki, Lanzavecchia, … Tsutsui (corresp.,
+Osaka SANKEN). "Autonomous solid-state nanopore" — doi:10.1021/acsnano.6c08258.*
+
+This changes the hardware assumption in the plan above, and resolves its biggest
+stated risk. Worth reading before committing to a chemosensor platform.
+
+### What the device does
+
+A 70 nm nanopore in a SiN membrane, MnCl₂ against PBS, **constant** 1 V bias. A
+voltage-driven precipitation/dissolution cycle repeatedly seals and reopens a
+molecular-scale conductive pathway *by itself*, with no gating, no enzyme, no
+feedback electronics. This emits **stochastic ionic spike trains** — spike width
+~0.1 ms, interspike intervals mostly >1 ms, stable over an hour. Analytes traversing
+the transient openings reshape **spike amplitude, dwell time, and firing rate**;
+the authors discriminate 4 nucleotides (Fm 0.68 four-way) and 7 amino acids
+(Fm 0.37), and count mixtures.
+
+### Why this is a better substrate match than a MOX array
+
+1. **The device is an excitable element with a refractory period — structurally, not
+   by analogy.** Its cycle is sealed → dissolution reopens → conduction (the spike,
+   ~0.1 ms) → precipitation recloses → sealed and recovering (>1 ms) → reopens. That
+   is the Greenberg–Hastings three-state cycle: rested → excited (`act`) → refractory
+   (`pas`) → rested, with the reopening delay playing the role of `τ`. The paper
+   reaches for the same framing independently — "colocalization of transport, gating,
+   memory and spike generation within one nanoscale object," "chemically programmable
+   **spiking element** whose transition statistics can be tuned," and it cites the
+   neuromorphic / in-sensor-computing literature explicitly.
+2. **It removes the plan's single biggest risk.** The risk section above says: *"chemosensor
+   transients are slow, smooth, and noisy — 'input arrival time' is not obviously
+   defined. This is the single biggest technical risk."* Here the device **natively
+   emits discrete events with well-defined arrival times**. The teaching signal our τ
+   rule needs *is the sensor's own output*. That risk largely evaporates.
+3. **The discriminative signal is explicitly temporal**, in their own measurements:
+   dwell time orders GMP > TMP > CMP > AMP, firing rate orders AMP > GMP > TMP ≈ CMP.
+   Their words: "molecular identity is encoded not only in conductance amplitude but
+   also in the **lifetime of the conductive state**."
+4. **Their stated scaling path is multipore arrays** ("the event yield can be increased
+   by multipore arrays"). A multipore membrane is an array of coupled excitable
+   elements — the E-series substrate, physically instantiated.
+
+### The specific gap we could address
+
+Their classifier treats **each spike independently** — per-spike waveform features into
+XGBoost / Random Forest / Logistic Regression, 5-fold CV. But the paper's own central
+claim is that the pore is **stateful**: "ionic spikes already retain a short-lived
+history, as their amplitude and duration reflect the preceding chemical evolution of
+the pore."
+
+Those two things are in tension. **If the pore state carries history, the interspike
+interval sequence carries information that an i.i.d. per-spike classifier discards.**
+The results section is even titled "Learning the Spike History…" while the method is
+per-event waveform classification.
+
+There is headroom to aim at: four-way Fm = 0.68, seven-amino-acid Fm = 0.37, and the
+authors write that "**improved waveform models will be required**."
+
+So a modest, concrete, falsifiable contribution — a direct analogue of H1 above:
+
+> **H1′.** A *sequence* decoder over the spike train — interspike-interval structure and
+> history-conditioned features, represented on a tiled τ basis — beats per-spike i.i.d.
+> classification on the same recordings.
+> *Kill: if per-spike XGBoost matches the sequence model, the pore's "statefulness" does
+> not carry decodable analyte information and this line is dead.*
+
+And the adaptation claim (H3) becomes *more* natural here, not less: the precipitate
+layer evolves continuously, stability is claimed only over ~1 h, and the authors flag
+that in complex biofluids adsorption "may shift the precipitation–dissolution
+equilibrium." The device's own kinetics drift by construction — which is exactly what a
+self-calibrating τ layer is for.
+
+### Honest problems
+
+- **This is not olfaction.** Nucleotides and amino acids in liquid electrolyte are not
+  volatile organics in the gas phase. ARIA's programme is gas-phase VOC sensing. Do
+  **not** present this as "the hardware for ARIA" — the gas-phase gap is real and
+  unbridged.
+- **No open data.** The SI is a PDF of figures and analysis, not a data release. H1′
+  cannot be run without contacting the authors. **This is the binding constraint.**
+- **Lab prototype.** 2 M MnCl₂, 1 V bias, mM analyte concentrations, evaporation-
+  sensitive, degrades in complex biofluids. Years from a deployable sensor.
+- **One device, one paper**, no replication or cross-device variability reported.
+
+### What this implies for the direction
+
+It opens a third option alongside the two in Open Questions:
+
+- **(c) Spiking chemical sensors as the vehicle, independent of ARIA.** A tighter
+  technical story — *temporal decoding for natively-spiking chemical sensors* — with a
+  far better substrate match and a clear collaboration target (Tsutsui, Osaka SANKEN;
+  Garoli, IIT Genova). Weaker funding-path clarity, and **blocked on data access**.
+
+These compose rather than compete: (c) is the technical work, ARIA is a funding frame,
+and if (c) matured it would make the Workstream-C "neuromorphic olfactory hardware"
+line concrete rather than aspirational — *provided* someone bridges liquid-phase to
+gas-phase, which we should not pretend is a detail.
+
+**Cheapest next move by a wide margin:** email the corresponding author asking whether
+the raw ionic-current traces can be shared for a sequence-decoding reanalysis. It costs
+one email, it is a natural collaboration ask (we would be strengthening their result,
+not competing), and it gates everything in this addendum.
