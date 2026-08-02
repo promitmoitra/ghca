@@ -10,6 +10,12 @@ dist/
 # .claude/skills/publish-viz/SKILL.md); it is local-only, never committed.
 .publish-worktree/
 
+# mkdocs build output. The publication layer lives on `deploy-viz-page` (which
+# also ignores this), but `mkdocs build` can be run from any branch during a
+# publish check, so ignore it here too rather than leaving it untracked.
+site/
+_site/
+
 # Beads / Dolt files (added by bd init)
 .dolt/
 *.db
