@@ -38,6 +38,12 @@ markdown_extensions:
       permalink: true
   - pymdownx.superfences
   - pymdownx.highlight
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - javascripts/tex-mml-svg.js   # self-hosted MathJax 3 (SVG output, no external CDN/font deps)
 
 nav:
   - Home: index.md
