@@ -13,16 +13,44 @@ as sensor kinetics drift — without labelled recalibration.
 Derived from the GHCA timescale arc (3d–3e.3), extracted out of the Greenberg–Hastings
 substrate and into a standard spiking/LIF front-end.
 
+## Constraints that define the position
+
+- **Independent.** No institutional affiliation, no consortium, no lab.
+- **Open source only.** This is a personal open-source repo; no proprietary data is
+  available or usable. The programme requires open outputs anyway, so this is
+  alignment rather than sacrifice.
+- **No wet lab, no hardware, no clinical access.** Public datasets and CPU.
+
+These rule out the obvious "bring your own data" play. They do not rule out the two
+things below.
+
 ## Where it fits the programme (honest mapping)
 
 | Workstream | Fit | Reality check |
 |---|---|---|
-| **A** — open hardware + dataset | **Indirect but high-leverage.** Our §1 feedback (preserve raw time-resolved transients) is an ORO *standard* contribution, not a funded build. | We are not a hardware or data-collection team. The exception is `[[ Dognosis canine/clinical data — if real, this is a direct A contribution and the strongest card ]]`. |
-| **B** — learning representations | **Partial and orthogonal.** B as written means *chemical* representation (molecular embeddings, odour space dimensionality). We offer *temporal* representation. | Do not position as competing with B. Position as the missing second axis. |
-| **C** — novel sensing capability | **Best fit.** C explicitly names "neuromorphic olfactory hardware" and "AI-driven drift compensation," and Table 1 marks drift red for every deployable sensor class. | C is hardware-flavoured; we are software over existing arrays. Needs a hardware partner to be a credible C bid. |
+| **A** — open hardware + dataset | **Standards input only.** The §1 argument (preserve raw time-resolved transients) is worth making regardless of funding. | Not a hardware or data-collection team. No data to contribute. |
+| **B** — learning representations | **Partial and orthogonal.** B means *chemical* representation (molecular embeddings, odour-space dimensionality); we offer *temporal* representation. | Do not position as competing with B. Position as the missing second axis. |
+| **C** — novel sensing capability | **Topically the best fit.** C explicitly names "neuromorphic olfactory hardware" and "AI-driven drift compensation," and Table 1 marks drift red for every deployable sensor class. | C is hardware-flavoured and we are software over existing arrays. As an independent with no hardware partner, a standalone C bid is not credible — this is a component inside someone else's bid. |
+| **Benchmarks / competitions** (p.13, cross-cutting) | **Strongest fit, and the one that *requires* what we are.** The thesis states ARIA will "fund an independent team to design competitions, set benchmarks and assess progress against the programme metrics." | Independence is an eligibility requirement here, not a handicap. Needs credibility in *methodology*, which is demonstrable, rather than in chemistry, which is not. |
 
-**Realistic posture:** a component contributor inside a consortium, not a prime. The
-programme funds systems; a mechanism needs a host.
+**Revised posture.** The default assumption — component contributor inside a
+consortium — is right for the *mechanism*. But the benchmark/competition role is a
+named, funded, explicitly-independent slot, and it is the one where being an
+unaffiliated open-source researcher with a rigorous public track record is the
+qualification rather than the obstacle.
+
+What that role actually rewards is methodology, and it is the thing this repo has
+most of: kill conditions declared before running, adversarial controls that overturned
+the authors' own headline results (the 3c/P2 causal-credit null; the E7 integer-θ
+artifact), published negative results kept rather than buried (the e10 ratchet), fully
+seeded and reproducible artifacts, and caveats stated adjacent to claims. A programme
+whose central failure mode is "overpromising and underdelivering, particularly about
+generalisation and in-the-wild usage" — the thesis's own diagnosis of DARPA Real Nose
+on p.6 — has an obvious use for a benchmark team with that disposition.
+
+The candidate benchmarks are already drafted in the feedback: recalibration-free
+longitudinal generalisation, cross-instrument transfer on shared physical samples, and
+the capacity measurement for cross-domain generality.
 
 ## The preliminary result to build (simulation only)
 
@@ -86,7 +114,9 @@ such.
    gates everything else.
 3. **H1/H2** — the precondition and the heterogeneity result. If these fail, stop.
 4. **H3** — the differentiator, and the figure the proposal is built around.
-5. **Proposal** — assemble, with a hardware and a clinical/data partner identified.
+5. **Decide the line** (see Open Questions) — benchmark-design bid, which needs the
+   feedback plus the methodological track record and no partner; or mechanism
+   contribution, which needs H1–H3 plus a host team. Assemble accordingly.
 
 ## Honest risks
 
@@ -98,18 +128,31 @@ such.
   statistics changing; gas-sensor drift is baseline/gain change from aging. The
   defensible claim is narrower: *response kinetics are temporal and do change with
   aging, and a self-calibrating layer can track them.* Do not let a proposal blur this.
-- **We are not an olfaction group.** Credibility comes from partnering, and from the
-  feedback contribution being genuinely useful rather than self-serving.
+- **Not an olfaction group, and no partner.** Credibility for the *mechanism* line
+  depends on finding a host team; the benchmark line does not, which is part of why it
+  ranks higher.
 - **Emergent < wired.** Our own 3d result: the grown basis recovered ~70% of the
   hand-set optimum. The pitch must be "adapts without supervision," not "beats tuned
   baselines."
+- **Benchmark roles are usually awarded to institutions.** The thesis says
+  "independent team," and an individual is the limiting case of that. Realistic
+  mitigations: partner with one other independent/academic for credibility, or scope
+  the contribution as *benchmark design input* to whoever wins the role rather than
+  bidding for it outright.
 
 ## Open questions for the author
 
-1. **Does Dognosis hold canine scent-detection data, protocols, or clinical sampling
-   access?** ARIA adopts trained canines as the biological parity benchmark (sub-goal
-   2) but gives no methodology for it. If yes, that is a stronger and more defensible
-   position than the algorithm contribution — and it is a Workstream A card.
-2. Consortium: do we have routes to a **sensor hardware** group and a **clinical
-   sampling** partner? A C bid needs both.
-3. Appetite: feedback-only (low cost, shapes the call), or full bid preparation?
+1. **Which line do you actually want?** They diverge:
+   - *Benchmark/competition design* — plays to the repo's real strength (methodology),
+     needs no data, no hardware, no partner, and independence is an eligibility
+     requirement. Lower ceiling, much higher probability.
+   - *Mechanism contribution (self-calibrating timescales)* — more interesting
+     technically, but needs a host team's bid to sit inside, and needs H1–H3 to survive
+     contact with real chemosensor data first.
+   They are not exclusive: the preliminary experiment strengthens both, and the
+   feedback response serves both.
+2. Are you willing to approach a **UK academic group** in chemical sensing or
+   neuromorphic engineering as a collaborator? That is the single change that most
+   improves the mechanism line, and it is a prerequisite for any Workstream C bid.
+3. Appetite: feedback-only (days, shapes the call, no commitment), or feedback plus
+   the H1–H3 preliminary experiment (weeks, and the thing a real bid needs)?

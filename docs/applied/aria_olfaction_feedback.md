@@ -10,14 +10,22 @@
 
 ## 0. Who this is from, and the basis for the feedback
 
-`[[ Name / Dognosis affiliation / one line on canine scent-detection work ]]`
+`[[ Name ]]` — independent researcher, no institutional affiliation. The work this
+draws on is a personal open-source project: `[[ repo URL ]]`, with all code, seeded
+experiment scripts, committed result artifacts, figures, and an adversarial internal
+review record public from the start.
 
-Our technical basis is a computational study of **learning in excitable media** —
+The technical basis is a computational study of **learning in excitable media** —
 how a homogeneous spiking substrate can *learn its own temporal structure* from
 input statistics using local, gradient-free rules. It is an illustrative
 computational study on toy substrates, not an olfaction result, and we say so
 plainly below. We are offering it because it bears on one specific and, we think,
 under-weighted axis of the thesis: **time**.
+
+Being independent and fully open-source is relevant to two things in the thesis: it
+means any contribution we make satisfies sub-goal 3 (publicly accessible, usable by
+independent groups) by construction, and it makes us eligible for the *independent*
+benchmark-and-competition role described on p.13 — see §6.
 
 The feedback below is organised as: one point about dataset design that we think is
 the most consequential and least reversible decision in Workstream A (§1); the
@@ -220,25 +228,35 @@ and open evaluation — not necessarily by open models.
 ## 6. What we would be interested in contributing — and what we do not have
 
 **Could contribute:**
+
+- **Benchmark and competition design (p.13).** The thesis says ARIA will "fund an
+  independent team to design competitions, set benchmarks and assess progress against
+  the programme metrics." Independence is a *requirement* for that role rather than a
+  handicap, and it is where we think we are strongest. The relevant track record is
+  methodological rather than chemical: pre-registered kill conditions, adversarial
+  controls that overturn the authors' own headline results, published negative
+  findings, seeded and reproducible artifacts, and caveats stated next to claims
+  rather than buried. Concretely we would bring the recalibration-free longitudinal
+  protocol (§3), the cross-instrument transfer protocol (§3), and the capacity
+  measurement (§4) as candidate programme benchmarks.
 - A **local, gradient-free timescale-adaptation layer** for chemosensor front-ends —
   self-calibrating temporal receptive fields that track changing response kinetics
-  without labelled recalibration data. Relevant to Workstream C's
-  "AI-driven drift compensation" and "neuromorphic olfactory hardware" lines, and
-  deliverable as software over existing sensor arrays.
-- **Temporal-representation benchmarks and the capacity framing** in §3–§4, as
-  contributions to the benchmark/competition design rather than as a funded sensor.
-- `[[ Dognosis: canine scent-detection protocols / paired canine-vs-instrument data
-  / access to clinical sampling — this is potentially the strongest contribution,
-  since the thesis adopts trained canines as the biological parity benchmark but
-  does not say how that benchmark will be operationalised. Fill in what is real. ]]`
+  without labelled recalibration data. Relevant to Workstream C's "AI-driven drift
+  compensation" and "neuromorphic olfactory hardware" lines, and deliverable as
+  open-source software over existing sensor arrays. As an independent contributor this
+  is most realistically a component inside another team's bid, not a standalone one.
+- **The temporal-axis and dataset-standard arguments** in §1–§2, offered as ORO
+  standards input whether or not we are funded for anything.
 
 **Do not have, and will not claim:**
 - Any validated olfaction result. Our evidence is a computational study on toy
   excitable substrates and synthetic timing tasks.
-- Sensor hardware or materials expertise.
+- Sensor hardware or materials expertise, or a wet-lab / clinical sampling capability.
+- Any proprietary dataset. We work only with public data — which is a constraint we
+  are happy with, since the programme requires open outputs anyway.
 - Evidence that our timescale mechanism improves chemosensor performance. That is
-  a hypothesis we would need the programme's data to test — and the honest position
-  is that it should be *tested* on ORO data, not assumed.
+  a hypothesis we would need public (or ORO) data to test — and the honest position
+  is that it should be *tested*, not assumed.
 
 **One clarifying question back to ARIA:** how will *biological parity* (sub-goal 2)
 be operationalised against the canine benchmark — matched-sample head-to-head
