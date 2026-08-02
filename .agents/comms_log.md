@@ -787,3 +787,106 @@ check.
 
 
 
+
+---
+
+## 2026-08-02 — Claude: Track 3d–3e arc DONE + 4a CLOSED (closing a stale claim), and a new applied direction
+
+Two things: a correction to my own 2026-07-19 note above, and a new kind of work in
+the repo that other agents should know about before it surprises them.
+
+### 1. Closing a stale note: 3d and 4a are done, not "not yet attempted"
+
+My 2026-07-19 entry (above) ends *"Not claiming 3d or 4a — both are planning entries.
+Nobody is building either yet."* That is now **out of date** — I built the whole arc.
+Logging it so nobody re-derives it and so the 4a status change is visible:
+
+| PR | What landed |
+|---|---|
+| #44 | **3d wired** — timescale diversity is a continual-learning capacity axis. Graded-`τ` learns delay-keyed tasks a homogeneous basis can't represent *at any head capacity* (per-task 0.58–0.62 vs 0.43 floor, n=20). This was the go/no-go gate for 4a; it came back **green**. |
+| #45 | **3d emergent** — the τ basis is *grown*, not hand-set, by a local reward-free **input-timing-driven** rule. Recovers ~70% of the wired capacity. First point in the programme where the substrate's **dynamics** (not a readout) are shaped by experience. |
+| #46 | **3e.1** — the plastic basis **re-tiles** under a shifting delay distribution (decode 0.50→0.92 where a frozen basis can't follow), at the cost of a *graceful* representation-level interference (bwt −0.07 vs the readout's −0.4…−0.8). |
+| #47 | **3e.2** — a fully self-organised **fast/slow τ hierarchy** under two-rhythm drive (clusters at both drive periods, ~50/50 split). |
+| #48 | **3e.2b** — **theta–gamma cross-frequency coupling** on that hierarchy (PAC modulation index 0.00 → 0.59). |
+| #49 | **3e.3** — **concurrent co-adaptation**: growing τ *while* the readout learns works (well above floor) but stays below the phase-split optimum, gap widening with task count. Phase split is an efficiency aid, not a necessity. |
+| #50 | Synthesis consolidation — the arc factored into one coherent section. |
+
+Also published to the Pages site (deploy run #15, green) under a new nav section
+*"Timescale & continual learning (3d–3e)"*.
+
+**The headline for whoever tracks the roadmap: Track 4a is no longer paused.** The
+blocker `e10_notes.md` diagnosed — the self-referential ratchet, where τ tuned from a
+node's *own* inter-fire interval only ever climbs — is **overturned**. The fix is to
+teach τ from **input arrival timing**, sensed regardless of the node's own refractory
+state; then τ locks to the true period and can move down as well as up. `next_steps.md`
+and `synthesis.md` are updated; results in `timescale_hierarchy_results.md` and
+`continual_learning_results.md`.
+
+Two honest residuals, both recorded in the docs: the CFC **coupling pathway is
+structural, not learned** (the timescales are learned; the excitability link is added),
+and the concurrent arm's gap to phase-split is a **tuning** item (anneal τ / settling
+curriculum), not a missing mechanism.
+
+Methodological note that may be reusable: in 3e.2 the Sarle bimodality coefficient was
+**actively misleading** — the *old* broken rule also scores BC > 5/9, because its τ
+splits into two clusters at high values with no fast population at all. The honest
+metric is the fraction of τ *at the true drive periods*, not "is the distribution
+split." If anyone else uses BC as a bimodality gate, check what it is bimodal *about*.
+
+### 2. New: an applied/strategy direction (ARIA olfaction), on `claude/aria-olfaction-positioning`
+
+Flagging this because it is a **different genre of artifact** from everything else in
+the repo, and I do not want it mistaken for a research track.
+
+ARIA (UK) has a programme thesis out — *Hypersensory Intelligence: Olfactory
+Perception*, £50M, reportedly launching summer 2026 — currently soliciting feedback
+ahead of a call. The branch adds `docs/applied/` with two **internal drafts**,
+deliberately **not** wired into the MkDocs nav and **not** on the public site:
+
+- `aria_olfaction_feedback.md` — a draft feedback response. Lead point is deliberately
+  *not* self-serving: **the ORO dataset standard should preserve raw time-resolved
+  sensor transients, not reduced features.** (The field's canonical drift benchmark,
+  Vergara/UCSD, is feature-reduced — 8 scalars per sensor, raw traces discarded — so it
+  cannot test a temporal hypothesis at all. That is both a real constraint on our own
+  plan and direct evidence for the recommendation.) Then: time is an implicit axis in
+  the thesis and should be explicit; a recalibration-free longitudinal competition
+  proposal; and the 3c/P5 capacity result offered as a framing for their cross-domain
+  generality sub-goal.
+- `aria_positioning.md` — workstream mapping, a simulation-only preliminary experiment
+  (H1 raw transients beat reduced features → H2 tiled τ beats fixed/random τ → H3 local
+  τ adaptation tracks drift without labels) with kill conditions and baselines, and
+  honest risks.
+
+**Constraints, now settled:** the application is **independent** (no institutional
+affiliation) and **open-source only** — no proprietary data is available or usable, and
+the programme requires open outputs anyway. An earlier draft assumed a proprietary-data
+angle; that has been removed.
+
+**The non-obvious find:** the thesis (p.13) says ARIA will fund an **independent team to
+design competitions, set benchmarks and assess progress**. Independence is an
+*eligibility requirement* there, not a handicap, and the qualification is
+**methodological rather than chemical** — which is the thing this repo actually has a
+track record in (declared kill conditions, adversarial controls that overturned our own
+headline results, published negative results, seeded reproducible artifacts). Given the
+thesis's own diagnosis that DARPA Real Nose failed by overpromising on generalisation,
+that disposition is the product. The mechanism line (self-calibrating timescales) is
+demoted to a component inside another team's bid — an independent standalone
+Workstream-C bid with no hardware partner is not credible, and the doc says so.
+
+**Not claiming anything further here, and nothing is committed to.** Open fork recorded
+in the doc: benchmark-design line (no partner/data needed, higher probability) vs
+mechanism line (needs a host team and H1–H3 first). Awaiting the human's call.
+
+**If this genre doesn't belong in the research repo, say so** — it is isolated in
+`docs/applied/` and trivially removable. I put it there rather than outside the repo so
+it is version-controlled and visible, but that is a judgement call, not a convention.
+
+### 3. Housekeeping
+
+Same branch carries a one-line `.gitignore` fix: `site/` (mkdocs build output) was
+ignored on `deploy-viz-page` but not on `main`, so it surfaced as untracked after a
+publish run. Now ignored everywhere.
+
+Branch is current with `main` (`52a1773`), no PR opened yet.
+
+— Claude (session `a10519a9`)
