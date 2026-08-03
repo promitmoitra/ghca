@@ -104,9 +104,55 @@ re-introduces self-reference even when the rule is written to avoid it.**
   rule rails to the ceiling.
 - The **pool** results (3d/3e, n=20) remain the validated science; the lattice is a
   visualisation medium with its own, different behaviour, not a free upgrade.
-- Negative 2 is arguably more interesting than the demo. Candidate fixes worth testing:
-  distinguish exogenous from endogenous input (e.g. a dedicated afferent channel the
-  rule listens to, which is what the pool effectively had); make the drive strong
-  enough to reset the medium's phase; or gate plasticity on periods of low endogenous
-  activity. If any works, "how to learn timescales on a recurrent medium without the
-  medium teaching itself" is a real contribution.
+- Negative 2 is arguably more interesting than the demo, and it turned out to be
+  fixable — see the next section.
+
+## Negative 2, resolved: the rule needs a privileged **afferent** channel
+
+*Experiment: `experiments/lattice_afferent_timing.py`.*
+
+The diagnosis said the problem is that the medium's own activity is indistinguishable
+from external input. So give the cell two distinguishable streams and vary **only which
+one the τ rule learns from**:
+
+- **afferent** — a weak global rhythmic timing pulse every cell senses, **subthreshold
+  by construction** so it never fires the cell and never appears in `excite`. It carries
+  timing, not drive. Biologically this is a modulatory/thalamic-style afferent; formally
+  it is the exogenous channel the 3e.2 pool implicitly had.
+- **lateral** — neighbour excitation, which propagates the waves and carries the
+  medium's *own* rhythm.
+
+Sparse pacemakers still inject real excitation, so waves exist and the rhythm is
+available *both* exogenously (afferent) and endogenously (through waves). Drive schedule
+6 → 18 → 6, so a rule that tracks exogenous timing must follow all three phases.
+
+| τ learns from | P=6 | P=18 | P=6 | re-tune \|τ − P\| |
+|---|:--:|:--:|:--:|:--:|
+| all input edges (afferent ∪ lateral) | 3.6 | 5.1 | 3.6 | 12.9 |
+| **afferent edges only** | **6.0** | **18.0** | **6.0** | **0.0** |
+| all edges, gated on low local activity | 17.0 | 33.9 | 17.1 | 15.9 |
+| own firing (e10 control) | 34.0 | 34.0 | 34.0 | 16.0 |
+
+**The afferent-only rule tracks exactly and re-tunes bidirectionally** — τ = 6.0, 18.0,
+6.0 with |τ − P| = 0.0 in every phase, on the *same* medium, with the *same* plasticity
+rule, differing only in which input stream it listens to. Learning from all inputs
+indiscriminately fails (12.9), reproducing the lock-in.
+
+So the statement is architectural rather than about the learning rule:
+
+> On a recurrent excitable medium, learning a timescale from input timing requires a
+> **privileged exogenous channel that the rule can listen to separately from recurrent
+> input**. Given one, the rule tracks perfectly and re-tunes in both directions. Without
+> one, the medium teaches itself and τ freezes at a self-confirming fixed point.
+
+**The harder version does not work.** Gating plasticity on low local activity — an
+attempt to *discover* which inputs are exogenous, with no labelled channel — fails
+(15.9, and it rails to the ceiling in the P=18 phase). Recovering the exogenous stream
+from activity statistics alone remains open; a surprise/prediction-error gate (E8's
+machinery) is the natural next candidate.
+
+**Honest caveats.** The afferent pulse is global and simultaneous, and the dynamics are
+near-deterministic, so per-seed variation is negligible and the CIs are ~zero-width —
+this is a mechanism demonstration, not a statistical estimate (same status as the
+3e.2b CFC result). A spatially structured or jittered afferent would be the stronger
+test. `act` remains fixed and only τ is learned, as throughout.
