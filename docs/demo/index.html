@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A medium that learns its own timescale</title>
+<meta name="description" content="An excitable medium learning its own per-cell timescale from input timing, live in the browser — and three ways the learning rule can fail.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0b0d'/%3E%3Ccircle cx='16' cy='16' r='8' fill='%23d4171c'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#0b0b0d; --panel:#141418; --ink:#ececee; --muted:#9a9aa2;
+    --red:#d4171c; --red-deep:#73000d; --line:#2a2a30;
+    --fast:#4aa8ff; --slow:#ff9a3c;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--red);text-decoration:none;border-bottom:1px solid rgba(212,23,28,.4)}
+  .wrap{max-width:1180px;margin:0 auto;padding:34px 22px 80px}
+  .kicker{color:var(--red);letter-spacing:.2em;text-transform:uppercase;font-size:12px;font-weight:700}
+  h1{font-size:clamp(27px,4.2vw,44px);line-height:1.1;margin:12px 0 12px;font-weight:800;letter-spacing:-.02em}
+  .sub{color:var(--muted);max-width:70ch;margin:0 0 26px}
+  .stage{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:22px;align-items:start}
+  @media (max-width:900px){.stage{grid-template-columns:1fr}}
+  .frame{position:relative;background:#000;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  #c{display:block;width:100%;aspect-ratio:1/1}
+  .badge{position:absolute;left:10px;top:10px;font-size:11px;letter-spacing:.12em;
+    background:rgba(11,11,13,.74);border:1px solid var(--line);border-radius:999px;padding:4px 11px;color:var(--muted);
+    backdrop-filter:blur(6px)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 16px 18px}
+  .panel h2{font-size:13px;letter-spacing:.14em;color:var(--muted);margin:0 0 12px;font-weight:700}
+  .row{margin:0 0 15px}
+  .row:last-child{margin-bottom:0}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:5px}
+  .rules{display:flex;flex-direction:column;gap:6px}
+  .rule{display:flex;gap:9px;align-items:flex-start;background:#101014;border:1px solid var(--line);
+    border-radius:7px;padding:8px 10px;cursor:pointer;transition:border-color .15s,background .15s}
+  .rule:hover{border-color:#3a3a44}
+  .rule.on{border-color:var(--red);background:#171113}
+  .rule input{margin:3px 0 0}
+  .rule b{font-size:13.5px;font-weight:700;display:block}
+  .rule span{font-size:12px;color:var(--muted);display:block;line-height:1.45}
+  .rule.on b{color:var(--red)}
+  input[type=range]{width:100%;accent-color:var(--red)}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-variant-numeric:tabular-nums}
+  .stat{background:#101014;border:1px solid var(--line);border-radius:7px;padding:8px 10px}
+  .stat .k{font-size:11px;color:var(--muted);letter-spacing:.08em}
+  .stat .v{font-size:19px;font-weight:700}
+  #hist{display:block;width:100%;height:96px;background:#101014;border:1px solid var(--line);border-radius:7px}
+  .legend{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
+  button{background:#1b1b21;color:var(--ink);border:1px solid var(--line);border-radius:7px;
+    padding:8px 12px;font-size:13px;cursor:pointer;font-family:inherit}
+  button:hover{border-color:#3a3a44}
+  button.primary{background:var(--red);border-color:var(--red);color:#fff;font-weight:600}
+  .btns{display:flex;gap:8px;flex-wrap:wrap}
+  .verdict{margin-top:14px;font-size:13px;padding:10px 12px;border-radius:7px;border:1px solid var(--line);
+    background:#101014;color:var(--muted);min-height:3.2em}
+  .verdict b{color:var(--ink)}
+  .notes{margin-top:34px;max-width:74ch;color:var(--muted);font-size:14.5px}
+  .notes h3{color:var(--ink);font-size:15px;margin:22px 0 8px;letter-spacing:.01em}
+  .notes code{background:#16161b;border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:13px}
+  .notes table{border-collapse:collapse;margin:10px 0;font-size:13.5px}
+  .notes td,.notes th{border:1px solid var(--line);padding:5px 10px;text-align:left}
+  .notes th{color:var(--ink)}
+  .warn{border-left:2px solid var(--red);padding-left:12px;margin:14px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">Greenberg–Hastings · plastic timescales</div>
+  <h1>A medium that learns its own timescale</h1>
+  <p class="sub">A homogeneous excitable medium. Every cell has one adjustable
+  parameter — <b>τ</b>, how long it stays refractory before it can fire again — and a
+  local rule that tunes τ from the timing of the input it receives. No gradients, no
+  backpropagation, no objective function. Move the drive period and the medium retunes
+  itself. Then break the rule in three different ways and watch it fail.</p>
+
+  <div class="stage">
+    <div>
+      <div class="frame">
+        <canvas id="c"></canvas>
+        <div class="badge" id="badge">learned τ · brightness = activity</div>
+      </div>
+      <div class="legend" style="margin-top:7px">
+        <span style="color:var(--fast)">◀ fast (τ = 3)</span>
+        <span>learned timescale</span>
+        <span style="color:var(--slow)">slow (τ = 34) ▶</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>τ learns from</h2>
+      <div class="rules" id="rules">
+        <label class="rule on"><input type="radio" name="rule" value="0" checked>
+          <span><b>the afferent channel</b><span>Only the exogenous timing pulse. Works.</span></span></label>
+        <label class="rule"><input type="radio" name="rule" value="1">
+          <span><b>every input</b><span>Afferent and neighbours alike. The medium starts teaching itself.</span></span></label>
+        <label class="rule"><input type="radio" name="rule" value="2">
+          <span><b>its own firing</b><span>The original rule. Ratchets to the ceiling.</span></span></label>
+      </div>
+
+      <div class="row" style="margin-top:15px">
+        <label>Drive period <b id="plab" style="color:var(--ink)">6</b> steps — drag me</label>
+        <input type="range" id="P" min="4" max="28" step="1" value="6">
+      </div>
+
+      <div class="row">
+        <div class="stats">
+          <div class="stat"><div class="k">mean τ</div><div class="v" id="mtau">–</div></div>
+          <div class="stat"><div class="k">|τ − P|</div><div class="v" id="err">–</div></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <label>τ distribution</label>
+        <canvas id="hist" width="520" height="192"></canvas>
+      </div>
+
+      <div class="row btns">
+        <button class="primary" id="reset">Reset τ</button>
+        <button id="view">Show waves only</button>
+        <button id="story">Run the 6→18→6 test</button>
+      </div>
+
+      <div class="verdict" id="verdict">Watch the τ field settle, then drag the drive period.</div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <h3>What you are looking at</h3>
+    <p>Each pixel is one cell of a Greenberg–Hastings excitable medium on a torus: it
+    rests, fires when enough neighbours are firing, then sits refractory for <code>τ</code>
+    steps before it can fire again. Colour is each cell's <b>learned τ</b> — blue is fast,
+    orange is slow — and brightness is its current activity, so you see the waves and the
+    learned parameter field at the same time. A sparse scatter of pacemaker cells is driven
+    on the beat so that waves exist at all.</p>
+
+    <p>Every cell also senses a weak <b>afferent</b> pulse on the beat. It is
+    <i>subthreshold</i> by construction: it carries timing but never fires a cell. That
+    distinction turns out to be the whole story.</p>
+
+    <h3>The rule</h3>
+    <p>On each input event, a cell nudges its own τ toward the interval since the last
+    one: <code>τ ← τ + η · (Δt − τ)</code>. Purely local, reward-free, and it can move τ
+    down as well as up. Everything below is the same rule with the same η, differing only
+    in <i>which inputs count as an event</i>.</p>
+
+    <h3>Three ways to break it</h3>
+    <p><b>Learn from every input</b> and τ stops tracking the drive. Once τ settles, the
+    medium sustains its own reentrant waves at period ≈ τ, so each cell's input is
+    generated by its neighbours at interval ≈ τ — the rule measures its own output and
+    sits at a self-confirming fixed point. The network re-introduces self-reference even
+    though the rule was written to avoid it.</p>
+
+    <p><b>Learn from the cell's own firing</b> and τ ratchets to the ceiling. Once τ
+    overshoots the period the cell is still refractory when the next pulse arrives, so it
+    skips one and measures a <i>multiple</i> of the true period — which pushes τ higher
+    still. This is a one-way ratchet, and no fast population can ever form.</p>
+
+    <p>The working rule needs a channel it can attribute to the outside world. Given one,
+    it tracks exactly and retunes in both directions.</p>
+
+    <table>
+      <tr><th>τ learns from</th><th>P=6</th><th>P=18</th><th>P=6</th><th>|τ−P| on retune</th></tr>
+      <tr><td><b>afferent only</b></td><td>6.0</td><td>18.0</td><td>6.0</td><td><b>0.0</b></td></tr>
+      <tr><td>every input</td><td>3.6</td><td>5.1</td><td>3.6</td><td>12.9</td></tr>
+      <tr><td>own firing</td><td>34.0</td><td>34.0</td><td>34.0</td><td>16.0</td></tr>
+    </table>
+    <p style="font-size:13px">Measured offline in NumPy at 96×96, n=5 — see
+    <code>experiments/lattice_afferent_timing.py</code>. This page runs the identical
+    update rule as a fragment shader.</p>
+
+    <div class="warn">
+      <p style="margin:0"><b>Honest scope.</b> Two things this demo does <i>not</i> show.
+      Driving with two different periods at once does not produce fast and slow spatial
+      domains: the fastest pacemaker entrains the whole medium, which is the standard
+      excitable-media result and not something the rule can undo. And the afferent pulse
+      here is global and simultaneous, which is the easy case — a jittered or spatially
+      structured afferent is the stronger test and has not been run. Whether a cell could
+      <i>discover</i> which of its inputs is exogenous, rather than being told by
+      architecture, is open; gating on low local activity does not do it.</p>
+    </div>
+
+    <p style="margin-top:26px;font-size:13px">Built with
+    <a href="https://github.com/paradigms-of-intelligence/swissgl">SwissGL</a>.
+    Part of an open study of learning in excitable media —
+    <a href="../">project notes</a>.</p>
+  </div>
+</div>
+
+<script src="swissgl.js"></script>
+<script>
+const L = 256;                       // lattice side
+const ACT = 2.0, THETA = 1.0, TMIN = 3.0, TMAX = 34.0, ETA = 0.15;
+const PACE_FRAC = 0.004;
+const SUBSTEPS = 3;                  // sim steps per animation frame
+
+const cv = document.getElementById('c');
+const glsl = SwissGL(cv);
+let step = 0, P = 6, rule = 0, needReset = 2, viewMode = 0;
+
+// ---- the update rule, as a fragment shader -------------------------------------
+// state = (phi, tau, lastEvent, prevLateral)
+const SIM = `
+uniform float t, P, aff, paceFrac, doReset;
+uniform int rule;
+const float ACT=${ACT.toFixed(1)}, THETA=${THETA.toFixed(1)}, TMIN=${TMIN.toFixed(1)}, TMAX=${TMAX.toFixed(1)}, ETA=${ETA.toFixed(3)};
+bool isActive(vec4 s){ return s.x>0.5 && s.x<ACT+0.5; }
+void fragment(){
+  ivec2 sz = Src_size();
+  vec4 s = Src(I);
+  float phi=s.x, tau=s.y, lastEv=s.z, prevLat=s.w;
+  bool pace = hash(ivec3(I,7)).x < paceFrac;
+
+  if (doReset > 0.5) {
+    tau = TMIN + (TMAX-TMIN)*hash(ivec3(I,3)).y;
+    if (pace) tau = P;
+    FOut = vec4(0.0, tau, -1.0, 0.0);
+    return;
+  }
+
+  int n = 0;
+  n += isActive(Src((I+ivec2( 1, 0)+sz)%sz)) ? 1 : 0;
+  n += isActive(Src((I+ivec2(-1, 0)+sz)%sz)) ? 1 : 0;
+  n += isActive(Src((I+ivec2( 0, 1)+sz)%sz)) ? 1 : 0;
+  n += isActive(Src((I+ivec2( 0,-1)+sz)%sz)) ? 1 : 0;
+
+  float lateral = (float(n) >= THETA) ? 1.0 : 0.0;
+  float paceDrive = (pace && aff > 0.5) ? 1.0 : 0.0;   // only pacemakers get real drive
+  float supra = max(lateral, paceDrive);
+  bool rested = phi < 0.5;
+
+  float latEdge = (lateral > 0.5 && prevLat < 0.5) ? 1.0 : 0.0;
+  float affEdge = aff;                                  // single-step global pulse
+
+  // advance the clock on this cell's own tau, then apply excitation
+  float nphi = phi;
+  if (nphi >= 0.5) nphi += 1.0;
+  if (nphi > ceil(tau) + 0.5) nphi = 0.0;
+  if (rested && supra > 0.5) nphi = 1.0;
+
+  // which inputs count as a timing event
+  float ev;
+  if (rule == 0)      ev = affEdge;                     // afferent only
+  else if (rule == 1) ev = max(affEdge, latEdge);       // every input
+  else                ev = (nphi > 0.5 && nphi < 1.5) ? 1.0 : 0.0;  // own firing
+
+  if (pace) {
+    tau = P;                                            // pacemakers keep the beat
+  } else if (ev > 0.5) {
+    if (lastEv >= 0.0) {
+      float dt = clamp(t - lastEv, 0.0, 60.0);
+      tau = clamp(tau + ETA*(dt - tau), TMIN, TMAX);
+    }
+    lastEv = t;
+  }
+  FOut = vec4(nphi, tau, lastEv, lateral);
+}`;
+
+// ---- render pass ---------------------------------------------------------------
+const DRAW = `
+uniform int viewMode;
+const float ACT=${ACT.toFixed(1)}, TMIN=${TMIN.toFixed(1)}, TMAX=${TMAX.toFixed(1)};
+void fragment(){
+  vec4 s = Src(ivec2(UV*vec2(Src_size())));
+  float phi=s.x, tau=s.y;
+  bool isAct = phi>0.5 && phi<ACT+0.5;
+  float refr  = (phi>ACT+0.5) ? 1.0-(phi-ACT)/max(tau-ACT,1.0) : 0.0;
+
+  vec3 fast = vec3(0.29,0.66,1.0), slow = vec3(1.0,0.60,0.24);
+  float f = pow(clamp((tau-TMIN)/(TMAX-TMIN), 0.0, 1.0), 0.55);
+  vec3 tint = mix(fast, slow, f);
+
+  vec3 col;
+  if (viewMode == 1) {                       // waves only, in the substrate palette
+    col = vec3(0.043,0.043,0.051);
+    col = mix(col, vec3(0.45,0.0,0.05), refr*0.85);
+    if (isAct) col = vec3(0.83,0.09,0.11);
+  } else {                                   // learned tau, brightness = activity
+    col = tint * 0.14;
+    col = mix(col, tint*0.42, refr);
+    if (isAct) col = mix(tint, vec3(1.0), 0.35);
+  }
+  FOut = vec4(col, 1.0);
+}`;
+
+// ---- readback for the histogram / stats ----------------------------------------
+const RB = Math.min(128, L);                 // readback resolution (subsampled)
+const rbBuf = new Float32Array(L*L*4);
+let mtau = 0, errv = 0, hist = new Float32Array(40);
+
+function readback(){
+  const tgt = glsl.buffers['state'] && glsl.buffers['state'][0];
+  if (!tgt) return;
+  const gl = glsl.gl;
+  gl.bindFramebuffer(gl.FRAMEBUFFER, tgt.fbo);
+  gl.readPixels(0, 0, L, L, gl.RGBA, gl.FLOAT, rbBuf);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+  hist.fill(0);
+  let sum = 0, sumE = 0, cnt = 0;
+  const stride = 2;                          // subsample for speed
+  for (let y=0; y<L; y+=stride) for (let x=0; x<L; x+=stride){
+    const tau = rbBuf[(y*L+x)*4 + 1];
+    if (!(tau > 0)) continue;
+    sum += tau; sumE += Math.abs(tau - P); cnt++;
+    let b = Math.floor((tau-TMIN)/(TMAX-TMIN)*hist.length);
+    hist[Math.max(0, Math.min(hist.length-1, b))]++;
+  }
+  if (cnt){ mtau = sum/cnt; errv = sumE/cnt; }
+  document.getElementById('mtau').textContent = mtau.toFixed(1);
+  document.getElementById('err').textContent  = errv.toFixed(1);
+  drawHist();
+  updateVerdict();
+}
+
+const hc = document.getElementById('hist'), hx = hc.getContext('2d');
+function drawHist(){
+  const W=hc.width, H=hc.height;
+  hx.clearRect(0,0,W,H);
+  const mx = Math.max(1, ...hist);
+  for (let i=0;i<hist.length;i++){
+    const f = i/(hist.length-1);
+    const h = (hist[i]/mx)*(H-24);
+    const r = Math.round(74+(255-74)*f), g = Math.round(168+(154-168)*f), b = Math.round(255+(60-255)*f);
+    hx.fillStyle = `rgb(${r},${g},${b})`;
+    hx.fillRect(i*(W/hist.length)+1, H-14-h, W/hist.length-2, h);
+  }
+  // marker for the current drive period
+  const px = (P-TMIN)/(TMAX-TMIN)*W;
+  hx.strokeStyle='#d4171c'; hx.lineWidth=2;
+  hx.beginPath(); hx.moveTo(px,0); hx.lineTo(px,H-14); hx.stroke();
+  hx.fillStyle='#d4171c'; hx.font='11px -apple-system,sans-serif';
+  hx.fillText('P='+P, Math.min(px+4, W-34), 12);
+  hx.fillStyle='#9a9aa2';
+  hx.fillText('τ='+TMIN, 2, H-2); hx.fillText('τ='+TMAX, W-38, H-2);
+}
+
+function updateVerdict(){
+  const v = document.getElementById('verdict');
+  const close = errv < 1.5, near = errv < 4;
+  if (rule === 2){
+    v.innerHTML = mtau > TMAX-1.5
+      ? '<b>Ratcheted to the ceiling.</b> Every cell measured a multiple of the true period and pushed τ up until it stuck. No fast population can form.'
+      : 'τ is climbing — each overshoot makes the next measurement longer.';
+  } else if (rule === 1){
+    v.innerHTML = close
+      ? 'Tracking for now — try dragging the drive period.'
+      : '<b>Locked in.</b> The medium is sustaining its own waves at period ≈ τ, so the rule is measuring its own output rather than the drive. It no longer follows P.';
+  } else {
+    v.innerHTML = close
+      ? '<b>Locked to the drive.</b> τ ≈ P across the medium. Drag the period — it follows, up or down.'
+      : (near ? 'Converging…' : 'Retuning toward the new period…');
+  }
+}
+
+// ---- controls ------------------------------------------------------------------
+document.getElementById('rules').addEventListener('change', e=>{
+  rule = +e.target.value;
+  [...document.querySelectorAll('.rule')].forEach(r=>r.classList.toggle('on', r.contains(e.target)));
+  needReset = 2;
+});
+const Pin = document.getElementById('P');
+Pin.addEventListener('input', ()=>{
+  P = +Pin.value; document.getElementById('plab').textContent = P;
+});
+document.getElementById('reset').onclick = ()=>{ needReset = 2; };
+document.getElementById('view').onclick = e=>{
+  viewMode = 1-viewMode;
+  e.target.textContent = viewMode ? 'Show learned τ' : 'Show waves only';
+  document.getElementById('badge').textContent = viewMode
+    ? 'wave activity' : 'learned τ · brightness = activity';
+};
+let storyTimer = null;
+document.getElementById('story').onclick = ()=>{
+  if (storyTimer){ clearTimeout(storyTimer); storyTimer = null; }
+  const setP = p=>{ P=p; Pin.value=p; document.getElementById('plab').textContent=p; };
+  needReset = 2; setP(6);
+  storyTimer = setTimeout(()=>{ setP(18);
+    storyTimer = setTimeout(()=>{ setP(6); storyTimer = null; }, 7000); }, 7000);
+};
+
+// ---- main loop -----------------------------------------------------------------
+let frame = 0;
+glsl.loop(()=>{
+  glsl.adjustCanvas();
+  for (let k=0; k<SUBSTEPS; k++){
+    const doReset = needReset > 0 ? 1 : 0;
+    if (needReset > 0){ needReset--; step = 0; }
+    const aff = (step % P === 0) ? 1 : 0;
+    glsl({t:step, P, aff, rule, paceFrac:PACE_FRAC, doReset, FP:SIM},
+         {tag:'state', size:[L,L], format:'rgba32f', story:2, filter:'nearest', wrap:'repeat'});
+    if (!doReset) step++;
+  }
+  glsl({Src:glsl.buffers['state'][0], viewMode, FP:DRAW});
+  if ((frame++ % 8) === 0) readback();
+});
+window._demo = { get mtau(){return mtau}, get err(){return errv},
+                 get step(){return step}, setP:p=>{P=p;Pin.value=p;},
+                 setRule:r=>{rule=r;needReset=2;}, reset:()=>{needReset=2;} };
+</script>
+</body>
+</html>
