@@ -145,7 +145,10 @@ def main():
     V_att = np.clip(X @ w_att, -0.2, 1.2)
 
     pos = node_positions(roles)
-    t0, t1, stride = 240, 400, 2
+    # Window chosen so the memory loop is first seen HOLDING (blue meter high, pulse
+    # rotating), then DIES at t=368 -> the blue "still remembering?" meter visibly
+    # drops mid-clip, with settle-time after, so the point lands before the loop.
+    t0, t1, stride = 308, 394, 2
     frames = list(range(t0, t1, stride))
     WIN = 130
 
@@ -211,9 +214,12 @@ def main():
             rgb = rgb.resize((TARGET_W, round(rgb.height * TARGET_W / rgb.width)), Image.LANCZOS)
         return rgb.quantize(colors=96, method=Image.FASTOCTREE)
     fr = [prep(f) for f in ImageSequence.Iterator(im)]
-    fr[0].save(out, save_all=True, append_images=fr[1:],
-               duration=im.info.get("duration", 83), loop=0, optimize=True)
-    fr[0].convert("RGB").save(os.path.join(FIGDIR, "e6_horde_poster.png"))
+    BASE_MS = 110                       # ~9 fps -- slow enough to read three meters
+    HOLD_START, HOLD_END = 5, 22        # brief lead-in + ~2.4s pause on the settled
+    seq = [fr[0]] * HOLD_START + fr + [fr[-1]] * HOLD_END  # (dup frames are ~free after optimize)
+    seq[0].save(out, save_all=True, append_images=seq[1:],
+                duration=BASE_MS, loop=0, optimize=True)
+    fr[-1].convert("RGB").save(os.path.join(FIGDIR, "e6_horde_poster.png"))
     kb = os.path.getsize(out) / 1024
     print(f"wrote {out} ({raw:.0f} KB raw -> {kb:.0f} KB optimised, {len(frames)} frames)")
 
