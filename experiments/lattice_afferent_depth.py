@@ -74,6 +74,10 @@ def run(mode, P, seed):
     last_ev = np.full((L, L), -1.0, np.float32)
     last_fire = np.full((L, L), -1.0, np.float32)
     prev_lat = np.zeros((L, L), bool)
+    prev_ev = np.zeros((L, L), bool)
+    # timing-event threshold: a single planar wavefront presents ~1 active neighbour, so
+    # requiring >=2 makes one passing wave register ONCE rather than several times.
+    theta_ev = int(mode.split("-c")[1]) if "-c" in mode else int(THETA)
 
     for t in range(STEPS):
         active = (phi >= 1) & (phi <= ACT)
@@ -96,6 +100,9 @@ def run(mode, P, seed):
 
         lat_edge = lateral & ~prev_lat
         prev_lat = lateral
+        supra_ev = nbr >= theta_ev
+        lat_ev = supra_ev & ~prev_ev
+        prev_ev = supra_ev
 
         moving = phi >= 1
         phi[moving] += 1
@@ -109,7 +116,7 @@ def run(mode, P, seed):
             ev = aff & medium              # afferent-only rule
             prev = last_ev
         else:
-            ev = (lat_edge | aff) & medium # all-inputs rule
+            ev = (lat_ev | aff) & medium   # all-inputs rule (lat_ev == lat_edge if theta_ev==THETA)
             prev = last_ev
 
         seen = ev & (prev >= 0)
@@ -140,7 +147,7 @@ def depth(err_by_x):
 def main():
     out = {}
     for P in PERIODS:
-        for mode in ("global-aff", "global", "local-aff", "local", "own"):
+        for mode in ("global-aff", "local", "local-c2", "local-c3", "local-c4", "own"):
             E = np.zeros((N_SEEDS, L - W_S)); T = np.zeros((N_SEEDS, L - W_S))
             for s in range(N_SEEDS):
                 E[s], T[s] = run(mode, P, s)
@@ -148,7 +155,7 @@ def main():
             out[key] = {"err": E, "tau": T}
             e = E.mean(0)
             d = depth(e)
-            print(f"P={P:2d} {mode:7s}: |τ−P| at x=0 {e[0]:5.2f} | x=8 {e[min(8,len(e)-1)]:5.2f} "
+            print(f"P={P:2d} {mode:10s}: |τ−P| at x=0 {e[0]:5.2f} | x=8 {e[min(8,len(e)-1)]:5.2f} "
                   f"| x=24 {e[min(24,len(e)-1)]:5.2f} | far {e[-1]:5.2f} "
                   f"| locked to depth {d:3d} cells  (τ far = {T.mean(0)[-1]:.1f})", flush=True)
         print(flush=True)

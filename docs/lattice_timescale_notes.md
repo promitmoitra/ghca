@@ -215,6 +215,7 @@ in order of promise:
 - **Coincidence-gated timing events** — require ≥2 simultaneously active neighbours for an
   input to count as a timing event (while 1 still suffices to *excite*), so a single passing
   wavefront registers once rather than several times.
+  *(Tested and refuted — see "Coincidence gating: refuted" below.)*
 - **A longest-recurring-interval estimator** instead of last-interval: the drive period is the
   longest interval that recurs, and shorter spurious intervals are harmonics of it.
 - **Surprise gating** (the original 3e.5 idea) — now aimed at the deep cells specifically,
@@ -223,3 +224,106 @@ in order of promise:
 At P=12 the pattern is the same with worse absolute numbers (localised/every-input 3.24 at
 x=0, 3.15 far; global/afferent-only still exactly 0.00), so this is not specific to one drive
 period.
+
+---
+
+## Coincidence gating: refuted
+
+The first candidate above — require ≥2 simultaneously active neighbours before an input
+counts as a *timing* event, while 1 still suffices to *excite* — was the cheapest to test,
+so it went first. It fails, and it fails worse than no gating at all.
+(`experiments/lattice_afferent_depth.py`, θ_ev = the coincidence threshold, P=6, n=3;
+|τ−P| by distance, with mean τ in parentheses.)
+
+| timing-event threshold | x=0 | x=8 | x=24 | far |
+|---|:--:|:--:|:--:|:--:|
+| θ_ev = 1 (ungated) | **1.54** (7.5) | **1.87** (7.8) | **1.99** (7.9) | **2.92** (8.9) |
+| θ_ev = 2 | 11.21 (17.2) | 27.79 (33.8) | 27.35 (33.4) | 27.91 (33.9) |
+| θ_ev = 3 | 27.96 (34.0) | 25.86 (31.9) | 25.23 (31.2) | 19.36 (25.3) |
+| θ_ev = 4 | 18.12 (23.9) | 20.87 (26.8) | 20.95 (26.9) | 12.45 (18.2) |
+
+None of the gated rows locks anywhere (depth 0), and every one of them is worse than ungated
+at every distance. The reasoning was right about *why* the ungated rule fails (one wavefront
+registers several times) and wrong about the remedy. Coincidences of two wavefronts are rare,
+so raising the threshold does not merely deduplicate a wave — it discards most drive cycles
+entirely. Intervals then run long, and τ is driven towards the ceiling (33.9 at θ_ev=2) by a
+different route than e10's. The higher thresholds are not an improvement on that but a
+further degradation: the rule fires so seldom that τ is left near wherever its random
+initialisation put it (mean 18.2 at θ_ev=4, against an initialisation mean of 18.5), and the
+apparent "better" numbers far from the strip are untouched initial values, not learning.
+
+This is the bind worth stating plainly: **any amplitude threshold low enough to sample every
+drive cycle also admits spurious lateral traffic, and any threshold high enough to reject the
+traffic also misses most cycles. Amplitude cannot separate drive from traffic.** What
+distinguishes them is not how strong the input is but *when* it arrives — which is an argument
+for selecting on phase.
+
+## An attention strip made of the same substrate
+
+So: a **1-D Greenberg–Hastings chain running orthogonal to the sensory edge**, one cell per
+column, seeded at x=0 by the sensory layer on each beat and propagating along x as a
+travelling pulse. Column x is therefore gated once per drive period, at a phase delayed in
+proportion to x. This is E4/E5 machinery pointed at plasticity rather than routing: E4 showed
+selection is native to the substrate, E5 used a persistent loop as an option gating spatial
+routing; here the same idea gates **learning**. (`experiments/lattice_attention_gate.py`,
+L=96, W_S=4, 5000 steps, n=3.)
+
+Two ways to use the gate, and they come out very differently. P=6:
+
+| rule | x=0 | x=8 | x=24 | far | locked depth | τ far |
+|---|:--:|:--:|:--:|:--:|:--:|:--:|
+| global afferent, afferent-only *(upper bound)* | 0.00 | 0.00 | 0.00 | 0.00 | all 92 | 6.0 |
+| localised strip, every input *(the bar)* | 1.54 | 1.87 | 1.99 | 2.92 | 0 | 8.9 |
+| **gate edge is the timing event** | **0.00** | **0.00** | **0.00** | **0.00** | **all 92** | **6.0** |
+| **three-factor: gate times, activity selects** | **0.00** | **0.01** | **0.00** | **0.00** | **all 92** | **6.0** |
+| gated own-input, window 1 | 27.78 | 27.99 | 27.87 | 27.96 | 0 | 34.0 |
+| gated own-input, window 2 | 27.77 | 27.98 | 27.79 | 27.98 | 0 | 34.0 |
+| gated own-input, window 4 | 4.59 | 27.96 | 27.94 | 28.00 | 0 | 34.0 |
+| gated own-input, window 6 = P *(ungated control)* | 1.54 | 1.87 | 1.99 | 2.92 | 0 | 8.9 |
+| own firing (e10) | 28.00 | 28.00 | 28.00 | 28.00 | 0 | 34.0 |
+
+P=12 is the same picture: gate-edge and three-factor both 0.00 at every depth, every
+gated-own-input width between 16.3 and 22.0, the bar at 3.15–3.99.
+
+**The gate is not the global afferent in disguise.** Gate arrival phase (mod P) rises by
+exactly one step per column and wraps — at P=12, columns 4…15 are gated at phases
+4,5,6,7,8,9,10,11,0,1,2,3. A global pulse would be flat at every x. The strip's own τ is
+hand-set from the window width alone (τ_a=3 for both P=6 and P=12); the drive period never
+enters it, so the strip is not covertly tuned to the quantity the medium is meant to learn.
+The period reaches column x only by being carried, one cell per step, from the seed.
+
+**Two lessons had to be re-learned inside the gate.** The first attempt read the gate as a
+*level*: open for `act`=2 steps means two events one step apart, so τ collapsed to the floor
+(3.0) — the same level-vs-edge error as the original lattice port. The second read it as an
+edge but did not latch, so with a widened window several arrivals inside one window again gave
+short intervals. Rising edge, plus one measurement per window, fixes both.
+
+### What this does and does not show
+
+**It works as a clock, not as a filter.** Gating *when the cell listens to its own input*
+fails at every window width, and fails in the two ways already familiar: narrow windows miss
+most drive cycles and τ ratchets to the ceiling (34.0), and a window as wide as the period
+reproduces the ungated numbers *exactly* (1.54 / 1.87 / 1.99 / 2.92, τ 8.9 — the row is a
+numerical identity check, not an independent result). Phase selection of the cell's own input
+does no better than amplitude selection did. What succeeds is the case where the timing
+information lives in **the gate itself** rather than in what the gate selects.
+
+That is a real structural result rather than a trivial one: a dedicated 1-D pathway carries a
+period to arbitrary depth without degradation, while the recurrent 2-D medium destroys it over
+a single column. Same cells, same rule, same threshold — only the connectivity differs. But it
+should be read as *clock distribution*, not as the medium inferring a period from its input.
+Whether the medium can do the latter at all remains open, and the two candidates still
+untested are the longest-recurring-interval estimator and surprise gating.
+
+**The three-factor claim is untested.** `att-3f` matches `att-gate` to 0.01, but the fraction
+of medium cells that ever updated is 1.00 in *every* condition: with θ=1 and full lateral
+coupling the whole medium is active, so "cells with recent input" is not a selective set here.
+The three-factor structure is implemented and does no harm; the claim it is meant to support —
+that the gate times plasticity while activity selects *who* receives it — needs a partially
+active medium to test, which needs structural isolation the current lattice does not have.
+
+**A single strip carries a single period per column.** One attention cell per column is shared
+across all y, so the strip cannot serve two y-bands driven at different periods. That is a
+consequence of the geometry, not a measurement — but it bounds what this architecture could be
+asked to do, and it is the obvious thing a recursively coupled gate (gate ↔ medium, deferred)
+would have to break.
