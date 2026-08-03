@@ -109,6 +109,10 @@ def run(mode, P, seed):
     gate_hits = np.zeros(L)                        # for the propagation check
     gate_phase_sum = np.zeros(L)
     prev_gate = np.zeros(L, bool)
+    # wavefront arrival phase, as a circular mean over firings — is the gate riding on the
+    # drive wave (both travel 1 cell/step) or sweeping independently of it?
+    fire_ph = np.zeros(L, np.complex128)
+    fire_n = np.zeros(L)
 
     last_ev = np.full((L, L), -1.0, np.float32)
     last_fire = np.full((L, L), -1.0, np.float32)
@@ -180,6 +184,12 @@ def run(mode, P, seed):
             ev = (lat_edge | aff) & medium
             prev = last_ev
 
+        fired = (phi == 1) & medium
+        if fired.any():
+            cnt = fired.sum(0).astype(np.float64)
+            fire_ph += cnt * np.exp(2j * np.pi * (t % P) / P)
+            fire_n += cnt
+
         elig_t[lat_edge] = t
         seen = ev & (prev >= 0)
         if mode == "att-3f":
@@ -199,8 +209,11 @@ def run(mode, P, seed):
     err = np.abs(tau - P).mean(0)[W_S:]
     tv = tau.mean(0)[W_S:]
     phase = np.where(gate_hits > 0, gate_phase_sum / np.maximum(gate_hits, 1), np.nan)
+    with np.errstate(invalid="ignore", divide="ignore"):
+        wph = np.angle(fire_ph / np.maximum(fire_n, 1)) / (2 * np.pi) * P
+    wph = np.where(fire_n > 0, wph % P, np.nan)
     frac_upd = float((n_upd[medium] > 0).mean())    # selectivity of the plasticity
-    return err, tv, phase[W_S:], frac_upd
+    return err, tv, phase[W_S:], frac_upd, wph[W_S:]
 
 
 def depth(err):
@@ -218,9 +231,11 @@ def main():
         for mode in MODES:
             E = np.zeros((N_SEEDS, L - W_S)); T = np.zeros((N_SEEDS, L - W_S))
             PH = np.zeros((N_SEEDS, L - W_S)); FU = np.zeros(N_SEEDS)
+            WP = np.zeros((N_SEEDS, L - W_S))
             for s in range(N_SEEDS):
-                E[s], T[s], PH[s], FU[s] = run(mode, P, s)
-            out[f"P{P}_{mode}"] = {"err": E, "tau": T, "phase": PH, "frac_upd": FU}
+                E[s], T[s], PH[s], FU[s], WP[s] = run(mode, P, s)
+            out[f"P{P}_{mode}"] = {"err": E, "tau": T, "phase": PH,
+                                   "frac_upd": FU, "wave_phase": WP}
             e = E.mean(0)
             print(f"P={P:2d} {mode:10s}: |τ−P| x=0 {e[0]:5.2f} | x=8 {e[min(8,len(e)-1)]:5.2f} "
                   f"| x=24 {e[min(24,len(e)-1)]:5.2f} | far {e[-1]:5.2f} "
@@ -228,15 +243,20 @@ def main():
                   f"cells updated {FU.mean():.2f})", flush=True)
         # propagation check: gate arrival phase must RISE with x, not be flat
         ph = out[f"P{P}_att-gate"]["phase"].mean(0)
+        wp = out[f"P{P}_att-gate"]["wave_phase"].mean(0)
+        ix = [0, min(8, len(ph)-1), min(24, len(ph)-1), len(ph)-1]
         print(f"          gate arrival phase (mod P) at x=0/8/24/far: "
-              f"{ph[0]:.1f} / {ph[min(8,len(ph)-1)]:.1f} / {ph[min(24,len(ph)-1)]:.1f} / {ph[-1]:.1f}",
-              flush=True)
+              f"{' / '.join(f'{ph[i]:.1f}' for i in ix)}", flush=True)
+        # and is the gate riding the drive wavefront, or independent of it?
+        print(f"          wave arrival phase (mod P) at the same columns:  "
+              f"{' / '.join(f'{wp[i]:.1f}' for i in ix)}"
+              f"   | gate−wave lag {np.nanmean((ph - wp + P/2) % P - P/2):+.2f}", flush=True)
         print(flush=True)
 
     save = {"L": L, "W_S": W_S, "steps": STEPS, "n": N_SEEDS,
             "periods": np.array(PERIODS), "lock": LOCK}
     for k in out:
-        for f in ("err", "tau", "phase", "frac_upd"):
+        for f in ("err", "tau", "phase", "frac_upd", "wave_phase"):
             save[f"{k}_{f}"] = out[k][f]
     np.savez(os.path.join(OUT, "lattice_attention_gate.npz"), **save)
     with open(os.path.join(OUT, "lattice_attention_gate.json"), "w") as f:
@@ -245,7 +265,9 @@ def main():
                                 "depth": depth(out[k]["err"].mean(0)),
                                 "tau_far": float(out[k]["tau"].mean(0)[-1]),
                                 "frac_cells_updated": float(out[k]["frac_upd"].mean()),
-                                "gate_phase": out[k]["phase"].mean(0).round(2).tolist()}
+                                "gate_phase": out[k]["phase"].mean(0).round(2).tolist(),
+                                "wave_phase": np.nan_to_num(
+                                    out[k]["wave_phase"].mean(0)).round(2).tolist()}
                             for k in out}},
                   f, indent=2)
     print("wrote lattice_attention_gate.{npz,json}", flush=True)

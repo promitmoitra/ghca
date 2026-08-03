@@ -292,6 +292,23 @@ hand-set from the window width alone (τ_a=3 for both P=6 and P=12); the drive p
 enters it, so the strip is not covertly tuned to the quantity the medium is meant to learn.
 The period reaches column x only by being carried, one cell per step, from the seed.
 
+**Is the gate just riding the drive wavefront?** Worth asking, because both the chain and the
+medium are built from the same cells and so both propagate at one cell per step. Comparing the
+gate's arrival phase against the medium's mean firing phase (circular mean over firings, P=12):
+
+| x | 0 | 10 | 20 | 30 | 40 | 60 | 90 |
+|---|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+| gate − wave arrival (steps) | +3.1 | +1.7 | +1.2 | −0.1 | −1.0 | −1.4 | −1.0 |
+
+Partly. Beyond x≈40 the lag is roughly constant (mean −1.48, sd 0.55), i.e. the two do travel
+at about the same speed with the gate ~1.5 steps ahead; but over the first forty columns it
+drifts by four steps (+3.1 → −0.9) as the wavefront falls behind, so they are not in lockstep
+throughout. Either way the coincidence is not what makes the rule work. The gate is autonomous:
+each column's chain cell fires once per beat regardless of the medium's state, so the interval
+between successive gate edges at any column is exactly P whatever the pulse speed is and
+whatever the waves beside it do. Read the gate as an independent propagating clock, not as a
+label attached to the drive wave.
+
 **Two lessons had to be re-learned inside the gate.** The first attempt read the gate as a
 *level*: open for `act`=2 steps means two events one step apart, so τ collapsed to the floor
 (3.0) — the same level-vs-edge error as the original lattice port. The second read it as an

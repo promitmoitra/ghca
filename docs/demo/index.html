@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A medium that learns its own timescale</title>
-<meta name="description" content="An excitable medium learning its own per-cell timescale from input timing, live in the browser — and three ways the learning rule can fail.">
+<meta name="description" content="An excitable medium learning its own per-cell timescale from input timing, live in the browser — three ways the rule fails, and an attention strip built from the same cells that fixes one of them.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0b0d'/%3E%3Ccircle cx='16' cy='16' r='8' fill='%23d4171c'/%3E%3C/svg%3E">
 <style>
   :root{
     --bg:#0b0b0d; --panel:#141418; --ink:#ececee; --muted:#9a9aa2;
     --red:#d4171c; --red-deep:#73000d; --line:#2a2a30;
-    --fast:#4aa8ff; --slow:#ff9a3c;
+    --fast:#4aa8ff; --slow:#ff9a3c; --gate:#5cf0b0;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
@@ -30,6 +30,7 @@
     backdrop-filter:blur(6px)}
   .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 16px 18px}
   .panel h2{font-size:13px;letter-spacing:.14em;color:var(--muted);margin:0 0 12px;font-weight:700}
+  .panel h2.mt{margin-top:18px}
   .row{margin:0 0 15px}
   .row:last-child{margin-bottom:0}
   label{display:block;font-size:13px;color:var(--muted);margin-bottom:5px}
@@ -38,15 +39,22 @@
     border-radius:7px;padding:8px 10px;cursor:pointer;transition:border-color .15s,background .15s}
   .rule:hover{border-color:#3a3a44}
   .rule.on{border-color:var(--red);background:#171113}
+  .rule.hide{display:none}
   .rule input{margin:3px 0 0}
   .rule b{font-size:13.5px;font-weight:700;display:block}
   .rule span{font-size:12px;color:var(--muted);display:block;line-height:1.45}
   .rule.on b{color:var(--red)}
+  .rule.gate.on{border-color:var(--gate);background:#101a16}
+  .rule.gate.on b{color:var(--gate)}
+  .seg{display:flex;gap:6px}
+  .seg button{flex:1;font-size:12.5px;padding:7px 6px}
+  .seg button.on{background:#171113;border-color:var(--red);color:var(--ink);font-weight:600}
   input[type=range]{width:100%;accent-color:var(--red)}
-  .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-variant-numeric:tabular-nums}
+  .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-variant-numeric:tabular-nums}
   .stat{background:#101014;border:1px solid var(--line);border-radius:7px;padding:8px 10px}
   .stat .k{font-size:11px;color:var(--muted);letter-spacing:.08em}
   .stat .v{font-size:19px;font-weight:700}
+  .stat.warm .v{color:var(--slow)}
   #hist{display:block;width:100%;height:96px;background:#101014;border:1px solid var(--line);border-radius:7px}
   .legend{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
   button{background:#1b1b21;color:var(--ink);border:1px solid var(--line);border-radius:7px;
@@ -64,6 +72,7 @@
   .notes td,.notes th{border:1px solid var(--line);padding:5px 10px;text-align:left}
   .notes th{color:var(--ink)}
   .warn{border-left:2px solid var(--red);padding-left:12px;margin:14px 0}
+  .ok{border-left:2px solid var(--gate);padding-left:12px;margin:14px 0}
 </style>
 </head>
 <body>
@@ -74,7 +83,8 @@
   parameter — <b>τ</b>, how long it stays refractory before it can fire again — and a
   local rule that tunes τ from the timing of the input it receives. No gradients, no
   backpropagation, no objective function. Move the drive period and the medium retunes
-  itself. Then break the rule in three different ways and watch it fail.</p>
+  itself. Then break the rule in three different ways, put the input where anatomy
+  would actually put it, and watch an attention strip built from the same cells rescue it.</p>
 
   <div class="stage">
     <div>
@@ -84,20 +94,29 @@
       </div>
       <div class="legend" style="margin-top:7px">
         <span style="color:var(--fast)">◀ fast (τ = 3)</span>
+        <span id="gateleg" style="color:var(--gate);display:none">▬ sensory strip · attention chain and its gate</span>
         <span>learned timescale</span>
         <span style="color:var(--slow)">slow (τ = 34) ▶</span>
       </div>
     </div>
 
     <div class="panel">
-      <h2>τ learns from</h2>
+      <h2>where the input arrives</h2>
+      <div class="seg" id="geom">
+        <button class="on" data-geom="0">everywhere</button>
+        <button data-geom="1">a sensory strip</button>
+      </div>
+
+      <h2 class="mt">τ learns from</h2>
       <div class="rules" id="rules">
         <label class="rule on"><input type="radio" name="rule" value="0" checked>
-          <span><b>the afferent channel</b><span>Only the exogenous timing pulse. Works.</span></span></label>
+          <span><b>the afferent channel</b><span data-d0="Only the exogenous timing pulse. Works." data-d1="Sensed only inside the strip — so cells in the medium never get an event at all.">Only the exogenous timing pulse. Works.</span></span></label>
         <label class="rule"><input type="radio" name="rule" value="1">
-          <span><b>every input</b><span>Afferent and neighbours alike. The medium starts teaching itself.</span></span></label>
+          <span><b>every input</b><span data-d0="Afferent and neighbours alike. The medium starts teaching itself." data-d1="The honest localised case. A distance gradient appears — but it never locks.">Afferent and neighbours alike. The medium starts teaching itself.</span></span></label>
         <label class="rule"><input type="radio" name="rule" value="2">
-          <span><b>its own firing</b><span>The original rule. Ratchets to the ceiling.</span></span></label>
+          <span><b>its own firing</b><span data-d0="The original rule. Ratchets to the ceiling." data-d1="The original rule. Ratchets to the ceiling.">The original rule. Ratchets to the ceiling.</span></span></label>
+        <label class="rule gate hide"><input type="radio" name="rule" value="3">
+          <span><b>an attention gate</b><span data-d0="" data-d1="A pulse of the same cells travels out from the strip and times the update.">A pulse of the same cells travels out from the strip and times the update.</span></span></label>
       </div>
 
       <div class="row" style="margin-top:15px">
@@ -109,11 +128,12 @@
         <div class="stats">
           <div class="stat"><div class="k">mean τ</div><div class="v" id="mtau">–</div></div>
           <div class="stat"><div class="k">|τ − P|</div><div class="v" id="err">–</div></div>
+          <div class="stat"><div class="k">steps</div><div class="v" id="nstep">–</div></div>
         </div>
       </div>
 
       <div class="row">
-        <label>τ distribution</label>
+        <label id="chartlab">τ distribution</label>
         <canvas id="hist" width="520" height="192"></canvas>
       </div>
 
@@ -129,24 +149,24 @@
 
   <div class="notes">
     <h3>What you are looking at</h3>
-    <p>Each pixel is one cell of a Greenberg–Hastings excitable medium on a torus: it
-    rests, fires when enough neighbours are firing, then sits refractory for <code>τ</code>
-    steps before it can fire again. Colour is each cell's <b>learned τ</b> — blue is fast,
-    orange is slow — and brightness is its current activity, so you see the waves and the
-    learned parameter field at the same time. A sparse scatter of pacemaker cells is driven
-    on the beat so that waves exist at all.</p>
-
-    <p>Every cell also senses a weak <b>afferent</b> pulse on the beat. It is
-    <i>subthreshold</i> by construction: it carries timing but never fires a cell. That
-    distinction turns out to be the whole story.</p>
+    <p>Each pixel is one cell of a Greenberg–Hastings excitable medium: it rests, fires when
+    enough neighbours are firing, then sits refractory for <code>τ</code> steps before it can
+    fire again. Colour is each cell's <b>learned τ</b> — blue is fast, orange is slow — and
+    brightness is its current activity, so you see the waves and the learned parameter field at
+    the same time.</p>
 
     <h3>The rule</h3>
     <p>On each input event, a cell nudges its own τ toward the interval since the last
     one: <code>τ ← τ + η · (Δt − τ)</code>. Purely local, reward-free, and it can move τ
-    down as well as up. Everything below is the same rule with the same η, differing only
-    in <i>which inputs count as an event</i>.</p>
+    down as well as up. Every condition below is the same rule with the same η, differing only
+    in <i>which inputs count as an event</i> — and in where the input arrives.</p>
 
-    <h3>Three ways to break it</h3>
+    <h3>1 · Input everywhere</h3>
+    <p>In the first architecture the medium is a torus, a sparse scatter of pacemaker cells is
+    driven on the beat so that waves exist at all, and <i>every</i> cell also senses a weak
+    <b>afferent</b> pulse on the beat. The pulse is <i>subthreshold</i> by construction: it
+    carries timing but never fires a cell.</p>
+
     <p><b>Learn from every input</b> and τ stops tracking the drive. Once τ settles, the
     medium sustains its own reentrant waves at period ≈ τ, so each cell's input is
     generated by its neighbours at interval ≈ τ — the rule measures its own output and
@@ -158,8 +178,8 @@
     skips one and measures a <i>multiple</i> of the true period — which pushes τ higher
     still. This is a one-way ratchet, and no fast population can ever form.</p>
 
-    <p>The working rule needs a channel it can attribute to the outside world. Given one,
-    it tracks exactly and retunes in both directions.</p>
+    <p><b>Learn from the afferent channel alone</b> and it tracks exactly, retuning in both
+    directions.</p>
 
     <table>
       <tr><th>τ learns from</th><th>P=6</th><th>P=18</th><th>P=6</th><th>|τ−P| on retune</th></tr>
@@ -167,24 +187,109 @@
       <tr><td>every input</td><td>3.6</td><td>5.1</td><td>3.6</td><td>12.9</td></tr>
       <tr><td>own firing</td><td>34.0</td><td>34.0</td><td>34.0</td><td>16.0</td></tr>
     </table>
-    <p style="font-size:13px">Measured offline in NumPy at 96×96, n=5 — see
-    <code>experiments/lattice_afferent_timing.py</code>. This page runs the identical
-    update rule as a fragment shader.</p>
+
+    <h3>2 · Input at a sensory strip — where the anatomy would put it</h3>
+    <p>That first result is real but it flatters itself. The afferent was delivered to
+    <b>every cell at once</b>, so every cell was effectively <i>in the sensory layer</i> and the
+    recurrence was not doing the learning. Switch the architecture and the geometry changes to
+    match: a <b>sensory strip</b> along the left edge (the pale bar — τ imposed at the drive
+    period, force-fired on the beat, and excluded from the statistics), a plastic <b>hidden
+    medium</b> beyond it, no pacemakers, and walls instead of wrap-around in x so that distance
+    from the strip is simply the horizontal coordinate. Waves now enter from the strip and
+    travel outward, and the chart switches to <b>|τ − P| against distance</b>.</p>
+
+    <p>The localised case is much harder, and it fails. Learning from the afferent alone now
+    teaches nothing beyond the strip — those cells never receive an afferent event, so τ stays
+    at its random initialisation. Learning from <i>every</i> input does better and produces a
+    real distance gradient offline (error 1.5 next to the strip rising to 2.9 far away at
+    96×96, so proximity genuinely helps) but it <b>never locks anywhere, not even in the
+    adjacent column</b>. The reason is sharper than "the cell cannot tell exogenous from
+    endogenous": a cell has four neighbours and several wavefronts arrive per drive cycle, so a
+    last-interval estimator measures intervals shorter than the period. The rhythm is present
+    in the input but not <i>recoverable</i>.</p>
+
+    <p><b>Give this one time.</b> Waves now enter from a single edge instead of from pacemakers
+    scattered everywhere, so the 256-wide medium takes a few thousand steps to fill — watch the
+    step counter, which turns orange until it has. Before then the right-hand end of the profile
+    is a transient and reads far worse than the settled answer. Once settled the live profile
+    sits at roughly 1.8 next to the strip and 2.2 at the far wall: flatter than the 96×96
+    gradient, but above the 1.5 lock threshold at every distance, which is the part that
+    matters. That is an independent check as much as a demo — the shader and the offline NumPy
+    run agree to about 0.05 across the whole profile.</p>
+
+    <p>Requiring a coincidence of two neighbours before an input counts — the obvious fix —
+    is <b>worse</b> at every distance: coincidences are rare, so most drive cycles are
+    discarded, intervals run long, and τ is pushed to the ceiling instead. That generalises
+    into a bind. <b>Any amplitude threshold low enough to sample every cycle admits spurious
+    traffic; any threshold high enough to reject the traffic misses most cycles.</b> What
+    separates drive from traffic is not how strong the input is, but <i>when</i> it arrives.</p>
+
+    <h3>3 · An attention strip made of the same cells</h3>
+    <p>So: a <b>one-dimensional Greenberg–Hastings chain</b>, drawn as the thin green line along
+    the top, running orthogonal to the sensory edge with exactly one cell per column. It is
+    seeded at the left by the sensory layer on each beat and propagates rightward as a
+    travelling pulse, one cell per step. Each column is therefore gated once per drive period,
+    at a phase delayed in proportion to its distance — the green bands sweeping across the
+    medium. Where a band passes, that column's τ is updated. Same cell type, same threshold,
+    same rule; only the connectivity differs.</p>
+
+    <p>Select <b>an attention gate</b> and τ locks to the drive period at every distance —
+    |τ − P| = 0.00 across the whole medium, matching the everywhere-afferent upper bound
+    without an everywhere afferent. Drag the period and it retunes, all the way to the far wall.</p>
+
+    <p>Watch it for a moment and you will notice the gate does not sweep <i>past</i> the waves so
+    much as ride along with them. That is real but partial: measured offline, the gate and the
+    drive wavefront travel at about the same speed out in the bulk of the medium, with the gate
+    roughly 1.5 steps ahead — but over the first forty-odd columns that offset drifts by a full
+    four steps as the wavefront falls behind, so they are not in lockstep everywhere. And it is a
+    coincidence of construction
+    anyway. Both the chain and the medium are made of the same cells, so both propagate at one
+    cell per step; nothing in the mechanism depends on that. What makes the gate work is only
+    that each column is opened <i>exactly once per drive period</i>, so the interval between
+    successive openings is exactly P no matter how fast the pulse travels or what the waves
+    beside it are doing. The gate is an autonomous clock, not a label riding on the wave.</p>
+
+    <p>What it does supply is the thing the failing cases lacked — an input a cell can attribute
+    to the outside world. Learning from every input fails because a cell cannot distinguish the
+    wavefront that came from the sensory edge from reentrant traffic arriving out of three other
+    directions. The gate resolves that not by measuring the traffic more cleverly but by
+    supplying a separate reference, carried through the substrate rather than broadcast from
+    outside it.</p>
+
+    <div class="ok">
+      <p style="margin:0"><b>Why this is not the global pulse in disguise.</b> The gate arrives
+      at column <i>x</i> <i>later</i> than at column 0, because it is carried by cells at finite
+      speed rather than broadcast. Offline the arrival phase rises by exactly one step per
+      column and wraps modulo P — at P=12, columns 4…15 are gated at phases 4,5,6,7,8,9,10,11,0,1,2,3.
+      A broadcast would be flat at every distance. And the chain's own τ is hand-set from its
+      pulse width alone, never from P, so the strip is not covertly tuned to the quantity the
+      medium is supposed to learn. On this page the chain is simulated as real cells in the
+      state texture — you are watching the pulse propagate, not a clock computed from P.</p>
+    </div>
 
     <div class="warn">
-      <p style="margin:0"><b>Honest scope.</b> Two things this demo does <i>not</i> show.
-      Driving with two different periods at once does not produce fast and slow spatial
-      domains: the fastest pacemaker entrains the whole medium, which is the standard
-      excitable-media result and not something the rule can undo. And the afferent pulse here is
-      <b>global</b> — every cell receives it, which means every cell is effectively in the
-      sensory layer and the recurrence is not doing the learning. With the afferent confined
-      to a localised sensory strip instead, τ does <i>not</i> lock anywhere in the medium: a
-      distance gradient appears (error 1.5 near the strip rising to 2.9 far away) but never
-      reaches the drive period, because several wavefronts arrive per cycle and a
-      last-interval estimator cannot recover the rhythm. Whether a cell could
-      <i>discover</i> which of its inputs is exogenous, rather than being told by
-      architecture, is open; gating on low local activity does not do it.</p>
+      <p style="margin:0"><b>Honest scope.</b> The gate works as a <b>clock, not a filter</b>.
+      Using it the other way round — letting the gate choose <i>when a cell listens to its own
+      input</i> — fails at every window width: narrow windows miss drive cycles and τ ratchets
+      to the ceiling, and a window as wide as the period reproduces the ungated numbers exactly.
+      So the timing information lives in <i>the gate itself</i>, not in what the gate selects,
+      and this should be read as clock distribution rather than the medium inferring a period
+      from its input. What it does show structurally is still worth having: a dedicated
+      one-dimensional pathway carries a period to arbitrary depth while the recurrent
+      two-dimensional medium destroys it over a single column. Two further caveats — the
+      attention chain's τ is hand-set rather than learned, and one chain carries one period per
+      column by construction, so it cannot serve two bands driven at different rates. Whether a
+      cell could <i>discover</i> which of its inputs is exogenous, rather than being told by
+      architecture or by a gate, is still open.</p>
     </div>
+
+    <p style="font-size:13px">Offline numbers measured in NumPy at 96×96 — see
+    <code>experiments/lattice_afferent_timing.py</code>,
+    <code>experiments/lattice_afferent_depth.py</code> and
+    <code>experiments/lattice_attention_gate.py</code>. This page runs the identical update
+    rule as a fragment shader. Driving with two different periods at once, incidentally, does
+    not produce fast and slow spatial domains: the fastest pacemaker entrains the whole medium,
+    which is the standard excitable-media result and not something the rule can undo.</p>
 
     <p style="margin-top:26px;font-size:13px">Built with
     <a href="https://github.com/paradigms-of-intelligence/swissgl">SwissGL</a>.
@@ -198,45 +303,84 @@
 const L = 256;                       // lattice side
 const ACT = 2.0, THETA = 1.0, TMIN = 3.0, TMAX = 34.0, ETA = 0.15;
 const PACE_FRAC = 0.004;
-const SUBSTEPS = 3;                  // sim steps per animation frame
+const SUBSTEPS = 6;                  // sim steps per animation frame
+const SETTLE = 5500;                 // strip mode needs this many steps to fill the medium
+const WS = 8;                        // sensory strip width, in cells
+const TAUA = 3.0;                    // the attention chain's own tau (hand-set)
 
 const cv = document.getElementById('c');
 const glsl = SwissGL(cv);
-let step = 0, P = 6, rule = 0, needReset = 2, viewMode = 0;
+let step = 0, P = 6, rule = 0, geom = 0, needReset = 2, viewMode = 0;
 
 // ---- the update rule, as a fragment shader -------------------------------------
 // state = (phi, tau, lastEvent, prevLateral)
+// In strip mode the TOP ROW of the same texture is the 1-D attention chain, so the
+// medium occupies rows 0 .. L-2 and each cell reads its own column's chain cell.
 const SIM = `
 uniform float t, P, aff, paceFrac, doReset;
-uniform int rule;
+uniform int rule, geom;
 const float ACT=${ACT.toFixed(1)}, THETA=${THETA.toFixed(1)}, TMIN=${TMIN.toFixed(1)}, TMAX=${TMAX.toFixed(1)}, ETA=${ETA.toFixed(3)};
+const float TAUA=${TAUA.toFixed(1)};
+const int WS=${WS};
 bool isActive(vec4 s){ return s.x>0.5 && s.x<ACT+0.5; }
 void fragment(){
   ivec2 sz = Src_size();
+  int CY = sz.y-1;                       // the attention chain's row
+  bool strip   = geom == 1;
+  bool isChain = strip && I.y == CY;
+  bool sensory = strip && I.x < WS;
   vec4 s = Src(I);
   float phi=s.x, tau=s.y, lastEv=s.z, prevLat=s.w;
-  bool pace = hash(ivec3(I,7)).x < paceFrac;
+  bool pace = (!strip) && hash(ivec3(I,7)).x < paceFrac;
+  bool beat = aff > 0.5;
 
   if (doReset > 0.5) {
     tau = TMIN + (TMAX-TMIN)*hash(ivec3(I,3)).y;
-    if (pace) tau = P;
+    if (pace || sensory) tau = P;
+    if (isChain) tau = TAUA;
     FOut = vec4(0.0, tau, -1.0, 0.0);
     return;
   }
 
+  // ---- the attention chain: seeded at the left by the beat, travels right ------
+  if (isChain) {
+    bool inp = (I.x == 0) ? beat : isActive(Src(ivec2(I.x-1, CY)));
+    float np = phi;
+    if (np >= 0.5) np += 1.0;
+    if (np > ceil(TAUA) + 0.5) np = 0.0;
+    if (phi < 0.5 && inp) np = 1.0;
+    FOut = vec4(np, TAUA, -1.0, 0.0);
+    return;
+  }
+
+  // ---- neighbours: torus everywhere-mode; walled in x, periodic in y in strip mode
   int n = 0;
-  n += isActive(Src((I+ivec2( 1, 0)+sz)%sz)) ? 1 : 0;
-  n += isActive(Src((I+ivec2(-1, 0)+sz)%sz)) ? 1 : 0;
-  n += isActive(Src((I+ivec2( 0, 1)+sz)%sz)) ? 1 : 0;
-  n += isActive(Src((I+ivec2( 0,-1)+sz)%sz)) ? 1 : 0;
+  if (strip) {
+    int H = CY;                          // medium height (rows 0..H-1)
+    n += isActive(Src(ivec2(I.x, (I.y+1)%H)))   ? 1 : 0;
+    n += isActive(Src(ivec2(I.x, (I.y-1+H)%H))) ? 1 : 0;
+    if (I.x > 0)        n += isActive(Src(ivec2(I.x-1, I.y))) ? 1 : 0;
+    if (I.x < sz.x-1)   n += isActive(Src(ivec2(I.x+1, I.y))) ? 1 : 0;
+  } else {
+    n += isActive(Src((I+ivec2( 1, 0)+sz)%sz)) ? 1 : 0;
+    n += isActive(Src((I+ivec2(-1, 0)+sz)%sz)) ? 1 : 0;
+    n += isActive(Src((I+ivec2( 0, 1)+sz)%sz)) ? 1 : 0;
+    n += isActive(Src((I+ivec2( 0,-1)+sz)%sz)) ? 1 : 0;
+  }
 
   float lateral = (float(n) >= THETA) ? 1.0 : 0.0;
-  float paceDrive = (pace && aff > 0.5) ? 1.0 : 0.0;   // only pacemakers get real drive
-  float supra = max(lateral, paceDrive);
+  // suprathreshold drive: the sensory strip in strip mode, sparse pacemakers otherwise
+  float drive = strip ? ((sensory && beat) ? 1.0 : 0.0)
+                      : ((pace    && beat) ? 1.0 : 0.0);
+  float supra = max(lateral, drive);
   bool rested = phi < 0.5;
 
   float latEdge = (lateral > 0.5 && prevLat < 0.5) ? 1.0 : 0.0;
-  float affEdge = aff;                                  // single-step global pulse
+  // the afferent timing pulse: global, or confined to the strip
+  float affEdge = beat ? (strip ? (sensory ? 1.0 : 0.0) : 1.0) : 0.0;
+  // the gate's rising edge == this column's chain cell fired on the previous step
+  float gateEdge = 0.0;
+  if (strip) { float g = Src(ivec2(I.x, CY)).x; gateEdge = (g>0.5 && g<1.5) ? 1.0 : 0.0; }
 
   // advance the clock on this cell's own tau, then apply excitation
   float nphi = phi;
@@ -248,10 +392,11 @@ void fragment(){
   float ev;
   if (rule == 0)      ev = affEdge;                     // afferent only
   else if (rule == 1) ev = max(affEdge, latEdge);       // every input
+  else if (rule == 3) ev = gateEdge;                    // the attention gate
   else                ev = (nphi > 0.5 && nphi < 1.5) ? 1.0 : 0.0;  // own firing
 
-  if (pace) {
-    tau = P;                                            // pacemakers keep the beat
+  if (pace || sensory) {
+    tau = P;                                            // transducers keep the beat
   } else if (ev > 0.5) {
     if (lastEv >= 0.0) {
       float dt = clamp(t - lastEv, 0.0, 60.0);
@@ -264,10 +409,13 @@ void fragment(){
 
 // ---- render pass ---------------------------------------------------------------
 const DRAW = `
-uniform int viewMode;
+uniform int viewMode, geom;
 const float ACT=${ACT.toFixed(1)}, TMIN=${TMIN.toFixed(1)}, TMAX=${TMAX.toFixed(1)};
+const int WS=${WS};
 void fragment(){
-  vec4 s = Src(ivec2(UV*vec2(Src_size())));
+  ivec2 sz = Src_size();
+  ivec2 px = ivec2(UV*vec2(sz));
+  vec4 s = Src(px);
   float phi=s.x, tau=s.y;
   bool isAct = phi>0.5 && phi<ACT+0.5;
   float refr  = (phi>ACT+0.5) ? 1.0-(phi-ACT)/max(tau-ACT,1.0) : 0.0;
@@ -286,13 +434,26 @@ void fragment(){
     col = mix(col, tint*0.42, refr);
     if (isAct) col = mix(tint, vec3(1.0), 0.35);
   }
+
+  if (geom == 1) {
+    if (px.y == sz.y-1) {                    // the attention chain itself
+      bool a = phi>0.5 && phi<ACT+0.5;
+      col = a ? vec3(0.36,0.94,0.69) : vec3(0.06,0.13,0.10);
+    } else {
+      if (px.x < WS) col = mix(col, vec3(0.88,0.90,0.96), 0.62);   // the sensory strip
+      // the gate band. It co-propagates with the wavefront launched by the same beat,
+      // so it is drawn as a green cast riding on top of that wave rather than beside it.
+      float g = Src(ivec2(px.x, sz.y-1)).x;
+      if (g>0.5 && g<ACT+0.5) col = mix(col, vec3(0.20,0.95,0.60), isAct ? 0.42 : 0.20);
+    }
+  }
   FOut = vec4(col, 1.0);
 }`;
 
-// ---- readback for the histogram / stats ----------------------------------------
-const RB = Math.min(128, L);                 // readback resolution (subsampled)
+// ---- readback for the chart / stats ---------------------------------------------
 const rbBuf = new Float32Array(L*L*4);
-let mtau = 0, errv = 0, hist = new Float32Array(40);
+const NBIN = 64;
+let mtau = 0, errv = 0, hist = new Float32Array(40), prof = new Float32Array(NBIN);
 
 function readback(){
   const tgt = glsl.buffers['state'] && glsl.buffers['state'][0];
@@ -303,19 +464,30 @@ function readback(){
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
   hist.fill(0);
+  const pSum = new Float32Array(NBIN), pCnt = new Float32Array(NBIN);
+  // in strip mode: skip the sensory strip and the chain row — only the plastic medium counts
+  const x0 = geom ? WS : 0, yEnd = geom ? L-1 : L;
   let sum = 0, sumE = 0, cnt = 0;
   const stride = 2;                          // subsample for speed
-  for (let y=0; y<L; y+=stride) for (let x=0; x<L; x+=stride){
+  for (let y=0; y<yEnd; y+=stride) for (let x=x0; x<L; x+=stride){
     const tau = rbBuf[(y*L+x)*4 + 1];
     if (!(tau > 0)) continue;
-    sum += tau; sumE += Math.abs(tau - P); cnt++;
+    const e = Math.abs(tau - P);
+    sum += tau; sumE += e; cnt++;
     let b = Math.floor((tau-TMIN)/(TMAX-TMIN)*hist.length);
     hist[Math.max(0, Math.min(hist.length-1, b))]++;
+    const pb = Math.min(NBIN-1, Math.floor((x-x0)/(L-x0)*NBIN));
+    pSum[pb] += e; pCnt[pb]++;
   }
+  for (let i=0;i<NBIN;i++) prof[i] = pCnt[i] ? pSum[i]/pCnt[i] : 0;
   if (cnt){ mtau = sum/cnt; errv = sumE/cnt; }
   document.getElementById('mtau').textContent = mtau.toFixed(1);
   document.getElementById('err').textContent  = errv.toFixed(1);
-  drawHist();
+  // in strip mode the medium fills from one edge, so early readings are a transient
+  const settling = geom === 1 && step < SETTLE;
+  document.getElementById('nstep').textContent = step < 1000 ? step : (step/1000).toFixed(1)+'k';
+  document.getElementById('nstep').parentElement.classList.toggle('warm', settling);
+  geom ? drawProfile() : drawHist();
   updateVerdict();
 }
 
@@ -326,24 +498,65 @@ function drawHist(){
   const mx = Math.max(1, ...hist);
   for (let i=0;i<hist.length;i++){
     const f = i/(hist.length-1);
-    const h = (hist[i]/mx)*(H-24);
+    const h = (hist[i]/mx)*(H-34);
     const r = Math.round(74+(255-74)*f), g = Math.round(168+(154-168)*f), b = Math.round(255+(60-255)*f);
     hx.fillStyle = `rgb(${r},${g},${b})`;
-    hx.fillRect(i*(W/hist.length)+1, H-14-h, W/hist.length-2, h);
+    hx.fillRect(i*(W/hist.length)+1, H-24-h, W/hist.length-2, h);
   }
   // marker for the current drive period
   const px = (P-TMIN)/(TMAX-TMIN)*W;
-  hx.strokeStyle='#d4171c'; hx.lineWidth=2;
-  hx.beginPath(); hx.moveTo(px,0); hx.lineTo(px,H-14); hx.stroke();
-  hx.fillStyle='#d4171c'; hx.font='11px -apple-system,sans-serif';
-  hx.fillText('P='+P, Math.min(px+4, W-34), 12);
+  hx.strokeStyle='#d4171c'; hx.lineWidth=2.5;
+  hx.beginPath(); hx.moveTo(px,0); hx.lineTo(px,H-24); hx.stroke();
+  hx.fillStyle='#d4171c'; hx.font='18px -apple-system,sans-serif';
+  hx.fillText('P='+P, Math.min(px+5, W-52), 18);
   hx.fillStyle='#9a9aa2';
-  hx.fillText('τ='+TMIN, 2, H-2); hx.fillText('τ='+TMAX, W-38, H-2);
+  hx.fillText('τ='+TMIN, 3, H-5); hx.fillText('τ='+TMAX, W-62, H-5);
+}
+
+function drawProfile(){
+  const W=hc.width, H=hc.height, EMAX=6;   // the canvas is drawn at 2x and scaled down
+  hx.clearRect(0,0,W,H);
+  const ey = e => H-24-Math.min(e,EMAX)/EMAX*(H-42);
+  const col = rule===3 ? '#5cf0b0' : '#d4171c';
+  // the lock threshold, and the band below it that counts as locked
+  hx.fillStyle = rule===3 ? 'rgba(92,240,176,.07)' : 'rgba(212,23,28,.06)';
+  hx.fillRect(0, ey(1.5), W, H-24-ey(1.5));
+  hx.strokeStyle='#4a4a56'; hx.lineWidth=1.5; hx.setLineDash([5,4]);
+  hx.beginPath(); hx.moveTo(0,ey(1.5)); hx.lineTo(W,ey(1.5)); hx.stroke();
+  hx.setLineDash([]);
+  const path = i => { const x=i/(NBIN-1)*W; i ? hx.lineTo(x,ey(prof[i])) : hx.moveTo(x,ey(prof[i])); };
+  hx.beginPath(); for (let i=0;i<NBIN;i++) path(i);
+  hx.lineTo(W, ey(0)); hx.lineTo(0, ey(0)); hx.closePath();
+  hx.fillStyle = rule===3 ? 'rgba(92,240,176,.20)' : 'rgba(212,23,28,.18)';
+  hx.fill();
+  hx.beginPath(); for (let i=0;i<NBIN;i++) path(i);
+  hx.strokeStyle=col; hx.lineWidth=3.5; hx.lineJoin='round'; hx.stroke();
+  hx.fillStyle='#9a9aa2'; hx.font='18px -apple-system,sans-serif';
+  hx.fillText('at the strip', 3, H-5);
+  hx.fillText('far wall', W-72, H-5);
+  hx.fillStyle='#7d7d88';
+  hx.fillText('locked (1.5)', 5, ey(1.5)-7);
 }
 
 function updateVerdict(){
   const v = document.getElementById('verdict');
   const close = errv < 1.5, near = errv < 4;
+  if (geom === 1){
+    if (rule === 3){
+      v.innerHTML = close
+        ? '<b>Locked to the drive, all the way out.</b> The gate reaches every column once per period, at a phase delayed by its distance. Drag the period — it retunes to the far wall.'
+        : 'The gate is sweeping outward and τ is following it…';
+    } else if (rule === 0){
+      v.innerHTML = '<b>Nothing to learn from.</b> The afferent exists only inside the strip, so cells in the medium never receive an event and τ stays wherever it was initialised — mean τ sits at the middle of its range and the profile is flat.';
+    } else if (rule === 1){
+      v.innerHTML = step < SETTLE
+        ? 'Still filling. Waves enter only from the strip, so the far half of the medium has barely been reached — the right-hand end of the profile is a transient, not the answer. Give it '+Math.max(0, SETTLE-step)+' more steps.'
+        : '<b>Settled, and locked nowhere.</b> The profile sits around 1.8–2.3 across the whole medium — above the lock threshold everywhere, including the column next to the strip. Several wavefronts arrive per drive cycle, so the last interval is shorter than the rhythm and the period is never recovered.';
+    } else {
+      v.innerHTML = '<b>Ratcheted to the ceiling.</b> Each overshoot makes the next measurement a longer multiple of the true period.';
+    }
+    return;
+  }
   if (rule === 2){
     v.innerHTML = mtau > TMAX-1.5
       ? '<b>Ratcheted to the ceiling.</b> Every cell measured a multiple of the true period and pushed τ up until it stuck. No fast population can form.'
@@ -360,26 +573,49 @@ function updateVerdict(){
 }
 
 // ---- controls ------------------------------------------------------------------
-document.getElementById('rules').addEventListener('change', e=>{
-  rule = +e.target.value;
-  [...document.querySelectorAll('.rule')].forEach(r=>r.classList.toggle('on', r.contains(e.target)));
-  needReset = 2;
+function syncRuleText(){
+  [...document.querySelectorAll('#rules .rule')].forEach(r=>{
+    const d = r.querySelector('span[data-d0]');
+    if (d) d.textContent = geom ? d.dataset.d1 : d.dataset.d0;
+    if (r.classList.contains('gate')) r.classList.toggle('hide', geom !== 1);
+  });
+  document.getElementById('chartlab').textContent =
+    geom ? '|τ − P| by distance from the strip' : 'τ distribution';
+  document.getElementById('gateleg').style.display = geom ? '' : 'none';
+  document.getElementById('badge').textContent =
+    (viewMode ? 'wave activity' : 'learned τ · brightness = activity')
+    + (geom ? ' · sensory strip at left' : '');
+}
+function setRule(r){
+  rule = r; needReset = 2;
+  document.querySelector(`#rules input[value="${r}"]`).checked = true;
+  [...document.querySelectorAll('.rule')].forEach(el=>
+    el.classList.toggle('on', +el.querySelector('input').value === r));
+}
+document.getElementById('rules').addEventListener('change', e=> setRule(+e.target.value));
+document.getElementById('geom').addEventListener('click', e=>{
+  const b = e.target.closest('button[data-geom]');
+  if (!b) return;
+  geom = +b.dataset.geom;
+  [...e.currentTarget.children].forEach(x=>x.classList.toggle('on', x===b));
+  syncRuleText();
+  // the interesting default differs per architecture: the gate is the point of strip mode.
+  // A longer period there too — at P=6 the waves are 6 cells apart and the picture is a blur.
+  setP(geom ? 12 : 6);
+  setRule(geom ? 3 : 0);
 });
 const Pin = document.getElementById('P');
-Pin.addEventListener('input', ()=>{
-  P = +Pin.value; document.getElementById('plab').textContent = P;
-});
+function setP(p){ P = p; Pin.value = p; document.getElementById('plab').textContent = p; }
+Pin.addEventListener('input', ()=> setP(+Pin.value));
 document.getElementById('reset').onclick = ()=>{ needReset = 2; };
 document.getElementById('view').onclick = e=>{
   viewMode = 1-viewMode;
   e.target.textContent = viewMode ? 'Show learned τ' : 'Show waves only';
-  document.getElementById('badge').textContent = viewMode
-    ? 'wave activity' : 'learned τ · brightness = activity';
+  syncRuleText();
 };
 let storyTimer = null;
 document.getElementById('story').onclick = ()=>{
   if (storyTimer){ clearTimeout(storyTimer); storyTimer = null; }
-  const setP = p=>{ P=p; Pin.value=p; document.getElementById('plab').textContent=p; };
   needReset = 2; setP(6);
   storyTimer = setTimeout(()=>{ setP(18);
     storyTimer = setTimeout(()=>{ setP(6); storyTimer = null; }, 7000); }, 7000);
@@ -393,16 +629,18 @@ glsl.loop(()=>{
     const doReset = needReset > 0 ? 1 : 0;
     if (needReset > 0){ needReset--; step = 0; }
     const aff = (step % P === 0) ? 1 : 0;
-    glsl({t:step, P, aff, rule, paceFrac:PACE_FRAC, doReset, FP:SIM},
+    glsl({t:step, P, aff, rule, geom, paceFrac:PACE_FRAC, doReset, FP:SIM},
          {tag:'state', size:[L,L], format:'rgba32f', story:2, filter:'nearest', wrap:'repeat'});
     if (!doReset) step++;
   }
-  glsl({Src:glsl.buffers['state'][0], viewMode, FP:DRAW});
+  glsl({Src:glsl.buffers['state'][0], viewMode, geom, FP:DRAW});
   if ((frame++ % 8) === 0) readback();
 });
 window._demo = { get mtau(){return mtau}, get err(){return errv},
-                 get step(){return step}, setP:p=>{P=p;Pin.value=p;},
-                 setRule:r=>{rule=r;needReset=2;}, reset:()=>{needReset=2;} };
+                 get step(){return step}, get prof(){return Array.from(prof)},
+                 setP,
+                 setRule, setGeom:g=>{geom=g;syncRuleText();needReset=2;},
+                 reset:()=>{needReset=2;} };
 </script>
 </body>
 </html>
