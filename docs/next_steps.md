@@ -388,27 +388,71 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      memory) and E3 (timed response) hand-built. Could retire *their* afforded components,
      extending afforded→learned beyond conjunction cells into temporal cognition.
      **Effort** medium. **Connects** tension 1 to the memory/timing experiments.
-  5. **Surprise-gated timescale learning — how does a cell know which input is
-     *exogenous*? (deferred, flagged 2026-08)** `lattice_timescale_notes.md` shows that
-     on a **recurrent** medium the input-timing rule locks and stops tracking, because
-     the medium's own reentrant activity becomes the teaching signal (a self-confirming
-     fixed point). Giving the rule a **privileged afferent channel** fixes it completely
-     (τ tracks 6→18→6 with zero error), but that requires the exogenous stream to be
-     *labelled by architecture*. The open question is whether a cell can **discover**
-     which of its inputs is exogenous. A simple activity gate (update τ only when local
-     activity is low) **fails**. The natural next candidate is a
-     **surprise / prediction-error gate**: learn timing only from inputs that are *not
-     predicted* by the medium's own ongoing rhythm — reusing E8's predictive machinery
-     (forward prediction + global surprise) and 1c's online GVF demons as the predictor.
-     If it works, the claim strengthens from "needs a labelled afferent" to "an
-     unlabelled medium can *find* its exogenous input," which also connects the
-     timescale arc to the predictive/active-inference arc. **Effort** medium.
-     **Risk** medium–high (the predictor must be fast relative to the rhythm).
+  5. **Can a recurrent medium learn its timescale at all? — 🔬 **PARTLY ANSWERED, and the
+     question got harder** (`lattice_timescale_notes.md`, updated 2026-08)** The original
+     framing was "how does a cell know which input is *exogenous*?", on the evidence that a
+     **privileged afferent channel** fixes the self-confirming fixed point completely (τ
+     tracks 6→18→6 with zero error). That afferent was **delivered to every cell at once**,
+     so every cell was effectively *in the sensory layer* — the result was about a sensory
+     sheet, not a recurrent medium, and the notes now carry that correction. Putting the
+     afferent where the repo's own `roles` convention says it belongs (a sensory strip along
+     one edge, plastic hidden medium beyond) changes the picture: learning from *all* inputs
+     produces a real distance gradient (|τ−P| 1.54 → 2.92 at P=6) but **never locks, not even
+     in the column adjacent to the strip**. The obstacle is sharper than "which input is
+     exogenous": several wavefronts arrive per drive cycle, so a **last-interval estimator
+     cannot recover the period** even from input that *is* drive-entrained.
+     - **Refuted: coincidence gating.** Requiring ≥2 active neighbours before an input counts
+       as a timing event is worse than ungated at every distance — coincidences are rare, so
+       most drive cycles are discarded, intervals run long, and τ is pushed to the ceiling
+       (33.9 at θ_ev=2). Generalises to a bind: **any amplitude threshold low enough to sample
+       every cycle admits spurious traffic, and any threshold high enough to reject the traffic
+       misses most cycles.** Amplitude cannot separate drive from traffic.
+     - **Refuted: phase gating of a cell's own input** (see direction 7) — selecting *when* a
+       cell listens does no better than selecting *how strongly*.
+     - **Still open, and now the two best candidates.** (a) A **longest-recurring-interval
+       estimator** instead of last-interval: the drive period is the longest interval that
+       recurs and the spurious short ones are its harmonics — this attacks the actual
+       diagnosed failure, so it is the first thing to try. (b) The original
+       **surprise / prediction-error gate**: learn timing only from inputs *not predicted* by
+       the medium's own ongoing rhythm, reusing E8's forward prediction + global surprise and
+       1c's online GVF demons as the predictor. Note the two refutations above are both
+       *instantaneous* gates; surprise is the first candidate with its own memory, which is
+       why it survives the bind. **Effort** low (a) / medium (b). **Risk** medium–high for (b)
+       (the predictor must be fast relative to the rhythm).
   6. **A falsifiable neuroscience prediction (Track 2 / tension 3).** If delays are
      non-uniform, does the rule allocate more `τ`-resolution where intervals are common?
      That is adaptive/efficient temporal coding — a concrete prediction that biological
      time cells tile *experienced* interval statistics, not uniform time. **Effort** low
      (a non-uniform-delay variant of the existing sweep + a tiling-vs-statistics readout).
+  7. **An attention strip made of the same substrate — ✅ **DONE, with a narrower claim than
+     hoped** (`lattice_attention_gate.py`; notes [`lattice_timescale_notes.md`](lattice_timescale_notes.md))**
+     A **1-D Greenberg–Hastings chain orthogonal to the sensory edge**, one cell per column,
+     seeded at x=0 by the beat and propagating along x, so each column is gated once per drive
+     period at a phase delayed in proportion to distance. E4/E5 machinery (native selection;
+     a persistent loop as an option) pointed at **plasticity** instead of routing.
+     Using the gate's **rising edge as the timing reference** locks τ to the drive period at
+     every depth (|τ−P| = 0.00, locked depth 92, at both P=6 and P=12), matching the
+     global-afferent upper bound *without* a global afferent — and verifiably so: gate arrival
+     phase rises by exactly one step per column and wraps mod P (a global pulse would be flat),
+     and the strip's own τ is set from its window width alone, never from P.
+     **But it works as a clock, not as a filter.** Using the gate to select *when a cell
+     listens to its own input* fails at every window width — narrow windows miss cycles and τ
+     ratchets to 34.0, and a window as wide as the period reproduces the ungated numbers
+     exactly. So the timing information lives in **the gate itself**, not in what the gate
+     selects; read this as *clock distribution*, not as the medium inferring a period. The
+     structural content is still real — a dedicated 1-D pathway carries a period to arbitrary
+     depth while the recurrent 2-D medium destroys it over one column, same cells and rule,
+     only connectivity differing.
+     **Residuals.** (i) The three-factor variant (gate times the update, activity selects who
+     receives it) matches to 0.01 but is **untested as a selectivity claim** — with θ=1 and
+     full lateral coupling, 1.00 of medium cells are active, so "cells with recent input" is
+     not a selective set; testing it needs a partially active medium, i.e. structural
+     isolation the current lattice lacks. (ii) One strip carries **one period per column** by
+     construction (one attention cell shared across all y), so it cannot serve two y-bands
+     driven at different periods — the obvious thing a **recursively coupled** gate (gate ↔
+     medium, still deferred) would have to break. (iii) A **plastic** attention strip is the
+     easy 1-D case, driven from one end — currently hand-set.
+     **Effort** done; residuals low (iii) to medium (i, ii).
 - **Conceptual thread (ties the two arcs tighter).** C3 established do(`θ`) — intervening
   on timescales — is the well-posed causal handle. The emergent rule is the substrate
   performing **self-directed do(`θ`)**: adjusting its own `τ` from input timing. So `θ`
