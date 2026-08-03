@@ -156,3 +156,70 @@ near-deterministic, so per-seed variation is negligible and the CIs are ~zero-wi
 this is a mechanism demonstration, not a statistical estimate (same status as the
 3e.2b CFC result). A spatially structured or jittered afferent would be the stronger
 test. `act` remains fixed and only τ is learned, as throughout.
+
+## Correction: the global-afferent result was a *sensory-sheet* result, not a medium result
+
+*Experiment: `experiments/lattice_afferent_depth.py`. Prompted by a reader's question —
+why should the afferent be **global**, when this repo's layered experiments already carry
+`roles = {sensory, hidden, motor}` in which the sensory population **is** the afferent
+channel? The answer is that it should not be, and making it local changes the conclusion.*
+
+The section above says a privileged afferent channel lets the rule "track perfectly and
+re-tune in both directions". That is true, but the afferent there was delivered to **every
+cell simultaneously** — so every cell was, in effect, *in the sensory layer*. The recurrent
+connectivity was irrelevant to the learning; it only made the waves. It was therefore not a
+demonstration that a **recurrent medium** can learn its timescale.
+
+Put the afferent where the architecture says it belongs — a **sensory strip along one edge**
+(τ imposed, force-fired on the beat, excluded from the statistics, exactly as `layered_graph`
+treats sensory nodes) with a plastic **hidden medium** beyond it — and cross the afferent's
+*extent* with the rule's *input selection*. Geometry: periodic in y, walled in x, so distance
+from the sensory edge is just x. P=6, L=96, n=3, |τ−P| by distance:
+
+| afferent extent | τ learns from | x=0 | x=8 | x=24 | far | locked depth |
+|---|---|:--:|:--:|:--:|:--:|:--:|
+| global | afferent only | 0.00 | 0.00 | 0.00 | 0.00 | all 92 |
+| global | every input | 2.45 | 2.33 | 2.33 | 2.66 | 0 |
+| **localised strip** | **afferent only** | 12.62 | 12.52 | 12.70 | 12.45 | **0** |
+| **localised strip** | **every input** | **1.54** | **1.87** | **1.99** | **2.92** | **0** |
+| — | own firing (e10) | 28.00 | 28.00 | 28.00 | 28.00 | 0 |
+
+Three things follow.
+
+**1. With a localised afferent, the afferent-only rule learns nothing beyond the strip.**
+Error is flat at ~12.6 and τ sits at 18.2 — its random initialisation. Obvious in hindsight:
+those cells never receive an afferent event, so the rule never fires. Zero penetration, and
+not even a gradient.
+
+**2. Learning from every input *does* produce a distance gradient — but never locks.**
+Error rises monotonically with depth (1.54 → 2.92), so proximity to the sensory edge
+genuinely helps and the mechanism is real and distance-dependent. But it never crosses the
+lock threshold (1.5) *even in the column adjacent to the strip*. τ far from the edge settles
+at 8.9 against a drive period of 6.
+
+Why even x=0 fails: a "timing event" is the onset of *any* suprathreshold lateral input, and
+a cell has four neighbours. Wavefronts arrive from several directions within one drive cycle,
+so the cell registers several events per period and measures intervals shorter than P. The
+drive rhythm is present in the input but not *recoverable* by a last-interval estimator.
+
+**3. So the honest headline changes.** Exogenous timing does **not** usefully penetrate a
+recurrent excitable medium under this rule. The earlier "tracks perfectly, re-tunes
+bidirectionally" claim holds only where every cell has direct afferent access — a sensory
+sheet, not a medium. This is a genuine correction to the section above, kept rather than
+edited away.
+
+**What 3e.5 should now target.** The obstacle is sharper than "the cell cannot tell exogenous
+from endogenous". Even with lateral input that *is* drive-entrained, a last-interval estimator
+cannot recover the period because multiple wavefronts arrive per cycle. Candidates, roughly
+in order of promise:
+- **Coincidence-gated timing events** — require ≥2 simultaneously active neighbours for an
+  input to count as a timing event (while 1 still suffices to *excite*), so a single passing
+  wavefront registers once rather than several times.
+- **A longest-recurring-interval estimator** instead of last-interval: the drive period is the
+  longest interval that recurs, and shorter spurious intervals are harmonics of it.
+- **Surprise gating** (the original 3e.5 idea) — now aimed at the deep cells specifically,
+  since it is *they* who have no clean signal to fall back on.
+
+At P=12 the pattern is the same with worse absolute numbers (localised/every-input 3.24 at
+x=0, 3.15 far; global/afferent-only still exactly 0.00), so this is not specific to one drive
+period.

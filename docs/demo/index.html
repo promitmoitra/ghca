@@ -175,9 +175,13 @@
       <p style="margin:0"><b>Honest scope.</b> Two things this demo does <i>not</i> show.
       Driving with two different periods at once does not produce fast and slow spatial
       domains: the fastest pacemaker entrains the whole medium, which is the standard
-      excitable-media result and not something the rule can undo. And the afferent pulse
-      here is global and simultaneous, which is the easy case — a jittered or spatially
-      structured afferent is the stronger test and has not been run. Whether a cell could
+      excitable-media result and not something the rule can undo. And the afferent pulse here is
+      <b>global</b> — every cell receives it, which means every cell is effectively in the
+      sensory layer and the recurrence is not doing the learning. With the afferent confined
+      to a localised sensory strip instead, τ does <i>not</i> lock anywhere in the medium: a
+      distance gradient appears (error 1.5 near the strip rising to 2.9 far away) but never
+      reaches the drive period, because several wavefronts arrive per cycle and a
+      last-interval estimator cannot recover the rhythm. Whether a cell could
       <i>discover</i> which of its inputs is exogenous, rather than being told by
       architecture, is open; gating on low local activity does not do it.</p>
     </div>
