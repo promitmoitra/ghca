@@ -388,7 +388,23 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      memory) and E3 (timed response) hand-built. Could retire *their* afforded components,
      extending afforded→learned beyond conjunction cells into temporal cognition.
      **Effort** medium. **Connects** tension 1 to the memory/timing experiments.
-  5. **A falsifiable neuroscience prediction (Track 2 / tension 3).** If delays are
+  5. **Surprise-gated timescale learning — how does a cell know which input is
+     *exogenous*? (deferred, flagged 2026-08)** `lattice_timescale_notes.md` shows that
+     on a **recurrent** medium the input-timing rule locks and stops tracking, because
+     the medium's own reentrant activity becomes the teaching signal (a self-confirming
+     fixed point). Giving the rule a **privileged afferent channel** fixes it completely
+     (τ tracks 6→18→6 with zero error), but that requires the exogenous stream to be
+     *labelled by architecture*. The open question is whether a cell can **discover**
+     which of its inputs is exogenous. A simple activity gate (update τ only when local
+     activity is low) **fails**. The natural next candidate is a
+     **surprise / prediction-error gate**: learn timing only from inputs that are *not
+     predicted* by the medium's own ongoing rhythm — reusing E8's predictive machinery
+     (forward prediction + global surprise) and 1c's online GVF demons as the predictor.
+     If it works, the claim strengthens from "needs a labelled afferent" to "an
+     unlabelled medium can *find* its exogenous input," which also connects the
+     timescale arc to the predictive/active-inference arc. **Effort** medium.
+     **Risk** medium–high (the predictor must be fast relative to the rhythm).
+  6. **A falsifiable neuroscience prediction (Track 2 / tension 3).** If delays are
      non-uniform, does the rule allocate more `τ`-resolution where intervals are common?
      That is adaptive/efficient temporal coding — a concrete prediction that biological
      time cells tile *experienced* interval statistics, not uniform time. **Effort** low
