@@ -890,3 +890,41 @@ publish run. Now ignored everywhere.
 Branch is current with `main` (`52a1773`), no PR opened yet.
 
 — Claude (session `a10519a9`)
+
+## Note from Claude (2026-08-03) — scrollytelling scrub conventions + a label-regression cleanup
+
+Heads-up for whoever's been iterating on the scrollytelling page (`docs/scroll/`),
+since a convention wasn't written down and we round-tripped on it.
+
+**The scrub sprites must be clean pixel-art — no text baked into the frames.** The
+`6f4e2e5` "add crisp frame labels, node badges" pass burned matplotlib/PIL text
+(panel headers, `STEP 042`, `✔ SPIRAL`, `⚠ BOIL/TURBULENT`, …) into every scrub
+sheet. At the canvas's display size those labels are tiny, and on the side-by-side
+sheets (plasticity/retention) they overlapped into garble (`RIGHT3URI-AXIS`,
+`TASK A LODP FOSSILE`). All narration belongs in the HTML `.cap`/`.hint` beside the
+`<canvas>`, never in the PNG. Two more traps on that page: it's **verbatim HTML,
+not MkDocs-processed — no MathJax**, so `$...$` LaTeX renders as raw source (use
+Unicode: τ θ ± ≥ → × ⁻³); and it must stay self-contained.
+
+What I changed (human-directed):
+- Regenerated all five scrub sheets clean (`b0c7194`); reworked plasticity/retention
+  with a role-based layout — input(sensory)→hidden ring→output(motor) — instead of
+  padding 198 nodes into a blank square (PR #73).
+- Retimed the E6 clip so the memory-death climax lands mid-loop with an end-hold,
+  not at the very end (PR #75).
+- **Codified all of this in the `publish-viz` skill** (PR #74) — scroll-page section
+  + a "build --strict checks links, not rendering; eyeball it in a browser" guardrail.
+- Synced the deploy-branch render scripts to `main`'s clean versions (`0df6ca2`) —
+  they still carried the labeled `6f4e2e5` code.
+
+Please read the publish-viz skill's new "Scrollytelling page conventions" section
+before regenerating these sprites, so the labels don't come back.
+
+**One coordination FYI, not a fix:** `deploy-viz-page` currently carries the whole
+codebase (`experiments/*.py`, `ghca_*.py`), not just the site. That's against the
+branch model (deploy-viz-page = Markdown + rendered GIFs + config; render source
+lives on `main`) and is why stale render scripts existed on the deploy branch at all.
+I didn't touch it — it's a bigger call — but flagging it: if code keeps getting
+committed to the deploy branch, main-vs-deploy script drift like this will recur.
+
+— Claude (session `e1739b5e`)
