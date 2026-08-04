@@ -444,3 +444,99 @@ reinforcement learning would be an overstatement of what a scalar-free timing ru
 fourth idea in the original proposal, a **value signal for the attention chain itself** so that
 *where to gate* becomes learned rather than set by K, is designed but not implemented. That is the
 recursive step, and it is the one that would make the attention structure emergent too.
+
+---
+
+## The fourth edge: a value signal that teaches the attention chain where to gate
+
+The reward result above left exactly one designed constant in the loop: the attention chain's
+speed K. At K=1 the gate meets reward where the stimulus wave and the reward arrive together,
+so the interval is ≈0 and τ pins to the floor; hand-setting K=3 fixes it. This closes that gap
+with the last quarter of the four-edge proposal (`experiments/lattice_attention_value.py`,
+L=64, 50 training trials + 3 probe, n=3).
+
+**Why the value signal has to be an edge and not a scalar.** The gate's arrival time at column
+x is the *cumulative* delay of every chain cell upstream of it. A write landing in a useless
+place is therefore not the fault of the cell that fired — it is the fault of the delays behind
+it. A global scalar cannot express that. A pulse launched **backward from the write site**,
+updating each delay it passes, assigns credit exactly where it belongs, and it is built from the
+same cells as everything else. The geometry does the credit assignment.
+
+**What the signal is.** When a gated write happens, the cells written either land inside τ's
+usable range or pin against a bound. Saturation is the substrate failing to represent the
+interval it was shown, and it is locally detectable:
+`sat = (fraction of written cells at τ_min) − (fraction at τ_max)`. Positive means the interval
+was too short, so the gate met reward too far right and the chain must be slower. The backward
+pulse carries `sat`, and each chain cell it passes does `d[j] ← clip(d[j] + η_a·sat, 1, 12)`.
+Every per-column delay starts at **1** — the degenerate value.
+
+| condition | d̄ final | write column | saturation | probe \|Δ\| | within ±2 |
+|---|:--:|:--:|:--:|:--:|:--:|
+| **plastic, D=8** | **1.67** | **35 → 17** | +0.00 → **+0.00** | **0.00** | **1.00** |
+| **plastic, D=20** | **1.45** | **41 → 27** | +0.00 → **+0.02** | **0.00** | **1.00** |
+| **plastic, D=32** | **1.52** | **47 → 31** | +0.00 → **+0.00** | **0.00** | **1.00** |
+| fixed K=1 *(the degeneracy)* | 1.00 | 35 / 41 / 47 static | +0.00 → **+1.00** | 0.80 | 0.87 |
+| fixed K=3 *(hand-set target)* | 3.00 | 17 / 20 / 23 static | +0.00 | 0.00 | 1.00 |
+| plastic-unpaired *(control)* | 1.36 | 53.3 → 38.6 | +0.01 | 26.2 / 25.9 / 13.9 | 0.03–0.10 |
+
+**1. The last hand-set constant comes out.** Starting from the degenerate d=1, the gate moves
+off it at every delay (35→17, 41→27, 47→31), saturation falls from the +1.00 that fixed-K=1
+reaches — *every* written cell pinned at the floor — to ≈0, and probe alignment reaches the
+hand-set K=3 condition's 0.00 / 1.00 without being told the value. Where to attend is now
+learned rather than chosen.
+
+**2. It finds a different solution than the one I picked, and that is the point.** d̄ settles
+near 1.5, not 3, and its write columns (17/27/31) are not K=3's (17/20/23). Both reach |Δ| = 0.
+The loop is not recovering a designer's answer; it is finding one of several placements where
+τ can represent what it is shown.
+
+**3. The predicted lock-in did not happen.** The earlier note predicted that closing a
+recursive gate↔medium loop would reproduce the self-confirming fixed point that sank the
+lateral-input rule. It does not: d settles around 1.5, far below its ceiling of 12, and does not
+oscillate. The reason looks structural — the feedback is a **saturation boundary, not a rhythm**,
+and a boundary cannot confirm itself the way a period can. That prediction is withdrawn for this
+signal, not in general.
+
+**4. The credit-assignment geometry is visible in the learned parameter.** Because the value
+pulse only ever travels left, only delays upstream of the write site are ever trained. The final
+profile shows it plainly (d sampled across x):
+
+| | x=0 | 25% | 50% | 75% | x=L−1 |
+|---|:--:|:--:|:--:|:--:|:--:|
+| D=8 | 2.52 | 2.52 | 1.53 | 1.00 | 1.00 |
+| D=20 | 1.76 | 1.76 | 1.55 | 1.00 | 1.00 |
+| D=32 | 1.69 | 1.69 | 1.69 | 1.69 | 1.00 |
+
+Downstream delays sit at their initial 1.00 forever. That is an honest artifact of the
+mechanism rather than a feature — the mechanism's reach is written into its own parameters.
+
+**5. Two interleaved delays coexist without interference — but for a cheap reason.** Alternating
+D and D+16 across trials, both arms end up accurately represented, at **different columns**:
+
+| delays | arm A | arm B |
+|---|:--:|:--:|
+| 8 / 24 | \|Δ\| 0.19 (0.97) at col 23 | \|Δ\| 0.00 (1.00) at col 29 |
+| 20 / 36 | \|Δ\| 0.00 (1.00) at col 27 | \|Δ\| 0.00 (1.00) at col 33 |
+| 32 / 48 | \|Δ\| 0.00 (1.00) at col 31 | \|Δ\| 0.00 (1.00) at col 37 |
+
+This contrasts with the interference found in 3c and 3e.1 — but the contrast is not a solved
+credit-assignment problem. The reward delay itself determines where the gate meets reward, so
+different delays get different addresses automatically. The code is content-addressable by
+construction, and no mechanism had to learn to keep them apart.
+
+### What this does and does not establish
+
+The architecture is now self-configuring in the one place it previously was not, and the
+recursive loop the earlier notes feared turns out to be stable. Combined with the reward result,
+the substrate learns *when* reward is due and *where* to look for it, from the same cells, with
+no gradients, no objective function and no scalar reward channel.
+
+Four things it is not. The value signal is **homeostatic, not appetitive** — derived from the
+reward-gated update rather than from reward magnitude, saying "do not saturate your own
+representation" rather than "get more reward"; there is no action and no policy, so this is not
+reinforcement learning. **The unpaired control is the sharpest caveat**: its gate *also* moves
+(53.3 → 38.6), because saturation is detectable whether or not the reward is predictable — so
+gate motion on its own is no evidence of anything, and only the τ field distinguishes learning
+(3–10% within ±2) from mechanism running idle. The **medium still does nothing** with what it
+represents. And the four edges, the chain topology and both chains' pulse widths remain
+hand-built; what has become emergent is the content and now the placement, not the anatomy.

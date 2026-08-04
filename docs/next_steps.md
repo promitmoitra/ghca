@@ -488,18 +488,49 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      interval without acting on it — no choice, no motor side, so this is a timing rule rather
      than reinforcement learning.
      **Effort** done.
-  9. **A value signal for the attention chain itself — 📐 PROPOSED (the recursive step)**
-     The remaining quarter of the four-edge proposal, and the one that would make the attention
-     structure emergent rather than hand-set. Direction 8 leaves *where to gate* determined by
-     the chain speed K, a designer's constant. Give the attention chain its own value input — a
-     reward-derived signal on the edge opposite it — so that the chain learns which column is
-     worth gating, i.e. the column where reward is actually predictable. Concretely: the K=1
-     degeneracy is exactly the signal such a rule should be able to feel (writing where the
-     interval is ≈0 is useless), so a value rule that rewards gate placements yielding
-     informative intervals should push the effective K up on its own. **Effort** medium.
-     **Risk** medium — this is the recursive gate↔medium coupling deferred in direction 7, and
-     the prediction there was that recursion reproduces the self-confirming lock-in; a
-     reward-derived value signal is the reason to think it might not.
+  9. **A value signal for the attention chain itself — ✅ **DONE; the last hand-set constant
+     comes out, and the predicted lock-in does not happen**
+     (`lattice_attention_value.py`; notes [`lattice_timescale_notes.md`](lattice_timescale_notes.md))**
+     Direction 8 left exactly one designed constant: the attention chain's speed K. This closes
+     it with the remaining edge — a **value chain launched backward from the write site**. It has
+     to be an edge rather than a scalar, because the gate's arrival time at column x is the
+     *cumulative* delay of every chain cell upstream of it, so a badly placed write is the fault
+     of the delays behind it, which a global scalar cannot express. The signal is τ **saturation**
+     at the written cells (`frac at τ_min − frac at τ_max`), carried leftward, retuning each
+     per-column delay it passes. All delays start at 1 — the degenerate value.
+     From that start the gate moves off degeneracy at every delay (write column 35→17, 41→27,
+     47→31 for D=8/20/32), saturation falls from the **+1.00** that fixed-K=1 reaches — every
+     written cell pinned at the floor — to ≈0, and probe alignment reaches the hand-set K=3
+     condition's |Δ|=0.00 / 100% within ±2 without being given the value. It settles on d̄≈1.5
+     rather than 3, i.e. **a different valid placement, not the designer's answer**.
+     **The lock-in prediction is withdrawn for this signal.** Direction 7 predicted that a
+     recursive gate↔medium loop would reproduce the self-confirming fixed point that sank the
+     lateral-input rule. It does not — d settles far below its ceiling of 12 and does not
+     oscillate — and the reason looks structural: the feedback is a **saturation boundary, not a
+     rhythm**, and a boundary cannot confirm itself the way a period can.
+     Two honest wrinkles. The **credit-assignment geometry is visible in the learned parameter**:
+     the value pulse only travels left, so downstream delays sit at their initial 1.00 forever
+     (profile at D=8: 2.52 / 2.52 / 1.53 / 1.00 / 1.00 across x) — the mechanism's reach is
+     written into its own parameters. And the **unpaired control is the sharpest caveat**: its
+     gate *also* moves (53.3 → 38.6), because saturation is detectable whether or not reward is
+     predictable, so gate motion alone is evidence of nothing — only the τ field separates
+     learning (paired 100% within ±2) from the mechanism running idle (3–10%).
+     Bonus: two interleaved delays (D and D+16) coexist without interference, each at its own
+     write column — but cheaply, since the delay itself determines the address, so the code is
+     content-addressable by construction and nothing had to learn to keep them apart. Contrast
+     3c/3e.1, where interference was real.
+     **Effort** done.
+  10. **What the four-edge substrate still cannot do — 📐 PROPOSED (the honest next gap)**
+     Across directions 7–9 the substrate now learns *when* reward is due and *where* to look for
+     it, from one cell type, with no gradients and no scalar reward channel. It still **does
+     nothing with what it represents**: there is no action, no policy, and the value signal is
+     homeostatic (do not saturate) rather than appetitive (get more reward), so none of this is
+     reinforcement learning and should not be described as such. The next real step is a **motor
+     edge** — a readout that acts on the learned interval (e.g. emitting at the predicted reward
+     time) and a reward that depends on whether it did. Only then does "reward" in this
+     architecture mean what the term normally means. Note also that the four edges, the chain
+     topology and both chains' pulse widths remain hand-built: what became emergent in 8 and 9
+     is the content and the placement, **not the anatomy**. **Effort** medium–high.
 - **Conceptual thread (ties the two arcs tighter).** C3 established do(`θ`) — intervening
   on timescales — is the well-posed causal handle. The emergent rule is the substrate
   performing **self-directed do(`θ`)**: adjusting its own `τ` from input timing. So `θ`
