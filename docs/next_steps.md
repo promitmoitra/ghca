@@ -453,6 +453,53 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      medium, still deferred) would have to break. (iii) A **plastic** attention strip is the
      easy 1-D case, driven from one end — currently hand-set.
      **Effort** done; residuals low (iii) to medium (i, ii).
+  8. **Reward as a fourth edge — ✅ **DONE, and the first content that was not designed in**
+     (`lattice_reward_edges.py`; notes [`lattice_timescale_notes.md`](lattice_timescale_notes.md))**
+     Direction 7 works but only distributes a clock; the content of the representation is still
+     the designer's. So use **all four edges**: stimulus patch left, attention chain along the
+     top, and a **reward chain along the bottom** travelling right-to-left, seeded at the right
+     edge at t=D. Both chains are labelled lines by construction — necessary, because the cheap
+     version fails for the now-familiar reason: with reward as a suprathreshold wave *inside* the
+     medium, "input from my right" does not mean reward (a rightward wave excites cell x from the
+     left, then x−1 sees x active on its right), so every cell measures ~1 and floors τ.
+     **Direction is no more a pathway label than amplitude or phase was.**
+     The rule is genuinely three-factor with three physically distinct factors — *who* from the
+     cell's own firing time (so the medium's 2-D wave geometry selects who learns), *when* from
+     the attention chain, *what* from the reward chain — and τ converges to **that cell's own
+     stimulus-to-reward interval**. Scored on probe trials, paired reaches |Δ| 0.16–0.19 with
+     97–98% of cells within ±2 steps, against an **unpaired control that delivers exactly as many
+     reward events on the same line** and fails (0–19%; its τ sits at 38.9 regardless of D) and an
+     untrained baseline (4%). The 2-D medium is load-bearing: τ still varies by σ_y ≈ 7 along y at
+     fixed x — the distance-from-patch term — while the field stays accurate to 0.2. Under ±5
+     stimulus jitter the error rises to 3.1, about the jitter magnitude, so it holds the
+     *expected* interval rather than a memorised one.
+     **The attention gate here produced an instructive failure.** With a 1-cell-per-column chain
+     the gate meets reward exactly where stimulus and reward arrive *together*, so the interval is
+     ≈0, τ pins to the floor (σ_y exactly 0.00) and the delay survives only as which column was
+     written — fixed kinematics, not learning. Its 87% "within ±2" passes for the wrong reason.
+     Slowing the chain to K cells per column moves the meeting point into the medium and restores
+     content (K=3: τ 26.8 → 38.8 as D goes 8 → 32), with the write column landing at
+     x* = (D+L−1)/(K+1) — measured slopes +0.500 / +0.250 / +0.125 against predicted
+     +0.500 / +0.250 / +0.143. Also recorded: two pulses approaching at relative speed (K+1)/K
+     cross *between* columns unless the gate is ≥ K+1 wide, which silently zeroed every K>1
+     condition at first.
+     **Scope.** Reward is still hand-placed as an edge and both chains' τ are hand-set, so
+     "emergent" applies to the content, not the architecture; and the medium *represents* the
+     interval without acting on it — no choice, no motor side, so this is a timing rule rather
+     than reinforcement learning.
+     **Effort** done.
+  9. **A value signal for the attention chain itself — 📐 PROPOSED (the recursive step)**
+     The remaining quarter of the four-edge proposal, and the one that would make the attention
+     structure emergent rather than hand-set. Direction 8 leaves *where to gate* determined by
+     the chain speed K, a designer's constant. Give the attention chain its own value input — a
+     reward-derived signal on the edge opposite it — so that the chain learns which column is
+     worth gating, i.e. the column where reward is actually predictable. Concretely: the K=1
+     degeneracy is exactly the signal such a rule should be able to feel (writing where the
+     interval is ≈0 is useless), so a value rule that rewards gate placements yielding
+     informative intervals should push the effective K up on its own. **Effort** medium.
+     **Risk** medium — this is the recursive gate↔medium coupling deferred in direction 7, and
+     the prediction there was that recursion reproduces the self-confirming lock-in; a
+     reward-derived value signal is the reason to think it might not.
 - **Conceptual thread (ties the two arcs tighter).** C3 established do(`θ`) — intervening
   on timescales — is the well-posed causal handle. The emergent rule is the substrate
   performing **self-directed do(`θ`)**: adjusting its own `τ` from input timing. So `θ`

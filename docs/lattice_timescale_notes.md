@@ -344,3 +344,103 @@ across all y, so the strip cannot serve two y-bands driven at different periods.
 consequence of the geometry, not a measurement — but it bounds what this architecture could be
 asked to do, and it is the obvious thing a recursively coupled gate (gate ↔ medium, deferred)
 would have to break.
+
+---
+
+## Reward as a fourth edge: the substrate learns a stimulus–reward interval
+
+The attention result above is thin in one specific way. The chain's τ is hand-set, and all the
+medium does is *copy a clock* — the content of the representation is designed. So: can **reward**
+supply content instead? Use all four edges (`experiments/lattice_reward_edges.py`, L=64, walls on
+all four sides, 30 training trials + 3 probe, n=3):
+
+```
+   ┌──── attention chain (1-D, travels →, seeded by stimulus onset) ────┐
+ stimulus                     plastic medium                      (reward onset
+  patch                     (τ learned per cell)                   at t = D)
+   └──── reward chain (1-D, travels ←, seeded at the right edge) ───────┘
+```
+
+Both chains are **labelled lines by construction** — separate structures, exactly what the
+`roles = {sensory, hidden, motor}` convention licenses. That is not fastidiousness. The cheaper
+design, where reward is a suprathreshold wave *inside* the medium, fails for a reason that is now
+familiar: "input arriving from my right" does not mean "reward". A rightward-travelling wave
+excites cell *x* from the left at *t*, and one step later cell *x−1* sees *x* active on its right.
+Every cell in a passing wave would measure an interval of ~1 and floor its τ. **Direction is no
+more a pathway label than amplitude or phase was.**
+
+The rule is three-factor, with each factor a physically different thing:
+
+- *who* — **eligibility**: the cell's own firing time this trial, set by the stimulus wave
+  reaching it. The medium's 2-D geometry decides who can learn.
+- *when* — the **attention chain**, optionally gating which columns may update.
+- *what* — the **reward chain**: on reward arrival, `τ ← τ + η((t_now − t_fire) − τ)`.
+
+So τ converges to *this cell's own stimulus-to-reward interval*, which differs cell by cell
+because it depends on how long the stimulus wave took to arrive. Scored on probe trials as
+alignment `|(t_rew − t_fire) − τ|`:
+
+| condition | probe \|Δ\| | within ±2 | cells written | τ at D=8 → 32 | σ_y | columns written |
+|---|:--:|:--:|:--:|:--:|:--:|:--:|
+| **paired, no gate** | **0.16–0.19** | **0.97–0.98** | 0.49–0.67 | 31.3 → 43.1 | 7.1–7.5 | 0–36 → 0–48 |
+| paired + gate, K=1 | 0.80 | 0.87 | 0.004 | 3.0 → 3.0 | **0.00** | one, 35 → 47 |
+| **paired + gate, K=3** | **0.00** | **1.00** | 0.016 | 26.8 → 38.8 | 8.9 | one, 17 → 23 |
+| paired + gate, K=6 | 0.00 | 1.00 | 0.016 | 40.8 → 58.7 | 8.9 | one, 10 → 13 |
+| unpaired *(the control)* | 26.8 / 16.6 / 6.4 | 0.00–0.19 | 0.89 | 38.9 **flat** | 7.4 | 0–61 |
+| no reward *(untrained)* | ~30 | 0.04 | — | 46.4 (init) | 24.9 | — |
+
+**1. It works, and the control is the reason to believe it.** The unpaired condition redraws the
+reward delay every trial, so it delivers *exactly as many reward events on the same line* — and it
+fails completely (0–19% within ±2, and its τ sits at 38.9 regardless of D, i.e. the mean of the
+random delays). Untrained τ scores 4%. Paired scores 97%. What is learned is the contingency, not
+the extra input. Note the unpaired |Δ| falls from 26.8 to 6.4 as D rises purely because 32 happens
+to sit near the random-delay mean — read the flat τ, not the shrinking error.
+
+**2. The 2-D medium is load-bearing.** After learning, τ still varies by σ_y ≈ 7 along y at fixed
+x. That is the `|Δy|` term in each cell's own interval — cells further from the stimulus patch fire
+later and so learn a shorter interval. Since the field is simultaneously accurate to 0.2, this is
+structure rather than residual noise: the code reflects wave geometry, not column index.
+
+**3. The fast attention gate is degenerate — an instructive failure.** With K=1 the gate and the
+reward pulse meet exactly where the stimulus wave and the reward arrive *together*, so the interval
+there is ≈0, τ pins to the floor (3.0, and σ_y is exactly 0.00 — no variation at all), and the
+delay survives only as *which column* was written. That position is fixed kinematics, not
+learning. Its 0.87 "within ±2" passes for the wrong reason: τ and the true interval are both
+near zero. A metric can be satisfied by a representation that contains nothing.
+
+**4. Slowing the chain repairs it.** Give the attention chain K cells per medium column and the
+meeting point moves back into the medium, where the interval is substantial — then *both* the
+position and the τ value carry the delay (K=3: τ 26.8 → 38.8 as D goes 8 → 32). The write column
+lands where two-pulse kinematics say it must, x* = (D+L−1)/(K+1):
+
+| chain | K=1 | K=3 | K=6 |
+|---|:--:|:--:|:--:|
+| measured slope (columns per step of delay) | +0.500 | +0.250 | +0.125 |
+| predicted 1/(K+1) | +0.500 | +0.250 | +0.143 |
+
+**5. A knife-edge worth recording.** Two travelling pulses approaching at relative speed
+(K+1)/K cross *between* columns and never overlap at any single one unless (D+L−1) mod (K+1) ≤ 1.
+With the default 2-step pulse every K>1 condition silently produced zero learning events. The
+gate pulse has to be at least K+1 wide — the same window-width lesson as the attention sweep.
+
+**6. It generalises, to about the size of the noise.** Trials above are deterministic, so paired's
+alignment is strictly a convergence check. Jittering the stimulus patch ±5 cells in y per trial
+(including probes) raises paired's error to 3.08 with 40% within ±2 — roughly the jitter magnitude
+itself, since moving the patch by δ moves `t_fire` by up to δ. So τ holds the *expected* interval
+rather than a memorised one, and still beats unpaired (0–10%) and untrained (4%) by a wide margin.
+
+### What this does and does not establish
+
+It is the first result in this arc where the substrate's learned dynamics carry content that was
+**not designed in**. τ is not copying an imposed period; it is computing an interval from a
+contingency between two edges, with the medium's own wave geometry deciding which cells learn
+what. The functional reading is that each cell becomes ready again approximately when reward is
+due — a learned expectancy expressed directly in excitability rather than in a readout.
+
+Three things it is not. Reward is still **hand-placed as an edge**, and both chains' τ are still
+hand-set, so "emergent" applies to the content, not the architecture. The medium **represents the
+interval but does nothing with it** — no choice, no behaviour, no motor side; calling this
+reinforcement learning would be an overstatement of what a scalar-free timing rule does. And the
+fourth idea in the original proposal, a **value signal for the attention chain itself** so that
+*where to gate* becomes learned rather than set by K, is designed but not implemented. That is the
+recursive step, and it is the one that would make the attention structure emergent too.
