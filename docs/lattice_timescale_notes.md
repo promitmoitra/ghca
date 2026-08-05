@@ -540,3 +540,102 @@ gate motion on its own is no evidence of anything, and only the τ field disting
 (3–10% within ±2) from mechanism running idle. The **medium still does nothing** with what it
 represents. And the four edges, the chain topology and both chains' pulse widths remain
 hand-built; what has become emergent is the content and now the placement, not the anatomy.
+
+---
+
+## Layers instead of edges — and the medium finally does something
+
+The four-edge work left three things standing: the anatomy was a hand-drawn 1-D delay line,
+attention could only select a *column*, and the value pulse could only travel one direction so
+downstream delays never trained. All three are artifacts of using an edge for a job the cortex
+does with a sheet. So replace both chains with **2-D layers of the same cells**
+(`experiments/lattice_layers.py`, L=64, 40 training trials + 3 probe, n=3, reward at t=D):
+
+```
+   V  value / neuromodulator sheet — "reward now", diffuse or propagating
+   A  attention sheet  — fires on convergent H activity (3x3 field, θ_A=3), plastic τ_A;
+                         its RECOVERY opens the plasticity gate
+   H  hidden sheet     — plastic τ, stimulus patch, waves propagate
+   M  motor readout    — H's recovery events, counted per step
+```
+
+Two choices were forced by results already in this repo rather than picked. **Vertical coupling
+is modulatory**, because Negative 1 and the two failed 3e.2b cross-frequency designs both say
+excitatory coupling between rhythmic populations gives rigid entrainment. And **A is a
+coincidence detector with θ_A > 1**, which is Negative 1's dead end reused: θ=2 blocks
+planar-wave propagation in a 4-neighbourhood, so A cannot sustain waves of its own and never
+floods (A activity 0.008 throughout). V teaches A *ungated*; A's recovery then gates V's
+teaching of H — so the gate need not be right before it can learn to be right.
+
+**1. The payoff: a travelling wave becomes a synchronous burst timed to reward.** If every H
+cell's τ equals its own stimulus-to-reward interval, then cells that fired at *different* times,
+staggered across the sheet, all become excitable again at the *same* moment. Measured as the
+fraction of recovery events landing within ±3 steps of the true reward time:
+
+| condition | D=30 | D=50 | D=70 | \|peak − D\| |
+|---|:--:|:--:|:--:|:--:|
+| **layered, ungated** | **0.324** | **0.637** | **0.912** | **1.0** |
+| layered, A-gated | 0.049 | 0.168 | 0.346 | 1.0 |
+| untrained *(random τ)* | 0.020 | 0.049 | 0.070 | 59 / 39 / 19 |
+| unpaired *(no contingency)* | **0.000** | **0.000** | **0.000** | 57 / 37 / 17 |
+
+At D=70, **91% of all recovery events fall within ±3 steps of the reward time**, and the peak is
+accurate to one step, against 7% untrained. Unpaired scores exactly 0.000 — its τ converges to a
+consistent but wrong value, so the burst is sharp and in the wrong place. This is the first thing
+in the arc the medium *does* with what it learned rather than merely representing it. Synchrony
+rises with D because a cell can only learn an interval it fired before, so a longer delay lets
+more of the sheet participate.
+
+**2. Modulatory coupling is required — the prediction holds.** Adding excitatory A→H on top of
+the gate collapses synchrony (0.168 → 0.034 at D=50, i.e. back to untrained) and inflates A's
+own activity nearly fivefold (0.008 → 0.038). Same cells, same signal, same timing; only
+excitatory instead of modulatory. Negative 1 and the CFC failures generalise.
+
+**3. Value must be diffuse, not propagating.** With V spreading as a wave from the reward edge
+instead of arriving everywhere at once, synchrony collapses to 0.005–0.041 and the burst lands
+37–60 steps late — even though per-cell accuracy stays fine (|Δ| 0.03–0.22). Each column gets a
+different reward reference, so the intervals are individually correct and collectively
+unalignable. **Population synchrony needs a common temporal reference**, which is a functional
+argument for volume transmission over wired propagation, and it is not something the edge
+version could have shown.
+
+**4. Attention buys precision and costs recall — and in this task family that is a net loss.**
+The gate makes what it writes *more* accurate while writing far less of the sheet:
+
+| distractor task, D=70 | \|Δ\| | within ±2 | written: predictable / distractor | overall sync |
+|---|:--:|:--:|:--:|:--:|
+| A-gated (window 4) | **0.93** | **0.93** | 0.340 / 0.094 — **3.6×** | 0.301 |
+| ungated | 3.14 | 0.67 | 0.996 / 0.826 — 1.2× | **0.649** |
+
+So attention genuinely works: with a second, onset-jittered distractor patch, gating cuts
+per-cell error more than threefold and suppresses distractor writes 3.6× (5.3× at window 2). It
+still loses on the population readout, because the readout depends on coverage. Sweeping the gate
+window 2 → 16 trades selectivity for coverage exactly as expected and yet overall synchrony
+barely moves (0.285 → 0.303) — the gate is lossy at every width.
+
+The reason is worth stating, because it bounds where attention can help at all: **cells fed by an
+unpredictable stimulus fail to produce a usable τ on their own**, so the dynamics already discard
+the distractor and selective plasticity is redundant. Gating helps only if the bad learning
+signal would otherwise be *consistent and wrong*. With one diffuse reward time every learned
+interval is mutually consistent, so nothing competes. Attention should earn its place when reward
+times **conflict** — two tasks with different delays, which is 3c's continual-learning setting,
+not this one. That is a prediction, and the next experiment rather than this one.
+
+### Where this leaves the three gaps
+
+**Anatomy — improved, not solved.** The hand-drawn delay line is gone, and with it the leftward-
+only credit assignment and the column-at-a-time gate. What remains (θ_A, the 3×3 receptive field,
+the gate window) are **homogeneous cell properties rather than a topology**, which is a real
+difference in kind. But that there are four sheets, and which projects to which, is still
+designed.
+
+**Action — now present and measured, but still open-loop.** There is an output: a population
+burst whose timing is accurate to one step. Nothing the medium does changes whether reward
+arrives, so the loop is not closed.
+
+**Homeostatic vs appetitive — unchanged.** Making reward contingent on the burst is the obvious
+next step and it has a real obstacle worth naming in advance: early in training the burst is
+untimed, so a strictly contingent reward would never fire and nothing would ever learn. That
+bootstrapping problem is the actual content of the next experiment — it needs either shaping, a
+graded reward, or an initial uncontingent phase, and which of those is required is an empirical
+question, not a detail.

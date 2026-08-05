@@ -531,6 +531,56 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      architecture mean what the term normally means. Note also that the four edges, the chain
      topology and both chains' pulse widths remain hand-built: what became emergent in 8 and 9
      is the content and the placement, **not the anatomy**. **Effort** medium–high.
+  11. **Layers instead of edges — ✅ **DONE; the medium finally produces an output, and
+     attention's cost gets quantified** (`lattice_layers.py`; notes
+     [`lattice_timescale_notes.md`](lattice_timescale_notes.md))**
+     Directions 8–9 worked but their anatomy was a hand-drawn 1-D delay line, attention could
+     only select a column, and the value pulse travelled one direction only. All three are
+     artifacts of using an edge for a job the cortex does with a sheet, so both chains become
+     **2-D layers of the same cells**: a value/neuromodulator sheet, an attention sheet that
+     fires on convergent H activity (3×3 field, θ_A=3) and whose *recovery* gates plasticity,
+     and a motor readout counting H recovery events. Two choices were forced by prior results
+     rather than picked — vertical coupling is **modulatory** (Negative 1 and the failed 3e.2b
+     CFC designs), and A is a **coincidence detector with θ_A>1**, which reuses Negative 1's
+     dead end (θ=2 blocks planar propagation) as the property that stops A flooding.
+     **The payoff.** If each H cell's τ equals its own stimulus-to-reward interval, cells that
+     fired at *different* times all become excitable again at the *same* moment: a travelling
+     wave becomes a synchronous population burst. At D=70, **91% of recovery events land within
+     ±3 steps of the reward time** with the peak accurate to 1 step, against 7% untrained and
+     **exactly 0.000** unpaired (whose τ converges consistent-but-wrong, so the burst is sharp
+     and misplaced). First thing in the arc the medium *does* rather than represents.
+     **Two mechanism requirements, both newly visible only in the layered form.** Adding
+     excitatory A→H on top of the gate collapses synchrony (0.168 → 0.034) and inflates A's
+     activity fivefold — the entrainment prediction confirmed. And a **propagating** value
+     signal destroys synchrony (0.005–0.041, burst 37–60 steps late) while leaving per-cell
+     accuracy fine: each column gets a different reward reference, so intervals are individually
+     correct and collectively unalignable. Population synchrony needs a **common temporal
+     reference** — a functional argument for volume transmission over wired propagation.
+     **Attention buys precision and costs recall.** With an onset-jittered distractor patch,
+     gating cuts per-cell error threefold (|Δ| 0.93 vs 3.14; within ±2 0.93 vs 0.67) and
+     suppresses distractor writes 3.6–5.3× vs 1.2× — it genuinely works. It still loses the
+     population readout (sync 0.301 vs 0.649) because that readout depends on coverage, and
+     sweeping the gate window 2→16 barely moves it (0.285 → 0.303): lossy at every width. The
+     bounding reason: **cells fed an unpredictable stimulus fail to produce a usable τ anyway**,
+     so the dynamics already discard the distractor and selective plasticity is redundant.
+     Gating should only pay when the bad signal would otherwise be *consistent and wrong* —
+     i.e. when reward times **conflict**. See item 12. **Effort** done.
+  12. **Conflicting reward times: where attention should finally pay — 📐 PROPOSED**
+     Item 11's negative is specific and generates its own test. With a single diffuse reward
+     time every learned interval is mutually consistent, so there is nothing for a plasticity
+     gate to protect. Give two stimuli **different** reward delays (3c's continual-learning
+     setting, one level down in the dynamics) and the ungated rule should average them into a
+     single wrong interval while the gate keeps them apart — the first condition in which
+     attention should beat no attention on the population readout, rather than only on per-cell
+     precision. Cheap: the machinery exists. **Effort** low.
+  13. **Closing the loop: contingent reward — 📐 PROPOSED (what would make this appetitive)**
+     Item 11 supplies an output but the loop is open: nothing the medium does changes whether
+     reward arrives, so the value signal stays informational and none of this is reinforcement
+     learning. Make reward contingent on the burst landing near the due time. The obstacle is
+     real and worth naming in advance: **early in training the burst is untimed, so a strictly
+     contingent reward never fires and nothing ever learns.** Resolving that — shaping, graded
+     reward, or an uncontingent warm-up phase — is the content of the experiment, not a detail.
+     **Effort** medium. **Risk** medium–high (bootstrapping).
 - **Conceptual thread (ties the two arcs tighter).** C3 established do(`θ`) — intervening
   on timescales — is the well-posed causal handle. The emergent rule is the substrate
   performing **self-directed do(`θ`)**: adjusting its own `τ` from input timing. So `θ`
