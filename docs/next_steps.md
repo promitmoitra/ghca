@@ -618,6 +618,39 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      carries the labelling; collapse as soon as it leaves zero means spatial separation was doing
      hidden work and item 11's "what remains is homogeneous cell properties" was too generous.
      **Effort** medium. **Risk** medium–high (runaway structure).
+  15. **Plastic identity via homeostatic θ — 🔬 **DONE, a disciplined negative with a structural
+     cause** (`lattice_identity.py`; notes [`lattice_timescale_notes.md`](lattice_timescale_notes.md))**
+     Tests whether cell *identity* can be learned rather than wired, under the agreed discipline —
+     one rate, one context — with identity = the firing threshold θ (the propagator↔coincidence
+     axis from Negative 1) and a homeostatic rule `θ ← clip(θ + r·(ā − a*), 1, 4)`. Predicted a
+     rate window where θ self-organises into a stable useful gradient.
+     **No window exists.** A gradient does form (corr(θ,x) → −0.44, prediction 1 holds), but
+     differentiation and function are anti-correlated: wherever the gradient is non-trivial
+     (a*=0.08) propagation reach collapses 0.86 → ~0.3 and τ-learning breaks (15 vs static 2.3);
+     where function survives (a*=0.16) θ barely moves. Init-independent — from all-readers (θ=4, a
+     dead sheet) homeostasis converges to the *same* fixed point as from all-propagators — so it is
+     structural, not a tuning miss: the rule's interior fixed point is uniform activity ā=a* for
+     every cell, and faithful relaying needs a relay to fire once per wave (rate set by P, not a*),
+     so the fixed point is generically incompatible with propagation unless a* already equals the
+     natural relay rate, when θ has no reason to move.
+     Diagnosis, and it belongs to a pattern: **own-activity is the wrong context because in an
+     excitable medium activity *is* load-bearing relay work**, so activity-homeostasis punishes the
+     cells propagation depends on. This is the *fourth* raw signal-magnitude/geometry to fail as a
+     label/driver here (amplitude, phase, direction, now activity-level); the fix each time is a
+     structural or predictive signal. Secondary finding: identity churn does corrupt τ-learning
+     independently (reverse-init, r=300: reach 0.93 recovered but timing still broken by churn), so
+     the timescale-separation worry is real but secondary to the context-signal failure.
+     The discipline paid off: one rate + one context gave a clean "this signal is wrong and here is
+     why" instead of a tunable mush. **Effort** done.
+  16. **Prediction-error as the identity context — 📐 PROPOSED (where 15 and 3e.5 converge)**
+     Item 15's diagnosis names its own successor: the context signal for identity (and for the
+     deferred surprise-gate 3e.5) must separate **rhythm-carrying activity** (necessary, protect it)
+     from **wasteful/reentrant activity** (prunable). That is a prediction-error / surprise signal
+     — more than one context term, so outside item 15's committed scope, but exactly the point where
+     the identity question and the surprise-gate question become the same experiment. Concretely:
+     gate θ-plasticity (or τ-plasticity) on locally *unpredicted* input, reusing E8's forward
+     prediction + global surprise. **Effort** medium. **Risk** medium–high (the predictor must be
+     fast relative to the rhythm — the standing caveat on every surprise-gate proposal).
 - **Conceptual thread (ties the two arcs tighter).** C3 established do(`θ`) — intervening
   on timescales — is the well-posed causal handle. The emergent rule is the substrate
   performing **self-directed do(`θ`)**: adjusting its own `τ` from input timing. So `θ`

@@ -760,3 +760,68 @@ and cells re-enter refractoriness, monotonicity breaks, and a genuine dip become
 selective avoidance needs a different **dynamical regime**, not a different learning rule — the
 same tonic-drive question deferred earlier when the transmission curve turned out to be a step
 rather than a band-pass peak. Those are now the same open problem, which is worth knowing.
+
+---
+
+## Identity as a plastic variable: a disciplined negative, and why
+
+The layered arc still hand-draws its anatomy. The proposal was to make *identity* plastic and let
+structure organise from use, under a pre-agreed discipline — **one rate, one context dependence** —
+with predictions committed before running. Identity is the firing threshold **θ**: Negative 1
+established that θ=1 propagates waves and θ≥2 blocks them, so θ *is* the propagator↔coincidence-
+detector axis, and moving θ is a cell changing type. The transition rule is the minimal
+homeostatic law — `θ_i ← clip(θ_i + r·(ā_i − a*), 1, 4)`, ā the cell's own recent activity, one
+rate `r`, one set-point `a*`. It is self-limiting (the conserved-flow property argued for over
+birth–death). τ learns concurrently, so the sweep doubles as the timescale-separation test.
+(`experiments/lattice_identity.py`, L=64, 5000 steps, n=3, drive period P=10.)
+
+The prediction was a **window**: a rate range where θ organises into a stable useful gradient. There
+is no such window. The two set-point regimes bracket the failure:
+
+| regime | r | θ̄ ±σ | corr(θ,x) | churn | reach | \|τ−P\| |
+|---|:--:|:--:|:--:|:--:|:--:|:--:|
+| static (r=0) | 0 | 1.00 ±0.00 | +0.00 | 0.000 | 0.86 | **2.3** |
+| a*=0.08 *(θ can move)* | 30 | 1.10 ±0.51 | −0.32 | 0.019 | **0.36** | **15.1** |
+| a*=0.08 | 300 | 1.20 ±0.62 | −0.35 | 0.090 | **0.32** | **15.5** |
+| a*=0.16 *(function kept)* | 30 | 1.01 ±0.05 | −0.09 | 0.009 | 0.50 | 1.9 |
+| a*=0.16 | 300 | 1.09 ±0.43 | −0.26 | 0.068 | 0.41 | 1.8 |
+
+**1. A gradient does form — prediction 1 holds.** corr(θ,x) reaches −0.44, so θ genuinely responds
+to the drive geometry: high near the patch, floor far away, with no wiring.
+
+**2. But differentiation and function are anti-correlated — the window does not exist.** Wherever
+the gradient is non-trivial (a*=0.08), propagation reach collapses from 0.86 to ~0.3 and τ-learning
+breaks (15.1 vs the static 2.3). Where function survives (a*=0.16), θ barely moves (θ̄≈1.0). No
+set-point buys both.
+
+**3. The failure is init-independent, which makes it structural.** Starting from all-readers
+(θ=4, a dead sheet: activity 0.005, reach 0.00) homeostasis converges to the *same* fixed point as
+from all-propagators — θ̄≈1.1–1.2, activity≈0.06, corr(θ,x)≈−0.4. The interior fixed point of the
+rule is ā_i = a* for **every** cell — uniform activity — and faithful relaying requires a relay to
+fire once per wave, a rate set by P, not by an arbitrary a*. So the homeostatic fixed point is
+generically incompatible with propagation unless a* already equals the natural relay rate, in which
+case θ has no reason to move. That is an analytic statement, not a tuning accident.
+
+**4. Two roads to broken timing, and only one is the rate.** At low a* the relays (highest-activity
+cells) raise θ and quench the rhythm at its source, so timing breaks at the *smallest* r>0 — a
+context failure, not a rate failure. But the timescale-separation worry is also real and separable:
+at reverse-init, r=300, propagation fully recovers (reach 0.93) yet τ-learning stays broken (14.7),
+because ongoing θ-churn keeps shifting what counts as a timing edge. Identity churning faster than
+τ learns does corrupt τ — just secondarily to the deeper context problem.
+
+### The diagnosis, and why it belongs to a pattern
+
+Own-activity is the wrong context signal, for a reason specific to excitable media: **activity *is*
+load-bearing relay work**, so activity-homeostasis punishes exactly the cells propagation depends
+on. This is the **fourth** time a raw signal *magnitude or geometry* has failed as a label or
+driver on this substrate — amplitude (coincidence gating), phase (gated own-input), direction
+(reward-as-wave), and now activity-level — and the fix has been the same each time: the
+distinguishing signal must be **structural or predictive**, never a magnitude.
+
+So the constructive next step is not a better rate or set-point but a better context: one that
+separates **rhythm-carrying activity** (necessary, protect it) from **wasteful/reentrant activity**
+(prunable). That is a prediction-error / surprise signal — which is more than one context term and
+therefore outside this sweep's committed scope, but it is exactly where the deferred surprise-gate
+(3e.5) and this identity question converge. The discipline paid off: one rate and one context gave
+a clean, interpretable "this signal is wrong and here is precisely why", rather than a tunable
+mush that hid the reason.
