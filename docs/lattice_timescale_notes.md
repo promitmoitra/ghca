@@ -804,7 +804,16 @@ only well-functioning point is r=0 — no identity plasticity at all.*
 **1. A gradient does form — prediction 1 holds.** corr(θ,x) reaches −0.44, so θ genuinely responds
 to the drive geometry: high near the patch, floor far away, with no wiring.
 
-**2. But differentiation and function are anti-correlated — the window does not exist.** Wherever
+**2. But differentiation and function are anti-correlated — the window does not exist.**
+*(Sharpened at n=20: the anti-correlation is real but the framing above was too kind to
+a\*=0.16. Propagation reach falls from 0.86 to **0.44** there as soon as r>0 — so **both**
+set-points lose about half their reach the moment θ moves. What a\*=0.16 preserves is
+τ-**learning** (|τ−P| 1.7–1.9, in fact slightly better than the r=0 baseline's 2.3), not
+propagation. The bind is therefore tighter than first stated: any θ motion costs reach, and
+the set-point only decides whether τ-learning dies as well. The figure legend has been
+corrected accordingly.)*
+
+Wherever
 the gradient is non-trivial (a*=0.08), propagation reach collapses from 0.86 to ~0.3 and τ-learning
 breaks (15.1 vs the static 2.3). Where function survives (a*=0.16), θ barely moves (θ̄≈1.0). No
 set-point buys both.

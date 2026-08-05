@@ -178,8 +178,10 @@ def fig_tonic(d, src):
 # ---------------------------------------------------------------------------------
 def fig_identity(mv, kp, srcs):
     fig, ax = plt.subplots(1, 3, figsize=(15, 4.6))
-    sets = [("a* = 0.08  (θ free to move)", mv, "-o", C_BAD),
-            ("a* = 0.16  (function preserved)", kp, "-s", C_GOOD)]
+    # NB not "function preserved" -- at n=20 reach falls 0.86 -> 0.44 at a*=0.16 too.
+    # What that set-point preserves is tau-LEARNING (|tau-P| 1.7-1.9), not propagation.
+    sets = [("a* = 0.08  (θ free; τ-learning breaks)", mv, "-o", C_BAD),
+            ("a* = 0.16  (τ-learning preserved)", kp, "-s", C_GOOD)]
 
     a = ax[0]
     for lab, d, mk, col in sets:
@@ -203,7 +205,7 @@ def fig_identity(mv, kp, srcs):
         a.fill_between(xx, rc - sd, rc + sd, color=col, alpha=0.18, lw=0)
     a.set_xticks(np.arange(len(r))); a.set_xticklabels([f"{v:g}" for v in r], fontsize=8)
     a.set_xlabel("identity rate r"); a.set_ylabel("wave propagation reach")
-    a.set_title("...but function is lost where it does"); a.legend(fontsize=8, loc="lower left")
+    a.set_title("...and propagation reach halves at BOTH set-points"); a.legend(fontsize=8, loc="lower left")
 
     a = ax[2]
     for lab, d, mk, col in sets:
@@ -220,8 +222,9 @@ def fig_identity(mv, kp, srcs):
     a.legend(fontsize=8, loc="upper right")
     a.margins(x=0.12, y=0.12)
 
-    fig.suptitle("Plastic identity: differentiation and function are anti-correlated at every "
-                 f"rate and both set-points   ({', '.join(srcs)}, n={mv['n']})", fontsize=11)
+    fig.suptitle("Plastic identity: any θ motion costs ~half the propagation reach at both "
+                 "set-points;\nthe set-point only decides whether τ-learning dies too   "
+                 f"({', '.join(srcs)}, n={mv['n']})", fontsize=10.5)
     fig.tight_layout(rect=(0, 0, 1, 0.93))
     out = os.path.join(FIG, "lattice_identity_bind.png")
     fig.savefig(out, dpi=110); plt.close(fig)
