@@ -928,3 +928,89 @@ I didn't touch it — it's a bigger call — but flagging it: if code keeps gett
 committed to the deploy branch, main-vs-deploy script drift like this will recur.
 
 — Claude (session `e1739b5e`)
+
+---
+
+## The lattice arc: 11 experiments on `claude/lattice-timescale-demo` (26 commits, unmerged)
+
+Porting the input-timing `τ` rule from the 3d/3e **pool** onto a 2-D Greenberg–Hastings
+**sheet**, then building outward. Everything is on `claude/lattice-timescale-demo`; nothing
+is on `main` yet. Roadmap items now carry stable **`3e.N`** IDs (see below). Results doc:
+`docs/lattice_results.md`; running notebook with the mistakes: `docs/lattice_timescale_notes.md`;
+interface spec: `docs/sensorimotor_foundations.md`.
+
+**If you touch this substrate, the single most useful thing to know** is a design law that
+emerged from four independent failures: **a raw signal magnitude or geometry cannot serve as a
+label or driver here.** Amplitude failed (coincidence gating: worse than ungated at every
+threshold). Phase failed (gating a cell's own input: fails at every window width). Direction
+failed (reward as a wave inside the medium floors τ to ~1, because a rightward wave excites cell
+x from the left and one step later x−1 sees x on its *right*). Activity level failed (homeostatic
+identity punishes exactly the relays propagation depends on). Every time, the fix was a
+**structural or predictive** signal — a separate pathway or a reference carried by dedicated
+cells. Expect a fifth instance if you try to label a stream by any property of the stream itself.
+
+**Three things that are solid** (n=20): the action primitive is **transmission, not emission** —
+a GH cell returning to rest emits nothing, so what looks like a motor burst is a synchronous
+window of *transmissivity*, and its edge sits at the learned interval (31.5 / 51.5 / 71.5 for
+D=30/50/70, motor response at D identically 0.000 across all 20 seeds). Reward as a fourth edge
+makes τ encode each cell's own stimulus–reward interval (|Δ| 0.16–0.19, 97–98% within ±2) against
+an unpaired control receiving identical reward events that fails completely. And **selective
+avoidance is impossible**, not merely unachieved: transmission is provably monotone in probe time
+(max per-seed violation +0.0000), because refractoriness is a *prefix* of the time after firing.
+
+**Two structural negatives, so you don't re-run them.** Plastic cell identity (θ) costs 49–76% of
+propagation reach at any rate and both set-points — init-independent, so structural. Weak tonic
+drive unlocks *neither* stalled thread (no band-pass peak, no avoidance dip at any q) and floods
+the sheet before it buys anything.
+
+### Process warnings that cost me real time
+
+1. **An experiment writing one fixed output filename silently loses whichever run finished
+   first.** `lattice_reward_edges.json` was overwritten by a jitter variant, so the stored
+   artifact no longer matched the numbers the notes cited. Every lattice script now takes a
+   `*_TAG` env var appended to its output filename. Please keep that pattern.
+2. **Derived metrics fail silently; directly-measured ones don't.** Six instrument errors in this
+   arc were all derived quantities — a dip metric that rated a rising *step* +1.00 (it divided by
+   the *mean* of the flanks instead of the *min*), a probe that measured the conditioning wave
+   still crossing the sheet, a τ error compared against an analytic guess wrong off the patch row,
+   and ratios computed from already-rounded display values. Mechanical reason: `|Δ|` is a mean over
+   a heavy-tailed per-cell distribution (spread 2.14 against an effect of 1.17), while
+   fraction-within-tolerance is bounded. **Prefer bounded proportions.**
+3. **On this substrate n=3 is adequate for treatments and misleading for controls.** Learned
+   quantities converge deterministically given an initialisation, so seed variance lives almost
+   entirely where nothing converges: across five experiments the treatments reproduced to the digit
+   (± 0.000) while unpaired controls carried sd 3.3–11.3. One claim was **retracted** on this basis
+   (a "threefold precision" gain that had 0.9 sd of separation at n=20).
+4. **Sweep any contingency; never test it at one value.** An unpaired control was
+   *indistinguishable from treatment* at D=50 alone. If you trim a sweep, keep the value the claim
+   lives at — I trimmed to the middle delay and it left the load-bearing claim unverified.
+5. **Two coupled constants in `lattice_timescale_demo.py`** had derived the interval clip as
+   `P_S × 2`, so lowering the slow period silently capped learned τ at 12. Now decoupled
+   (`DEMO_DTCLIP`). Its single-rhythm numbers had **no committed artifact** until this pass —
+   regenerated as `lattice_timescale_demo_single.json`, and Moran's I is 0.484, not the 0.32
+   earlier write-ups carried.
+
+### Coordination FYIs, not requests
+
+- **Roadmap numbering was positional, now fixed.** Track 3e's items were a markdown ordered list,
+  so "item 12" was a *line position* that renumbered on insertion — and the list had already been
+  reordered once. Items now carry explicit `3e.N` IDs matching the convention `synthesis.md` and
+  the results docs already used in prose, with an index at the head of the track. Cite the ID.
+- **This arc used `docs/next_steps.md` for task tracking, which `AGENTS.md` discourages** in favour
+  of `bd`. `bd` is not installed in this container, so I had no alternative; if beads is the system
+  of record, items `3e.7`–`3e.19` need importing.
+- **Not reinforcement learning, and the docs say so repeatedly.** There is no action that changes
+  the world and no policy; the value signal is *homeostatic* ("do not saturate your own
+  representation"), not appetitive. Please don't let that framing drift in summaries — it is the
+  caveat most likely to get lost.
+- **The anatomy is still designed.** Content and placement became emergent; how many sheets and
+  which projects to which did not.
+- **A WebGL demo exists at `docs/demo/`** (verified against NumPy, two independent
+  implementations agreeing) but is **not published** to the Pages site yet.
+
+Open and cheap next steps, in the order I'd take them: `3e.12` conflicting reward times (where
+attention should finally pay — machinery exists), `3e.19` a *rhythmic* rather than stochastic
+background, `3e.16` prediction-error as the identity context (where `3e.15` and the long-deferred
+surprise gate converge), then `3e.13` closing the loop.
+
+— Claude (session `a10519a9`)
