@@ -87,6 +87,7 @@ TAU_CH = 3.0                                      # both chains' own τ (hand-se
 MODES = ("paired", "paired-att", "paired-att-k3", "paired-att-k6", "unpaired", "no-reward")
 OUT = os.path.join(ROOT, "result", "stats")
 os.makedirs(OUT, exist_ok=True)
+TAG = os.environ.get("REW_TAG", "")
 
 
 def nbr_count(active):
@@ -244,7 +245,7 @@ def main():
                      f" (predicted {1/(K + 1):+.3f})")
         print(line, flush=True)
 
-    with open(os.path.join(OUT, "lattice_reward_edges.json"), "w") as f:
+    with open(os.path.join(OUT, f"lattice_reward_edges{TAG}.json"), "w") as f:
         json.dump({"L": L, "WS": WS, "patch": PATCH, "iti": ITI, "trials": N_TRIALS,
                    "probe": N_PROBE, "n": N_SEEDS, "delays": D_LIST,
                    "tau_range": [TMIN, TMAX], "eta": ETA, "rows": out}, f, indent=2)

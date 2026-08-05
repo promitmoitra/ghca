@@ -651,6 +651,55 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      gate θ-plasticity (or τ-plasticity) on locally *unpredicted* input, reusing E8's forward
      prediction + global surprise. **Effort** medium. **Risk** medium–high (the predictor must be
      fast relative to the rhythm — the standing caveat on every surprise-gate proposal).
+  17. **Tonic drive — 🔬 **DONE, no window; both stalled threads stay stalled and one claim gets
+     stronger** (`lattice_tonic.py`)** Two dead ends traced to one assumption (each cell fires once,
+     a rested cell stays rested): the transmission curve is a monotone step rather than a band-pass
+     peak, and selective avoidance is provably impossible. Item 11's avoidance note said a dip
+     "needs a different dynamical regime, not a different learning rule" — this is that regime,
+     stochastic background excitation with probability q, swept over 8 decades with predictions
+     committed in advance.
+     **No window.** Reentrant activity floods the sheet (0.31 at q=1e-6) and τ-learning starts
+     degrading (within ±2: 0.98 → 0.93) *before* monotonicity even begins to break; when it does
+     break it is marginal (+0.02 to +0.05) and by then learning is halved (0.63 → 0.31).
+     `peakiness` never exceeds 0 at any q — no band-pass peak — and the avoidance `dip` is **nan at
+     every q**. So the escape hatch is closed by measurement and the avoidance result is *stronger*
+     than when proved: the prefix argument is not the only obstacle.
+     **Why, and it sharpens the successor.** Stochastic re-firing happens at random times, so
+     excitability windows **decohere** rather than becoming periodic; a band-pass population response
+     needs excitability periodic *and phase-aligned*. That points at a **rhythmic** background, not a
+     stochastic one — converging with item 11's finding that a diffuse near-simultaneous value signal
+     preserved synchrony where a propagating one destroyed it. Population timing needs a common
+     reference and noise cannot supply one.
+     Also: fixing my own τ metric mid-run **reversed** a headline read (an analytic guess `D−x` is
+     wrong off the patch row and showed a flat 7.1, i.e. "learnability preserved" — false). Third
+     instrument failure of the same shape; derived metrics fail silently, metrics measured the way
+     the rest of the arc measures them do not. **Effort** done.
+  18. **Seed-count remediation — 🔬 **DONE for the headline claims; deterministic results exact,
+     controls were noisy** (outputs tagged `_n20`)** Seven lattice experiments ran at n=3 against
+     this repo's n=20 standard for the pool arc. Re-running the headline conditions at n=20: the
+     transmission edge is **exact** (31.5/51.5/71.5, motor@D sd **0.000** across all 20 seeds);
+     monotonicity holds with max *per-seed* drop **+0.000** over 20 seeds × 4 rules × 2 delays;
+     reward-edge paired alignment and the gated K=3 result reproduce exactly; avoid-flip bistability
+     holds. Deterministic-given-init claims are therefore solid.
+     **The unpaired controls were the noisy part** — seed spread of 3.4–7.5 on |Δ| and 0.03–0.04 on
+     motor response, invisible at n=3. No conclusion changes, but previously quoted control figures
+     were point estimates with real variance and the notes now say so.
+     **Reproducibility defect found and fixed:** `lattice_reward_edges.json` had been silently
+     overwritten by the jitter variant, so the stored artifact did not contain the canonical numbers
+     the notes cite (the numbers were right; the artifact was not). Every experiment's output
+     filename is now tagged so variants cannot clobber each other. General lesson: **an experiment
+     writing one fixed filename silently loses whichever run finished first.** Remaining: `layers`
+     n=20 still in flight; `attention_gate`, `attention_value` and `identity` not yet re-run.
+     **Effort** low, mostly compute.
+  19. **Rhythmic (not stochastic) background — 📐 PROPOSED (item 17's successor)**
+     Item 17's diagnosis names it: excitability must be periodic *and phase-aligned* for a band-pass
+     response, and stochastic drive decoheres it. Replace random tonic drive with a weak **rhythmic**
+     global background and re-measure peakiness and the avoidance dip. Costs: it is a global signal
+     (the thing this arc has repeatedly criticised), and it risks entrainment by the fastest rhythm
+     (Negative 1) — so the honest test must show the background does not simply impose its own period
+     on τ. That control is the experiment. **Effort** low (a one-line change to `lattice_tonic.py`
+     plus an entrainment control). **Risk** medium (entrainment; and it may just reproduce the
+     afferent-clock result from a different direction).
 - **Conceptual thread (ties the two arcs tighter).** C3 established do(`θ`) — intervening
   on timescales — is the well-posed causal handle. The emergent rule is the substrate
   performing **self-directed do(`θ`)**: adjusting its own `τ` from input timing. So `θ`

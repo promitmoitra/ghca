@@ -71,6 +71,7 @@ RESP_W = int(os.environ.get("SM_RESPW", "12"))      # window after the probe to 
 MODES = ("trained", "untrained", "unpaired")
 OUT = os.path.join(ROOT, "result", "stats")
 os.makedirs(OUT, exist_ok=True)
+TAG = os.environ.get("SM_TAG", "")
 
 
 def nbr4(a):
@@ -210,7 +211,7 @@ def main():
         print(f"  {mode:9s}: crossing " + " / ".join(f"{v:6.1f}" for v in c)
               + "   vs D " + " / ".join(f"{D:6d}" for D in D_LIST), flush=True)
 
-    with open(os.path.join(OUT, "lattice_sensorimotor.json"), "w") as f:
+    with open(os.path.join(OUT, f"lattice_sensorimotor{TAG}.json"), "w") as f:
         json.dump({"L": L, "trials": N_TRIALS, "n": N_SEEDS, "delays": D_LIST,
                    "theta_m": THETA_M, "resp_w": RESP_W, "rows": out}, f, indent=2)
     print("wrote lattice_sensorimotor.json", flush=True)

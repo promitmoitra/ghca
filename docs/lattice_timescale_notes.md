@@ -825,3 +825,88 @@ therefore outside this sweep's committed scope, but it is exactly where the defe
 (3e.5) and this identity question converge. The discipline paid off: one rate and one context gave
 a clean, interpretable "this signal is wrong and here is precisely why", rather than a tunable
 mush that hid the reason.
+
+---
+
+## Tonic drive: the regime change that unlocks neither thread
+
+Two dead ends in this arc traced to one assumption. The transmission curve is a monotone **step**
+rather than a band-pass peak, and selective avoidance is impossible because transmission is
+provably monotone in probe time — both because each cell fires once per trial and a rested cell
+**stays** rested. The avoidance note said so explicitly: a dip "needs a different *dynamical
+regime*, not a different learning rule". Weak tonic drive is that regime change — a rested cell
+receiving background excitation with probability `q` re-fires and becomes periodically rather than
+monotonically excitable. (`experiments/lattice_tonic.py`, L=64, D=50, 40 trials, n=5.)
+
+The predictions were committed in advance, including the feared cost: that re-firing at interval
+≈ τ would reinstate the **self-confirming fixed point** of Negative 2.
+
+| q | 0 | 1e-7 | 3e-7 | 1e-6 | 3e-6 | 1e-5 | 3e-5 | 1e-4 |
+|---|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+| peakiness (>1 = band-pass) | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | nan |
+| max monotonicity drop | +0.00 | +0.00 | +0.00 | +0.00 | +0.02 | +0.03 | +0.03 | +0.02 |
+| avoidance dip | nan | nan | nan | nan | nan | nan | nan | nan |
+| **τ within ±2** | **0.98** | 0.98 | 0.98 | 0.93 | **0.63** | **0.47** | **0.31** | 0.29 |
+| reentrant activity | 0.00 | 0.04 | 0.11 | **0.31** | 0.64 | 0.87 | 0.96 | 0.98 |
+
+**There is no window, and the ordering is the finding.** Reentrant activity floods the medium
+(0.31 at q=1e-6) and τ-learning has already started degrading (0.93) *before* monotonicity even
+begins to break — and when it does break, only marginally (+0.02 to +0.05). By the time any
+violation appears, half the learning is gone (within ±2 down to 0.63, then 0.31). Tonic drive
+buys a technicality and costs the substrate's one working capability.
+
+**Neither stalled thread moves.** `peakiness` never exceeds 0 at any q — no band-pass peak. `dip`
+is nan at every q — **no avoidance dip, even in the regime that was supposed to permit one.** So
+the avoidance result is now *stronger* than when it was proved: the prefix argument is not the only
+obstacle, and the earlier note's escape hatch ("needs re-firing") is closed by measurement.
+
+**Why, and it sharpens the next hypothesis.** Stochastic tonic drive re-fires cells at *random*
+times, so the population's excitability windows **decohere** instead of becoming periodic. A
+band-pass population response needs excitability that is periodic *and phase-aligned*. That points
+at a **rhythmic** background rather than a stochastic one — which is a global oscillation, and note
+the convergence: a diffuse, near-simultaneous signal is exactly what made the synchrony result work
+in the layered run, where a *propagating* value signal destroyed it. Same lesson from the other
+direction: population timing needs a common reference, and noise cannot supply one.
+
+**A prediction I got wrong, caught by fixing my own instrument.** The first version of the τ metric
+compared τ against an analytic guess (`D − x`), which is wrong for any cell off the patch row since
+t_fire ≈ x + |Δy|. It read a flat 7.1 at every q, and I would have reported "learnability
+preserved". Replacing it with the probe-measured alignment used elsewhere in the arc reversed the
+answer: learning degrades sharply. Two earlier instrument failures had the same shape — a dip metric
+that rated a rising step +1.00, and a probe that measured the conditioning wave. The pattern is
+that *derived* metrics fail silently; metrics measured the same way as the rest of the arc do not.
+
+---
+
+## Raising n on the headline claims: what held, what was noise
+
+Seven experiments in this arc ran at n=3 against the repo's own n=20 standard for the pool work.
+Re-running the headline conditions at **n=20** (outputs tagged `_n20`):
+
+| claim | n=3 | n=20 | verdict |
+|---|:--:|:--:|---|
+| transmission edge (D=30/50/70) | 31.5 / 51.5 / 71.5 | **31.5 / 51.5 / 71.5** | exact; motor@D sd **0.000** across all 20 seeds |
+| monotonicity (all 4 avoidance rules, 2 delays) | drop +0.00 | **+0.00**, max *per-seed* drop **+0.000** | holds on 20 seeds/condition |
+| avoid-flip bistability (floor/ceiling) | 0.13 / 0.50 | 0.13 / 0.51 | holds |
+| reward-edge paired alignment | 0.16–0.19, w±2 0.97–0.98 | 0.16–0.19, w±2 0.97–0.98 | exact |
+| reward-edge gated (K=3) | 0.00, w±2 1.00 | 0.00, w±2 1.00 | exact |
+| **unpaired controls** | 26.8 / 16.6 / 6.4 | 24.6 / 14.8 / 8.1, **sd 7.5 / 5.9 / 3.4** | conclusion holds, **numbers were noisy** |
+| untrained/no-reward baselines | ~30 | ~30, sd 0.35–0.53 | holds |
+
+**The deterministic claims are exact**, which makes sense: given a τ initialisation the dynamics are
+deterministic and the learned quantities converge, so seed variance enters only through the
+initialisation these rules overwrite. Motor response at D is *identically* 0.000 for all 20 seeds in
+every trained condition.
+
+**The unpaired controls were the noisy part** — seed-to-seed spread of 3.4–7.5 on |Δ| and 0.03–0.04
+on motor response, which n=3 could not see. No conclusion changes (unpaired still fails to track D
+at any delay), but the specific figures previously quoted were point estimates with real variance
+behind them, and the notes above should be read that way.
+
+**A reproducibility defect found in passing.** `result/stats/lattice_reward_edges.json` had been
+overwritten by the jitter variant (`REW_JIT=5`), so the stored artifact did not contain the
+canonical numbers the notes cite. The numbers themselves were right — the n=20 canonical run
+reproduces them exactly — but the artifact was wrong. Fixed by tagging every experiment's output
+filename, so variants can no longer clobber each other, and by regenerating the canonical run under
+`_canonical`. Worth noting as a class of error: **an experiment that writes one fixed filename will
+silently lose whichever run finished first.**

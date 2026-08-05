@@ -70,6 +70,7 @@ DELTA = int(os.environ.get("AV2_DELTA", "10"))       # ±δ for the dip test
 MODES = ("approach", "avoid-flip", "avoid-ratchet", "avoid-margin")
 OUT = os.path.join(ROOT, "result", "stats")
 os.makedirs(OUT, exist_ok=True)
+TAG = os.environ.get("AV2_TAG", "")
 
 
 def nbr4(a):
@@ -216,7 +217,7 @@ def main():
               + "   at ceiling " + " / ".join(f"{v:.2f}" for v in ce)
               + "   max drop " + " / ".join(f"{v:+.2f}" for v in mv), flush=True)
 
-    with open(os.path.join(OUT, "lattice_avoidance.json"), "w") as f:
+    with open(os.path.join(OUT, f"lattice_avoidance{TAG}.json"), "w") as f:
         json.dump({"L": L, "trials": N_TRIALS, "n": N_SEEDS, "delays": D_LIST,
                    "margin": MARG, "delta": DELTA, "rows": out}, f, indent=2)
     print("wrote lattice_avoidance.json", flush=True)

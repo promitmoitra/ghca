@@ -88,6 +88,7 @@ MODES = ("layered", "layered-vwave", "layered-exc", "layered-nogate",
 JIT_MAX = int(os.environ.get("LY_JIT", "40"))       # distractor onset jitter
 OUT = os.path.join(ROOT, "result", "stats")
 os.makedirs(OUT, exist_ok=True)
+TAG = os.environ.get("LY_TAG", "")
 
 
 def nbr4(active):
@@ -303,7 +304,7 @@ def main():
                   f" vs distractor {g('sync_distract'):5.3f}"
                   f" | overall sync {g('sync'):5.3f}", flush=True)
 
-    with open(os.path.join(OUT, "lattice_layers.json"), "w") as f:
+    with open(os.path.join(OUT, f"lattice_layers{TAG}.json"), "w") as f:
         json.dump({"L": L, "trials": N_TRIALS, "n": N_SEEDS, "delays": D_LIST,
                    "theta_a": THETA_A, "gate_w": GATE_W, "sync_w": SYNC_W,
                    "tau_range": [TMIN, TMAX], "rows": out}, f, indent=2)
