@@ -42,12 +42,21 @@ import ghca_stats as st  # noqa: E402
 L = int(os.environ.get("DEMO_L", "96"))            # lattice side
 STEPS = int(os.environ.get("DEMO_STEPS", "6000"))
 N_SEEDS = int(os.environ.get("DEMO_N", "5"))
-P_F, P_S = 6, 24                                   # fast / slow pacemaker periods
+# Fast/slow pacemaker periods. Made configurable so the SINGLE-rhythm condition (Result 1
+# of docs/lattice_results.md) is reproducible from committed code: setting DEMO_PS == DEMO_PF
+# gives one rhythm. The original single-rhythm numbers came from an earlier version of this
+# script and had no committed artifact -- a reproducibility gap this closes.
+P_F = int(os.environ.get("DEMO_PF", "6"))
+P_S = int(os.environ.get("DEMO_PS", "24"))          # set == DEMO_PF for a single rhythm
 PACE_FRAC = 0.004                                  # each class, fraction of cells
 ACT = 2                                            # global active duration (not learned)
 THETA = float(os.environ.get("DEMO_THETA", "1"))   # active neighbours needed to excite
 LAYOUT = os.environ.get("DEMO_LAYOUT", "mixed")    # "mixed" | "split" pacemaker geometry
 TMIN, TMAX = 3.0, 34.0
+# Interval clip. Kept SEPARATE from P_S: deriving it as P_S*2 silently caps learned τ when the
+# slow period is lowered, which made a single-rhythm run read τ=11.95 (the clip) rather than the
+# ceiling. Default preserves the original two-rhythm behaviour.
+DT_CLIP = float(os.environ.get("DEMO_DTCLIP", str(2.0 * 24)))
 ETA = 0.15
 OUT = os.path.join(ROOT, "result", "stats")
 os.makedirs(OUT, exist_ok=True)
@@ -132,7 +141,7 @@ def run(rule, seed, collect_frames=False):
         seen = ev & (prev >= 0)
         if seen.any():
             dt = (t - prev[seen]).astype(np.float32)
-            dt = np.clip(dt, 0, P_S * 2.0)               # ignore implausibly long gaps
+            dt = np.clip(dt, 0, DT_CLIP)                  # ignore implausibly long gaps
             tau[seen] = np.clip(tau[seen] + ETA * (dt - tau[seen]), TMIN, TMAX)
         if rule == "input":
             last_in[ev] = t

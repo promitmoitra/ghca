@@ -142,7 +142,8 @@ not as built-in modules.
   (learned timescales on an excitable sheet, 11 experiments, headlines at n=20): the
   input-timing `τ` rule works on a 2-D medium where the old self-referential rule ratchets to
   its ceiling, but exogenous timing does **not** penetrate a recurrent medium from a localised
-  sensory strip (|τ−P| 1.54 → 2.92, locking nowhere). A 1-D attention chain of the same cells
+  sensory strip (|τ−P| 1.54 at the strip, ~2.0 immediately beyond it, 2.92 at the far wall and
+  non-monotone in between — locking nowhere). A 1-D attention chain of the same cells
   carries a timing reference to any depth (0.00 at depth 92) — a *clock, not a filter*. Reward
   as a fourth edge makes `τ` encode each cell's own **stimulus–reward interval** (|Δ| 0.16–0.19,
   97–98% within ±2, against an unpaired control receiving identical reward events that fails
@@ -154,7 +155,7 @@ not as built-in modules.
   51.5 / 71.5 for D=30/50/70) and graded credit exists from trial 1, so contingent reward needs
   no shaping. Two structural negatives: selective avoidance is **impossible** (transmission is
   provably monotone in probe time; max per-seed violation +0.0000), and plastic cell identity
-  costs half the propagation reach at any rate. Across four independent failures — amplitude,
+  costs 49–76% of the propagation reach at any rate. Across four independent failures — amplitude,
   phase, direction, activity level — the arc's transferable law is that a raw signal *magnitude
   or geometry* cannot serve as a label on this substrate; only a structural or predictive signal
   can. **Not** reinforcement learning: no action changes the world, and the anatomy is still

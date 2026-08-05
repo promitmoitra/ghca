@@ -33,19 +33,32 @@ interval between input events:
 **One fix was required before anything worked: edges, not levels.** Defining an "input event" as
 *suprathreshold input* is nearly always true on a lattice — with `θ=1` some neighbour is almost
 always active, and a passing wave holds input high for `act` consecutive steps, so the measured
-interval is ~1 and carries no rhythm. τ collapses to the floor (3.1 of a [3,34] range). An input
-event must be the **rising edge** of suprathreshold drive. In the 3e.2 pool the drive sources
+interval is ~1 and carries no rhythm, and τ collapses to the floor of its [3,34] range. An input
+event must be the **rising edge** of suprathreshold drive. *(The specific floor value quoted in
+the notebook, 3.1, was observed during development and has no committed artifact — the level-
+detection variant was never kept as a condition.)* In the 3e.2 pool the drive sources
 fired as discrete pulses, so every input already *was* an edge and the distinction was invisible.
 
 ## Result 1 — the rule works on a lattice; the old self-referential rule still fails
 
-| rule | mean τ (drive P=6) | fraction near P | Moran's I |
+Single rhythm, P=6, L=96, 6000 steps, **n=5** (`lattice_timescale_demo_single.json`):
+
+| rule | mean τ | fraction near P | Moran's I |
 |---|:--:|:--:|:--:|
-| **input-timing** | **8.0** | **0.51** | **0.32** |
-| own-firing (e10) | 33.9 (ceiling) | 0.00 | 0.002 |
+| **input-timing** | **7.9** | **0.55** | **+0.484** |
+| own-firing (e10) | 33.8 (ceiling) | 0.01 | −0.002 |
 
 The input rule pulls τ toward the drive period and produces genuine spatial structure; the
 own-firing rule rails to the ceiling with none — the **e10 ratchet reproduced on a lattice**.
+
+*Provenance note.* This table was **unsourced until now**: the committed artifact was a
+*two-rhythm* run (P_F=6, P_S=24, n=2) and the single-rhythm numbers came from an earlier version
+of the script that no longer existed. Reproducing it required two fixes — making the periods
+configurable, and **decoupling the interval clip from `P_S`**, which had been derived as `P_S × 2`
+and so silently capped learned τ at 12 when the slow period was lowered (a single-rhythm run read
+τ = 11.95, the clip, rather than the ceiling). Earlier write-ups quoted 0.51 and 0.32 for the last
+two columns; the reproducible values are 0.55 and 0.484, so the spatial-structure result is
+**stronger** than previously reported.
 
 ## Result 2 — exogenous timing does *not* penetrate a recurrent medium
 
@@ -53,10 +66,13 @@ A **global** afferent lets the rule track a drive period exactly (τ = 6.0 / 18.
 6→18→6 schedule, |τ−P| = 0.0). But a global afferent puts every cell effectively *in the sensory
 layer*, so the recurrence is not doing the learning. Confining the afferent to a **sensory strip**
 along one edge — the repo's own `roles` convention — changes the answer: learning from every input
-produces a real distance gradient (|τ−P| 1.54 next to the strip → 2.92 far away at L=96) but
-**never locks anywhere, not even in the adjacent column**. Several wavefronts arrive per drive
-cycle, so a last-interval estimator measures intervals shorter than the period. The rhythm is
-present in the input but not *recoverable*.
+**never locks anywhere, not even in the adjacent column**. |τ−P| is 1.54 in the column abutting
+the strip, jumps to ~2.0 immediately beyond it and drifts to 2.92 at the far wall — but the
+profile is **non-monotone** (1.54, 2.07, 2.06, 2.01, 1.94, 1.87, 1.80, 1.82, …), so this is a
+failure to lock at any depth rather than a clean gradient with distance. Several wavefronts arrive
+per drive cycle and τ settles at **8.9 against a drive period of 6**, i.e. the estimator recovers
+intervals *longer* than the period, not shorter. The rhythm is present in the input but not
+*recoverable*.
 
 ## Result 3 — an attention chain carries a timing reference: a clock, not a filter
 
@@ -83,8 +99,8 @@ own stimulus-to-reward interval**. Scored on probe trials as `|(t_rew − t_fire
 | **paired, ungated** | **0.16–0.19 ± 0.00** | **0.97–0.98** | 0.49–0.67 | 7.1–7.5 | 31.3 → 43.1 |
 | paired + slow gate (K=3) | **0.00 ± 0.00** | **1.00** | 0.016 | 8.9 | 26.8 → 38.8 |
 | paired + fast gate (K=1) | 0.80 ± 0.00 | 0.87 | 0.004 | **0.00** | 3.0 → 3.0 |
-| unpaired *(the control)* | 24.6 / 14.8 / 8.1, **sd 7.5 / 5.9 / 3.4** | 0.00–0.12 | 0.90 | 7.2 | 37.1 **flat** |
-| no reward *(untrained)* | 30.1–30.8 ± 0.5 | 0.04 | — | 24.9 | 46.5 |
+| unpaired *(the control)* | 24.6 / 14.8 / 8.1, **sd 7.5 / 5.9 / 3.3** | 0.00–0.12 | 0.90 | 7.2 | 37.1 **flat** |
+| no reward *(untrained)* | 30.1–30.8 ± 0.35–0.53 | 0.04 | — | 24.9 | 46.5 |
 
 The unpaired control delivers **exactly as many reward events on the same line** and fails; its τ
 sits at 37.1 regardless of D. Read the flat τ, not the shrinking error — |Δ| falls from 24.6 to
@@ -94,8 +110,8 @@ sits at 37.1 regardless of D. Read the flat τ, not the shrinking error — |Δ|
 (the distance-from-patch term) while the field is accurate to 0.2.
 
 **The fast gate is degenerate** — it meets reward exactly where stimulus and reward arrive
-together, so the interval is ≈0, τ pins to the floor (σ_y exactly 0.00) and only the *column
-index* carries the delay. Its 0.87 "within ±2" passes for the wrong reason.
+together, so the interval is ≈0, τ pins to the floor (σ_y = 7×10⁻⁶, numerically zero) and only
+the *column index* carries the delay. Its 0.87 "within ±2" passes for the wrong reason.
 
 ## Result 5 — a value chain removes the last hand-set constant (n=20)
 
@@ -108,10 +124,11 @@ behind it. All delays start at 1 — the degenerate value.
 | condition | d̄ | write column | saturation | \|Δ\| | within ±2 |
 |---|:--:|:--:|:--:|:--:|:--:|
 | **plastic** | **1.50** | **27.0 ± 0.0** | +0.01 → **+0.02** | **0.00** | **1.00** |
+| *(all rows: D=20 only — the n=20 re-run covered one delay)* | | | | | |
 | fixed K=1 *(degenerate)* | 1.00 | 41.0 ± 0.0 | +0.01 → **+1.00** | 0.80 | 0.87 |
 | fixed K=3 *(hand-set target)* | 3.00 | 20.0 ± 0.0 | +0.00 | 0.00 | 1.00 |
 | plastic-unpaired *(control)* | 1.36 | **29.1 ± 3.3** | +0.01 | 16.02 | 0.14 |
-| plastic-two *(interleaved delays)* | 1.41 | 30.0 ± 0.0 | +0.00 | 0.00 | 1.00 |
+| plastic-two *(interleaved delays)* | 1.41 | **27.0 and 33.0** ± 0.0 | +0.01 → +0.00 | 0.00 | 1.00 |
 
 Saturation falls from the +1.00 that fixed-K=1 reaches — *every* written cell pinned at the floor
 — to ≈0, and alignment matches the hand-set K=3 condition **without being given the value**. It
@@ -121,8 +138,9 @@ oscillation) — the feedback is a saturation *boundary*, not a rhythm, and a bo
 confirm itself the way a period can.
 
 The credit-assignment geometry is visible in the learned parameter: the value pulse only travels
-left, so upstream delays train (1.83) and downstream ones sit at their initial 1.00 (1.26 mean).
-An honest artifact of the mechanism, not a feature.
+left, so upstream delays train further (mean 1.83) than downstream ones (mean 1.26). Downstream
+delays did still move — by roughly a quarter of the upstream change — and only the far end sits at
+the initial 1.00; the *asymmetry* is the artifact of the mechanism, not a hard boundary.
 
 ## Result 6 — layers instead of edges: a synchronous burst, and two hard requirements (n=20)
 
@@ -135,7 +153,7 @@ moment. A travelling wave becomes a synchronous population burst.
 |---|:--:|:--:|:--:|
 | **ungated** | **0.637 ± 0.000** | **0.912 ± 0.000** | D + 1 |
 | A-gated | 0.167 ± 0.005 | 0.346 ± 0.007 | D + 1 |
-| **propagating value** | **0.021 ± 0.002** | **0.042 ± 0.003** | D + 50 / D + 39 |
+| **propagating value** | **0.021 ± 0.002** | **0.042 ± 0.003** | D + 49.6 / D + 38.9 |
 | **excitatory coupling** | **0.034 ± 0.001** | **0.077 ± 0.001** | D + 1 |
 | untrained | 0.047 ± 0.003 | 0.070 ± 0.003 | 88 |
 | unpaired | 0.006 ± 0.022 | 0.009 ± 0.026 | 89 |
@@ -151,7 +169,8 @@ Two mechanism requirements, both newly visible only in the layered form:
   so intervals are individually correct and collectively unalignable. **Population synchrony
   needs a common temporal reference** — a functional argument for volume transmission.
 - **Coupling must be modulatory.** Adding excitatory A→H on top of the gate collapses synchrony
-  and inflates the attention sheet's own activity ~4.6× (0.008 → 0.037). Same cells, same signal,
+  and inflates the attention sheet's own activity **4.86×** at D=50 and 4.88× at D=70
+  (0.00769 → 0.03742). Same cells, same signal,
   same timing; only excitatory instead of modulatory.
 
 ## Result 7 — the action is transmission, and bootstrapping is free (n=20)
@@ -169,14 +188,19 @@ observe whether it passed.
 | unpaired | 59.3 | 59.7 | 64.0 |
 
 Slope 1.0 against D with a constant +1.5-step offset; motor response at D is *identically* 0.000
-across all 20 seeds in every trained condition. Unpaired's edge is pinned near its random-delay
-mean (~52) — and at D=50 **alone** it is indistinguishable from trained, so only the sweep
-separates them.
+across all 20 seeds in every trained condition. Unpaired's edge barely moves with D (59.3 / 59.7 / 64.0) because its reward times are drawn
+uniformly from [5, 130) — mean 67 — so it reflects that distribution rather than the tested delay.
+The trained/unpaired gap is 27.8 / 8.2 / 7.5 steps at D=30/50/70, i.e. **narrowest at the longest
+delay**. At n=3 the two coincided at D=50 specifically, which is what made the sweep necessary; an
+earlier write-up attributed that coincidence to a "~52" distribution mean, which is not a quantity
+in this experiment.
 
 **Bootstrapping is free.** An untrained sheet has τ scattered across its range, so some fraction
-of cells is excitable at any probe time: transmission is *partial* rather than zero, ~60% of
-ceiling at the true reward time. Graded credit exists from the first trial with no shaping, no
-reward schedule and no warm-up phase. What learning adds is **sharpness** — a smeared population
+of cells is excitable at any probe time, so transmission is *partial* rather than zero. But the
+amount is strongly delay-dependent: untrained transmission at t=D is **4.0% / 21.7% / 70.4%** of
+the trained ceiling at D=30/50/70. Graded credit therefore exists from the first trial without
+shaping **at long delays**, and is very weak at short ones — the original blanket "~60%" was the
+D=70 figure generalised too far. What learning adds is **sharpness** — a smeared population
 of independent timers becomes a synchronised gate.
 
 ## Result 8 — avoidance is not sign-symmetric with approach; the reason is a theorem (n=20)
@@ -184,8 +208,10 @@ of independent timers becomes a synchronised gate.
 For a **dip** (transmission low at D, high at both D±δ) a cell must be rested at D−δ and
 refractory at D. But a rested cell *stays* rested — nothing re-fires it — so every cell
 transmitting at D−δ also transmits at D. Population transmission is therefore **monotone
-non-decreasing in probe time**. Measured max decrease, all four rules × 2 delays × 20 seeds, taken
-per seed rather than on the mean: **+0.0000**.
+non-decreasing in probe time**. Measured max decrease over all four rules × 2 delays: **+0.0000**. The committed
+`mono_viol` metric is computed on the seed-mean curve; recomputing it independently **per seed**
+from the stored per-seed arrays also gives +0.0000, so the result does not depend on the
+averaging — but the stored metric alone would not have established that.
 
 Refractoriness is a **prefix** of the time after firing, never a window inside it. A cell can
 express "pass after T"; it cannot express "block near T, pass either side". Avoidance is only
@@ -213,9 +239,11 @@ the minimal one-rate/one-context homeostatic law `θ ← clip(θ + r(ā − a*),
 | propagation reach *(a\*=0.16)* | **0.86 ± 0.00** | **0.44 ± 0.09** | **0.48 ± 0.07** |
 | \|τ−P\| *(a\*=0.16)* | 2.3 | 1.9 | 1.7 |
 
-A gradient does form (corr → −0.40) with no wiring. But **any θ motion costs about half the
-propagation reach at either set-point** — 0.86 falls to 0.21 or 0.44 as soon as r > 0 — and the
-set-point only decides whether τ-learning dies *as well*. The failure is **init-independent**:
+A gradient does form (corr → −0.40) with no wiring. But **any θ motion costs a large fraction of
+the propagation reach at either set-point**: 0.86 falls to 0.21 at a\*=0.08 (a **76%** loss) and to
+0.44 at a\*=0.16 (**49%**) as soon as r > 0. The set-point only decides whether τ-learning dies
+*as well*. (An earlier write-up said "about half" — accurate for a\*=0.16, an understatement for
+a\*=0.08.) The failure is **init-independent**:
 starting from all-readers (θ=4, a dead sheet) converges to the same fixed point as from
 all-propagators, so it is structural, not a tuning miss. The rule's interior fixed point is
 uniform activity ā = a\* for every cell, while faithful relaying requires a relay to fire once
@@ -230,16 +258,23 @@ Two dead ends (the transmission step rather than a band-pass peak; the impossibi
 avoidance) both rest on single firing. Weak tonic drive breaks that assumption — and unlocks
 neither.
 
-| q | 0 | 1e-7 | 1e-6 | 3e-6 | 1e-5 | 3e-5 |
-|---|:--:|:--:|:--:|:--:|:--:|:--:|
-| band-pass peakiness (need > 1) | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| avoidance dip | nan | nan | nan | nan | nan | nan |
-| monotonicity drop | +0.000 | +0.000 | +0.003 | +0.023 | +0.031 | +0.026 |
-| **τ within ±2** | **0.98** | 0.98 | 0.93 | **0.63** | **0.47** | **0.31** |
-| reentrant activity | 0.00 | 0.04 | **0.31** | 0.64 | 0.87 | 0.96 |
+Full sweep, all eight q values (`approach` rule unless noted):
+
+| q | 0 | 1e-7 | 3e-7 | 1e-6 | 3e-6 | 1e-5 | 3e-5 | 1e-4 |
+|---|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+| band-pass peakiness (need > 1) | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | nan† |
+| avoidance dip (`avoid-margin`) | nan | nan | nan | nan | nan | nan | nan | nan |
+| monotonicity drop, `approach` | +0.000 | +0.000 | +0.003 | +0.003 | +0.023 | +0.031 | +0.026 | +0.024 |
+| monotonicity drop, `avoid-margin` | +0.000 | +0.000 | +0.003 | +0.003 | +0.032 | +0.039 | +0.042 | **+0.051** |
+| **τ within ±2** | **0.98** | 0.98 | 0.98 | 0.93 | **0.63** | **0.47** | **0.31** | 0.29 |
+| reentrant activity | 0.00 | 0.04 | 0.11 | **0.31** | 0.64 | 0.87 | 0.96 | 0.98 |
+
+†`nan` because transmission at the far reference point is itself ~0 there, so the ratio is
+undefined — not a peak.
 
 The ordering is the finding: flooding and learning-collapse arrive **before** the monotonicity
-violation they were meant to buy, and that violation stays marginal (≤ +0.05). Peakiness never
+violation they were meant to buy, and that violation stays small — at most **+0.051**, for
+`avoid-margin` at the largest q. Peakiness never
 exceeds 0; the avoidance dip is absent at every q. So the escape hatch is closed by measurement
 and Result 8 is *stronger* than when proved.
 
@@ -272,7 +307,9 @@ substrate and misleading for controls.**
 **Prefer bounded proportions to means of unbounded errors.** Six instrument failures in this arc
 were all *derived* metrics. The mechanical reason, visible in Result 6's numbers: `|Δ|` is a mean
 over a heavy-tailed per-cell error distribution (gated |Δ| 2.17 ± **2.14** — spread exceeding the
-effect), while fraction-within-tolerance is bounded and stable (± 0.06–0.09).
+effect), while fraction-within-tolerance is bounded and better-behaved (± 0.07–0.09 at the narrow gate
+widths; it degrades to ± 0.15–0.20 at the widest, so "bounded" is the guarantee, not "always
+tight").
 
 ## Caveats / open items
 
@@ -291,7 +328,12 @@ effect), while fraction-within-tolerance is bounded and stable (± 0.06–0.09).
   claim was retracted — see the notes.
 - **Coverage gaps.** `tonic` is **n=5**, not 20. `attention_gate` remains **n=3** — deliberately
   deprioritised as least load-bearing, and its result is a step function that n=3 shows cleanly,
-  but it is not at the repo's standard. Results 1–3 predate the n=20 pass (n=3–5).
+  but it is not at the repo's standard. Result 1 is **n=5** (regenerated); Result 2's depth sweep
+  is **n=3**; Result 3 is **n=3**. Result 5's n=20 re-run covered **D=20 only**.
+- **Negative 1's init-independence claim rests on a weaker run than the rest.** The reverse-init
+  check (θ=4 start) is **n=1 at L=48 and 2500 steps**, not the L=64 / 6000-step / n=20 setting of
+  the main sweep. Its θ statistics land at the same fixed point, but it should be re-run at the
+  main setting before the "structural, not a tuning miss" wording is leaned on further.
 - **Selective avoidance is impossible**, not merely unachieved — and now also unreachable via
   re-firing.
 - **The lattice is not a free upgrade on the pool.** The pool results (3d/3e, n=20) remain the

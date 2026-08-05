@@ -5,9 +5,9 @@ so the numbers in the notes and the numbers in the plots cannot drift apart.
 
   lattice_transmission_edge.png — the action primitive. Transmission is a monotone STEP whose
       position is the learned interval, and the edge tracks the reward delay 1:1. The right
-      panel is the anti-coincidence check: unpaired's edge is pinned near its random-delay
-      distribution mean regardless of D, which at D=50 alone made it indistinguishable from
-      trained. Only the sweep separates them — the reason a single delay would have misled.
+      panel is the anti-coincidence check: unpaired's edge barely moves with D because it
+      reflects its own reward-time draw (uniform [5,130), mean 67) rather than the tested delay.
+      At n=3 the two coincided at D=50 specifically — the reason a single delay would have misled.
 
   lattice_tonic_trade.png — why tonic drive has no window. Reentrant flooding and τ-learning
       collapse arrive BEFORE the monotonicity violation they were supposed to buy, and neither
@@ -92,11 +92,12 @@ def fig_transmission(d, src):
         cr = [rows[f"D{D}_{mode}"]["cross"] for D in delays]
         a.plot(delays, cr, "-o", ms=5, color=col, label=lab)
     a.plot(delays, delays, ls="--", color="0.3", lw=1, label="edge = D (identity)")
-    # unpaired's random reward delays average here, which is why it collides with trained at D=50
-    a.axhline(52, ls=":", color=C_UNPAIRED, lw=1)
-    a.annotate("unpaired's edge sits near its random-delay\n"
-               "mean (~52), not D. At D=50 alone it is\n"
-               "indistinguishable from trained.",
+    # NB an earlier version drew a reference line at 52 and called it unpaired's random-delay
+    # mean. That number is not a quantity in this experiment: the reward times are drawn from
+    # [5, ITI/2) = [5, 130), mean 67. Draw the actual mean instead.
+    a.axhline(67, ls=":", color=C_UNPAIRED, lw=1)
+    a.annotate("unpaired's edge barely moves with D:\nit reflects its reward-time draw\n"
+               "(uniform [5,130), mean 67), not the delay.",
                xy=(0.03, 0.97), xycoords="axes fraction", fontsize=7.5,
                color=C_UNPAIRED, va="top")
     a.set_xlabel("reward delay D"); a.set_ylabel("transmission edge (half-max crossing)")
@@ -149,7 +150,7 @@ def fig_tonic(d, src):
     a.set_xticks(x); a.set_xticklabels([("0" if v == 0 else f"{v:g}") for v in q],
                                        rotation=45, fontsize=8)
     a.set_xlabel("tonic drive q"); a.set_ylabel("max decrease along the curve")
-    a.set_title("the violation it buys is marginal (≤ +0.05)"); a.legend(fontsize=8)
+    a.set_title("the violation it buys is marginal (max +0.051)"); a.legend(fontsize=8)
 
     a = ax[2]
     pk = np.array([d["rows"][f"approach_q{v:g}"]["peakiness"] for v in q], float)

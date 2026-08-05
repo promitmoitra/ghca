@@ -43,6 +43,24 @@ That contrast is solid and is the one demo-worthy claim here.
 period plus propagation jitter, and cells receive multiple wavefronts, so the effective
 period it senses is slightly longer than the pacemaker's.)
 
+### Correction to Result 1 (added later, on audit)
+
+The table above was **unsourced**. The committed artifact was a *two-rhythm* run (P_F=6, P_S=24,
+n=2, Moran's I −0.005) — Negative 1's data, not Result 1's — and the single-rhythm numbers came
+from an earlier version of the script that no longer existed. Regenerating them required making
+the periods configurable **and decoupling the interval clip from `P_S`**: the clip was derived as
+`P_S × 2`, so lowering the slow period silently capped learned τ at 12, and a first reproduction
+attempt read τ = 11.95 (the clip) instead of the ceiling.
+
+Reproducible values (`lattice_timescale_demo_single.json`, P=6, L=96, n=5): input-timing **7.9 /
+0.55 / +0.484**, own-firing **33.8 / 0.01 / −0.002**. The ceiling contrast holds; Moran's I is
+**0.484**, not the 0.32 quoted above, so the spatial-structure claim is stronger than reported.
+
+Also corrected on the same audit: the mechanism note below says the localised-afferent profile is
+a distance gradient rising 1.54 → 2.92. It is **non-monotone** (1.54, 2.07, 2.06, 2.01, 1.94,
+1.87, 1.80, 1.82, …) — a failure to lock at any depth, not a clean gradient. And τ settles at 8.9
+against P=6, so the recovered intervals are *longer* than the period, not shorter as stated.
+
 ## Negative 1 — two-timescale *spatial* tiling does not happen: global entrainment
 
 The hoped-for demo was τ tiling space into fast and slow domains around fast and slow
