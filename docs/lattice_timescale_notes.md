@@ -639,3 +639,64 @@ untimed, so a strictly contingent reward would never fire and nothing would ever
 bootstrapping problem is the actual content of the next experiment — it needs either shaping, a
 graded reward, or an initial uncontingent phase, and which of those is required is an empirical
 question, not a detail.
+
+---
+
+## The action is transmission, not emission — and bootstrapping turns out to be free
+
+`lattice_layers.py` called H's synchronous recovery a "motor readout". Read carefully, that was
+generous: a Greenberg–Hastings cell returning to rest **emits nothing**. Recovery is visible only
+to an observer counting it, and `rec_hist` was a statistic, not a population. So the arc had a
+representation and an observable, but still no action.
+
+What the synchronous recovery actually *is* is a synchronous window in which the medium becomes
+**transmissive**. Refractoriness gating propagation is the one thing excitable media do natively,
+so a learned τ field is a learned schedule of *when input can get through*. The action primitive
+is not "emit at the expected time" but "**be transmissive at the expected time**" — which makes a
+motor layer definable with no new machinery: M is a sheet of the same cells downstream of H
+(3×3 convergent input, θ_M=3, no plasticity of its own) that fires when H transmits to it.
+
+Tested by training H in the winning ungated layered condition, then re-presenting the stimulus at
+a swept time `t_probe` and measuring what gets through (`experiments/lattice_sensorimotor.py`,
+L=64, 40 training trials, n=3). **Transmission edge** = where the motor response crosses half its
+range:
+
+| | D=30 | D=50 | D=70 |
+|---|:--:|:--:|:--:|
+| **trained** | **31.5** | **51.5** | **71.5** |
+| untrained *(random τ)* | 53.6 | 61.4 | 64.0 |
+| unpaired | 62.0 | 59.0 | 58.5 |
+
+**1. The edge sits at the learned interval, at every delay** — slope 1.0 against D with a constant
++1.5 step offset (a cell recovers the step after its refractory period ends). Before the edge the
+motor sheet is *exactly* silent (0.00 spikes/cell); after it, saturated (0.08). The learned τ
+field has become a behaviourally readable property: when the medium will respond.
+
+**2. Unpaired's edge is pinned near its distribution mean, not near D** (62.0 / 59.0 / 58.5 for
+D = 30 / 50 / 70). Worth recording that at D=50 alone it is *indistinguishable* from trained,
+because the random reward times average ≈52. A single delay would have shown a control that
+looked like it had failed; only the sweep separates them. Same shape as the flat τ=38.9 in the
+reward-edge run.
+
+**3. Bootstrapping is free — this is the useful finding.** Roadmap item 13 worried that contingent
+reward cannot start: if reward needs a well-timed action and the action is initially untimed,
+reward never arrives and nothing learns. That worry is unfounded for this action primitive. An
+untrained sheet has τ scattered across its whole range, so **some** fraction of cells is excitable
+at any probe time and transmission is *partial* rather than zero — the untrained curve ramps
+0.02 → 0.08 and sits at ~60% of ceiling at the true reward time, against a trained sheet's
+all-or-nothing 0.00 → 0.08. Graded credit therefore exists from the first trial, with no shaping,
+no graded reward schedule and no uncontingent warm-up. What learning adds is **sharpness**: it
+converts a smeared population of independent timers into a synchronised gate.
+
+### What this does and does not settle
+
+The reframing is what makes a closed loop cheap: the environment does not need to interpret a
+population code, it only needs to present an event and observe whether the medium passed it.
+Bootstrapping, which was the one identified blocker, dissolves.
+
+Two limits to state. The switch is **global, not spatial**: because every trained cell recovers at
+the same moment, the whole sheet becomes transmissive at once, so this measures one switch rather
+than a graded spatial gate — the probe's own entry cells recover at D like everything else, so
+where the probe enters does not matter. And the loop is **still open**: the probe is presented on a
+schedule the medium cannot influence, so nothing here is contingent and none of it is
+reinforcement learning yet. What is now in place is the interface that would make it so.

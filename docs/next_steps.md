@@ -573,14 +573,51 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      single wrong interval while the gate keeps them apart — the first condition in which
      attention should beat no attention on the population readout, rather than only on per-cell
      precision. Cheap: the machinery exists. **Effort** low.
-  13. **Closing the loop: contingent reward — 📐 PROPOSED (what would make this appetitive)**
-     Item 11 supplies an output but the loop is open: nothing the medium does changes whether
-     reward arrives, so the value signal stays informational and none of this is reinforcement
-     learning. Make reward contingent on the burst landing near the due time. The obstacle is
-     real and worth naming in advance: **early in training the burst is untimed, so a strictly
-     contingent reward never fires and nothing ever learns.** Resolving that — shaping, graded
-     reward, or an uncontingent warm-up phase — is the content of the experiment, not a detail.
-     **Effort** medium. **Risk** medium–high (bootstrapping).
+  13. **Closing the loop: contingent reward — 🔬 **FOUNDATIONS LAID; the blocker dissolved**
+     (`lattice_sensorimotor.py`; spec [`sensorimotor_foundations.md`](sensorimotor_foundations.md))**
+     Item 11's "motor readout" was generous — a GH cell returning to rest **emits nothing**, so
+     that was an observable, not an action. What the synchronous recovery *is* is a synchronous
+     window of **transmissivity**, and since refractoriness gating propagation is the one thing
+     this substrate does natively, the action primitive is "be transmissive at the expected time"
+     rather than "emit at it". That makes the motor layer definable with no new machinery (a sheet
+     of the same cells downstream of H) and makes the environment's job trivial: present an event,
+     observe whether it passed.
+     Measured: the **transmission edge sits at the learned interval at every delay** — 31.5 / 51.5
+     / 71.5 for D = 30 / 50 / 70, slope 1.0, constant +1.5 step offset, with the motor sheet
+     exactly silent before and saturated after. Unpaired's edge is pinned near its distribution
+     mean instead (62.0 / 59.0 / 58.5), and note it is *indistinguishable* from trained at D=50
+     alone, where the random delays average ≈52 — only the sweep separates them.
+     **The bootstrapping worry that motivated this item is unfounded.** An untrained sheet has τ
+     scattered across its range, so some fraction of cells is excitable at any probe time and
+     transmission is *partial* rather than zero (ramps 0.02 → 0.08, ~60% of ceiling at the true
+     reward time, vs the trained sheet's all-or-nothing 0.00 → 0.08). Graded credit exists from
+     trial 1 with **no shaping, no reward schedule and no uncontingent warm-up**; what learning
+     adds is sharpness, converting a smeared population of independent timers into a synchronised
+     gate. Remaining for a real close: the action must **change the world** (a transmitted event
+     is consumed, a blocked one lost), which is the one step still missing. **Effort** low–medium,
+     and the risk that justified the "medium–high" estimate is gone.
+  14. **Growing geometry: task-specific microcircuits — 📐 PROPOSED (the structural step)**
+     Everything learned so far is a *cell parameter* (τ, τ_A, per-column delays). Structure itself
+     is still drawn by hand. The framing worth testing: **identity supplies the grammar, experience
+     supplies the sentence** — cell type constrains which connections are permitted, use decides
+     which permitted ones are realised, and geometry emerges inside a type-constrained space.
+     There is already a thread of this, under-sold at the time: in direction 8 the *write location*
+     was set by wave kinematics rather than design, and two interleaved delays spontaneously
+     occupied different columns. Functional territory is already allocated by the dynamics. What is
+     missing is **consolidation** — nothing converts a repeatedly-used functional locus into a
+     structural one, so nothing persists, nothing is protected from overwriting, and nothing can be
+     recruited again.
+     Two predictions to be held to: (a) structural plasticity will **ratchet without a conserved
+     budget**, since coupling↑ → excitability↑ → coincidence↑ → coupling↑ is the same
+     positive-feedback shape as the e10 τ-ratchet; (b) scattering cells will **break the labelled
+     lines unless type replaces location** — anatomical separation is what made every result in
+     this arc work, and moving its currency from geometry to identity is a gain but not a removal
+     of the assumption.
+     Clean first test, cheap because the machinery exists: make layering a **continuous parameter**
+     (pure sheets → density gradient → uniform mix) and sweep it. Flat metrics mean type-tagging
+     carries the labelling; collapse as soon as it leaves zero means spatial separation was doing
+     hidden work and item 11's "what remains is homogeneous cell properties" was too generous.
+     **Effort** medium. **Risk** medium–high (runaway structure).
 - **Conceptual thread (ties the two arcs tighter).** C3 established do(`θ`) — intervening
   on timescales — is the well-posed causal handle. The emergent rule is the substrate
   performing **self-directed do(`θ`)**: adjusting its own `τ` from input timing. So `θ`
