@@ -308,7 +308,7 @@ def main():
         json.dump({"L": L, "trials": N_TRIALS, "n": N_SEEDS, "delays": D_LIST,
                    "theta_a": THETA_A, "gate_w": GATE_W, "sync_w": SYNC_W,
                    "tau_range": [TMIN, TMAX], "rows": out}, f, indent=2)
-    print("wrote lattice_layers.json", flush=True)
+    print(f"wrote lattice_layers{TAG}.json", flush=True)
 
 
 if __name__ == "__main__":

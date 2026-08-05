@@ -249,7 +249,7 @@ def main():
         json.dump({"L": L, "WS": WS, "patch": PATCH, "iti": ITI, "trials": N_TRIALS,
                    "probe": N_PROBE, "n": N_SEEDS, "delays": D_LIST,
                    "tau_range": [TMIN, TMAX], "eta": ETA, "rows": out}, f, indent=2)
-    print("wrote lattice_reward_edges.json", flush=True)
+    print(f"wrote lattice_reward_edges{TAG}.json", flush=True)
 
 
 if __name__ == "__main__":

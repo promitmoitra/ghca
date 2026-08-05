@@ -53,6 +53,7 @@ QUIET_Q = float(os.environ.get("AFF_QUIET", "0.35"))   # gate: local activity pe
 RULES = ("all", "afferent", "quiet-gated", "own")
 OUT = os.path.join(ROOT, "result", "stats")
 os.makedirs(OUT, exist_ok=True)
+TAG = os.environ.get("AFF_TAG", "")
 
 
 def nbr_count(a):
@@ -173,15 +174,15 @@ def main():
         print(f"{rule:12s} {pm_str}   [re-tune |τ−P| {m:.1f} ({lo:.1f},{hi:.1f})]",
               flush=True)
 
-    np.savez(os.path.join(OUT, "lattice_afferent_timing.npz"), L=L, phase=PHASE,
+    np.savez(os.path.join(OUT, f"lattice_afferent_timing{TAG}.npz"), L=L, phase=PHASE,
              n=N_SEEDS, schedule=np.array([P for P, _ in SCHEDULE]),
              **{f"{r}_{k}": res[r][k] for r in res for k in res[r]})
-    with open(os.path.join(OUT, "lattice_afferent_timing.json"), "w") as f:
+    with open(os.path.join(OUT, f"lattice_afferent_timing{TAG}.json"), "w") as f:
         json.dump({"L": L, "n": N_SEEDS, "schedule": [P for P, _ in SCHEDULE],
                    "rows": {r: {"tau": res[r]["tau"].mean(0).tolist(),
                                 "err": res[r]["err"].mean(0).tolist()} for r in res}},
                   f, indent=2)
-    print("\nwrote lattice_afferent_timing.{npz,json}", flush=True)
+    print(f"\nwrote lattice_afferent_timing{TAG}.{{npz,json}}", flush=True)
 
 
 if __name__ == "__main__":

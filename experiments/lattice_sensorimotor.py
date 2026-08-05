@@ -214,7 +214,7 @@ def main():
     with open(os.path.join(OUT, f"lattice_sensorimotor{TAG}.json"), "w") as f:
         json.dump({"L": L, "trials": N_TRIALS, "n": N_SEEDS, "delays": D_LIST,
                    "theta_m": THETA_M, "resp_w": RESP_W, "rows": out}, f, indent=2)
-    print("wrote lattice_sensorimotor.json", flush=True)
+    print(f"wrote lattice_sensorimotor{TAG}.json", flush=True)
 
 
 if __name__ == "__main__":

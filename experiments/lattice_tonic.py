@@ -295,7 +295,7 @@ def main():
     with open(os.path.join(OUT, f"lattice_tonic{TAG}.json"), "w") as f:
         json.dump({"L": L, "D": D, "trials": N_TRIALS, "n": N_SEEDS, "q_list": Q_LIST,
                    "delta": DELTA, "margin": MARG, "rows": out}, f, indent=2)
-    print("\nwrote lattice_tonic.json", flush=True)
+    print(f"\nwrote lattice_tonic{TAG}.json", flush=True)
 
 
 if __name__ == "__main__":

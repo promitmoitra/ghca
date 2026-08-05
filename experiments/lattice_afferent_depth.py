@@ -51,6 +51,7 @@ TMIN, TMAX, ETA = 3.0, 34.0, 0.15
 LOCK = 1.5                                        # |τ−P| below this counts as locked
 OUT = os.path.join(ROOT, "result", "stats")
 os.makedirs(OUT, exist_ok=True)
+TAG = os.environ.get("DEP_TAG", "")
 
 
 def nbr_count(active):
@@ -164,13 +165,13 @@ def main():
             "periods": np.array(PERIODS), "lock": LOCK}
     for k in out:
         save[f"{k}_err"] = out[k]["err"]; save[f"{k}_tau"] = out[k]["tau"]
-    np.savez(os.path.join(OUT, "lattice_afferent_depth.npz"), **save)
-    with open(os.path.join(OUT, "lattice_afferent_depth.json"), "w") as f:
+    np.savez(os.path.join(OUT, f"lattice_afferent_depth{TAG}.npz"), **save)
+    with open(os.path.join(OUT, f"lattice_afferent_depth{TAG}.json"), "w") as f:
         json.dump({"L": L, "W_S": W_S, "n": N_SEEDS, "periods": PERIODS, "lock": LOCK,
                    "rows": {k: {"err_profile": out[k]["err"].mean(0).round(3).tolist(),
                                 "depth": depth(out[k]["err"].mean(0))} for k in out}},
                   f, indent=2)
-    print("wrote lattice_afferent_depth.{npz,json}", flush=True)
+    print(f"wrote lattice_afferent_depth{TAG}.{{npz,json}}", flush=True)
 
 
 if __name__ == "__main__":

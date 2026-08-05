@@ -51,6 +51,7 @@ TMIN, TMAX = 3.0, 34.0
 ETA = 0.15
 OUT = os.path.join(ROOT, "result", "stats")
 os.makedirs(OUT, exist_ok=True)
+TAG = os.environ.get("DEMO_TAG", "")
 
 
 def neighbour_active_count(active):
@@ -200,14 +201,14 @@ def main():
               f"   vs near slow pace  {m['tau_near_slow'].mean():.1f}"
               f"   (Δ={m['tau_near_slow'].mean()-m['tau_near_fast'].mean():+.1f})", flush=True)
 
-    np.savez(os.path.join(OUT, "lattice_timescale_demo.npz"), L=L, steps=STEPS,
+    np.savez(os.path.join(OUT, f"lattice_timescale_demo{TAG}.npz"), L=L, steps=STEPS,
              P_F=P_F, P_S=P_S, n=N_SEEDS,
              **{f"{r}_{k}": out[r][k] for r in out for k in out[r]})
-    with open(os.path.join(OUT, "lattice_timescale_demo.json"), "w") as f:
+    with open(os.path.join(OUT, f"lattice_timescale_demo{TAG}.json"), "w") as f:
         json.dump({"L": L, "steps": STEPS, "P_F": P_F, "P_S": P_S, "n": N_SEEDS,
                    "rows": {r: {k: float(np.mean(v)) for k, v in out[r].items()
                                 if k != "tau0"} for r in out}}, f, indent=2)
-    print("\nwrote lattice_timescale_demo.{npz,json}", flush=True)
+    print(f"\nwrote lattice_timescale_demo{TAG}.{{npz,json}}", flush=True)
 
 
 if __name__ == "__main__":

@@ -271,7 +271,7 @@ def main():
                                     out[k]["wave_phase"].mean(0)).round(2).tolist()}
                             for k in out}},
                   f, indent=2)
-    print("wrote lattice_attention_gate.{npz,json}", flush=True)
+    print(f"wrote lattice_attention_gate{TAG}.{{npz,json}}", flush=True)
 
 
 if __name__ == "__main__":

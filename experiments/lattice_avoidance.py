@@ -220,7 +220,7 @@ def main():
     with open(os.path.join(OUT, f"lattice_avoidance{TAG}.json"), "w") as f:
         json.dump({"L": L, "trials": N_TRIALS, "n": N_SEEDS, "delays": D_LIST,
                    "margin": MARG, "delta": DELTA, "rows": out}, f, indent=2)
-    print("wrote lattice_avoidance.json", flush=True)
+    print(f"wrote lattice_avoidance{TAG}.json", flush=True)
 
 
 if __name__ == "__main__":

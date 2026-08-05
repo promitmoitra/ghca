@@ -267,7 +267,7 @@ def main():
         json.dump({"L": L, "trials": N_TRIALS, "n": N_SEEDS, "delays": D_LIST,
                    "eta_a": ETA_A, "dmax": DMAX, "tau_range": [TMIN, TMAX],
                    "rows": out}, f, indent=2)
-    print("wrote lattice_attention_value.json", flush=True)
+    print(f"wrote lattice_attention_value{TAG}.json", flush=True)
 
 
 if __name__ == "__main__":

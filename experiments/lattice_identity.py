@@ -185,7 +185,7 @@ def main():
         json.dump({"L": L, "P": P, "steps": STEPS, "a_star": A_STAR, "lam": LAM,
                    "n": N_SEEDS, "theta_range": [THETA_MIN, THETA_MAX],
                    "r_list": R_LIST, "rows": out}, f, indent=2)
-    print("\nwrote lattice_identity.json", flush=True)
+    print(f"\nwrote lattice_identity{TAG}.json", flush=True)
 
 
 if __name__ == "__main__":
