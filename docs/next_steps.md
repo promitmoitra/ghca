@@ -335,23 +335,48 @@ The audits converge on three honest limitations. Good next steps *retire* one of
   diversity buy continual-learning capacity?"), the *emergent* arm adds nothing the
   *wired* arm didn't already prove — a hand-set graded-`τ` basis suffices. The emergent
   arm's value is elsewhere, and it is what makes these directions possible:
-  1. **It retires the deepest open tension (plastic *dynamics*).** Every "learned"
+  - **It retires the deepest open tension (plastic *dynamics*).** Every "learned"
      result so far — E1 routing, E9 conjunctions, E8/1c prediction — is a plastic
      *readout* over *fixed* dynamics; even E9 left the timescales hand-set. The emergent
      arm is the first time the substrate's **own dynamics** (`τ`) are shaped by
      experience: *afforded dynamics + learned readout* → **learned dynamics**. This is
      the "plastic dynamics deferred" caveat (1c, E9, Line B) finally addressed.
-  2. **The rule is the scientific content.** It shows the 4a ratchet was never intrinsic
+  - **The rule is the scientific content.** It shows the 4a ratchet was never intrinsic
      to GH timescale plasticity — only to the *self-referential* signal (a node reading
      its own inter-fire interval). An **external** teaching signal (the probe delay) +
      a bidirectional update dissolves it. Transferable, and what actually unblocks 4a.
-  3. **Self-calibration.** The wired basis needs a designer who knows the delay
+  - **Self-calibration.** The wired basis needs a designer who knows the delay
      statistics in advance (hand-set `linspace`); the emergent basis *discovers* the
      relevant timescale range from the input stream — the inside-out thesis doing real
      work.
 - **Directions it unlocks** (ranked by how much they exploit what wired categorically
   cannot do):
-  1. **Re-tiling under a shifting delay distribution — ✅ DONE** (`continual_temporal_retile.py`,
+
+  > **Stable IDs.** Items below carry `3e.N` identifiers matching the convention already
+  > used in prose across `synthesis.md` and the results docs. Cite those, **not** the list
+  > position — a markdown ordered list renumbers when anything is inserted, and this list
+  > has already been reordered once. Index:
+  >
+  > `3e.1` Re-tiling under a shifting delay distribution
+  > `3e.2` Bimodal hierarchy from two-rhythm drive
+  > `3e.3` Concurrent co-adaptation (end-to-end inside-out)
+  > `3e.4` Supply E2/E3's temporal machinery from experience
+  > `3e.5` Can a recurrent medium learn its timescale at all?
+  > `3e.6` A falsifiable neuroscience prediction (Track 2 / tension 3)
+  > `3e.7` An attention strip made of the same substrate
+  > `3e.8` Reward as a fourth edge
+  > `3e.9` A value signal for the attention chain itself
+  > `3e.10` What the four-edge substrate still cannot do
+  > `3e.11` Layers instead of edges
+  > `3e.12` Conflicting reward times: where attention should finally pay
+  > `3e.13` Closing the loop: contingent reward
+  > `3e.14` Growing geometry: task-specific microcircuits
+  > `3e.15` Plastic identity via homeostatic θ
+  > `3e.16` Prediction-error as the identity context
+  > `3e.17` Tonic drive
+  > `3e.18` Seed-count remediation
+  > `3e.19` Rhythmic (not stochastic) background
+  1. **`3e.1` · Re-tiling under a shifting delay distribution — ✅ DONE** (`continual_temporal_retile.py`,
      n=20; results [`continual_learning_results.md`](continual_learning_results.md)). Under
      a SHORT→LONG→SHORT delay schedule the emergent basis **re-tiles** (LONG-decode
      0.50→0.92; `τ` migrates bodily; wired-static frozen at 0.50 — the adaptation a
@@ -363,7 +388,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      load across `n_h` units *accumulates* coverage rather than overwriting — capacity
      again softens interference. Deeper form deferred: a fully-online concurrent (not
      phase-split) version.
-  2. **Bimodal hierarchy from two-rhythm drive — ✅ DONE, hierarchy half of 4a closed**
+  2. **`3e.2` · Bimodal hierarchy from two-rhythm drive — ✅ DONE, hierarchy half of 4a closed**
      (`timescale_hierarchy.py`, n=20; results [`timescale_hierarchy_results.md`](timescale_hierarchy_results.md)).
      The input-timing rule clusters `τ` at *both* drive periods (near-P_f/near-P_s
      fractions 0.50/0.50; fully **emergent** — nodes fan in from both sources, a
@@ -374,7 +399,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      theta–gamma-style **cross-frequency coupling**, which needs an added inter-population
      pathway (E8.5 nested-waves direction) this pool lacks — the coupling, not the
      hierarchy, is what's left.
-  3. **Concurrent co-adaptation (end-to-end inside-out) — ✅ DONE**
+  3. **`3e.3` · Concurrent co-adaptation (end-to-end inside-out) — ✅ DONE**
      (`continual_temporal_concurrent.py`, n=20; results [`continual_learning_results.md`](continual_learning_results.md)).
      Growing `τ` *while* the reward readout learns co-adapts end-to-end (no phase split)
      to **well above floor** (per-task ~0.47–0.51 vs floor 0.43) — but **below** the
@@ -383,12 +408,12 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      the phase split is an *efficiency* aid, not a *necessity*: end-to-end co-adaptation
      is possible but imperfect. Residual (tuning, not mechanism): anneal the `τ` learning
      rate / a brief settling curriculum to close the gap.
-  4. **Supply E2/E3's temporal machinery from experience.** The emergent basis is a
+  4. **`3e.4` · Supply E2/E3's temporal machinery from experience.** The emergent basis is a
      self-organised population of *time cells* tiling a delay — exactly what E2 (working
      memory) and E3 (timed response) hand-built. Could retire *their* afforded components,
      extending afforded→learned beyond conjunction cells into temporal cognition.
      **Effort** medium. **Connects** tension 1 to the memory/timing experiments.
-  5. **Can a recurrent medium learn its timescale at all? — 🔬 **PARTLY ANSWERED, and the
+  5. **`3e.5` · Can a recurrent medium learn its timescale at all? — 🔬 **PARTLY ANSWERED, and the
      question got harder** (`lattice_timescale_notes.md`, updated 2026-08)** The original
      framing was "how does a cell know which input is *exogenous*?", on the evidence that a
      **privileged afferent channel** fixes the self-confirming fixed point completely (τ
@@ -419,12 +444,12 @@ The audits converge on three honest limitations. Good next steps *retire* one of
        *instantaneous* gates; surprise is the first candidate with its own memory, which is
        why it survives the bind. **Effort** low (a) / medium (b). **Risk** medium–high for (b)
        (the predictor must be fast relative to the rhythm).
-  6. **A falsifiable neuroscience prediction (Track 2 / tension 3).** If delays are
+  6. **`3e.6` · A falsifiable neuroscience prediction (Track 2 / tension 3).** If delays are
      non-uniform, does the rule allocate more `τ`-resolution where intervals are common?
      That is adaptive/efficient temporal coding — a concrete prediction that biological
      time cells tile *experienced* interval statistics, not uniform time. **Effort** low
      (a non-uniform-delay variant of the existing sweep + a tiling-vs-statistics readout).
-  7. **An attention strip made of the same substrate — ✅ **DONE, with a narrower claim than
+  7. **`3e.7` · An attention strip made of the same substrate — ✅ **DONE, with a narrower claim than
      hoped** (`lattice_attention_gate.py`; notes [`lattice_timescale_notes.md`](lattice_timescale_notes.md))**
      A **1-D Greenberg–Hastings chain orthogonal to the sensory edge**, one cell per column,
      seeded at x=0 by the beat and propagating along x, so each column is gated once per drive
@@ -453,7 +478,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      medium, still deferred) would have to break. (iii) A **plastic** attention strip is the
      easy 1-D case, driven from one end — currently hand-set.
      **Effort** done; residuals low (iii) to medium (i, ii).
-  8. **Reward as a fourth edge — ✅ **DONE, and the first content that was not designed in**
+  8. **`3e.8` · Reward as a fourth edge — ✅ **DONE, and the first content that was not designed in**
      (`lattice_reward_edges.py`; notes [`lattice_timescale_notes.md`](lattice_timescale_notes.md))**
      Direction 7 works but only distributes a clock; the content of the representation is still
      the designer's. So use **all four edges**: stimulus patch left, attention chain along the
@@ -488,7 +513,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      interval without acting on it — no choice, no motor side, so this is a timing rule rather
      than reinforcement learning.
      **Effort** done.
-  9. **A value signal for the attention chain itself — ✅ **DONE; the last hand-set constant
+  9. **`3e.9` · A value signal for the attention chain itself — ✅ **DONE; the last hand-set constant
      comes out, and the predicted lock-in does not happen**
      (`lattice_attention_value.py`; notes [`lattice_timescale_notes.md`](lattice_timescale_notes.md))**
      Direction 8 left exactly one designed constant: the attention chain's speed K. This closes
@@ -520,7 +545,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      content-addressable by construction and nothing had to learn to keep them apart. Contrast
      3c/3e.1, where interference was real.
      **Effort** done.
-  10. **What the four-edge substrate still cannot do — 📐 PROPOSED (the honest next gap)**
+  10. **`3e.10` · What the four-edge substrate still cannot do — 📐 PROPOSED (the honest next gap)**
      Across directions 7–9 the substrate now learns *when* reward is due and *where* to look for
      it, from one cell type, with no gradients and no scalar reward channel. It still **does
      nothing with what it represents**: there is no action, no policy, and the value signal is
@@ -531,7 +556,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      architecture mean what the term normally means. Note also that the four edges, the chain
      topology and both chains' pulse widths remain hand-built: what became emergent in 8 and 9
      is the content and the placement, **not the anatomy**. **Effort** medium–high.
-  11. **Layers instead of edges — ✅ **DONE; the medium finally produces an output, and
+  11. **`3e.11` · Layers instead of edges — ✅ **DONE; the medium finally produces an output, and
      attention's cost gets quantified** (`lattice_layers.py`; notes
      [`lattice_timescale_notes.md`](lattice_timescale_notes.md))**
      Directions 8–9 worked but their anatomy was a hand-drawn 1-D delay line, attention could
@@ -565,7 +590,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      so the dynamics already discard the distractor and selective plasticity is redundant.
      Gating should only pay when the bad signal would otherwise be *consistent and wrong* —
      i.e. when reward times **conflict**. See item 12. **Effort** done.
-  12. **Conflicting reward times: where attention should finally pay — 📐 PROPOSED**
+  12. **`3e.12` · Conflicting reward times: where attention should finally pay — 📐 PROPOSED**
      Item 11's negative is specific and generates its own test. With a single diffuse reward
      time every learned interval is mutually consistent, so there is nothing for a plasticity
      gate to protect. Give two stimuli **different** reward delays (3c's continual-learning
@@ -573,7 +598,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      single wrong interval while the gate keeps them apart — the first condition in which
      attention should beat no attention on the population readout, rather than only on per-cell
      precision. Cheap: the machinery exists. **Effort** low.
-  13. **Closing the loop: contingent reward — 🔬 **FOUNDATIONS LAID; the blocker dissolved**
+  13. **`3e.13` · Closing the loop: contingent reward — 🔬 **FOUNDATIONS LAID; the blocker dissolved**
      (`lattice_sensorimotor.py`; spec [`sensorimotor_foundations.md`](sensorimotor_foundations.md))**
      Item 11's "motor readout" was generous — a GH cell returning to rest **emits nothing**, so
      that was an observable, not an action. What the synchronous recovery *is* is a synchronous
@@ -596,7 +621,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      gate. Remaining for a real close: the action must **change the world** (a transmitted event
      is consumed, a blocked one lost), which is the one step still missing. **Effort** low–medium,
      and the risk that justified the "medium–high" estimate is gone.
-  14. **Growing geometry: task-specific microcircuits — 📐 PROPOSED (the structural step)**
+  14. **`3e.14` · Growing geometry: task-specific microcircuits — 📐 PROPOSED (the structural step)**
      Everything learned so far is a *cell parameter* (τ, τ_A, per-column delays). Structure itself
      is still drawn by hand. The framing worth testing: **identity supplies the grammar, experience
      supplies the sentence** — cell type constrains which connections are permitted, use decides
@@ -618,7 +643,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      carries the labelling; collapse as soon as it leaves zero means spatial separation was doing
      hidden work and item 11's "what remains is homogeneous cell properties" was too generous.
      **Effort** medium. **Risk** medium–high (runaway structure).
-  15. **Plastic identity via homeostatic θ — 🔬 **DONE, a disciplined negative with a structural
+  15. **`3e.15` · Plastic identity via homeostatic θ — 🔬 **DONE, a disciplined negative with a structural
      cause** (`lattice_identity.py`; notes [`lattice_timescale_notes.md`](lattice_timescale_notes.md))**
      Tests whether cell *identity* can be learned rather than wired, under the agreed discipline —
      one rate, one context — with identity = the firing threshold θ (the propagator↔coincidence
@@ -642,7 +667,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      the timescale-separation worry is real but secondary to the context-signal failure.
      The discipline paid off: one rate + one context gave a clean "this signal is wrong and here is
      why" instead of a tunable mush. **Effort** done.
-  16. **Prediction-error as the identity context — 📐 PROPOSED (where 15 and 3e.5 converge)**
+  16. **`3e.16` · Prediction-error as the identity context — 📐 PROPOSED (where 15 and 3e.5 converge)**
      Item 15's diagnosis names its own successor: the context signal for identity (and for the
      deferred surprise-gate 3e.5) must separate **rhythm-carrying activity** (necessary, protect it)
      from **wasteful/reentrant activity** (prunable). That is a prediction-error / surprise signal
@@ -651,7 +676,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      gate θ-plasticity (or τ-plasticity) on locally *unpredicted* input, reusing E8's forward
      prediction + global surprise. **Effort** medium. **Risk** medium–high (the predictor must be
      fast relative to the rhythm — the standing caveat on every surprise-gate proposal).
-  17. **Tonic drive — 🔬 **DONE, no window; both stalled threads stay stalled and one claim gets
+  17. **`3e.17` · Tonic drive — 🔬 **DONE, no window; both stalled threads stay stalled and one claim gets
      stronger** (`lattice_tonic.py`)** Two dead ends traced to one assumption (each cell fires once,
      a rested cell stays rested): the transmission curve is a monotone step rather than a band-pass
      peak, and selective avoidance is provably impossible. Item 11's avoidance note said a dip
@@ -674,7 +699,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      wrong off the patch row and showed a flat 7.1, i.e. "learnability preserved" — false). Third
      instrument failure of the same shape; derived metrics fail silently, metrics measured the way
      the rest of the arc measures them do not. **Effort** done.
-  18. **Seed-count remediation — 🔬 **DONE for the headline claims; deterministic results exact,
+  18. **`3e.18` · Seed-count remediation — 🔬 **DONE for the headline claims; deterministic results exact,
      controls were noisy** (outputs tagged `_n20`)** Seven lattice experiments ran at n=3 against
      this repo's n=20 standard for the pool arc. Re-running the headline conditions at n=20: the
      transmission edge is **exact** (31.5/51.5/71.5, motor@D sd **0.000** across all 20 seeds);
@@ -691,7 +716,7 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      writing one fixed filename silently loses whichever run finished first.** Remaining: `layers`
      n=20 still in flight; `attention_gate`, `attention_value` and `identity` not yet re-run.
      **Effort** low, mostly compute.
-  19. **Rhythmic (not stochastic) background — 📐 PROPOSED (item 17's successor)**
+  19. **`3e.19` · Rhythmic (not stochastic) background — 📐 PROPOSED (item 17's successor)**
      Item 17's diagnosis names it: excitability must be periodic *and phase-aligned* for a band-pass
      response, and stochastic drive decoheres it. Replace random tonic drive with a weak **rhythmic**
      global background and re-measure peakiness and the avoidance dip. Costs: it is a global signal

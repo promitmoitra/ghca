@@ -39,6 +39,17 @@ not as built-in modules.
 | `experiments/scaling_capacities.py` | Scaling (Track 3b, size half) — does substrate size buy memory (E2) / attention (E4) / executive control (E5)? |
 | `experiments/lattice_capacities.py` | Representation + `lattice2d` port of all three capacity mechanisms; shows E5's hidden layer has **0** recurrent edges |
 | `experiments/lattice_animation.py` | GIFs for the three lattice mechanisms (reentry, wave annihilation, held option) |
+| `experiments/lattice_timescale_demo.py` | Ports the input-timing `τ` rule to a lattice; two results, two negatives (see [`docs/lattice_timescale_notes.md`](docs/lattice_timescale_notes.md)) |
+| `experiments/lattice_afferent_timing.py` | Resolves the lock-in: `τ` learning needs a privileged **afferent** channel |
+| `experiments/lattice_afferent_depth.py` | How far exogenous timing penetrates a recurrent medium (answer: it does not) |
+| `experiments/lattice_attention_gate.py` | A 1-D attention strip of the same cells gating plasticity — a clock, not a filter |
+| `experiments/lattice_reward_edges.py` | Reward as a fourth edge; `τ` encodes a stimulus–reward interval |
+| `experiments/lattice_attention_value.py` | A value chain teaches the attention strip *where* to gate |
+| `experiments/lattice_layers.py` | 2-D layers instead of 1-D edges; a synchronous burst timed to reward |
+| `experiments/lattice_sensorimotor.py` | The action is **transmission**, not emission; bootstrapping is free |
+| `experiments/lattice_avoidance.py` | Avoidance is not sign-symmetric with approach (transmission is provably monotone) |
+| `experiments/lattice_identity.py` | Plastic cell *identity* via homeostatic θ — a structural negative |
+| `experiments/lattice_tonic.py` | Tonic drive: no window; neither stalled thread unlocks |
 | `experiments/e3_timed_response.py` | E3 — timed response (identity × latency double dissociation) |
 | `experiments/e3_factored_credit.py` | E3 composition study — factored credit + curriculum vs shared reward |
 | `experiments/e4_attention.py` | E4 — selective attention as biased WTA by wave annihilation |
