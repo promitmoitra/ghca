@@ -700,3 +700,63 @@ than a graded spatial gate — the probe's own entry cells recover at D like eve
 where the probe enters does not matter. And the loop is **still open**: the probe is presented on a
 schedule the medium cannot influence, so nothing here is contingent and none of it is
 reinforcement learning yet. What is now in place is the interface that would make it so.
+
+---
+
+## Avoidance is not sign-symmetric with approach, and the reason is a theorem
+
+Approach — let the expected event through — works: the transmission edge sits at the learned
+interval. Avoidance asks the substrate to **block** the event instead. Is that the same machinery
+with a sign flip? (`experiments/lattice_avoidance.py`, L=64, 40 training trials, n=3, margin M=10.)
+
+Transmission (motor spikes per cell, probe's causal contribution) by probe time, D=50:
+
+| rule | 20 | 30 | 40 | 46 | **50** | 54 | 60 | 70 | 80 | 95 | 110 | τ | at floor | at ceiling |
+|---|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+| approach | 0 | 0 | 0 | 0 | **0** | .08 | .08 | .08 | .08 | .08 | .08 | 30.3 | 0.06 | 0.00 |
+| avoid-flip | .02 | .02 | .02 | .02 | **.02** | .02 | .02 | .02 | .02 | .08 | .08 | 62.5 | **0.13** | **0.50** |
+| avoid-ratchet | 0 | 0 | 0 | 0 | **0** | .03 | .04 | .05 | .07 | .08 | .08 | 48.5 | 0.00 | 0.00 |
+| avoid-margin | 0 | 0 | 0 | 0 | **0** | 0 | 0 | .08 | .08 | .08 | .08 | 36.5 | 0.00 | 0.00 |
+
+**1. Selective avoidance is impossible here, and not for want of a better rule.** For a dip —
+transmission low at D but high at *both* D−δ and D+δ — a cell must be rested at D−δ and refractory
+at D. But a rested cell **stays** rested; under transient dynamics nothing re-fires it. So every
+cell transmitting at D−δ also transmits at D, and population transmission is **monotone
+non-decreasing in probe time**. Measured max decrease anywhere along any curve, all rules, both
+delays: **+0.00**. No dip is detectable for any rule, because no τ field can produce one.
+
+Refractoriness is a **prefix** of the time after a firing, never a window inside it. A cell can
+express "pass after T"; it cannot express "block near T, pass either side". Approach and avoidance
+are therefore not mirror images: avoidance is only expressible as **postponed approach** — block
+everything up to T+M — which is what `avoid-margin` does (step moved from 50 to 70 with M=10).
+
+**2. The naive sign flip is bistable, and half of it is actively wrong.** `τ ← τ − η(dt − τ)` moves
+τ *away* from the interval, so its direction depends on where it started: cells above the interval
+climb to the ceiling (correct — refractory at D), cells below it fall to the floor (wrong — rested
+and transmissive at D). Measured: 50% of cells at the ceiling and 13% at the floor at D=50 (29% /
+3% at D=30). The residual 0.02 transmission at every probe time is exactly that wrong branch
+leaking through. This is the one place where a sign flip *looks* like it should work and does not.
+
+**3. A prediction of mine that was wrong.** I expected `avoid-ratchet` — increase τ only on trials
+where the event got through — to run to the ceiling, reproducing the e10 ratchet as the "correct"
+answer to a degenerate objective. It does not: floor 0.00, ceiling 0.00, τ settling at 48.5 for
+D=50. Gating the update on *failure* self-limits, because the moment τ exceeds the interval the
+cell stops updating. It is the best-behaved of the three avoidance rules, and it is the one I
+predicted would fail worst.
+
+**4. Avoidance costs a designed constant that approach does not.** Both working variants need the
+margin M — as a target offset (`avoid-margin`) or as hysteresis past the boundary
+(`avoid-ratchet`). Approach needs nothing: its target is the interval itself.
+
+### What this changes about the task grammar
+
+**"Avoidance" is not a separate task category on this substrate** — it is approach with a shifted
+target. Listing it as its own category was wrong, and the correction is structural rather than
+cosmetic.
+
+It also names the condition under which it *would* become one. The monotonicity argument assumes
+each cell fires at most once before the probe. Add **tonic drive or sustained reentrant activity**
+and cells re-enter refractoriness, monotonicity breaks, and a genuine dip becomes possible. So
+selective avoidance needs a different **dynamical regime**, not a different learning rule — the
+same tonic-drive question deferred earlier when the transmission curve turned out to be a step
+rather than a band-pass peak. Those are now the same open problem, which is worth knowing.
