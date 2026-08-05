@@ -80,6 +80,7 @@ DMAX = float(os.environ.get("AV_DMAX", "12"))        # ceiling on a per-column d
 MODES = ("plastic", "plastic-unpaired", "fixed-k1", "fixed-k3", "plastic-two")
 OUT = os.path.join(ROOT, "result", "stats")
 os.makedirs(OUT, exist_ok=True)
+TAG = os.environ.get("AV_TAG", "")
 
 
 def nbr_count(active):
@@ -262,7 +263,7 @@ def main():
               f" (within ±2 {np.nanmean(a['aligned_frac_b']):4.2f}) at col"
               f" {np.nanmean(a['wcol_b']):5.1f}", flush=True)
 
-    with open(os.path.join(OUT, "lattice_attention_value.json"), "w") as f:
+    with open(os.path.join(OUT, f"lattice_attention_value{TAG}.json"), "w") as f:
         json.dump({"L": L, "trials": N_TRIALS, "n": N_SEEDS, "delays": D_LIST,
                    "eta_a": ETA_A, "dmax": DMAX, "tau_range": [TMIN, TMAX],
                    "rows": out}, f, indent=2)

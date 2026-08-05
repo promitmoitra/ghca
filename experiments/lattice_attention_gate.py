@@ -76,6 +76,7 @@ MODES = ("global-aff", "local", "att-gate", "att-3f",
          "att-lat-w1", "att-lat-w2", "att-lat-w4", "att-lat-w6", "own")
 OUT = os.path.join(ROOT, "result", "stats")
 os.makedirs(OUT, exist_ok=True)
+TAG = os.environ.get("ATT_TAG", "")
 
 
 def nbr_count(active):
@@ -258,8 +259,8 @@ def main():
     for k in out:
         for f in ("err", "tau", "phase", "frac_upd", "wave_phase"):
             save[f"{k}_{f}"] = out[k][f]
-    np.savez(os.path.join(OUT, "lattice_attention_gate.npz"), **save)
-    with open(os.path.join(OUT, "lattice_attention_gate.json"), "w") as f:
+    np.savez(os.path.join(OUT, f"lattice_attention_gate{TAG}.npz"), **save)
+    with open(os.path.join(OUT, f"lattice_attention_gate{TAG}.json"), "w") as f:
         json.dump({"L": L, "W_S": W_S, "n": N_SEEDS, "periods": PERIODS,
                    "rows": {k: {"err_profile": out[k]["err"].mean(0).round(3).tolist(),
                                 "depth": depth(out[k]["err"].mean(0)),
