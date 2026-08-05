@@ -667,6 +667,14 @@ range:
 | untrained *(random τ)* | 53.6 | 61.4 | 64.0 |
 | unpaired | 62.0 | 59.0 | 58.5 |
 
+![Transmission edge](figures/lattice_transmission_edge.png)
+
+*The action primitive. Trained media step sharply to full transmission exactly at the reward
+delay; untrained and unpaired ramp gradually and never track it. Rightmost panel is the
+anti-coincidence check — unpaired's edge is pinned near its random-delay mean (~52) regardless
+of D, crossing trained precisely at D=50, which is why a single delay would have shown a
+control that looked identical to the treatment. Bands are ±1 sd over 20 seeds.*
+
 **1. The edge sits at the learned interval, at every delay** — slope 1.0 against D with a constant
 +1.5 step offset (a cell recovers the step after its refractory period ends). Before the edge the
 motor sheet is *exactly* silent (0.00 spikes/cell); after it, saturated (0.08). The learned τ
@@ -786,6 +794,13 @@ is no such window. The two set-point regimes bracket the failure:
 | a*=0.16 *(function kept)* | 30 | 1.01 ±0.05 | −0.09 | 0.009 | 0.50 | 1.9 |
 | a*=0.16 | 300 | 1.09 ±0.43 | −0.26 | 0.068 | 0.41 | 1.8 |
 
+![Identity bind](figures/lattice_identity_bind.png)
+
+*The structural bind in plastic identity. A θ gradient does form (left) but propagation reach
+collapses wherever it does (middle). The right panel plots the two against each other: every
+rate at both set-points falls on a descending trend, and no point sits high on both axes. The
+only well-functioning point is r=0 — no identity plasticity at all.*
+
 **1. A gradient does form — prediction 1 holds.** corr(θ,x) reaches −0.44, so θ genuinely responds
 to the drive geometry: high near the patch, floor far away, with no wiring.
 
@@ -848,6 +863,14 @@ The predictions were committed in advance, including the feared cost: that re-fi
 | avoidance dip | nan | nan | nan | nan | nan | nan | nan | nan |
 | **τ within ±2** | **0.98** | 0.98 | 0.98 | 0.93 | **0.63** | **0.47** | **0.31** | 0.29 |
 | reentrant activity | 0.00 | 0.04 | 0.11 | **0.31** | 0.64 | 0.87 | 0.96 | 0.98 |
+
+![Tonic drive trade](figures/lattice_tonic_trade.png)
+
+*Why tonic drive has no window. Left: flooding rises and τ-learning collapses, crossing at
+q=3e-6 where the monotonicity violation first reaches +0.01 — the cost arrives before the
+benefit. Middle: the violation bought is marginal throughout (≤ +0.05). Right: neither target
+is reached — band-pass peakiness never approaches 1, and the avoidance dip is absent (nan) at
+every q.*
 
 **There is no window, and the ordering is the finding.** Reentrant activity floods the medium
 (0.31 at q=1e-6) and τ-learning has already started degrading (0.93) *before* monotonicity even
