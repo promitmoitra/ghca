@@ -581,11 +581,18 @@ The audits converge on three honest limitations. Good next steps *retire* one of
      accuracy fine: each column gets a different reward reference, so intervals are individually
      correct and collectively unalignable. Population synchrony needs a **common temporal
      reference** — a functional argument for volume transmission over wired propagation.
-     **Attention buys precision and costs recall.** With an onset-jittered distractor patch,
-     gating cuts per-cell error threefold (|Δ| 0.93 vs 3.14; within ±2 0.93 vs 0.67) and
-     suppresses distractor writes 3.6–5.3× vs 1.2× — it genuinely works. It still loses the
-     population readout (sync 0.301 vs 0.649) because that readout depends on coverage, and
-     sweeping the gate window 2→16 barely moves it (0.285 → 0.303): lossy at every width. The
+     **Attention's cost is certain; its benefit is fragile. ⚠️ REVISED at n=20 — the original
+     threefold-precision claim is RETRACTED.** The first write-up said gating cuts per-cell error
+     threefold (|Δ| 0.93 vs 3.14 at D=70, n=3). At 20 seeds that comparison is 1.52 ± 1.38 vs
+     2.69 ± 1.11 — a 43% reduction but only **0.9 sd** of separation, and **0.1 sd** at D=50. `|Δ|`
+     does not separate the conditions at either delay, so the threefold figure was an n=3 artifact
+     of an unstable metric. What survives is narrower: the fraction of cells accurate to ±2 is
+     better under gating at D=70 (0.87 ± 0.09 vs 0.70 ± 0.06, **2.2 sd**) but not at D=50
+     (1.2 sd) — real, weak, and delay-dependent. Distractor-write selectivity (3.4–5.3× vs 1.2×)
+     holds. The **cost** is the most certain number in the whole comparison: the population readout
+     is lost by **8.2 sd at D=70 and 12.4 sd at D=50** (sync 0.306 vs 0.677). Sweeping the gate
+     window 2→16 barely moves it (0.285 → 0.303): lossy at every width. So **nothing in this task
+     family justifies the gate**. The
      bounding reason: **cells fed an unpredictable stimulus fail to produce a usable τ anyway**,
      so the dynamics already discard the distractor and selective plasticity is redundant.
      Gating should only pay when the bad signal would otherwise be *consistent and wrong* —

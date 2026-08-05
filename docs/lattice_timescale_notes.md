@@ -613,6 +613,33 @@ still loses on the population readout, because the readout depends on coverage. 
 window 2 → 16 trades selectivity for coverage exactly as expected and yet overall synchrony
 barely moves (0.285 → 0.303) — the gate is lossy at every width.
 
+**Correction at n=20 — the precision claim above is partly retracted.** Re-running both
+distractor delays at 20 seeds (`_n20`, `_n20_d70`) and asking whether each difference actually
+separates given its per-seed spread:
+
+| | \|Δ\| error | fraction within ±2 | sync (population) |
+|---|:--:|:--:|:--:|
+| D=50 | +0.14, **0.1 sd** — not separable | −0.11, 1.2 sd — not separable | +0.34, **12.4 sd** |
+| D=70 | +1.17, **0.9 sd** — not separable | −0.17, **2.2 sd** — separable | +0.37, **8.2 sd** |
+
+So the headline "gating cuts per-cell error more than threefold (0.93 vs 3.14)" **does not
+survive**. At n=20 the same comparison is 1.52 ± 1.38 vs 2.69 ± 1.11 — a 43% reduction, but only
+**0.9 sd** of separation, and at D=50 it is 0.1 sd. `|Δ|` simply does not separate the conditions
+at either delay; the threefold figure was an n=3 artifact of an unstable metric.
+
+What does survive is narrower: the **fraction of cells accurate to ±2** is genuinely better under
+gating at D=70 (0.87 ± 0.09 vs 0.70 ± 0.06, 2.2 sd) but not at D=50 (1.2 sd). So the precision
+benefit is real, weak, and **delay-dependent** — present only where the interval is long enough
+for the distractor's unpredictability to matter.
+
+The *cost*, by contrast, is the most robust number in the whole comparison: gating loses the
+population readout by **8.2 sd at D=70 and 12.4 sd at D=50**. Write-coverage selectivity (3.4×
+vs 1.2×) also holds.
+
+The honest summary is therefore stronger than "attention buys precision and costs recall". It is:
+**attention's cost here is large and certain; its benefit is small, fragile, and absent on the
+primary error metric.** Nothing in this task family justifies the gate.
+
 The reason is worth stating, because it bounds where attention can help at all: **cells fed by an
 unpredictable stimulus fail to produce a usable τ on their own**, so the dynamics already discard
 the distractor and selective plasticity is redundant. Gating helps only if the bad learning
