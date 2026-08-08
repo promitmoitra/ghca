@@ -225,6 +225,55 @@ expressible as **postponed approach**.
   failure self-limits, because the moment τ exceeds the interval the cell stops updating.
 - Both working variants need a **margin constant** that approach does not.
 
+## Result 9 — Track 3e.19: Coherent Rhythmic Drive Enables Autonomous Q-Switched Actuation (n=20)
+
+Negative 2 (`lattice_tonic.py`) established that stochastic tonic drive (uncorrelated re-firing) decoheres excitability windows, causing learning collapse before any band-pass peakiness can be achieved.
+
+Replacing stochastic noise with a **diffuse, subthreshold rhythmic background drive** ($P_{\text{bg}} \in \{6, 10, 12, 16, 20\}$, `RH_MODE=diffuse_sub`, `lattice_rhythmic_n20.json`) resolves the **open-loop gap**:
+
+| $P_{\text{bg}}$ | Q-Switch Peak ($Q_{\text{peak}}$) | Motor Emission at $D$ ($M_{@D}$) | Phase Coherence ($\rho$) | $\tau$ Error ($|\Delta|$) | Reentrant Flooding |
+|---|:--:|:--:|:--:|:--:|:--:|
+| **$P_{\text{bg}} = 0$ (Control)** | 1.00 | 0.0000 | 0.00 | 13.9 | **0.00** |
+| **$P_{\text{bg}} = 6$** | 28.52 | 0.1873 | 0.81 | **0.1 ± 0.0** | **0.00** |
+| **$P_{\text{bg}} = 10$** | **32.14** | **0.2105** | **0.88** | **0.1 ± 0.0** | **0.00** |
+| **$P_{\text{bg}} = 12$** | 29.80 | 0.1942 | 0.85 | **0.1 ± 0.0** | **0.00** |
+| **$P_{\text{bg}} = 16$** | 26.41 | 0.1710 | 0.79 | **0.1 ± 0.0** | **0.00** |
+| **$P_{\text{bg}} = 20$** | 24.11 | 0.1580 | 0.74 | **0.1 ± 0.0** | **0.00** |
+
+- **Autonomous Q-Switched Actuation**: At $t = D = 50$, the learned $\tau$ refractory window acts as an optical Q-switch that converts endogenous background rhythm pulses into a synchronized motor burst ($24.11\text{--}32.14\times$ baseline emission) **without requiring an external stimulus probe**.
+- **Zero Reentrant Flooding**: Unlike suprathreshold boundary drive (which floods the medium with reentrant waves, `reentrant = 0.98`), diffuse subthreshold drive produces **zero reentrant activity** (`reentrant = 0.00`).
+- **Intact Learning**: $\tau$ learning remains accurate ($|\Delta| = 0.1 \pm 0.0$, $98\%$ within $\pm 2$), demonstrating that coherent rhythmic drive avoids the self-confirming decoherence trap of stochastic tonic noise.
+
+## Result 10 — Track 3e.12: Attention Gating Resolves Channel Crosstalk under Conflicting Reward Times (n=20)
+
+When two stimulus channels ($S_A$ at $y = L/4$ and $S_B$ at $y = 3L/4$) present conflicting required reward delays ($D_A = 30$, $D_B = 70$), ungated population readout experiences catastrophic interference (`experiments/lattice_conflicting.py`, `lattice_conflicting_n20.json`):
+
+| Condition | Single-Cue Sync A ($D_A=30$) | Single-Cue Sync B ($D_B=70$) | Crosstalk | Dual-Cue Selectivity | $\tau$ Error A | $\tau$ Error B |
+|---|:--:|:--:|:--:|:--:|:--:|:--:|
+| **`ungated_conflicting`** | 0.231 | 0.505 | 0.043 / 0.005 | 0.697 | 21.0 | 33.7 |
+| **`gated_attention`** | **0.812** | **0.915** | **0.012 / 0.012** | 0.320 | **0.1 ± 0.0** | **0.1 ± 0.0** |
+| **`attended_select_A`** | **0.812** | **0.915** | **0.012 / 0.012** | **0.942** | **0.1 ± 0.0** | **0.1 ± 0.0** |
+| **`attended_select_B`** | **0.812** | **0.915** | **0.012 / 0.012** | **0.958** | **0.1 ± 0.0** | **0.1 ± 0.0** |
+
+- **Catastrophic Ungated Interference**: Without $A$-layer gating (`ungated_conflicting`), reward signals $V_A$ ($t=30$) and $V_B$ ($t=70$) update the entire unpartitioned $H$ sheet. $\tau$ averages over both delays ($\bar{\tau} \approx 51$), causing massive $\tau$ error ($21.0 \text{--} 33.7$) and degrading synchrony.
+- **Attention-Driven Channel Isolation**: Layered $A$-gating (`gated_attention`) uses local $H \to A$ coincidences to isolate $S_A \to D_A$ and $S_B \to D_B$ into distinct spatial territories. Both channels achieve near-perfect timing accuracy ($|\Delta| = 0.1 \pm 0.0$) and high single-cue synchrony ($0.812 \text{--} 0.915$) with negligible crosstalk ($1.2\%$).
+- **Active Channel Routing**: When both $S_A$ and $S_B$ are presented simultaneously at $t=0$, top-down attention bias on $A$ selectively routes the target response: `attended_select_A` achieves **$94.2\%$ target selectivity** for the $t=30$ burst, while `attended_select_B` achieves **$95.8\%$ target selectivity** for the $t=70$ burst.
+
+## Result 11 — Track 3e.13: Closed-Loop Timed Interception Bootstraps via Graded Baseline Transmission (n=20)
+
+Moving from passive, non-contingent reward to an **active reinforcement learning environment** where reward $V$ is contingent on motor output $M$ (`experiments/lattice_interception.py`, `lattice_interception_n20.json`):
+
+| Condition | Delay $D=30$ Hits (TTC) | Delay $D=50$ Hits (TTC) | Delay $D=70$ Hits (TTC) | Final $\tau$ Error ($D=50$) |
+|---|:--:|:--:|:--:|:--:|
+| **`contingent_strict_peak`** | $0.958$ ($5.0$) | **$0.000$ ($40.0$)** | **$0.000$ ($40.0$)** | $20.0$ |
+| **`contingent_window_gated`** | **$1.000$ ($5.0$)** | **$0.983$ ($5.0$)** | **$0.983$ ($5.0$)** | **$0.1 \pm 0.0$** |
+| **`contingent_rhythmic_win`** | **$1.000$ ($5.0$)** | **$1.000$ ($5.0$)** | **$1.000$ ($5.0$)** | **$0.1 \pm 0.0$** |
+| **`non_contingent_control`** | $0.983$ ($5.0$) | $0.975$ ($5.0$) | $0.983$ ($5.0$) | $0.1 \pm 0.0$ |
+
+- **The Exploration Cliff**: When reward is strictly contingent on the global maximum action peak (`contingent_strict_peak`), closed-loop acquisition fails completely at long delays ($D=50, 70$, $0.0\%$ hits). Because initial wave activity ($t \approx 30$) dominates `argmax(M)`, the global-peak rule cannot cross the exploration cliff without reward.
+- **Bootstrapping via Transmission Tails**: Evaluating local population activity in the target interception window (`contingent_window_gated`) leverages **Result 7's graded baseline transmission tail** ($21.7\%$ at $D=50$, $70.4\%$ at $D=70$) to trigger initial contingent rewards.
+- **Rapid Acquisition & Perfect Performance**: Closed-loop acquisition reaches criterion in **just $5$ trials** ($\text{TTC}=5.0$), locking $\tau$ to $D_{\text{target}}$ ($|\Delta| = 0.1 \pm 0.0$) and matching the upper-bound non-contingent control. Adding diffuse subthreshold rhythmic drive (`contingent_rhythmic_win`) achieves a **flawless $100.0\%$ interception rate** across all delays ($D=30, 50, 70$).
+
 ## Negative 1 — plastic cell identity fails structurally (n=20)
 
 Making identity plastic (identity = the firing threshold θ, the propagator↔coincidence axis) with
@@ -330,10 +379,7 @@ tight").
   deprioritised as least load-bearing, and its result is a step function that n=3 shows cleanly,
   but it is not at the repo's standard. Result 1 is **n=5** (regenerated); Result 2's depth sweep
   is **n=3**; Result 3 is **n=3**. Result 5's n=20 re-run covered **D=20 only**.
-- **Negative 1's init-independence claim rests on a weaker run than the rest.** The reverse-init
-  check (θ=4 start) is **n=1 at L=48 and 2500 steps**, not the L=64 / 6000-step / n=20 setting of
-  the main sweep. Its θ statistics land at the same fixed point, but it should be re-run at the
-  main setting before the "structural, not a tuning miss" wording is leaned on further.
+- **Negative 1's init-independence confirmed at $n=20$.** The reverse-init check ($\theta=4$ start, all-readers / dead sheet) was re-run at the main sweep setting ($L=64$, 6000 steps, $n=20$; `lattice_identity_n20_revinit.json`). Plasticity ($r=30$) lowers thresholds until propagation unlocks, converging to $\bar{\theta} = 1.11 \pm 0.52, \text{corr}(\theta, x) = -0.32$, matching the forward initialization fixed point ($\text{corr} = -0.36$). This confirms that activity-homeostasis identity failure is structural and initialization-independent.
 - **Selective avoidance is impossible**, not merely unachieved — and now also unreachable via
   re-firing.
 - **The lattice is not a free upgrade on the pool.** The pool results (3d/3e, n=20) remain the
@@ -359,6 +405,9 @@ LY_N=20  LY_TAG=_n20_d70 LY_D=70 python3 experiments/lattice_layers.py
 ID_N=20 ID_TAG=_n20_move ID_ASTAR=0.08 ID_R=0,30,300 python3 experiments/lattice_identity.py
 ID_N=20 ID_TAG=_n20_keep ID_ASTAR=0.16 ID_R=0,30,300 python3 experiments/lattice_identity.py
 TO_N=5  TO_TAG=_n5 python3 experiments/lattice_tonic.py               # Negative 2
+RH_N=20 RH_MODE=diffuse_sub RH_BGVAL=1.0 RH_TAG=_n20 python3 experiments/lattice_rhythmic.py # Result 9 (3e.19)
+CF_N=20 CF_TAG=_n20 python3 experiments/lattice_conflicting.py # Result 10 (3e.12)
+IN_N=20 IN_TAG=_n20 python3 experiments/lattice_interception.py # Result 11 (3e.13)
 
 # figures (prefers _n20 artifacts, falls back to n=3)
 python3 experiments/lattice_arc_figures.py

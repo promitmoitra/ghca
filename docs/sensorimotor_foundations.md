@@ -33,6 +33,7 @@ Consequences for the interface:
 - **Timing is the natural action space.** Not a direction, not a force — a *when*. Any first
   environment should therefore be a timing task, because that is what the substrate can express
   without inventing a second mechanism.
+- **The open-loop gap requires a background drive.** Passive transmission alone does not emit signals—it merely provides a transmissive window. In an open-loop setup, an external probe tests the window. To operate as an active, closed-loop actuator without external probing, the substrate requires a **continuous or rhythmic background drive** (e.g., a coherent pacemaker wave). The learned $\tau$ window then acts as a Q-switch that converts endogenous background drive energy into timed, directional motor bursts.
 
 ## 2. Bootstrapping is not a problem, and this was the open question
 
@@ -80,7 +81,7 @@ Generality then comes from varying Δ across a family (already shown to work: 30
 from two stimuli with *conflicting* Δ, which is the condition where attention should finally
 beat no attention on a population readout rather than only on per-cell precision.
 
-## 5. Two limits to carry forward, stated now rather than discovered later
+## 5. Three limits to carry forward, stated now rather than discovered later
 
 **The switch is global, not spatial.** Because every trained cell recovers at the same moment,
 the whole sheet becomes transmissive at once. Where the probe enters does not matter — its entry
@@ -91,6 +92,8 @@ gates, and any claim about localised task-specific circuitry has to survive that
 (θ_A, θ_M, receptive-field size, gate window) are homogeneous *cell properties* rather than a
 topology. That is a real difference in kind, and it is all it is: that there are several sheets,
 and which projects to which, is still drawn by hand.
+
+**The loop is open without background drive.** Passive transmission requires an external stimulus probe to demonstrate action. Operating as an autonomous, closed-loop actuator requires an endogenous continuous or rhythmic background drive so that the transmissive window actively releases motor bursts into the environment.
 
 ## 6. What this sets up: growing geometry
 
