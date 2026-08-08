@@ -82,5 +82,8 @@ nav:
   - Timescale & continual learning (3d–3e):
       - Continual learning & timescale capacity: continual_learning_results.md
       - Emergent timescale hierarchy (closes 4a): timescale_hierarchy_results.md
+      - Lattice Arc (3e.N) — spatial sheets & closed-loop: lattice_results.md
+      - Sensorimotor foundations: sensorimotor_foundations.md
+      - Lattice timescale notes: lattice_timescale_notes.md
   - Synthesis: synthesis.md
   - Core series review: core_review.md
