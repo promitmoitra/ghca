@@ -21,13 +21,16 @@ pointer. The repo already writes these as `## Result N — <statement>` /
 `## Negative N — <statement>` headings, so the extraction is mechanical:
 
 ```bash
-grep -h '^#\{1,3\} \(Result\|Negative\|Finding\) ' docs/*.md            # 29 on main
-git show origin/claude/lattice-timescale-demo:docs/lattice_results.md \
-  | grep '^## \(Result\|Negative\)'                                     # 13 on the arc branch
+grep -h '^#\{1,3\} \(Result\|Negative\|Finding\) ' docs/*.md            # 29 (E/C-series)
+grep '^## \(Result\|Negative\)' docs/lattice_results.md                 # 13 (lattice arc)
 ```
 
-**n = 42 claims.** 29 from `main` (E-series + C-series), 13 from the unmerged
-lattice arc (`origin/claude/lattice-timescale-demo`, 27 commits ahead of `main`).
+**n = 42 claims.** 29 from the E-series and C-series results docs, 13 from the
+lattice arc. The arc landed on `main` in #76 (merge commit `0580fef`) while this
+test was being written; the counts below were taken from
+`origin/claude/lattice-timescale-demo` before the merge and are unchanged by it —
+the merge preserved all 27 commits, so both the claims and their per-commit audit
+trail are now on `main`.
 
 **Thresholds, declared in advance.**
 
@@ -189,3 +192,30 @@ Today state lives in five overlapping places (`next_steps.md`,
 `lattice_results.md`, `lattice_timescale_notes.md`, the two review docs,
 `.agents/comms_log.md`) plus `process.md` describing how two of them relate. A
 sixth structure beside those makes the problem worse.
+
+## Open items
+
+- **The Method pillar has no claims.** Writing its ~5 process claims — with the two
+  that carry real evidence (`n=3`-for-controls, the blind derived metric) wired as
+  reproduce contracts against the scripts they came from — is the smallest step that
+  both tests the schema and fills the gap this test found.
+- **Container format.** [OKF v0.1](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md)
+  fits the pillar tree without adaptation: a bundle *is* a directory tree of markdown
+  with YAML frontmatter, `type` is the only required field, extension keys are
+  explicitly permitted, `tags` carries the cross-cutting tensions, `stale_after` makes
+  per-tier cadence a checkable date, and `generated`/`verified` reproduce this repo's
+  review/plan decoupling. `type: Attested Computation` (§10 — `runtime`, `parameters`,
+  `executor.receipt`, `attester`) is the reproduce contract, aimed squarely at the two
+  failures that cost this arc time: a clobbered artifact and a silently-wrong derived
+  metric.
+  **Gap:** OKF links are deliberately *untyped* (§6.1), so the `supports | strains |
+  refutes` up-edge — the piece that makes tiers evolve rather than merely nest — must be
+  an extension field with a local validator. `status: draft|stable|deprecated` is
+  document lifecycle, not epistemic status; `refuted`/`retracted` needs its own field.
+- **Git can carry the ledger, not the graph.** Branch-per-tactic is already the
+  convention (`claude/3a-p2-sweeps`, `claude/3e2-cfc`); PR-as-evidence-review and
+  merge-as-status-transition formalise existing practice. But up-edges are many-to-many
+  over *statements* while merges are tree-shaped over *snapshots*, and threshold
+  conditions need something reading frontmatter — that is CI, not git. Note also that
+  slow tiers want few reviewed commits on `main`, not long-lived branches: the cadence
+  mapping inverts.
