@@ -35,6 +35,8 @@ not as built-in modules.
 | `experiments/e2_delayed_response.py` | E2 — delayed response / working memory (τ-controlled memory) |
 | `experiments/e2_information.py` | E2 addendum — memory as a τ-tuned information-destruction rate |
 | `experiments/topology_cycle_capacity.py` | E2 addendum — cycle-space (circuit-rank) bound on how many reentrant loops a topology admits |
+| `experiments/topology_cycle_packing_exact.py` | **Correction** to the above — its greedy maximises cycle *length*, not *count*; exact ILP packing, certified on the ring |
+| `experiments/persistent_set_structure.py` | Does the persistent set have a tractable description? Not linear; combinatorial when `tau_p <= tau_a` (companion to SSRN 4047679) |
 | `experiments/topology_winding_capacity.py` | E2 addendum — the GGH (1980) winding number as the exact sustain criterion; calibrates the length gate above |
 | `experiments/scaling_capacities.py` | Scaling (Track 3b, size half) — does substrate size buy memory (E2) / attention (E4) / executive control (E5)? |
 | `experiments/lattice_capacities.py` | Representation + `lattice2d` port of all three capacity mechanisms; shows E5's hidden layer has **0** recurrent edges |
@@ -91,6 +93,27 @@ not as built-in modules.
   a flat exception: its *packed* cycles all exceed the τ range). A
   capacity/duration tradeoff on any Line-B τ policy.
   Capacity is a bound, not a measured count.
+  **⚠ Superseded in part — see `topology_cycle_packing_exact.md`: the greedy
+  packing maximises cycle length rather than count, so every `K_dyn` there is low
+  by 1.4–7.5×, the 20–70× collapse is really 3.9–20×, and the ring is not flat.**
+- [`docs/topology_cycle_packing_exact.md`](docs/topology_cycle_packing_exact.md) —
+  **correction to the above.** `pack_long_cycles` picks `max(longer, key=len)`;
+  maximising the *count* wants `min`. One word costs 1.0–4.7×, an exact set-packing
+  ILP up to 7.5×. On `ring(60,k=3)` the optimum is **certified** at all four τ
+  tested (45/36/30/25, meeting `min(β₁, ⌊m/(τ+1)⌋)`) versus 6 in the merged doc —
+  so ring capacity *does* fall with τ. Best-known K is still monotone decreasing in
+  τ on all four topologies, so the capacity/duration tradeoff survives; only the
+  numbers and the "flat ring" claim change.
+- [`docs/persistent_set_structure.md`](docs/persistent_set_structure.md) —
+  **new, external-facing** (structural companion to Moitra & Sen, SSRN 4047679).
+  Does the persistent set admit a tractable description? **Geometrically no** — it
+  is not linearly separable from the dying set in one-hot coordinates in any of 22
+  cells with `P > 0`, so no polytope in those coordinates describes it.
+  **Combinatorially yes** whenever `τ_p ≤ τ_a`: persistence is a function of the
+  sorted cyclic phase-gap multiset, compressing the space 16–161× into homogeneous
+  classes (14641 configs → 91 classes at (5,5)), with compression growing in `S`.
+  One-way implication only — `(2,5)` is invariant with `τ_p > τ_a`. Dynamics
+  validated against `ghca_net.Network`: 7461 transitions, 0 mismatches.
 - [`docs/topology_winding_capacity.md`](docs/topology_winding_capacity.md) —
   **E2 addendum** (calibration of the above): the winding number of a continuous
   cycle, the invariant from Greenberg, Greene & Hastings (1980), is an *exact*
