@@ -130,3 +130,53 @@ wide enough that the gap multiset already pins the active count.
   rules out the natural deep-learning-style flattening, not all embeddings.
 - **No dynamics claim.** The signature is an *analysis* construct. Nothing here
   says the substrate computes, represents, or is sensitive to it.
+
+## 8. Addendum: the polytope in *direct* phase-space coordinates
+
+The natural phase space of the system is the product of chains
+`Omega = {0..S}^4` — one axis per cell, a configuration is a point, the
+dynamics move the point. Unlike the one-hot embedding (dimension `4S`), this
+space has dimension 4 regardless of `S`, so **exact facet enumeration is
+tractable** and the polytope question can be answered directly.
+
+Experiment: [`experiments/phase_space_polytope.py`](../experiments/phase_space_polytope.py) ·
+Archive: `result/topology/phase_space_polytope.npz`
+
+| (τa, τp) | persistent | hull vertices | facets | dead inside hull | attractor pts | attr dim | attr pts on hull | monotone transients |
+| :---: | ---: | ---: | ---: | ---: | ---: | :---: | ---: | ---: |
+| (1, 1) | 24 | 24 | 108 | 13 | 8 | 3 | 8 | 8/16 |
+| (2, 1) | 180 | 48 | 220 | 44 | 84 | 4 | 12 | 8/96 |
+| (2, 2) | 200 | 40 | 202 | 229 | 40 | 4 | 0 | 24/160 |
+| (3, 1) | 530 | 64 | 304 | 63 | 330 | 4 | 16 | 12/200 |
+| (3, 2) | 786 | 48 | 213 | 378 | 378 | 4 | 12 | 48/408 |
+| (3, 3) | 784 | 48 | 248 | 1131 | 224 | 4 | 0 | 64/560 |
+| (4, 2) | 1806 | 64 | 284 | 463 | 1078 | 4 | 16 | 68/728 |
+| (4, 4) | 2160 | 48 | 242 | 3355 | 720 | 4 | 0 | 112/1440 |
+
+Four facts, all exhaustive:
+
+1. **The hull is small and its complexity saturates.** Vertex count stalls near
+   48 and facets near 240–250 while the persistent count grows two orders of
+   magnitude — an `O(1)`-complexity **outer** description. Membership is a valid
+   *necessary* condition for persistence. (Facet counts are Qhull's triangulated
+   output and can shift by a few with point ordering; vertex and dead-inside
+   counts are order-independent, the latter re-verified by exact LP.)
+2. **It is not sufficient, and the gap grows.** Dead configurations strictly
+   inside the hull outnumber persistent ones from (2,2) onward (3355 vs 2160 at
+   (4,4)). The persistent set is **not** the integer-point set of any polytope in
+   these coordinates either — convexity is the wrong closure, consistent with §2
+   seen from the other side. The sharp description remains the gap signature (§3).
+3. **At (1,1) the attractor set is an exact hyperplane slice**: every attractor
+   configuration satisfies `x0+x1+x2+x3 = 3` (verified in integer arithmetic) —
+   the rotating wave conserves total phase, the attractor set is 3-dimensional,
+   and all 8 attractor points are vertices of the persistent hull. This is the
+   cleanest polytope statement in the system, and it is special: at
+   (2,2), (3,3), (4,4) **zero** attractor points are hull vertices and attractor
+   phase-sums span a range — attractors live in the *interior* of phase space.
+4. **No linear Lyapunov function**: transients are not monotone in
+   `|phase_sum − attractor mean|` (112/1440 at (4,4)), so approach to the
+   attractor is genuinely non-convex in these coordinates.
+
+Caveat: same scope as the rest of this doc — 2x2 core, `theta = 1`, von Neumann.
+The saturating-hull observation is an empirical pattern over the 8 cells tested,
+not a theorem.

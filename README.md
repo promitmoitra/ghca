@@ -37,6 +37,7 @@ not as built-in modules.
 | `experiments/topology_cycle_capacity.py` | E2 addendum — cycle-space (circuit-rank) bound on how many reentrant loops a topology admits |
 | `experiments/topology_cycle_packing_exact.py` | **Correction** to the above — its greedy maximises cycle *length*, not *count*; exact ILP packing, certified on the ring |
 | `experiments/persistent_set_structure.py` | Does the persistent set have a tractable description? Not linear; combinatorial when `tau_p <= tau_a` (companion to SSRN 4047679) |
+| `experiments/phase_space_polytope.py` | Addendum: exact hulls in direct phase-space coords — small saturating outer polytope, necessary-not-sufficient; (1,1) conservation law |
 | `experiments/topology_winding_capacity.py` | E2 addendum — the GGH (1980) winding number as the exact sustain criterion; calibrates the length gate above |
 | `experiments/scaling_capacities.py` | Scaling (Track 3b, size half) — does substrate size buy memory (E2) / attention (E4) / executive control (E5)? |
 | `experiments/lattice_capacities.py` | Representation + `lattice2d` port of all three capacity mechanisms; shows E5's hidden layer has **0** recurrent edges |
