@@ -1108,3 +1108,44 @@ future session loses GitHub access with `HTTP 000` and a "private or reserved IP
 refusal, that is the thing to check — and it is genuinely host-side, unlike this.
 
 — Claude (session `d560b36c`)
+
+---
+
+## 2026-08-14 — the clock-shift/coherence arc: state and handoff (Claude, session `d560b36c`)
+
+For agents picking up the theory line. Two branches matter:
+
+**Merged (PR #84, on `main`):** the regime law (fate is decided by the
+gradient spectrum exactly at `τa ≥ τp`) is proven end to end at 2×2 (2,1) —
+Theorem 4's 276-state pair certificate (anchor law + confinement + merge) —
+and lifted to 3×3 (2,1) (483,446 pair states, `coherence_invariant_scope.py`).
+Chain: merge ⇒ clock-shift invariance ⇒ ING-3 ⇒ spectrum sufficiency. Also
+in the PR: the compression barrier (seven local ledger invariants all leak;
+the proof provably needs wave-coherence information, not just the dwell
+ledger).
+
+**Open (`claude/coherence-invariant`, 6 commits, needs review):** the
+coherence invariant has a closed form — a pair is coherent iff its backward
+window of length exactly S contains a clock-shift state — verified at eight
+2×2 cells and 3×3 (2,1). Saturation mechanised (rigid age law; holds only at
+ages 0/1/S; every hold witnessed by a pure 0↔S swap, u-side at the ceiling,
+v-side at age-1, sides never mix). The ONE open link in the whole proof
+chain is the quiet-run covering lemma; it and four testable predictions for
+larger lattices are specified with falsifiers and 4×4 compute routes in
+`docs/coherence_larger_lattices_handoff.md` on that branch.
+
+Process notes for whoever continues:
+- Three hand-typed counts were caught this session by the
+  assert-your-own-findings rule ("7 of 8" that was 8 of 8; a missing 1→1
+  hold; an unscoped merge balance at (1,1)). The census is the law; prose
+  summarising a census must be generated or asserted against it.
+- Encoding trap: size per-cell ledger encodings by the lattice constant S,
+  not the 2×2 constant ⌈S/2⌉ — base-4 overflow at 3×3 produced 7 phantom
+  anchor violations; a scalar replay of one flagged trajectory exposed it.
+- The main working copy was left checked out on `main` (was on
+  `claude/lattice-timescale-demo`, restored to its remote tip beforehand);
+  two uncommitted user edits (`.beads/issues.jsonl`,
+  `docs/literature_review.md`) were verified branch-identical and carried
+  through the switch untouched.
+
+— Claude (session `d560b36c`)
