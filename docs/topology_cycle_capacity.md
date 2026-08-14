@@ -7,6 +7,34 @@ admits, complementing [`e2_results.md`](e2_results.md), which fixes the
 Laplacians / circuit rank; see Gallier & Quaintance, "Algebra, Topology,
 Differential Calculus, and Optimization Theory for CS and ML", Ch 20–21).*
 
+> ## ⚠ Superseded in part — read this first
+>
+> The packing routine behind every `K_dyn` on this page selects, at each greedy
+> step, the **longest** cycle exceeding τ (`found = max(longer, key=len)`) when
+> the objective is to maximise the **count**. Every `K_dyn` here is therefore a
+> loose lower bound, low by **1.4×–7.5×**. See
+> [`topology_cycle_packing_exact.md`](topology_cycle_packing_exact.md).
+>
+> Specifically, on this page:
+>
+> - **Finding 3 ("the ring is flat") is false.** Ring capacity is not constant at
+>   6; it falls **45 → 36 → 30 → 25** across τ=3–6, and all four values are
+>   *certified optimal* (at τ=3 the optimum uses all 180 of 180 edges).
+> - **Finding 1's collapse ratio is overstated.** The corrected lattice2d figure
+>   at τ=3 is 721 → 183 (3.9×), not 721 → 39 (18×).
+>   *Scope caveat:* the "20–70×" above is quoted **at τ=8**, whereas the exact
+>   solve sweeps only **τ ∈ [3, 6]** (enumeration cost). No corrected value
+>   exists at τ=8, so "20–70× is really 3.9–20×" is **not** a like-for-like
+>   replacement.
+> - **Finding 2 survives.** Best-known `K` is still monotone decreasing in τ on
+>   all four topologies, so the capacity/duration tradeoff stands — but any
+>   *quantitative* version of it must be recomputed, and its threshold moves by
+>   up to 7.5×.
+> - Only **4 of 16** cells are certified. Elsewhere the optimum is bracketed and
+>   the gap is unquantified (e.g. lattice2d at τ=3 is only `183 ≤ K_opt ≤ 216`).
+>
+> The text below is left unedited as the historical record.
+
 ## The question E2 leaves open
 
 E2 establishes that memory is a circulating pulse on a directed ring and that
