@@ -299,6 +299,31 @@ than a structural pathway (the E8.5 nested-waves direction), and the concurrent 
 gap to phase-split is a tuning residual (anneal `τ` / a settling curriculum), not a
 missing mechanism.
 
+## A bounded-memory bridge from the theory arc to the cognitive one
+
+The clock-shift theory arc (PR #84 and the coherence branch) ended somewhere
+unexpectedly cognitive. The coherence invariant — which pairs of trajectories
+the regime law's proof can treat as "the same wave, one tick apart" — turned
+out to be a **bounded-memory condition**: a pair is coherent iff its backward
+window of length exactly `S = τa + τp` contains an exact clock-shift state
+(`coherence_window_S.py`; window = S at all eight 2×2 cells tested and at 3×3
+(2,1), 483,446 pair states). One full cycle of history decides; nothing older
+matters, and no shorter window suffices. This is the same structural fact the
+E-series measures behaviourally: E2's retention is gated by τ against transit
+length, and the capacity work bounds how long a loop can hold information by
+the same timescale pair. The theory arc derives the analogous statement
+exactly, at the pair level: **the substrate's self-knowledge — whether two of
+its own histories cohere — has a working-memory span of one cycle.** The
+open covering lemma (`coherence_covering_lemma.py`) sharpens where that span
+comes from: quiet cells can disguise their age only up to their quiet run,
+so ancestry information physically decays through the refractory pipeline at
+one tick per step — a mechanistic account of *why* the window is S and not
+anything else. Caveat, per house rules: the identity is exact on the 2×2 and
+3×3 cores only; the E-series link is an analogy of structure (same gating
+quantity, same span), not a derived equivalence — connecting them formally
+would require the readout layer, which is exactly the substrate/analysis
+boundary the program keeps explicit.
+
 ## State of the evidence — the honest ledger
 
 The three tensions the audits raised, as they stand now:
