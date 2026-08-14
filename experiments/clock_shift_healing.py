@@ -33,13 +33,31 @@ first t with step^t(c+1) on attractor(c),
     the strict cells tested ((2,1): 5 < 6, (3,1): 6 < 8, (3,2): 9 < 10,
     (4,3): 13 < 14).
 
+EXTREMAL STRUCTURE (exhaustive; the proof's skeleton). Splitting healing by
+fate:
+  - The 2S saturators are ALL DEAD configurations (their healing is just both
+    orbits draining to the all-zero state; on the diagonal the drain takes
+    exactly 2S). Dead healing is not proof-relevant -- dead orbits trivially
+    merge at 0.
+  - LIVE healing obeys an exact closed form at every tau_a >= tau_p cell
+    tested with S+1 >= L = 4 (twelve cells, (2,1) through (5,3)):
+
+        max over live c of heal(c)  =  tau_a + 2*tau_p + 1
+
+    ((1,1), the dwelling special case, has live max 2.) The witnesses all
+    belong to ONE family up to loop rotation/reflection: a YOUNG WAVE -- one
+    active cell at depth <= 2, the others shallow-passive (depth <= 2) or
+    receptive, e.g. R-P1-A1-P2 in loop order. Physically: the shifted copy
+    heals slowest when the wave has JUST fired, because the +1 pushes the
+    young wave's surroundings deepest into the refractory pipeline, and the
+    pipeline takes one active band plus two passive bands (+1) to clear.
+
 REMAINING HAND-PROOF OBLIGATION (all that is left of the regime law): at
-tau_a >= tau_p, the orbit of c+1 enters attractor(c) -- transient healing.
-Everything else is now either proven (rigidity equivalence; certificate
-schema) or reduced to it (merge => clock-shift invariance => ING-3 =>
-spectrum sufficiency). The empirical 2S bound says the healing is LOCAL in
-time -- an argument over at most two excursion lengths, not over the whole
-transient tree.
+tau_a >= tau_p, the orbit of c+1 enters attractor(c) -- transient healing --
+now with the exact target "live healing <= tau_a + 2*tau_p + 1" and a
+one-family extremal witness to build the induction around. Everything else is
+either proven (rigidity equivalence; certificate schema) or reduced to it
+(merge => clock-shift invariance => ING-3 => spectrum sufficiency).
 
 House Rules Compliance: exhaustive, deterministic, no RNG; asserts the
 rigidity equivalence, the dwell-free fact, the (1,1) exception, and the 2S
@@ -118,6 +136,32 @@ def audit_healing(ta, tp):
     return dict(ta=ta, tp=tp, max_heal=mx, mean_heal=tot / cnt, bound_2S=2 * S)
 
 
+LIVE_CELLS = [(2, 1), (2, 2), (3, 1), (3, 2), (3, 3), (4, 1), (4, 2), (4, 3),
+              (4, 4), (5, 1), (5, 2), (5, 3)]
+
+
+def audit_live_heal(ta, tp):
+    """Max healing over LIVE configurations + the closed form ta + 2*tp + 1."""
+    S = ta + tp
+    B = S + 1
+    cache = {}
+    mx, witnesses = 0, []
+    for c in product(range(B), repeat=4):
+        att = attractor(c, ta, tp, cache)
+        if not any(any(x) for x in att):
+            continue
+        cur, t = tuple((x + 1) % B for x in c), 0
+        while cur not in att:
+            cur = step2(cur, ta, tp)
+            t += 1
+        if t > mx:
+            mx, witnesses = t, [c]
+        elif t == mx:
+            witnesses.append(c)
+    return dict(ta=ta, tp=tp, max_live_heal=mx, formula=ta + 2 * tp + 1,
+                n_witnesses=len(witnesses))
+
+
 def main():
     print("=== Lemma R: rigidity (step==+1 <=> dwell-free) on live attractors ===")
     rig = []
@@ -150,12 +194,24 @@ def main():
             assert r["max_heal"] == r["bound_2S"], \
                 f"diagonal equality broke at ({ta},{tp})"
 
+    print("\n=== LIVE healing: max = tau_a + 2*tau_p + 1 (closed form) ===")
+    lh = []
+    for ta, tp in LIVE_CELLS:
+        r = audit_live_heal(ta, tp)
+        lh.append(r)
+        print(f"({ta},{tp}) max live heal={r['max_live_heal']:3d} "
+              f"formula={r['formula']:3d} witnesses={r['n_witnesses']:3d} "
+              f"match={r['max_live_heal'] == r['formula']}", flush=True)
+        assert r["max_live_heal"] == r["formula"], \
+            f"live-healing closed form broke at ({ta},{tp})"
+
     out = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                        "result", "topology", "clock_shift_healing.npz")
     os.makedirs(os.path.dirname(out), exist_ok=True)
     np.savez(out,
              **{f"r_{k}": np.array([x[k] for x in rig]) for k in rig[0]},
-             **{f"h_{k}": np.array([x[k] for x in heal]) for k in heal[0]})
+             **{f"h_{k}": np.array([x[k] for x in heal]) for k in heal[0]},
+             **{f"l_{k}": np.array([x[k] for x in lh]) for k in lh[0]})
     print(f"\nwrote {out}")
 
     print("\n--- results-doc table (generated; do not hand-type) ---")
