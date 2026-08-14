@@ -214,6 +214,12 @@ beyond what the caveats section already discloses.
 - **Substrate/analysis line drawn explicitly and repeatedly:** this is analysis
   of the `W` matrices, not a dynamical run; `K_dyn` is a bound, not a measured
   count; distinct from 3c/P4 *representational* capacity (stated in the doc).
+  **⚠ Later correction (this audit missed it):** the packing filter is
+  internally consistent, but the greedy *pick rule* it feeds is not — it takes
+  the longest qualifying cycle where the objective wants the shortest, making
+  every `K_dyn` a lower bound low by 1.4×–7.5×. Calling the bound "conservative"
+  was correct in direction and wrong in magnitude. See
+  [`topology_cycle_packing_exact.md`](topology_cycle_packing_exact.md).
 
 ### Seeding
 

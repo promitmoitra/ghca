@@ -80,11 +80,19 @@ bidirectional ring splits and self-annihilates), one seeded pulse, `L × τ` gri
 
 The length-gate packing in
 [`topology_cycle_capacity.md`](topology_cycle_capacity.md) **undercounts by
-exactly the `tau == L` cycles**. Since that bound is already stated as a lower
-bound, the direction is safe — the reported `K_dyn` remains valid, and is now
-known to be conservative in a specific, characterised way rather than an unknown
-one. A cycle of length exactly τ should count toward capacity; the strict `>`
-filter drops it.
+exactly the `tau == L` cycles**. A cycle of length exactly τ should count toward
+capacity; the strict `>` filter drops it.
+
+> **⚠ Correction.** This section previously concluded that `K_dyn` was therefore
+> "conservative in a specific, characterised way rather than an unknown one."
+> **That characterisation is wrong.** The `tau == L` boundary is *not* the
+> dominant source of undercount — the greedy pick rule is. It selects the
+> **longest** cycle exceeding τ where the objective wants the **shortest**,
+> which alone costs up to 4.7×, and up to 7.5× against an exact set-packing
+> solve. So the undercount was *not* characterised; its magnitude was unknown
+> and large. The direction is still safe (these remain lower bounds), but
+> nothing here licensed treating them as tight. See
+> [`topology_cycle_packing_exact.md`](topology_cycle_packing_exact.md).
 
 Whether to change the filter is a judgement call this experiment does not make:
 τ = L is a marginal, boundary-stable state (the resonance rule drives τ *toward*
