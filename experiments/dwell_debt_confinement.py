@@ -36,6 +36,16 @@ FINDINGS (exhaustive; 2x2 at 11 cells, 3x3 at 6):
    other never dwells: a frozen (dead) partner beside a circulating wave --
    the split pair itself, seen from the ledger. Permanent damage = unbounded
    debt; the fate split is the debt escaping to infinity.
+   The linearity is EXACT, not extrapolated (periodicity certificate): the
+   joint pair (u,v) lives in a finite space, so it enters a cycle; the
+   extremal pair's joint cycle has debt increment = period on every cell
+   ((1,2): +4 per 4 steps from t=2; (2,3): +6 per 6 steps from t=4), so the
+   debt grows by exactly 1 per step for ALL time. The certificate is
+   asserted below.
+   Split-pair directions are exactly BALANCED ((1,2): 16 live->dead vs 16
+   dead->live under +1; (2,3): 40/40; (3,4): 72/72) -- forced by parity:
+   around the closed orbit c -> c+1 -> ... -> c+B = c, fate up-crossings must
+   equal down-crossings.
 3. Dead debt is bounded (<= S) exactly where fate is shift-invariant
    (ta >= tp: both copies freeze, the ledger stops). At tp > ta the "dead"
    side drifts too ((1,2): 76 at the default horizon): classification is by
@@ -234,6 +244,64 @@ def main():
         k = ks.pop()
         assert k == {(1, 2): 1, (2, 3): 2}[(ta, tp)], \
             f"drift offset changed at ({ta},{tp}): k={k}"
+
+    print("\n=== drift periodicity certificate (exact linearity, all time) ===")
+    for ta, tp in [(1, 2), (2, 3)]:
+        S = ta + tp
+        B = S + 1
+        best, bc = -1, None
+        for c in product(range(B), repeat=4):
+            u, v = tuple((x + 1) % B for x in c), c
+            D = [0] * 4
+            for t in range(60):
+                nu, nv = step2(u, ta, tp), step2(v, ta, tp)
+                for i in range(4):
+                    if v[i] == 0 and nv[i] == 0:
+                        D[i] += 1
+                    if u[i] == 0 and nu[i] == 0:
+                        D[i] -= 1
+                u, v = nu, nv
+            m = max(abs(x) for x in D)
+            if m > best:
+                best, bc = m, c
+        u, v = tuple((x + 1) % B for x in bc), bc
+        seen = {}
+        D = [0] * 4
+        t = 0
+        while (u, v) not in seen:
+            seen[(u, v)] = (t, list(D))
+            nu, nv = step2(u, ta, tp), step2(v, ta, tp)
+            for i in range(4):
+                if v[i] == 0 and nv[i] == 0:
+                    D[i] += 1
+                if u[i] == 0 and nu[i] == 0:
+                    D[i] -= 1
+            u, v = nu, nv
+            t += 1
+        t0, D0 = seen[(u, v)]
+        per = t - t0
+        inc = [D[i] - D0[i] for i in range(4)]
+        print(f"({ta},{tp}) extremal {bc}: cycle at t={t0}, period={per}, "
+              f"debt/cycle={inc}", flush=True)
+        assert all(x == per for x in inc), \
+            f"per-cycle debt increment != period at ({ta},{tp}): exact " \
+            f"unit-slope certificate broke"
+
+    print("\n=== split-pair direction balance (parity) ===")
+    for ta, tp in [(1, 2), (2, 3), (3, 4)]:
+        B = ta + tp + 1
+        cache = {}
+        l2d = d2l = 0
+        for c in product(range(B), repeat=4):
+            c1 = tuple((x + 1) % B for x in c)
+            fc, f1 = att2(c, ta, tp, cache), att2(c1, ta, tp, cache)
+            if fc != f1:
+                if fc:
+                    l2d += 1
+                else:
+                    d2l += 1
+        print(f"({ta},{tp}): live->dead {l2d} | dead->live {d2l}", flush=True)
+        assert l2d == d2l, f"direction balance broke at ({ta},{tp})"
     # bounded-side contrast at matched horizons
     for T in DRIFT_TS:
         r = audit_2x2(2, 1, T=T)
