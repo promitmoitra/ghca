@@ -180,3 +180,42 @@ Four facts, all exhaustive:
 Caveat: same scope as the rest of this doc — 2x2 core, `theta = 1`, von Neumann.
 The saturating-hull observation is an empirical pattern over the 8 cells tested,
 not a theorem.
+
+## 9. Addendum: the signature generalises to 3x3 — 40M configurations
+
+At 3x3 the reentrant cycle is not unique (four 2x2 plaquettes + the perimeter
+8-cycle), so the signature needs choosing. The **plaquette signature** — the 2x2
+gap multiset per plaquette, then the sorted multiset of the four plaquette codes
+— is the one that works.
+
+Experiment: [`experiments/persistent_set_3x3.py`](../experiments/persistent_set_3x3.py) ·
+Archive: `result/topology/persistent_set_3x3.npz`
+
+| (τa, τp) | configs | P | plaquette classes | impure | compression | invariant |
+| :---: | ---: | ---: | ---: | :---: | ---: | :---: |
+| (1, 1) | 19,683 | 0.7462 | 45 | 0 | 437x | yes |
+| (2, 1) | 262,144 | 0.9746 | 319 | 0 | 822x | yes |
+| (1, 2) | 262,144 | 0.4580 | 319 | 173 | 822x | **NO** |
+| (2, 2) | 1,953,125 | 0.7752 | 1,355 | 0 | 1441x | yes |
+| (3, 2) | 10,077,696 | 0.9477 | 5,830 | 0 | 1729x | yes |
+| (2, 3) | 10,077,696 | 0.5549 | 5,830 | 2,378 | 1729x | **NO** |
+| (3, 3) | 40,353,607 | 0.7826 | 19,251 | 0 | 2096x | yes |
+
+- **The τp ≤ τa rule transfers exactly**, including the boundary cell (3,3):
+  **40,353,607 configurations, 19,251 classes, zero impure** — every class
+  uniformly persistent or uniformly dying. Failures are precisely the τp > τa
+  cells, as at 2x2. (The rule stays one-directional: 2x2's (2,5) already showed
+  τp > τa does not *imply* failure.)
+- **The perimeter signature fails even at (1,1)** (4 impure of 15 classes): the
+  invariant lives on the shortest reentrant loops, not the long way around —
+  consistent with the τ < L sustain gate, where the 4-cycle is the tight loop.
+- **Compression scales**: 16–161x at 2x2 → 437–2096x at 3x3. Classes grow
+  polynomially while configurations grow as (S+1)^9, so P becomes computable
+  from ~19k classes instead of ~40M configurations — no GPU needed after all:
+  the whole sweep runs in ~2 minutes and <0.5 GB via a successor array, boolean
+  label propagation to the all-zero sink (valid because θ=1 GH has no non-zero
+  dead attractor — checked exhaustively at 2x2, and the pipeline is checked
+  against direct orbit iteration at 3x3 (1,1), both inside the script).
+
+Scope: open-boundary 3x3 box, θ = 1, von Neumann, cells up to S+1 = 7. The
+(4,3)/(3,4) pair (S+1 = 8, 134M configs) is the next affordable check.
