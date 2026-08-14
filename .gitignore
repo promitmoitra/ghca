@@ -10,6 +10,14 @@ dist/
 # .claude/skills/publish-viz/SKILL.md); it is local-only, never committed.
 .publish-worktree/
 
+# Review/inspection worktrees. Same convention as .publish-worktree/: checking out
+# another branch to audit it must never move the main checkout, and the resulting
+# directory is a second branch's working tree — local-only, never committed.
+# Without this it shows up as one untracked path holding thousands of files.
+.review-worktree/
+.coherence-review/
+.comms-worktree/
+
 # Beads / Dolt files (added by bd init)
 .dolt/
 *.db
