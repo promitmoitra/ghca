@@ -41,6 +41,7 @@ not as built-in modules.
 | `experiments/persistent_set_3x3.py` | The gap signature generalises to 3x3 as a plaquette multiset — 40M configs, zero impure at `tau_p <= tau_a`, 2096x compression |
 | `experiments/persistent_set_dec.py` | Discrete-calculus ladder: curl (winding) insufficient, ALL relative-phase invariants insufficient at `tau_p > tau_a`; threshold = + absolute state multiset |
 | `experiments/spectrum_mechanism_hunt.py` | Theory hunt: 3 mechanism candidates falsified (bridging, lumpability x2), 3 exact laws found (period law `T = k*S + d`, spectrum constancy on attractors, dwell = f(spectrum)) |
+| `experiments/spectrum_automaton.py` | The spectrum automaton is fate-exact on pure classes (12/12 cells): at `tau_a >= tau_p` persistence == finite-state z-reachability; mixed classes appear exactly at `tau_p > tau_a` |
 | `experiments/topology_winding_capacity.py` | E2 addendum — the GGH (1980) winding number as the exact sustain criterion; calibrates the length gate above |
 | `experiments/scaling_capacities.py` | Scaling (Track 3b, size half) — does substrate size buy memory (E2) / attention (E4) / executive control (E5)? |
 | `experiments/lattice_capacities.py` | Representation + `lattice2d` port of all three capacity mechanisms; shows E5's hidden layer has **0** recurrent edges |
