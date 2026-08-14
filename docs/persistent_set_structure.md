@@ -93,12 +93,17 @@ wide enough that the gap multiset already pins the active count.
 
 ## 5. Two negative results worth recording
 
-- **A rejected refinement.** Appending the sorted active/passive/receptive type
-  pattern to the signature was tried and **fails**: sorting the type pattern
-  independently of the gaps destroys their correspondence, so it is not a
-  refinement at all and it *raised* impurity (at `(3,4)`: 8 impure classes became
-  28). A genuine refinement must keep types aligned with gap positions. Finding
-  one is open.
+- **A rejected refinement — argument corrected in §10.** Appending the sorted
+  active/passive/receptive type pattern was tried and found insufficient. The
+  *original* argument here claimed it "is not a refinement at all" because
+  impure **class counts** rose (at `(3,4)`: 8 → 28). That argument was wrong:
+  appending data to a signature always refines the partition, and an impure
+  class *count* can legitimately rise under refinement — one impure class
+  splits into several, some still impure. The metric that cannot rise is the
+  number of **configurations in impure classes**, and by that correct metric
+  the augmentation *was* a genuine refinement that merely remained
+  insufficient. §10 redoes this properly with a full refinement ladder and
+  locates the exact sufficiency threshold.
 - **A threshold that hid a counterexample.** An earlier pass used a
   `P <= 0.01` "trivial" cutoff and thereby excluded `(2,5)` — P = 0.0039, but 16
   genuinely persistent configurations — and so reported a clean iff the data does
@@ -219,3 +224,92 @@ Archive: `result/topology/persistent_set_3x3.npz`
 
 Scope: open-boundary 3x3 box, θ = 1, von Neumann, cells up to S+1 = 7. The
 (4,3)/(3,4) pair (S+1 = 8, 134M configs) is the next affordable check.
+
+## 10. Addendum: the discrete-calculus ladder — where does decidability begin?
+
+The gap field is a discrete-exterior-calculus object: it is the **discrete
+gradient** of cell phase along the reentrant loop; its loop-sum is the
+**discrete curl**, equal to `(S+1) × w` where `w` is the GGH winding number
+(the invariant of PR #54); and edge-differences give a **discrete divergence**
+(a phase Laplacian). Each rung is tested as a persistence invariant.
+
+Experiment: [`experiments/persistent_set_dec.py`](../experiments/persistent_set_dec.py) ·
+Archive: `result/topology/persistent_set_dec.npz`
+
+**The curl is well-defined but insufficient.** The telescoping identity
+`Σ gaps ≡ 0 (mod S+1)` holds with zero violations in every cell tested, so `w`
+is always defined. `w = 0` is uniformly dead everywhere (an irrotational phase
+field cannot circulate) — but intermediate windings are **mixed** in every cell
+tested, including τp ≤ τa ones. The winding classifies which loops are alive on
+a *running* trajectory; it under-determines which initial conditions get there.
+The §3 signature is strictly finer than the curl.
+
+**Relative phase, in its entirety, is insufficient at τp > τa.** Div-based
+refinements and even the full canonical gap *arrangement* (rotation-normalised,
+subsuming every invariant derivable from the gap field alone) leave impure
+classes at every failing cell:
+
+**(1, 2)**, N = 256:
+
+| invariant | classes | impure classes | configs in impure |
+| :--- | ---: | ---: | ---: |
+| grad spectrum (the §3 signature) | 10 | 2 | 96 |
+| + sorted div spectrum | 20 | 4 | 64 |
+| grad arrangement (canonical rotation) | 20 | 4 | 64 |
+| arrangement + active count | 49 | 2 | 16 |
+| arrangement + absolute state multiset | 67 | 0 | 0 |
+| canonical phases (loop-rotation orbit) | 70 | 0 | 0 |
+
+**(2, 3)**, N = 1296:
+
+| invariant | classes | impure classes | configs in impure |
+| :--- | ---: | ---: | ---: |
+| grad spectrum (the §3 signature) | 22 | 4 | 432 |
+| + sorted div spectrum | 56 | 10 | 264 |
+| grad arrangement (canonical rotation) | 58 | 10 | 240 |
+| arrangement + active count | 176 | 8 | 96 |
+| arrangement + absolute state multiset | 330 | 0 | 0 |
+| canonical phases (loop-rotation orbit) | 336 | 0 | 0 |
+
+**(2, 4)**, N = 2401:
+
+| invariant | classes | impure classes | configs in impure |
+| :--- | ---: | ---: | ---: |
+| grad spectrum (the §3 signature) | 30 | 4 | 336 |
+| + sorted div spectrum | 85 | 4 | 112 |
+| grad arrangement (canonical rotation) | 88 | 4 | 112 |
+| arrangement + active count | 279 | 2 | 32 |
+| arrangement + absolute state multiset | 616 | 0 | 0 |
+| canonical phases (loop-rotation orbit) | 616 | 0 | 0 |
+
+**(3, 4)**, N = 4096:
+
+| invariant | classes | impure classes | configs in impure |
+| :--- | ---: | ---: | ---: |
+| grad spectrum (the §3 signature) | 43 | 8 | 1152 |
+| + sorted div spectrum | 130 | 18 | 608 |
+| grad arrangement (canonical rotation) | 134 | 18 | 576 |
+| arrangement + active count | 439 | 20 | 304 |
+| arrangement + absolute state multiset | 1030 | 0 | 0 |
+| canonical phases (loop-rotation orbit) | 1044 | 0 | 0 |
+
+**The sufficiency threshold is `arrangement + absolute state multiset`** —
+exact (zero configs in impure classes) at all four failing cells. Knowing *how
+many* cells are active is not enough; the decider needs *which* absolute states
+are present, i.e. how deep into the refractory band each passive cell sits.
+And that threshold invariant is barely coarser than the loop-rotation symmetry
+orbit itself (330 vs 336 classes at (2,3); 1030 vs 1044 at (3,4)): compression
+collapses from ~50–160× to ~4×. **The τp ≤ τa boundary is a regime change in
+description complexity** — above it, persistence is a relative-phase property;
+below it, it is pinned to absolute refractory depth, and no loop-local
+relative description works.
+
+**Correction to §5's argument** (the finding stands, the reasoning didn't):
+"impure class count rose" does not show something is not a refinement —
+appending data always refines, and an impure class can split into several
+impure pieces. The monotone quantity is *configurations in impure classes*,
+used throughout this section (and asserted monotone down the ladder by the
+script itself).
+
+Scope: 2×2 core, θ = 1. The ladder at 3×3 (does absolute-state augmentation
+also close the (1,2)/(2,3) failures there?) is untested.
