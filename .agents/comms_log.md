@@ -1014,3 +1014,97 @@ background, `3e.16` prediction-error as the identity context (where `3e.15` and 
 surprise gate converge), then `3e.13` closing the loop.
 
 — Claude (session `a10519a9`)
+
+---
+
+## 2026-08-09 — Claude → all agents: `.claude/` is NOT being deleted; it is a sandbox tmpfs overlay
+
+**If you are an agent in a sandbox and `git status` shows the five `.claude/` files as
+deleted: they are not deleted. Do not investigate, do not restore, do not "fix" it.**
+Read this entry first — I burned a lot of a session's budget, and some of the user's,
+chasing this as a phantom file-deleter before finding the mechanism.
+
+### What it is
+
+Check it yourself in one command — this is the whole diagnosis:
+
+```sh
+grep "Documents/ghca" /proc/self/mountinfo | grep -E "tmpfs|\.git/config"
+```
+
+Which returns (device ids differ every session — do **not** grep for literal ids,
+grep for the paths):
+
+```
+<id> / .../ghca/.claude                        rw,... - tmpfs tmpfs rw,mode=755
+<id> / .../ghca/.git/hooks                     rw,... - tmpfs tmpfs rw,mode=755
+<id> / .../ghca/.git/modules                   rw,... - tmpfs tmpfs rw,mode=755
+<id> / .../ghca/<worktree>/.claude             rw,... - tmpfs tmpfs rw,mode=755
+     .../ghca/.git/config, config.worktree     ro,... - read-only bind mounts
+```
+
+An **empty tmpfs is mounted over `.claude/`**. This is the platform's protected-config
+policy: writes are refused on `.git/config`, `.git/hooks/*`, `.git/modules/*` and agent
+config paths, and the enforcement mechanism is a mount, not a filter. The real files sit
+on disk *underneath* the mount, untouched. `git status` reports them deleted because git
+— running inside the sandbox — looks through the tmpfs and sees an empty directory. The
+user's own shell, outside the sandbox, sees the files normally.
+
+### Every symptom this explains
+
+- **"Deleted within seconds of `git restore`."** The restore wrote into the tmpfs, so the
+  files appeared; the tmpfs is per-sandbox and rebuilt at session boundaries, so they
+  vanished at the next kernel reset. The "irregular timing" (20 s, then 90 s, then 2 min)
+  was **session lifecycle**, not a watcher with a debounce.
+- **Untracked canary files died too.** Nothing was reading git state; the whole directory
+  view is simply a different filesystem.
+- **"It reaches inside linked worktrees."** Each worktree gets its own overlay: create a
+  worktree and `<worktree>/.claude`, `.git/worktrees/<name>/hooks` and
+  `.git/worktrees/<name>/modules` each acquire a fresh tmpfs.
+- **Nothing outside `.claude/` was ever affected.** Correct: only the protected paths are
+  overlaid.
+- **`inotifywait` and `auditd` on the host found nothing.** Right — no host process ever
+  unlinked anything. There was nothing to catch.
+
+### Consequences for you
+
+1. **Never `git restore --source=HEAD -- .claude` from inside a sandbox.** It appears to
+   work and then appears to fail. It is writing to a scratch filesystem.
+2. **Do not stage or commit `.claude/` deletions.** They are an artifact of your mount
+   namespace, not of the repo. `git status` in a sandbox is unreliable *for these paths
+   specifically*.
+3. **To read a protected file, go through git**, which reads object storage rather than
+   the working tree:
+   ```sh
+   git show HEAD:.claude/skills/experiment-review/review_helper.py
+   # or, for a whole subtree:
+   tmp=$(mktemp -d); git archive HEAD .claude | tar -x -C "$tmp"
+   ```
+   That is what `reproduce_all.py` step 1 now does after
+   [#70](https://github.com/promitmoitra/ghca/pull/70) — it falls back to
+   `git show HEAD:<path>` when the working copy is absent, which is why the harness went
+   from failing locally to passing all 9 steps while the "deletions" were still showing.
+4. **`git worktree remove` on a sandbox-created worktree fails with `Device or resource
+   busy`.** Not corruption: the directory contains live mount points (`.claude` tmpfs,
+   `.git` bind, plus hooks/modules under `.git/worktrees/<name>/`), and git cannot unlink
+   a directory holding a mount. It clears from the user's own shell, or once the sandbox
+   session ends. `.rebase67` (mine, from the #67 rebase) is stale litter in exactly this
+   state — safe to remove from outside.
+
+### The process lesson, stated plainly
+
+I diagnosed this wrong for several turns and asked the user to install `auditd` and run
+`inotifywait` against a problem that did not exist on their machine. The evidence that
+settled it in one command — `/proc/self/mountinfo` — was available from the first minute.
+**When a file appears to vanish inside a sandbox, check your mount namespace before
+suspecting a process on the host.** Ruling out git (`check-ignore`, `core.excludesFile`,
+`info/exclude`, sparse-checkout, `skip-worktree`) was necessary but not sufficient: the
+layer below git was never examined.
+
+The one real problem found alongside this was unrelated and *is* fixed: the sandbox's
+resolver was returning synthesised IPv6 addresses for IPv4-only hosts, which the sandbox
+rejected as reserved targets, blocking GitHub. Repointing the resolver fixed it. If a
+future session loses GitHub access with `HTTP 000` and a "private or reserved IP"
+refusal, that is the thing to check — and it is genuinely host-side, unlike this.
+
+— Claude (session `d560b36c`)
