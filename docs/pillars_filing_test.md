@@ -1,6 +1,16 @@
 # Pillars filing test — does a vertical cut of this repo actually partition its claims?
 
-**Status:** analysis, not a decision. Run 2026-08-11 on `claude/planning-review-branches-sf4y29`.
+**Status:** analysis, not a decision. Runs 1–2 on 2026-08-11; **Run 3 and two
+corrections added 2026-08-14** after the persistence/topology work landed on `main`.
+
+> ## ⚠ Run 2's verdict does not survive — read the corrections first
+>
+> Runs 1–2 below concluded that a **four-pillar** cut (Substrate / Learner /
+> Interface / Method) passed at 12% ambiguity. **It fails at 23.5%** once the
+> claims added by PRs #78 and #79 are filed. Two independent causes, plus two
+> arithmetic corrections to the corpus itself — see
+> [Corrections](#corrections-to-runs-1-2) and [Run 3](#run-3--the-four-pillar-cut-meets-proof-shaped-work).
+> The text of Runs 1–2 is left unedited as the historical record.
 
 The proposal under test: reorganise the project's statement docs into **pillars**
 (verticals), each a small tree — `vision → track → tactic → claim` — where tiers
@@ -181,11 +191,176 @@ corpus is not:
 
 ---
 
+## Corrections to Runs 1–2
+
+*Added 2026-08-14.*
+
+### C1 — the extraction command was wrong, and so was `n`
+
+The Method section's regex requires a space after the keyword. That silently
+drops claims whose heading is a bare `## Result` with the statement on the next
+line:
+
+```bash
+# what was run (trailing space):                     46 on main
+# without the trailing space:                        56 on main
+```
+
+Adjudicating the 10-heading difference by hand: **7 are section containers**
+(`## Results`, `## Findings about the learning rules (honest caveats)`) and
+should not count; **3 are genuine claims** that were missed —
+`c3_results.md`, `topology_winding_capacity.md`, and `e0_topologies.md`'s
+`## Results — both E0 headlines generalise`.
+
+**Corrected n for Runs 1–2: 42 → 45.** All three file cleanly (Method, Substrate,
+Substrate), so Run 1 becomes 13/45 = **29%** and Run 2 becomes 5/45 = **11%**.
+Neither verdict flips on this correction alone.
+
+This is the repo's own "derived metrics fail silently" lesson landing on the test
+that was written to catalogue it. A trailing space moved a headline by 24%. It is
+logged below as a Method claim in its own right.
+
+### C2 — `lattice_timescale_notes.md` holds 4 claim headings that must not be counted
+
+They are *earlier, superseded drafts* of claims that appear in final form in
+`lattice_results.md` (e.g. "Negative 2 — the rule does not re-tune" and
+"Negative 2, resolved: the rule needs a privileged afferent channel"). The
+notebook is append-only by design.
+
+Counting them would double-count; ignoring them loses the correction history.
+**The corpus therefore requires a `supersedes` / `superseded_by` edge and a
+`deprecated` status before any migration** — this is not an optional refinement.
+Run 1 excluded them correctly but by accident, not by rule.
+
+---
+
+## Run 3 — the four-pillar cut meets proof-shaped work
+
+PRs #78 and #79 added 2 docs and 5 experiments (`topology_cycle_packing_exact.md`,
+`persistent_set_structure.md`). Neither uses the `## Result N —` convention, so
+**the extractor returns zero on both** and this run is a hand extraction: 26
+claims at bolded-assertion granularity (16 at section granularity; the ambiguity
+percentage moves <4 points, so the verdict is not a granularity artifact).
+
+**Result: FAILS.**
+
+| Pillar | Runs 1–2 (45) | New (26) | Combined (71) |
+|---|---:|---:|---:|
+| Substrate | 14 | 11 | 25 |
+| Learner | 20 | 0 | 20 |
+| Interface | 4 | 0 | 4 |
+| Method | 7 | 15 | 22 |
+| **Ambiguous** | 5 (11%) | **11 (42%)** | **16 (23.5%)** |
+
+Two structural breakages, and **neither is a counting artifact**:
+
+**1. Substrate ↔ Method inverts.** Run 1 merged Instrumentation into Method on the
+reasoning that "the instrument is provenance, not subject." In the persistence
+thread **the instrument *is* the subject** — the headline is literally *which
+descriptions of the persistent set exist* (no linear separation; a gap-multiset
+invariant; an O(1) outer hull that is necessary but not sufficient). All 11
+ambiguities sit on this one seam. That is more than twice the size of the
+Rule↔Anatomy cluster that condemned Run 1's cut.
+
+**2. Three claims are homeless, and they name the missing pillar.** The
+cycle-packing claims are structure that is **fixed and pre-dynamical** — the doc
+says outright *"This is structure, not dynamics. No dynamics are run here."*
+Run 2 dissolved Anatomy into Learner on the premise that "plasticity and the
+structure it grows are not separable"; these are structure plasticity did **not**
+grow, so they fall through. Substrate as defined holds "what the medium *does*."
+By this test's own threshold — *any homeless ⇒ the cut is missing a pillar* — that
+is a fail before the ambiguity count is read.
+
+The reason Run 2 missed it: **the original 42 contained no topology claim at all.**
+The topology/capacity docs sat in the test's own "~15 docs not yet in claim form"
+bucket, so the merge was never tested against the case that breaks it.
+
+### What Run 3 got right
+
+**Method is no longer empty of process claims: 0 → 6.** Run 2's headline open item
+is closed by the new work, every one carrying evidence:
+
+| Process claim | Evidence |
+|---|---|
+| A one-word pick rule in a *merged, reviewed* experiment multiplied a headline by up to 7.5× | ring τ=3: 6 published vs 45 certified |
+| Solver time limits are part of the result, not an implementation detail | ring τ=6: 24 at 60 s, 25 at 120 s |
+| Cross-check a reimplementation against the repo's primitive on *every* transition; abort on mismatch | 7,461 transitions, 9 cells, 0 mismatches |
+| Impure *class count* is not a refinement metric; *configurations in impure classes* is | (3,4): class count rose 8→28 under a genuine refinement |
+| A "trivial cell" cutoff must be `P == 0` exactly | `P ≤ 0.01` hid (2,5) (P=0.0039) and produced a false iff |
+| State a shortcut's validity precondition and check it exhaustively before relying on it | no non-zero dead attractor at θ=1, verified at 2×2 |
+
+Plus C1 above (a trailing space in a grep). Two of these are the same failure
+genus as the blind `D−x` τ metric: **a number wrong in a direction nobody checked.**
+
+The irony is worth recording: the new work closed the test's most-cited gap and
+broke its pass grade in the same event. Method grew *because* the new claims are
+largely about how you know.
+
+### Evidence is not one kind, and `n` is not universal
+
+`persistent_set_structure.md` states it plainly: *"No RNG. Every number is a
+complete enumeration, so there is nothing to seed and no per-seed spread to
+report."* The existing convention encodes n in the heading (`(n=20)`), with no
+slot for "n = the whole space."
+
+But exhaustive work still carries an n — **extent**, not sample size (81 →
+40,353,607 configurations; 7,461 validated transitions) — and it still carries
+uncertainty, of three kinds the current prose conflates: **coverage** (which cells
+were enumerated), **certification** (4 of 16 packing cells are certified; the rest
+are brackets), and **representation dependence** (facet counts are
+Qhull-triangulation-sensitive; vertex counts are not). And "exhaustive" does not
+mean unseeded: `persistent_set_3x3.py:192` seeds a 2000-sample cross-validation.
+
+So `evidence` must be a **discriminated union on `kind`** — `seeded_simulation`
+carrying `n`/`spread`/`seed_policy`; `exhaustive_enumeration` carrying
+`domain`/`coverage`/`verification` with `spread: not_applicable` and an explicit
+reason; `exact_solve` carrying `value_type: exact|bound`, `certified_cells`, and
+`solver_sensitivity`. OKF v0.1 permits extension keys and requires only `type`,
+so this stays inside the chosen container format.
+
+Two vocabulary items are now demonstrated rather than hypothetical:
+
+- **`supersedes` with a typed effect** (`refutes` / `revises` / `replaces_reasoning`)
+  — required by C2, and by the cycle-packing correction, which refutes one
+  published finding and revises another *without editing the doc that carries them*.
+- **`argument_status` as an axis distinct from `epistemic_status`.** The refinement-metric
+  claim is a case where the **finding stands and the argument was retracted**.
+  `refuted` and `retracted` cannot express that.
+
+---
+
 ## Verdict
 
-The **four-pillar cut** (Substrate / Learner / Interface / Method) survives the
-test the six-pillar cut fails. Rule and Anatomy are one pillar in this project;
-Instrumentation and Process are one pillar.
+**Superseded by Run 3.** The four-pillar cut passed on a corpus that happened to
+exclude every static-structure claim in the repo; it fails at 23.5% once they are
+included, with three homeless claims naming the pillar it deleted.
+
+What survives from Runs 1–2: merging **Rule + Anatomy → Learner** was right *for
+grown structure*, and merging **Instrumentation + Process → Method** was right
+*for provenance*. Both merges over-reached by exactly one case each.
+
+**Proposed Run 4 — five pillars, with the rule declared in advance:**
+
+| Pillar | Holds |
+|---|---|
+| **Substrate** | what the medium *does* — dynamics, τ-control, nucleation, the avoidance theorem |
+| **Carrier** | what the medium *is* — fixed topology, cycle space, capacity bounds, the persistent set as an object |
+| **Learner** | plasticity and the structure it *grows* |
+| **Interface** | environment ↔ substrate coupling |
+| **Method** | instrumentation, tractability/description results, process |
+
+**Declared before counting** (this is the repo's own house rule from `AGENTS.md`,
+not a new invention): *file by the substrate/analysis boundary the doc itself
+declares.* Both new docs state theirs verbatim.
+
+**This is a proposal, not a result. It has not been run.** Predicted ~7% ambiguity,
+but that prediction is worth little until the ~18 unextracted clusters in
+`stats_sweeps_results.md`, `continual_learning_results.md` and the topology docs
+are extracted — and those will land in the same Carrier-shaped hole, so they test
+the fix directly. Do not adopt a cut on a predicted number; that is the mistake
+Run 2 made.
+
+Adopt only if the migration also *retires* surfaces rather than adding one.
 
 Adopt only if the migration also *retires* surfaces rather than adding one.
 Today state lives in five overlapping places (`next_steps.md`,
