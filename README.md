@@ -45,6 +45,7 @@ not as built-in modules.
 | `experiments/spectrum_automaton_3x3.py` | Scaling: fate-exact at 3x3 exhaustively (40M configs, 0 leaks) and 4x4 sampled (0 leaks); soundness FAILS at `tau_p > tau_a` on 3x3 — 2x2's universal soundness was a smallness accident |
 | `experiments/live_subshift_entropy.py` | Live-SFT entropy: predicted regime signature FALSIFIED at 3x3 (strict and diagonal cells share h=1.8826, via an identical 8-node scrambled-core SCC); config entropy 0 everywhere — SFT entropy measures the abstraction's fibre ambiguity, not the dynamics |
 | `experiments/spectrum_sufficiency_certificate.py` | Machine checks for `docs/spectrum_sufficiency_proof.md`: certificate schema (ING-1/2/3) proves sufficiency at (1,1)/(2,1); death == simultaneous double-dwell (P4); signature moves only via dwell (P5); regime = ING-3 alone (P6) |
+| `experiments/viz_gh_vs_symbolic.py` | Animation: the medium, its space-time raster, and the symbol automaton side by side for a live and a dead run — the double-dwell death and the L2 class-exchange, visible |
 | `experiments/topology_winding_capacity.py` | E2 addendum — the GGH (1980) winding number as the exact sustain criterion; calibrates the length gate above |
 | `experiments/scaling_capacities.py` | Scaling (Track 3b, size half) — does substrate size buy memory (E2) / attention (E4) / executive control (E5)? |
 | `experiments/lattice_capacities.py` | Representation + `lattice2d` port of all three capacity mechanisms; shows E5's hidden layer has **0** recurrent edges |
