@@ -24,8 +24,13 @@ its own findings and reruns bit-identically.
 4. **The witness structure.** Every ceiling (S→S) hold is witnessed by a
    u-side swap subset; every age-1 hold by a v-side swap subset; sides never
    mix (25,998/25,998 and 38,256/38,256 at 3×3 (2,1); u-side works for 0 of
-   the holds). Single-cell witnesses at 3×3 sit on the open boundary:
-   sampled roles corner 323 / edge 60 / centre 0.
+   the holds). Single-cell witnesses at 3×3 concentrate on the low-degree
+   boundary cells **per capita** — full census over all 25,998 ceiling
+   states: corner 8,736 / edge 4,928 / centre 333, i.e. 2,184 per corner >
+   1,232 per edge > 333 at the centre. **The centre is not excluded**: 333
+   of the 13,997 single-cell witnesses sit at the interior cell. Archived as
+   `ceil_role_names` / `ceil_role_counts` in
+   `result/topology/coherence_covering_lemma.npz`.
 5. **Upstream chain** (merged, PR #84): swap/covering → window-S → anchor law
    → confinement → merge → clock-shift invariance → ING-3 → spectrum
    sufficiency. The only open link is the covering lemma's hand proof (the
@@ -40,9 +45,12 @@ This is the load-bearing prediction; everything else is refinement.
 
 **P-B (boundary concentration, open lattices).** On open (von Neumann)
 lattices, single-cell covering witnesses concentrate on low-degree cells:
-P(witness at corner) > P(edge) > P(centre) per capita. Measured at 3×3:
-corner-heavy (323/60/0 in a 2,000-state sample — note 4 corners vs 4 edges
-vs 1 centre; normalise per cell). *Falsifier:* per-capita witness rate
+P(witness at corner) > P(edge) > P(centre) per capita. Measured at 3×3 over
+the **full** census of 25,998 ceiling states —
+8,736 / 4,928 / 333 raw, which is 2,184 / 1,232 / 333 per cell once
+normalised for 4 corners vs 4 edges vs 1 centre. Note the raw counts alone
+would mislead: the centre does witness (333 times), so the prediction is
+about *rate*, not presence. *Falsifier:* per-capita witness rate
 non-monotone in cell degree on 4×4-open.
 
 **P-C (periodic lattices need bigger swaps).** On a periodic (torus) lattice
@@ -83,9 +91,10 @@ has 15 GB. Three workable routes, in order of preference:
    diagonal restricted to *reached* pair states only, storing visited codes
    in a hash set (int64 pair-codes v*N+u overflow at 4×4 — use the tuple
    (v, u) or a 128-bit pack). The reachable pair set is far smaller than
-   N² (3×3: 483k pairs vs 2.6 × 10^11 possible); expect low millions at
-   4×4 with open boundaries from persistent starts. Memory-check with
-   `host.get_local_compute_stats()` before committing; chunk if needed.
+   N² (3×3: 483k pairs vs 6.87 × 10^10 possible, i.e. N² for N = 4⁹ =
+   262,144); expect low millions at 4×4 with open boundaries from persistent
+   starts. Check free memory before committing — e.g. `free -g`, or
+   `psutil.virtual_memory()` from Python — and chunk if needed.
 3. **Torus variant.** Same code with wrapped neighbour lists
    (`NB = [(i±1 mod L, j), (i, j±1 mod L)]`). Needed for P-C. Watch: on the
    torus the global rotation group is larger; if witness statistics are
@@ -101,13 +110,33 @@ before believing either.
 
 ## House rules that apply (short form)
 
-Seed everything through an explicit `default_rng(seed)`; assert your own
-findings so negatives cannot rot; rerun must be bit-identical (sampling
-included — the seed is part of the experiment); generate doc tables from the
-committed archive, never hand-type (three hand-count errors this session
-were caught by assertions: "7 of 8", a missing 1→1 hold case, an unscoped
-merge balance); README row per experiment; self-authored work is not
+All four of `AGENTS.md`'s experiment rules apply, not just the first:
+
+1. **Seed everything** through an explicit `default_rng(seed)`; never the
+   global NumPy RNG.
+2. **Report per-seed spreads**, not just means; call out bimodality.
+3. **State the substrate/analysis boundary** — what the *dynamics* do versus
+   what a *readout/feature* does. For this thread: the pair map and its BFS
+   depth are substrate; the gap signature and the boundary-role census are
+   analysis constructs.
+4. **Keep a caveats section adjacent to every headline.** The coherence work
+   currently has no results doc, so its headlines live in commit messages,
+   docstrings and README rows — none of which carry caveats. That is a gap,
+   not a convention.
+
+Plus, branch-local: assert your own findings so negatives cannot rot; rerun
+must be bit-identical (sampling included — the seed is part of the
+experiment); **generate doc tables from the committed archive, never
+hand-type**; README row per experiment; self-authored work is not
 self-reviewed — open a PR.
+
+The hand-type rule earned its emphasis twice. Three hand-count errors were
+caught by assertions this session ("7 of 8", a missing 1→1 hold case, an
+unscoped merge balance) — and one was *not* caught, because it was never
+computed by any script: the "corner 323 / edge 60 / centre 0" boundary roles
+were an enumeration prefix carried in prose, and "centre 0" was false. If a
+number appears in a doc, a script must compute it and an archive must hold
+it.
 
 ## Where the theory needs this
 

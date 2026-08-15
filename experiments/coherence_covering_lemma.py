@@ -22,9 +22,16 @@ THE WITNESS STRUCTURE (exhaustive):
     single v-side swap.
   - 3x3 (2,1), FULL census, open boundaries: ceiling 25,998/25,998 witnessed
     by u-side swap subsets (sizes 1..6: 13,997 / 7,800 / 3,010 / 967 / 200 /
-    24); single-cell witnesses sit on corners and edges (sampled roles:
-    corner 323, edge 60, centre 0 -- the low-degree boundary cells are where
-    a quiet cell most easily hides its age). Age-1 holds 38,256/38,256
+    24); single-cell witnesses concentrate on the low-degree boundary cells
+    PER CAPITA -- full census over all 25,998 ceiling states, corner 8,736 /
+    edge 4,928 / centre 333, i.e. 2,184 per corner > 1,232 per edge > 333 at
+    the centre. The centre is NOT excluded: 333 of the 13,997 single-cell
+    witnesses sit at the interior cell. (An earlier revision reported
+    "corner 323 / edge 60 / centre 0" as a sample; those are the first 2,000
+    ceiling states in BFS enumeration order, an order-biased prefix, and
+    "centre 0" is false. The full census costs ~1.3 s -- there was never a
+    reason to sample. Now archived as ceil_role_names/ceil_role_counts.)
+    Age-1 holds 38,256/38,256
     witnessed by v-side swaps (sizes 1..6: 24,383 / 9,512 / 3,170 / 967 /
     200 / 24). U-side witnesses FAIL for the age-1 holds (0/38,256) -- the
     two hold types are mirror mechanisms, not one.
@@ -68,6 +75,15 @@ NB3 = [tuple(j for j in range(9) if abs(j//3 - i//3) + abs(j % 3 - i % 3) == 1)
 CHUNK = 500_000
 CEIL_3_SIZES = {1: 13997, 2: 7800, 3: 3010, 4: 967, 5: 200, 6: 24}
 HOLD1_3_SIZES = {1: 24383, 2: 9512, 3: 3170, 4: 967, 5: 200, 6: 24}
+# Open-boundary role of each 3x3 cell, by degree: corners 2, edges 3, centre 4.
+ROLE3 = {0: "corner", 1: "edge", 2: "corner",
+         3: "edge", 4: "centre", 5: "edge",
+         6: "corner", 7: "edge", 8: "corner"}
+# Full census over all 25,998 ceiling states (not a prefix -- the whole census
+# costs ~1.3 s). The interior cell DOES witness: 333 of the 13,997 single-cell
+# witnesses sit at the centre. What holds is per-capita monotonicity in degree:
+# 8736/4 = 2184 per corner > 4928/4 = 1232 per edge > 333 per centre.
+CEIL_3_ROLES = {"corner": 8736, "edge": 4928, "centre": 333}
 
 
 def make_step(ta, tp):
@@ -214,6 +230,11 @@ def full_3x3():
         return [(int(x) // int(pw[k])) % B for k in range(9)]
 
     def side_witness(c, side, want):
+        """Return the witnessing swap subset (a tuple of cell indices), or None.
+
+        Returns the subset itself rather than its size so the caller can also
+        census WHICH cells witness -- see the boundary-role count below.
+        """
         v_, u_ = c // N, c % N
         cfg = u_ if side == 1 else v_
         nxt = int(f[cfg])
@@ -227,17 +248,20 @@ def full_3x3():
                 cc = (int(v_) * N + int(c2)) if side == 1 \
                     else (int(c2) * N + int(u_))
                 if depth.get(cc) == want:
-                    return len(su)
+                    return su
         return None
 
     ceil = codes[(ags == S) & (img_age == S)]
     n_c = 0
     cs = Counter()
+    roles = Counter()
     for c in ceil.tolist():
         w = side_witness(c, 1, S - 1)
         if w is not None:
             n_c += 1
-            cs[w] += 1
+            cs[len(w)] += 1
+            if len(w) == 1:
+                roles[ROLE3[w[0]]] += 1
     h1 = codes[(ags == 1) & (img_age == 1)]
     n_h = 0
     hs = Counter()
@@ -246,10 +270,11 @@ def full_3x3():
         w = side_witness(c, 0, 0)
         if w is not None:
             n_h += 1
-            hs[w] += 1
+            hs[len(w)] += 1
         if side_witness(c, 1, 0) is not None:
             n_h_u += 1
-    return (len(ceil), n_c, dict(cs)), (len(h1), n_h, dict(hs), n_h_u)
+    return ((len(ceil), n_c, dict(cs), dict(roles)),
+            (len(h1), n_h, dict(hs), n_h_u))
 
 
 def main():
@@ -268,14 +293,22 @@ def main():
         assert nH1 == nH, f"2x2 hold witness ({ta},{tp})"
 
     print("\n=== 3x3 (2,1) FULL census ===")
-    (nc, wc, cs), (nh, wh, hs, nh_u) = full_3x3()
+    (nc, wc, cs, cr), (nh, wh, hs, nh_u) = full_3x3()
     print(f"ceiling: {wc}/{nc} u-side witnessed, sizes {dict(sorted(cs.items()))}",
           flush=True)
+    print(f"single-cell witness roles (FULL census): {cr}; per-capita "
+          f"corner {cr['corner']/4:.0f} > edge {cr['edge']/4:.0f} > "
+          f"centre {cr['centre']}", flush=True)
     print(f"age-1 holds: {wh}/{nh} v-side witnessed, sizes "
           f"{dict(sorted(hs.items()))}; u-side works for {nh_u}", flush=True)
     assert nc == wc == 25_998 and cs == CEIL_3_SIZES, "3x3 ceiling census"
     assert nh == wh == 38_256 and hs == HOLD1_3_SIZES, "3x3 hold census"
     assert nh_u == 0, "u/v side split changed"
+    assert cr == CEIL_3_ROLES, "3x3 boundary-role census"
+    assert sum(cr.values()) == cs[1], "role census must cover every size-1 witness"
+    # The claim is per-capita, not presence/absence: the centre witnesses too.
+    assert cr["centre"] > 0, "centre must not be reported as zero"
+    assert cr["corner"] / 4 > cr["edge"] / 4 > cr["centre"], "per-capita order"
 
     out = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                        "result", "topology", "coherence_covering_lemma.npz")
@@ -283,6 +316,8 @@ def main():
     np.savez(out,
              ceil_n=np.array([nc]), ceil_w=np.array([wc]),
              ceil_sizes=np.array(sorted(cs.items())),
+             ceil_role_names=np.array(sorted(cr)),
+             ceil_role_counts=np.array([cr[k] for k in sorted(cr)]),
              hold_n=np.array([nh]), hold_w=np.array([wh]),
              hold_sizes=np.array(sorted(hs.items())),
              hold_u_side=np.array([nh_u]))
