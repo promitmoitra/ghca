@@ -6,17 +6,17 @@
 
 ## 1. State of the Coherence Thread
 
-The coherence arc ([`docs/coherence_invariant.md`](file:///home/dognosis/Documents/ghca/.exact/docs/coherence_invariant.md), [`docs/coherence_larger_lattices_handoff.md`](file:///home/dognosis/Documents/ghca/.exact/docs/coherence_larger_lattices_handoff.md), and [`docs/synthesis.md`](file:///home/dognosis/Documents/ghca/.exact/docs/synthesis.md)) establishes a rigorous foundation for trajectory-pair equivalence under clock-shift transformations on Greenberg–Hastings Cellular Automata (GHCA):
+The coherence arc ([`docs/coherence_invariant.md`](coherence_invariant.md), [`docs/coherence_larger_lattices_handoff.md`](coherence_larger_lattices_handoff.md), and [`docs/synthesis.md`](synthesis.md)) establishes a rigorous foundation for trajectory-pair equivalence under clock-shift transformations on Greenberg–Hastings Cellular Automata (GHCA):
 
 ### Epistemic Status Ledger
 
 | Status | Claim | Domain / Scope | Verification / Artifact |
 | :--- | :--- | :--- | :--- |
-| **PROVEN** | **The Swap Law:** GH non-injectivity $\equiv 0 \leftrightarrow S$ swaps per cell | **Universal** (any graph) | Analytical proof in [`coherence_covering_lemma.py`](file:///home/dognosis/Documents/ghca/.exact/experiments/coherence_covering_lemma.py) |
-| **CERTIFIED** | **The Invariant:** $(v, u) \in R \iff \text{backward window of length } S \text{ contains diag}$ | $\tau_a \ge \tau_p$ on $2\times2$ & $3\times3$ | [`coherence_window_S.py`](file:///home/dognosis/Documents/ghca/.exact/experiments/coherence_window_S.py) (483,446 states at $3\times3$) |
-| **CERTIFIED** | **The Age Law:** Age transitions $\in \{+1, 0, \text{hold}\}$; holds only at $\{0, 1, S\}$ | $(2,1)$ & $(3,3)$ lattices | [`coherence_window_saturation.py`](file:///home/dognosis/Documents/ghca/.exact/experiments/coherence_window_saturation.py) |
-| **CERTIFIED** | **Witness Structure:** Ceiling ($S\to S$) holds witnessed by $u$-side; age-1 by $v$-side; **sides never mix** | $3\times3$ (2,1) full census | [`coherence_covering_lemma.py`](file:///home/dognosis/Documents/ghca/.exact/experiments/coherence_covering_lemma.py) (25,998 ceiling states) |
-| **CERTIFIED** | **Compression Barrier:** 7 local ledger invariants all leak | $2\times2$ and $3\times3$ | [`anchor_law_certificate.py`](file:///home/dognosis/Documents/ghca/.exact/experiments/anchor_law_certificate.py) |
+| **PROVEN** | **The Swap Law:** GH non-injectivity $\equiv 0 \leftrightarrow S$ swaps per cell | **Universal** (any graph) | Analytical proof in [`coherence_covering_lemma.py`](../experiments/coherence_covering_lemma.py) |
+| **CERTIFIED** | **The Invariant:** $(v, u) \in R \iff \text{backward window of length } S \text{ contains diag}$ | $\tau_a \ge \tau_p$ on $2\times2$ & $3\times3$ | [`coherence_window_S.py`](../experiments/coherence_window_S.py) (483,446 states at $3\times3$) |
+| **CERTIFIED** | **The Age Law:** Age transitions $\in \{+1, 0, \text{hold}\}$; holds only at $\{0, 1, S\}$ | $(2,1)$ & $(3,3)$ lattices | [`coherence_window_saturation.py`](../experiments/coherence_window_saturation.py) |
+| **CERTIFIED** | **Witness Structure:** Ceiling ($S\to S$) holds witnessed by $u$-side; age-1 by $v$-side; **sides never mix** | $3\times3$ (2,1) full census | [`coherence_covering_lemma.py`](../experiments/coherence_covering_lemma.py) (25,998 ceiling states) |
+| **CERTIFIED** | **Compression Barrier:** 7 local ledger invariants all leak | $2\times2$ and $3\times3$ | [`anchor_law_certificate.py`](../experiments/anchor_law_certificate.py) |
 | **OBSERVED** | **Per-Capita Boundary Concentration:** $P(\text{corner}) > P(\text{edge}) > P(\text{centre})$ (2,184 vs 1,232 vs 333) | $3\times3$ open lattice | Full census archive `ceil_role_counts` |
 | **OPEN** | **The Covering Lemma (P-D):** Quiet-run decay mechanism behind window $S$ | Unproven analytical step | "The Remaining Hand Obligation" |
 
@@ -39,9 +39,9 @@ To anchor the brainstorming in the wider scientific landscape, we conducted targ
 │  Symbolic Dynamics & Shifts  │            │   Neuroscience (2024–2026)   │            │   Causal Emergence & ΦID     │
 │   (Kesseböhmer, Rademacher)  │            │   (Muller, Davis, Miller)    │            │   (Hoel, Rosas, Lansdell)    │
 │  - Non-wandering sets        │            │  - Travelling wave WM gating │            │  - do(θ) generative handles  │
-│  - Skew-product conjugacies  │            │  - Phase-locking / scanning  │            │  - Synergistic macro-states  │
-│  - Preimage tree growth      │            │  - Refractory distractor pro-│            │  - Bounded history Markovian │
-│                              │            │    tection                   │            │    chains                    │
+│  - Skew-product conjugacies  │            │  - Phase-locking / scanning  │            │  - Pair-relation invariants  │
+│  - Preimage tree growth      │            │  - Refractory distractor pro-│            │  - Spectrum partitions       │
+│                              │            │    tection                   │            │                              │
 └──────────────────────────────┘            └──────────────────────────────┘            └──────────────────────────────┘
 ```
 
@@ -53,7 +53,7 @@ To anchor the brainstorming in the wider scientific landscape, we conducted targ
    * *Relevance to `ghca`:* The coherence invariant proves that the substrate's intrinsic memory of relative phase between trajectories is strictly bounded by $S = \tau_a + \tau_p$, precisely matching empirical findings where wave periods dictate working memory refresh cycles.
 3. **Causal Emergence & Partial Information Decomposition ($\Phi$ID) (Hoel 2017, Rosas et al. 2024–2026):**
    * Coarse-graining trajectory spaces over Markov chains can yield macro-variables with higher Effective Information (EI) than micro-components.
-   * *Relevance to `ghca`:* The C-series proved $\text{do}(\theta)$ is the clean causal handle; the coherence invariant proves that the clock-shift equivalence class $[v]_\sim$ is an exact deterministic dynamical macro-state with a finite memory horizon.
+   * *Relevance to `ghca`:* The C-series proved $\text{do}(\theta)$ is the clean causal handle. While single-configuration clock-shift classes $[v]_\sim$ do *not* form a deterministic macro-state (lumpability is falsified; step does not commute with clock-shift), the **pair relation $\mathcal{R}$** is certified dynamically closed under Theorem 4, and the gradient-spectrum partition is fate-exact at $\tau_a \ge \tau_p$. Dynamic closure lives on the pair space and spectrum, not single configurations.
 
 ---
 
@@ -148,7 +148,7 @@ flowchart LR
     *Falsifier:* Torus swap distribution identical to or smaller than open lattice.
 
 * **Feasibility & 2-Week Pilot Plan:**
-  * Use **Seeded-Orbit Preimage Sampling** (outlined in [`docs/coherence_larger_lattices_handoff.md`](file:///home/dognosis/Documents/ghca/.exact/docs/coherence_larger_lattices_handoff.md)): avoid the 34 GB $N^2$ matrix by drawing persistent $v$, inverting locally via the Swap Law ($0 \leftarrow \{0, S\}$ checkable on 9-cell patches), and sampling 10,000 persistent pairs.
+  * Use **Seeded-Orbit Preimage Sampling** (outlined in [`docs/coherence_larger_lattices_handoff.md`](coherence_larger_lattices_handoff.md)): avoid the 34 GB $N^2$ matrix by drawing persistent $v$, inverting locally via the Swap Law ($0 \leftarrow \{0, S\}$ checkable on 9-cell patches), and sampling persistent pairs. *(Completed: 4×4 open & torus empirical sampling certified)*
 
 ---
 
@@ -159,7 +159,7 @@ flowchart TD
     A["State Representation: (v, u)"] -->|Ambiguity: 5% of states admit multiple histories| B["Trajectory Representation: v(t), u(t)"]
     B --> C["Operational Quiet Run:<br/>Q(i, t) = consecutive steps cell i stayed 0"]
     C --> D["Evaluate Inversion Condition:<br/>Q(i, t) < Age(v(t), u(t))"]
-    D --> E["Exact Mathematical Theorem:<br/>Covering Lemma Hand-Proof"]
+    D --> E["Exact Mathematical Theorem:<br/>Covering Lemma Hand-Proof from Refractory Pipeline"]
 ```
 
 * **Two-Sentence Pitch:**  
@@ -169,12 +169,13 @@ flowchart TD
 * **Core Tension:**  
   *State Function vs Path Function:* Cellular automata configurations lack explicit velocity/history variables, yet preimage uniqueness requires knowing how many ticks a cell has rested at $0$.
 
-* **Key Hypotheses & Falsifiers:**
+* **Key Hypotheses & Status:**
   * **H1 (Exact Trajectory Witnessing):** For every trajectory pair $(v(t), u(t))$ reaching age $S$, there exists at least one cell $i$ on the $u$-side where $Q(i, t) < S$.  
-    *Falsifier:* A valid ceiling trajectory pair whose dwelling quiet cells all have $Q(i, t) \ge S$.
+    *Empirical Status:* **Confirmed at $2\times 2$** across $(2,1)$, $(2,2)$, and $(3,3)$ ($12/12$, $24/24$, $64/64$ ceiling holds; **0 violations**).
+  * **Analytical Proof Obligation:** The remaining work is the **hand proof** — establishing from the refractory pipeline that quiet-run preimages guarantee backward connectivity to the diagonal clock-shift set on general graphs $G$, with $3\times 3$ empirical census serving as verification.
 
-* **Feasibility & 2-Week Pilot Plan:**
-  * Instrument `experiments/coherence_covering_lemma.py` to store explicit trajectory prefixes of length $S+1$. Compute $Q(i, t)$ exactly and verify $Q(i, t) < \text{age}$ across all 25,998 ceiling states.
+* **Rescoped Plan:**
+  * Fast 1-day empirical verification pass over all 25,998 ceiling states on $3\times 3$, followed directly by constructing the formal analytical hand proof from refractory recovery bounds.
 
 ---
 
@@ -185,13 +186,12 @@ flowchart LR
     A["Input Rhythm 1 (Period T1)"] --> B["Plastic Node Timescales:<br/>tau_i adapts to T1"]
     A2["Input Rhythm 2 (Period T2)"] --> B
     B --> C["Dynamic Coherence Horizon:<br/>S_eff = mean(tau_a + tau_p)"]
-    C --> D["Frequency-Specific Working Memory Buffer"]
-    D --> E["Phase Gated Distractor Immunity (Davis/Muller 2024)"]
+    D["Phase Gated Distractor Immunity (Davis/Muller 2024)"] <-- C
 ```
 
 * **Two-Sentence Pitch:**  
   *In biological cortex, intrinsic timescales $\tau_i$ are not static graph constants but adapt to input rhythmic frequencies.*  
-  *We compose Track 4a's emergent timescale hierarchy ([`timescale_hierarchy_results.md`](file:///home/dognosis/Documents/ghca/docs/timescale_hierarchy_results.md)) with the Coherence Invariant, testing whether the substrate's working memory window dynamically expands and contracts to match environmental temporal statistics.*
+  *We compose Track 4a's emergent timescale hierarchy ([`docs/timescale_hierarchy_results.md`](timescale_hierarchy_results.md)) with the Coherence Invariant, testing whether the substrate's working memory window dynamically expands and contracts to match environmental temporal statistics.*
 
 * **Core Tension:**  
   *Static Mathematical Invariants vs Plastic Adaptive Dynamics:* Can an exact algebraic memory horizon ($w = S$) hold when the state machine itself is undergoing continuous local $\tau$-adaptation?
@@ -206,18 +206,18 @@ flowchart LR
 
 ---
 
-### Direction 4: Causal Emergence & $\Phi$ID on the Coherent Macro-State
+### Direction 4: Causal Emergence & $\Phi$ID on the Pair Invariant Relation $\mathcal{R}$
 
 * **Two-Sentence Pitch:**  
-  *Individual cell states in excitable networks suffer from high Shannon entropy and severe preimage ambiguity, obscuring the true causal mechanism.*  
-  *We evaluate Effective Information (EI) and Partial Information Decomposition ($\Phi$ID) across micro-cell states versus macro-coherent equivalence classes $[v]_\sim$, proving that the clock-shift invariant represents a maximal causal coarse-graining.*
+  *Single-cell states in excitable networks exhibit high entropy, and raw clock-shift classes $[v]_\sim$ fail lumpability under the step map (indeterminacy of $20\%-32\%$).*  
+  *We evaluate Effective Information (EI) and Partial Information Decomposition ($\Phi$ID) on the **dynamically closed pair relation $\mathcal{R}$** and the fate-exact gradient spectrum partition, proving that certified relational coherence represents a maximal causal emergence coarse-graining.*
 
 * **Core Tension:**  
-  *Microscopic Determinism vs Macroscopic Causal Sufficiency:* Does grouping trajectories into $S$-step coherent orbits discard predictive detail or eliminate uninformative micro-noise?
+  *Configuration Quotient Indeterminacy vs Relational Pair Closure:* Single configurations do not coarse-grain cleanly because clock-shifts do not commute with CA steps, but the certified pair relation $\mathcal{R} \subset V \times V$ and spectrum partition are exact dynamical invariants.
 
 * **Key Hypotheses & Falsifiers:**
-  * **H1 (Causal Emergence of $[v]_\sim$):** The macro-variable $M = [v]_R$ has strictly higher Effective Information $EI(M) > EI(V)$ than the raw configuration $V$.  
-    *Falsifier:* $EI(M) \le EI(V)$ or macro-state transitions exhibiting indeterminism.
+  * **H1 (Causal Emergence of the Pair Invariant $\mathcal{R}$):** The relational macro-variable defined on certified pairs $(v, u) \in \mathcal{R}$ has strictly higher Effective Information $EI(\mathcal{R}) > EI(V \times V)$ than raw uncoupled trajectory pairs.  
+    *Falsifier:* $EI(\mathcal{R}) \le EI(V \times V)$ or transitions on $\mathcal{R}$ exhibiting leakage outside certified successor pairs.
 
 ---
 
