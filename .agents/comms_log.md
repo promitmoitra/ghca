@@ -1309,3 +1309,87 @@ claim never reached the trunk. Fetch before asserting anything about `main`.
 The reviewer is not exempt from the failure mode being reviewed.
 
 — Claude (review session)
+
+---
+
+## 2026-08-16 — the pruning plan reconciled, and the inventory's central claim does not reproduce (Claude, session `d560b36c`)
+
+Branch: `claude/gitops-plan-reconciliation` @ `1f0c851` (off `planning-and-review`).
+Nothing merged, nothing deleted, no refs touched.
+
+### The plan was never updated; the inventory moved instead
+
+`docs/gitops_branch_pruning_plan.md` on `planning-and-review` has not been
+edited since 2026-07-28. What changed is that
+`branch_preservation_inventory.md` — the safety analysis that *constrains* it —
+landed on `main` via #80, while the plan sat unmerged with no pointer to it.
+The plan is now largely a no-op: PRs #70/#71 are merged (as are #80/#84), **all
+nine** of its Step-3 deletion targets are already gone, and the `archive/*`
+tags it asks for exist (10 on the remote).
+
+### ⚠ Correction: "15 branches have no merge-base with `main`" does not reproduce
+
+The inventory's headline safety claim — 15 branches with no merge-base,
+predating a history rewrite, three named — **fails on direct test, including at
+the inventory's own stated basis `main` @ `6f41eca`.** All three named branches
+have real merge-bases both then and now (`55da552` — a 2022 commit ancestral to
+both — `eec7554d`, `857a84c8`). Across every remote head, exactly **one** ref
+lacks a merge-base: `__dolt_remote_info__`, a Dolt metadata ref, not a code
+branch.
+
+Most likely cause: an incomplete local object graph in the session that
+produced it. **`git merge-base` exits non-zero when objects are missing, and
+that error is indistinguishable from "no common ancestor."** Anyone running
+ancestry checks: fetch fully first, and treat a non-zero exit as "unknown",
+never as "unrelated histories".
+
+Keep the hard-stop rule anyway — it costs one line, and an unfetched-objects
+error *should* stop a deletion script. Just do not carry it as a description of
+a known 15-branch class. **The inventory's sole-holder analysis does reproduce
+and is the part that actually protects work**: what loses work here is per-path
+novelty (a branch holding a path that never existed in `main`'s history while
+looking ordinary), which `git cherry` cannot see and walking the paths can.
+
+### `scripts/branch_safety_check.sh` — run this instead of reading any table
+
+Three tests (ancestry; patch-equality via `git cherry`; per-path novelty) and
+four hard stops (open-PR head, protected branch, missing merge-base, untagged
+sole holder). Rationale: the inventory's sole-holder count fell **10 → 5** in
+two days, and two of those five dissolve on inspection —
+`claude/comms-claude-dir-tmpfs` is fully landed on `agent-comms-log` (0
+unlanded patches; it looks novel only because `.agents/comms_log.md` does not
+exist on `main`), and `publish/k-dyn-correction` is content-identical to
+`deploy-viz-page`. Three genuine sole holders remain and **all three are
+covered by `archive/*` tags at their exact tips.** The one branch the script
+flags as an untagged sole holder should be tagged before anyone prunes.
+
+Snapshot when written: 41 SAFE / 17 KEEP. It is dated in the doc on purpose —
+the head count moved 64 → 65 while I was writing, because I pushed a branch.
+
+### My own errors here, since the lesson generalises
+
+The first version of this commit (`f4a7757`) **was pushed carrying a hand-typed
+"20 branches" where the live run said 15**, under a commit message claiming
+every figure had been asserted against a live run. The verification code *did*
+fail on that figure — and the commit happened anyway, because the cell had no
+exit-code guard between the check and `git commit`. **A check that cannot stop
+the action it guards is not a check**; in a shell cell that means an explicit
+`|| exit 1`, not a bare `assert` upstream of the command. I then told the owner
+I was fixing it "before this goes anywhere", which was also wrong: it had
+already reached the remote.
+
+Two durable practices from this, both now applied in the commit:
+1. **Generate figure-bearing prose from the run** (substitution into the doc),
+   never type it beside the run. This is the same transcription class that has
+   bitten repeatedly in `experiments/`; it applies to planning docs too.
+2. **Date-stamp counts that decay.** SAFE/KEEP and head counts change whenever
+   anyone pushes. A number without a date in a persisted doc will be read as
+   standing fact.
+
+Also worth flagging for whoever wrote the inventory: my first attempt to verify
+the corrected text reported false failures because the checker flattened
+Markdown without stripping `>` blockquote markers, so quoted-and-refuted claims
+matched as if asserted. The gate caught it and nothing was committed — but if
+you grep a doc for a claim it *rebuts*, strip the quoting first.
+
+— Claude (session `d560b36c`)
