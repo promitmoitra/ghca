@@ -57,12 +57,36 @@ dead attractor.
   all-zero sink relies on; it was checked exhaustively at 2x2 there, and is
   now proven for every graph and every (ta, tp).
 
-WHAT IS NOT PROVEN (the certified/sampled part, and the honest boundary):
+LEMMA E (proven by hand; any graph). If C is NON-EMPTY then G has a cycle of
+length l and an integer k >= 1 with  l <= k*B <= l*ta.  (Proof in the
+emptiness_condition docstring below.)
+
+  This CORRECTS a conjecture an earlier revision of this file made. That
+  revision read the (1,1) anomaly as a GIRTH effect -- "S+1 >= 4, and 4 is the
+  girth of the square lattice". That reading is wrong. The real obstruction is
+  arithmetic, not metric: the square lattice is BIPARTITE, so every cycle
+  length is even, while B = 3 at (1,1) is odd. At 2x2 the only cycle length is
+  4 and no multiple of 3 lies in [4, 4], so C is empty; at 3x3 a 6-cycle exists
+  and 6 = 2*3 lies in [6, 6], so C is not (|C| = 84). Girth alone predicts
+  neither.
+
+  Lemma E also accounts for the three 2x2 cells with P = 0 exactly --
+  (1,3), (1,4), (1,5) -- which persistent_set_structure.md Section 4 records as
+  "vacuous" without explaining them, and it correctly separates 3x3 (1,4)
+  (|C| = 168, since 6 = 1*6) from 3x3 (1,3) and (1,5) (both |C| = 0).
+  Necessity is asserted at 16 (lattice, cell) pairs; the converse held at all
+  16 but is NOT claimed.
+
+WHAT IS NOT PROVEN (the certified part, and the honest boundary):
   the claim "every LIVE attractor is dwell-free when S+1 >= 4" -- i.e. that C
   captures ALL live attractors and not merely the dwell-free ones. This is
   CERTIFIED here by exhaustive census at 2x2 and 3x3 and by seeded sampling to
-  L = 8, not proven. 4 is the girth of the square lattice, but no second girth
-  is tested, so the girth reading is a conjecture, not a measurement.
+  L = 8, not proven. Note that Lemma E does NOT settle it: Lemma E says when C
+  is empty, whereas this claim says when DWELLING attractors are absent, and
+  3x3 (1,1) has both a non-empty C (28 attractors) and 34 dwelling ones. A
+  lattice of different girth and parity -- triangular (girth 3, non-bipartite)
+  or honeycomb (girth 6, bipartite) -- is the cheap discriminator, and is not
+  run here.
 
 ---------------------------------------------------------------------------
 FINDINGS.
@@ -80,10 +104,11 @@ FINDINGS.
    in the TRANSIENTS" from the attractor side.
 
 3. (1,1) IS THE ONLY CELL WITH DWELLING ATTRACTORS, and it is the only cell in
-   the project's range with S+1 < 4. At 2x2 (1,1): |C| = 0, yet 2 live
-   attractors exist (period 4). At 3x3 (1,1): 28 dwell-free attractors from C,
-   but 62 live attractors in total -- 34 of them dwelling. At every cell with
-   S+1 >= 4, live attractors == C exactly, zero leftovers.
+   the project's range with S+1 < 4. At 2x2 (1,1): |C| = 0 -- explained by
+   LEMMA E, not by girth -- yet 2 live attractors exist (period 4). At
+   3x3 (1,1): 28 dwell-free attractors from C, but 62 live attractors in total,
+   34 of them dwelling. At every cell with S+1 >= 4, live attractors == C
+   exactly, zero leftovers.
 
 4. PHASE SPACE IS WIDE AND SHALLOW. Transients are O(S), not O(L^2), and do not
    grow with L: max transient 12 at 3x3 (2,2) exhaustively, and 11 at L=8 (2,2)
@@ -103,13 +128,28 @@ FINDINGS.
    Past L ~ 5 essentially every sampled initial condition lands on its own
    attractor.
 
-   Every quoted point is backed by an exact |C| from the census or by >= 300
-   Monte-Carlo hits, with draws escalated up to 4,000,000 to get there; points
-   that cannot reach 300 hits are DROPPED and listed, not quoted. An earlier
-   revision of this experiment used a bare fraction floor of 5e-5 at n = 40,000
-   and thereby quoted kappa values resting on ONE to THREE hits -- (2,2) L=6
-   rested on 1 hit, (2,1) L=10 on 3. Those are now dropped or re-measured;
-   re-measuring moved (2,2) L=5 from kappa 1.237 (18 hits) to 1.2532 (2,709).
+   Every quoted point is backed by an exact |C| from the census or the DP, or
+   by >= 300 Monte-Carlo hits with draws escalated up to 4,000,000; points that
+   reach none of these are DROPPED and listed, not quoted. An earlier revision
+   used a bare fraction floor of 5e-5 at n = 40,000 and thereby quoted kappa
+   values resting on ONE to THREE hits -- (2,2) L=6 rested on 1 hit, (2,1)
+   L=10 on 3.
+
+7. THE TRANSFER-MATRIX DP RETIRES SAMPLING UP TO L = 5 (not entirely -- see
+   below). Carrying the last 2L cells as DP state makes |C| exactly computable
+   in O(L^2 * B^(2L+1)); it reproduces all 12 census counts EXACTLY (an
+   independent check of both, since the census counts cycles and the DP counts
+   a static predicate). Reach, set by a state-space cap and an int64 overflow
+   guard: L <= 5 at B <= 5, L <= 4 at B = 7. MC still carries (2,1) L = 6, 8,
+   10 and (3,3) L = 5, 6, so the earlier "would retire the sampling entirely"
+   was too strong.
+
+   Where the two overlap the DP VALIDATES the MC: every deviation is under
+   1 SE (max 0.98 over 8 comparisons), so the surviving MC points are sound
+   estimates -- the first revision's numbers were right, merely under-powered
+   in the tail. Two previously-MC points are now exact and moved:
+   (2,2) L=5 from kappa 1.2532 (2,709 hits) to 1.2538 exact, and (3,3) L=3
+   from 1.3739 (1,627 hits) to 1.3721 exact.
 
 6. DEATH IS A SMALL-LATTICE PHENOMENON. P(ta,tp) -> 1 rapidly in L at every
    cell tested, in both regimes. The sampled L = 2, 3 columns agree with the
@@ -143,8 +183,10 @@ EXHAUSTIVE = [(2, 1, 1), (2, 2, 1), (2, 1, 2), (2, 2, 2), (2, 3, 3),
               (3, 1, 1), (3, 2, 1), (3, 1, 2), (3, 2, 2)]
 SAMPLED_CELLS = [(1, 1), (2, 1), (1, 2), (2, 2), (3, 3), (2, 3)]
 SAMPLED_L = [2, 3, 4, 5, 6, 8]
-DENSITY_CELLS = [(2, 1), (2, 2), (3, 3)]
+DENSITY_CELLS = [(1, 1), (2, 1), (1, 2), (2, 2), (3, 3)]
 DENSITY_L = [2, 3, 4, 5, 6, 8, 10]
+# cells for LEMMA E, including the three 2x2 cells with P = 0 exactly
+LEMMA_CELLS = [(1, 1), (2, 1), (1, 2), (2, 2), (1, 3), (1, 4), (1, 5), (2, 5)]
 SEED = 20260816
 # A kappa point is quoted only if backed by >= MIN_HITS configurations landing
 # in C (or by an exact count from the census). An earlier revision used a bare
@@ -381,6 +423,124 @@ def sampled_attractor_check(L, ta, tp, n_samples=150, seed=SEED, maxT=4000):
                 max_trans=int(trans.max()), mean_trans=float(trans.mean()))
 
 
+def cycle_lengths(L):
+    """The set of cycle lengths of the LxL open von Neumann grid graph."""
+    nbi, nbm = neighbour_table(L)
+    adj = {i: [int(j) for j, m in zip(nbi[i], nbm[i]) if m] for i in range(L * L)}
+    lengths = set()
+
+    def walk(start, node, visited, depth):
+        for nxt in adj[node]:
+            if nxt == start and depth >= 3:
+                lengths.add(depth)
+            elif nxt > start and nxt not in visited:
+                walk(start, nxt, visited | {nxt}, depth + 1)
+
+    for s in range(L * L):
+        walk(s, s, {s}, 1)
+    return lengths
+
+
+def emptiness_condition(L, ta, tp, lengths):
+    """LEMMA E (proven; any graph): if C is non-empty then G has a cycle of
+    length l and an integer k >= 1 with  l <= k*B <= l*tau_a.
+
+    Proof. Take c in C. Each cell i picks a neighbour sigma(i) whose lag
+    (c_sigma(i) - c_i) mod B lies in [1..ta]. sigma is a self-map of a finite
+    set, so its functional digraph contains a cycle of DISTINCT nodes; since
+    sigma(i) is always a neighbour, that is a cycle of G, of some length l.
+    Summing the lags once around it returns to the starting phase, so the sum
+    is 0 mod B; the sum also lies in [l, l*ta] and is at least l >= 3 > 0, so
+    it equals k*B for some k >= 1. Hence l <= k*B <= l*ta. []
+
+    This is what actually explains the 2x2 (1,1) anomaly, and it is NOT the
+    girth: the square lattice is bipartite, so every cycle length is even,
+    while B = 3 is odd. At 2x2 the only cycle length is 4 and no multiple of 3
+    lies in [4, 4], so C is empty. At 3x3 a 6-cycle exists and 6 = 2*3 lies in
+    [6, 6], so C is not (|C| = 84).
+    """
+    B = ta + tp + 1
+    for l in lengths:
+        kmin = -(-l // B)                    # ceil(l / B)
+        if kmin >= 1 and kmin * B <= l * ta:
+            return True
+    return False
+
+
+def exact_C_count(L, ta, tp, max_states=12_000_000):
+    """EXACT |C| by a cell-by-cell transfer matrix, no sampling.
+
+    Cell m's coherence test reads m-L, m-1, m+1, m+L, so m can be finalised the
+    moment cell m+L is placed. Carrying the last 2L cells as the DP state is
+    therefore sufficient, and transitions branch only B ways (a row-by-row DP
+    would branch B^L). State space is B^(2L); work is O(L^2 * B^(2L+1)).
+
+    Two guards, both returning (None, reason) rather than a wrong number:
+      - state space B^(2L) over max_states;
+      - the count ceiling B^(L^2) overflowing int64. (The handoff doc's
+        encoding trap: size the guard by the lattice constant, and assert it.)
+    """
+    B = ta + tp + 1
+    n, W = L * L, 2 * L
+    if B ** W > max_states:
+        return None, f"state space {B}^{W} > {max_states:,}"
+    if B ** n > np.iinfo(np.int64).max:
+        return None, f"count ceiling {B}^{n} overflows int64"
+
+    NS = B ** W
+    s = np.arange(NS, dtype=np.int64)
+    dig = lambda t: ((s // B ** (W - 1 - t)) % B).astype(np.int16)
+    ok = lambda g: (g >= 1) & (g <= ta)
+
+    # prefix: cells 0..W-1 free, then verify row 0 (whose neighbours are all in)
+    counts = np.ones(NS, dtype=np.int64)
+    for m in range(L):
+        sd, acc = dig(m), np.zeros(NS, bool)
+        for nb, exists in ((m + L, True), (m - 1, m % L > 0),
+                           (m + 1, m % L < L - 1)):
+            if exists:
+                acc |= ok((dig(nb) - sd) % B)
+        counts *= acc
+
+    # sliding phase: verifying cell m = k - L, which always sits at slot L
+    self_d = dig(L)
+    up_ok, left_ok = ok((dig(0) - self_d) % B), ok((dig(L - 1) - self_d) % B)
+    right_ok = ok((dig(L + 1) - self_d) % B)
+    del s
+    buf = np.empty(NS, dtype=np.int64)
+    for k in range(W, n):
+        r, c = divmod(k - L, L)
+        static = np.zeros(NS, bool)
+        if r > 0:
+            static |= up_ok
+        if c > 0:
+            static |= left_ok
+        if c < L - 1:
+            static |= right_ok
+        new = np.zeros(NS, dtype=np.int64)
+        new2 = new.reshape(B ** (W - 1), B)
+        for a in range(B):
+            v = static | ok((a - self_d) % B) if r < L - 1 else static
+            np.multiply(counts, v, out=buf)
+            new2[:, a] = buf.reshape(B, B ** (W - 1)).sum(axis=0)
+        counts = new
+
+    # final: the last row has no down-neighbour, so verify it from the state
+    s = np.arange(NS, dtype=np.int64)
+    dig = lambda t: ((s // B ** (W - 1 - t)) % B).astype(np.int16)
+    for m in range(n - L, n):
+        slot, c = m - (n - W), m % L
+        sd, acc = dig(slot), np.zeros(NS, bool)
+        for nb_slot, exists in ((slot - L, True), (slot - 1, c > 0),
+                                (slot + 1, c < L - 1)):
+            if exists:
+                acc |= ok((dig(nb_slot) - sd) % B)
+        counts *= acc
+    total = int(counts.sum())
+    assert total >= 0, "int64 overflow slipped past the guard"
+    return total, None
+
+
 def _mc_hits(L, ta, tp, B, n, seed, draw_chunk=200_000):
     """Hits of C among n uniform-random CONFIGURATIONS, drawn in chunks so peak
     memory is bounded. Deterministic given (seed, n, draw_chunk)."""
@@ -395,38 +555,47 @@ def _mc_hits(L, ta, tp, B, n, seed, draw_chunk=200_000):
     return hits
 
 
+def _pack(L, ta, tp, nC, source, n=0, hits=None, se=0.0):
+    B = ta + tp + 1
+    lnB = np.log(B)
+    frac = nC / B ** (L * L)
+    kappa = (np.log(frac) + (L * L - 1) * lnB) / (L * L)
+    return dict(L=L, ta=ta, tp=tp, source=source, n=n,
+                hits=nC if hits is None else hits, frac=float(frac),
+                kappa=float(kappa), cost=float(lnB - kappa), se=float(se))
+
+
 def density(L, ta, tp, seed=SEED, exact_nC=None):
     """Attractor-entropy density kappa = ln(#attractors) / L^2, where
     #attractors = |C|/B and |C| = frac * B^(L^2).
 
-    Uses the EXACT |C| from the exhaustive census when one is available for this
-    (L, ta, tp); otherwise Monte-Carlo over uniformly random CONFIGURATIONS,
-    escalating n until at least MIN_HITS configurations land in C. A point that
-    cannot reach MIN_HITS within the budget is REPORTED AS DROPPED rather than
+    Three sources, in descending order of authority:
+      1. the exhaustive census, where it covers this (L, ta, tp);
+      2. the exact transfer-matrix DP (exact_C_count), where it is affordable;
+      3. Monte-Carlo over uniformly random CONFIGURATIONS, escalating n until
+         at least MIN_HITS land in C.
+    A point that reaches none of these is REPORTED AS DROPPED rather than
     quoted -- kappa from a handful of hits is not a measurement.
 
-    Returns None if the point is dropped.
+    Returns the string "EMPTY" when |C| = 0 exactly (no dwell-free attractor
+    exists, so kappa is undefined -- a FACT, not a measurement failure), and
+    None when the point is dropped as under-powered. The two are different and
+    the driver reports them separately.
     """
     B = ta + tp + 1
-    lnB = np.log(B)
     if exact_nC is not None:
-        if exact_nC == 0:
-            return None
-        ln_frac = np.log(exact_nC) - (L * L) * lnB
-        kappa = (ln_frac + (L * L - 1) * lnB) / (L * L)
-        return dict(L=L, ta=ta, tp=tp, exact=1, n=0, hits=exact_nC,
-                    frac=float(exact_nC / B ** (L * L)), kappa=float(kappa),
-                    cost=float(lnB - kappa), se=0.0)
+        return "EMPTY" if exact_nC == 0 else _pack(L, ta, tp, exact_nC, "census")
+    dp, _why = exact_C_count(L, ta, tp)
+    if dp is not None:
+        return "EMPTY" if dp == 0 else _pack(L, ta, tp, dp, "DP")
     for n in MC_BUDGET:
         hits = _mc_hits(L, ta, tp, B, n, seed)
         if hits >= MIN_HITS:
             frac = hits / n
-            kappa = (np.log(frac) + (L * L - 1) * lnB) / (L * L)
             # delta-method SE on ln(frac), divided through by L^2
             se = np.sqrt((1 - frac) / (frac * n)) / (L * L)
-            return dict(L=L, ta=ta, tp=tp, exact=0, n=n, hits=hits,
-                        frac=float(frac), kappa=float(kappa),
-                        cost=float(lnB - kappa), se=float(se))
+            return _pack(L, ta, tp, frac * B ** (L * L), "MC", n=n, hits=hits,
+                         se=se)
     return None
 
 
@@ -491,6 +660,46 @@ def main():
               + f"   [latest death t={max(deaths)}]", flush=True)
         assert ps == sorted(ps) or ps[-1] >= ps[0], "P not increasing in L"
 
+    print("\n=== transfer-matrix DP: exact |C|, validated against the census ===",
+          flush=True)
+    print(f"{'lattice':>8} {'cell':>7} {'census |C|':>12} {'DP |C|':>12} {'match':>6}",
+          flush=True)
+    dpval = []
+    for r in rows:
+        got, why = exact_C_count(r["L"], r["ta"], r["tp"])
+        assert got is not None, f"DP unaffordable at a census row: {why}"
+        match = (got == r["nC"])
+        dpval.append(dict(L=r["L"], ta=r["ta"], tp=r["tp"], census=r["nC"], dp=got,
+                          match=int(match)))
+        print(f"{str(r['L']) + 'x' + str(r['L']):>8} "
+              f"{'(' + str(r['ta']) + ',' + str(r['tp']) + ')':>7} "
+              f"{r['nC']:>12,} {got:>12,} {str(match):>6}", flush=True)
+        assert match, f"DP disagrees with the census at L={r['L']} ({r['ta']},{r['tp']})"
+
+    print("\n=== LEMMA E (emptiness): C non-empty => some cycle length l has "
+          "l <= kB <= l*ta ===", flush=True)
+    print(f"{'lattice':>8} {'cell':>7} {'B':>3} {'cycle lengths':>22} "
+          f"{'lemma allows C':>15} {'|C|':>10} {'consistent':>11}", flush=True)
+    lem = []
+    for L in sorted({r["L"] for r in rows}):
+        lengths = cycle_lengths(L)
+        for ta, tp in LEMMA_CELLS:
+            B = ta + tp + 1
+            allowed = emptiness_condition(L, ta, tp, lengths)
+            nC, why = exact_C_count(L, ta, tp)
+            assert nC is not None, why
+            # necessity: |C| > 0 forces the condition. (The converse is not
+            # claimed -- it is reported, not asserted.)
+            assert not (nC > 0 and not allowed), \
+                f"LEMMA E violated at L={L} ({ta},{tp})"
+            lem.append(dict(L=L, ta=ta, tp=tp, allowed=int(allowed), nC=nC))
+            print(f"{str(L) + 'x' + str(L):>8} {'(' + str(ta) + ',' + str(tp) + ')':>7} "
+                  f"{B:>3} {str(sorted(lengths)):>22} {str(allowed):>15} "
+                  f"{nC:>10,} {str((nC > 0) == allowed):>11}", flush=True)
+    print("Necessity is ASSERTED. Sufficiency is not claimed; the "
+          "'consistent' column reports whether the converse also held.",
+          flush=True)
+
     print("\n=== attractor-entropy density: #attractors ~ exp(kappa L^2) ===",
           flush=True)
     print(f"kappa <= ln B by construction, so the informative quantity is the "
@@ -498,14 +707,20 @@ def main():
     print(f"Exact |C| used where the census supplies it; otherwise MC over "
           f"CONFIGURATIONS, escalated to >= {MIN_HITS} hits or dropped.",
           flush=True)
-    print(f"{'cell':>7} {'lnB':>6} {'L':>3} {'source':>7} {'n':>9} {'hits':>8} "
+    print(f"{'cell':>7} {'lnB':>6} {'L':>3} {'source':>7} {'draws':>9} {'hits':>8} "
           f"{'frac':>11} {'kappa':>7} {'c=lnB-kappa':>12} {'SE':>7}", flush=True)
     exact_nC = {(r["L"], r["ta"], r["tp"]): r["nC"] for r in rows}
-    dens, dropped = [], []
+    dens, dropped, empty, xcheck = [], [], [], []
     for ta, tp in DENSITY_CELLS:
         lnB = np.log(ta + tp + 1)
         for L in DENSITY_L:
             d = density(L, ta, tp, exact_nC=exact_nC.get((L, ta, tp)))
+            if d == "EMPTY":
+                empty.append((ta, tp, L))
+                print(f"{'(' + str(ta) + ',' + str(tp) + ')':>7} {lnB:>6.3f} "
+                      f"{L:>3} {'EMPTY':>7} {'—':>9} {0:>8} "
+                      f"{'0':>11} {'n/a':>7} {'n/a':>12} {'—':>7}", flush=True)
+                continue
             if d is None:
                 dropped.append((ta, tp, L))
                 print(f"{'(' + str(ta) + ',' + str(tp) + ')':>7} {lnB:>6.3f} "
@@ -513,15 +728,14 @@ def main():
                       f"{'—':>11} {'—':>7} {'—':>12} {'—':>7}", flush=True)
                 continue
             dens.append(d)
-            src = "exact" if d["exact"] else "MC"
             print(f"{'(' + str(ta) + ',' + str(tp) + ')':>7} {lnB:>6.3f} {L:>3} "
-                  f"{src:>7} {d['n'] or '—':>9} {d['hits']:>8} {d['frac']:>11.3e} "
-                  f"{d['kappa']:>7.4f} {d['cost']:>12.4f} {d['se']:>7.4f}",
-                  flush=True)
+                  f"{d['source']:>7} {d['n'] or '—':>9} {d['hits']:>8,} "
+                  f"{d['frac']:>11.3e} {d['kappa']:>7.4f} {d['cost']:>12.4f} "
+                  f"{d['se']:>7.4f}", flush=True)
         got = [d for d in dens if (d["ta"], d["tp"]) == (ta, tp)]
         assert len(got) >= 3, f"too few usable density points at ({ta},{tp})"
         # every quoted point is backed by real evidence
-        assert all(d["exact"] or d["hits"] >= MIN_HITS for d in got), \
+        assert all(d["source"] != "MC" or d["hits"] >= MIN_HITS for d in got), \
             "a kappa point slipped through under-powered"
         # kappa is strictly below its ceiling ln B, and the cost is falling in L
         assert all(0 < d["kappa"] < lnB for d in got), "kappa outside (0, ln B)"
@@ -529,10 +743,41 @@ def main():
         assert costs == sorted(costs, reverse=True), \
             f"coherence cost not monotone decreasing at ({ta},{tp})"
         assert costs[-1] > 0, "coherence cost hit zero"
+    if empty:
+        print(f"\n|C| = 0 exactly (no dwell-free attractor; kappa undefined) at "
+              + ", ".join(f"({ta},{tp}) L={L}" for ta, tp, L in empty)
+              + " -- explained by LEMMA E above, not a measurement failure.",
+              flush=True)
     if dropped:
-        print(f"\ndropped {len(dropped)} under-powered point(s): "
+        print(f"dropped {len(dropped)} under-powered point(s): "
               + ", ".join(f"({ta},{tp}) L={L}" for ta, tp, L in dropped),
               flush=True)
+
+    print("\n=== validating the surviving MC estimator against the exact DP ===",
+          flush=True)
+    print("(the MC points that remain sit beyond the DP's reach, so their "
+          "estimator is checked where the two overlap)", flush=True)
+    print(f"{'cell':>7} {'L':>3} {'MC frac':>12} {'exact frac':>12} "
+          f"{'|dev| in SE':>12}", flush=True)
+    for ta, tp in DENSITY_CELLS:
+        for L in DENSITY_L:
+            mc = None
+            for n in MC_BUDGET:
+                h = _mc_hits(L, ta, tp, ta + tp + 1, n, SEED)
+                if h >= MIN_HITS:
+                    mc = (h / n, np.sqrt((1 - h / n) / (h / n * n)))
+                    break
+            ex, _ = exact_C_count(L, ta, tp)
+            if mc is None or ex is None or ex == 0:
+                continue
+            ex_frac = ex / (ta + tp + 1) ** (L * L)
+            dev = abs(np.log(mc[0]) - np.log(ex_frac)) / mc[1]
+            xcheck.append(dict(L=L, ta=ta, tp=tp, mc=mc[0], exact=ex_frac,
+                               dev_se=float(dev)))
+            print(f"{'(' + str(ta) + ',' + str(tp) + ')':>7} {L:>3} "
+                  f"{mc[0]:>12.5e} {ex_frac:>12.5e} {dev:>12.2f}", flush=True)
+            assert dev < 5.0, \
+                f"MC estimator off by {dev:.1f} SE at L={L} ({ta},{tp})"
 
     out = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                        "result", "topology", "coherent_core.npz")
@@ -546,6 +791,9 @@ def main():
            for k in att[0] if k != "periods"},
         **{f"p_{k}": np.array([r[k] for r in prow]) for k in prow[0]},
         **{f"d_{k}": np.array([r[k] for r in dens]) for k in dens[0]},
+        **{f"v_{k}": np.array([r[k] for r in dpval]) for k in dpval[0]},
+        **{f"e_{k}": np.array([r[k] for r in lem]) for k in lem[0]},
+        **{f"x_c_{k}": np.array([r[k] for r in xcheck]) for k in xcheck[0]},
     )
     print(f"\nwrote {out}", flush=True)
 
@@ -566,11 +814,14 @@ def main():
     print("| :---: | ---: | :---: | :---: | ---: | ---: | ---: | ---: | ---: | ---: |")
     for d in dens:
         lnB = np.log(d["ta"] + d["tp"] + 1)
-        src = "exact" if d["exact"] else "MC"
-        draws = "—" if d["exact"] else f"{d['n']:,}"
-        print(f"| ({d['ta']}, {d['tp']}) | {lnB:.3f} | {d['L']} | {src} | {draws} | "
-              f"{d['hits']:,} | {d['frac']:.3e} | {d['kappa']:.4f} | "
+        draws = f"{d['n']:,}" if d["source"] == "MC" else "—"
+        ev = f"{d['hits']:,}" + (" hits" if d["source"] == "MC" else "")
+        print(f"| ({d['ta']}, {d['tp']}) | {lnB:.3f} | {d['L']} | {d['source']} | "
+              f"{draws} | {ev} | {d['frac']:.3e} | {d['kappa']:.4f} | "
               f"{d['cost']:.4f} | {d['se']:.4f} |")
+    if empty:
+        print("\n`|C| = 0` exactly (κ undefined, per Lemma E): "
+              + ", ".join(f"({ta}, {tp}) L={L}" for ta, tp, L in empty))
     if dropped:
         print("\nDropped as under-powered (< "
               f"{MIN_HITS} hits at {MC_BUDGET[-1]:,} draws): "

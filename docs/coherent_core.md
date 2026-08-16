@@ -63,6 +63,56 @@ This is the fact [`persistent_set_3x3.py`](../experiments/persistent_set_3x3.py)
 boolean label propagation to the all-zero sink relies on. That script checked it
 exhaustively at 2×2; it now holds for every graph and every `(τa, τp)`.
 
+## Lemma E — when is `C` empty? (proven; any graph)
+
+> If `C` is non-empty then `G` has a cycle of length `ℓ` and an integer `k ≥ 1`
+> with `ℓ ≤ kB ≤ ℓ·τa`.
+
+*Proof.* Take `c ∈ C`. Each cell `i` picks a neighbour `σ(i)` whose lag
+`(c_σ(i) − c_i) mod B` lies in `[1..τa]`. `σ` is a self-map of a finite set, so
+its functional digraph contains a cycle of *distinct* nodes; since `σ(i)` is
+always a neighbour, that is a cycle of `G`, of some length `ℓ`. Summing the lags
+once around it returns to the starting phase, so the sum is `0 mod B`; the sum
+also lies in `[ℓ, ℓ·τa]` and is at least `ℓ ≥ 3 > 0`, so it equals `kB` for some
+`k ≥ 1`. ∎
+
+> **⚠ This corrects a conjecture made in the first revision of this doc**, which
+> read the (1,1) anomaly as a **girth** effect — "`S+1 ≥ 4`, and 4 is the girth
+> of the square lattice". That reading is wrong. The obstruction is arithmetic,
+> not metric: the square lattice is **bipartite**, so every cycle length is
+> even, while `B = 3` at (1,1) is odd. At 2×2 the only cycle length is 4 and no
+> multiple of 3 lies in `[4, 4]`, so `C` is empty; at 3×3 a 6-cycle exists and
+> `6 = 2·3` lies in `[6, 6]`, so `C` is not (`|C| = 84`). Girth alone predicts
+> neither.
+
+Necessity is asserted at 16 (lattice, cell) pairs. The converse held at all 16
+but is **not** claimed.
+
+| lattice | cell | B | cycle lengths | lemma allows C | \|C\| |
+| :---: | :---: | ---: | :---: | :---: | ---: |
+| 2×2 | (1,1) | 3 | {4} | no | 0 |
+| 2×2 | (1,3) | 5 | {4} | no | 0 |
+| 2×2 | (1,4) | 6 | {4} | no | 0 |
+| 2×2 | (1,5) | 7 | {4} | no | 0 |
+| 3×3 | (1,1) | 3 | {4, 6, 8} | yes | 84 |
+| 3×3 | (1,3) | 5 | {4, 6, 8} | no | 0 |
+| 3×3 | (1,4) | 6 | {4, 6, 8} | yes | 168 |
+| 3×3 | (1,5) | 7 | {4, 6, 8} | no | 0 |
+
+(Abridged to the discriminating rows; the other eight — (2,1), (1,2), (2,2),
+(2,5) at both lattices — all have `C` allowed and non-empty.)
+
+Two things fall out. Lemma E **accounts for the three 2×2 cells with `P = 0`
+exactly**, which [`persistent_set_structure.md`](persistent_set_structure.md) §4
+records as "vacuous" without explaining them. And it correctly separates
+3×3 (1,4) — where `6 = 1·6` puts `|C| = 168` — from 3×3 (1,3) and (1,5), where
+no multiple of `B` lands in any `[ℓ, ℓ]`.
+
+**Lemma E does not settle the open claim.** It says when `C` is *empty*; the
+un-proven claim says when *dwelling* attractors are *absent*. These are
+different: 3×3 (1,1) has a non-empty `C` (28 attractors) **and** 34 dwelling
+ones. See [Honest scope](#honest-scope).
+
 ---
 
 ## The census
@@ -175,31 +225,64 @@ construction** — it would equal `ln B` if every configuration were coherent �
 `κ` rising with `L` is largely that trivial ceiling. The informative quantity is
 the **per-cell coherence cost `c = ln B − κ`**.
 
-`|C|` is taken exactly from the census where available; otherwise `|C|/B^(L²)`
-is estimated by Monte Carlo over configurations, with draws escalated until at
-least **300** land in `C`. Points that cannot reach 300 hits at 4,000,000 draws
-are **dropped, not quoted**.
+`|C|` now comes from three sources, in descending order of authority: the
+exhaustive **census**; the exact transfer-matrix **DP** below; and only then
+**MC** over configurations, with draws escalated until at least **300** land in
+`C`. Points reaching none of these are **dropped, not quoted**.
+
+#### The exact transfer-matrix count
+
+Cell `m`'s coherence test reads `m−L, m−1, m+1, m+L`, so `m` can be finalised
+the moment cell `m+L` is placed. Carrying the last `2L` cells as DP state is
+therefore sufficient, and transitions branch only `B` ways — a row-by-row DP
+would branch `B^L`. Cost is `O(L² · B^(2L+1))`; two guards (state space, and
+`int64` overflow of the `B^(L²)` count ceiling) return a *reason* rather than a
+wrong number.
+
+It reproduces **all 12 census counts exactly** — an independent check of both,
+since the census counts *cycles* and the DP counts a *static predicate*. Reach:
+`L ≤ 5` at `B ≤ 5`, `L ≤ 4` at `B = 7`, and `L ≤ 6` at `B = 3`.
+
+**It does not retire sampling entirely** — an earlier draft of this section said
+it would, which was too strong. MC still carries (2,1) `L = 6, 8, 10` and
+(3,3) `L = 5, 6`. What it does do is convert every point up to `L = 5` to exact,
+and **validate the estimator that remains**: over the 15 (cell, L) pairs where
+DP and MC overlap, every deviation is under **1.2 SE** (max 1.12). The first
+revision's MC numbers were sound estimates — they were merely under-powered in
+the tail, exactly as diagnosed.
 
 | (τa, τp) | ln B | L | source | draws | hits | \|C\|/B^(L²) | κ | c = ln B − κ | SE(κ) |
 | :---: | ---: | :---: | :---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| (2, 1) | 1.386 | 2 | exact | — | 84 | 3.281e-01 | 0.7611 | 0.6252 | 0.0000 |
-| (2, 1) | 1.386 | 3 | exact | — | 48,196 | 1.839e-01 | 1.0441 | 0.3422 | 0.0000 |
-| (2, 1) | 1.386 | 4 | MC | 40,000 | 3,661 | 9.152e-02 | 1.1502 | 0.2361 | 0.0010 |
-| (2, 1) | 1.386 | 5 | MC | 40,000 | 1,635 | 4.088e-02 | 1.2030 | 0.1833 | 0.0010 |
-| (2, 1) | 1.386 | 6 | MC | 40,000 | 671 | 1.678e-02 | 1.2342 | 0.1521 | 0.0011 |
-| (2, 1) | 1.386 | 8 | MC | 400,000 | 667 | 1.667e-03 | 1.2647 | 0.1216 | 0.0006 |
-| (2, 1) | 1.386 | 10 | MC | 4,000,000 | 399 | 9.975e-05 | 1.2803 | 0.1060 | 0.0005 |
-| (2, 2) | 1.609 | 2 | exact | — | 40 | 6.400e-02 | 0.5199 | 1.0896 | 0.0000 |
-| (2, 2) | 1.609 | 3 | exact | — | 47,520 | 2.433e-02 | 1.0177 | 0.5917 | 0.0000 |
-| (2, 2) | 1.609 | 4 | MC | 400,000 | 1,977 | 4.942e-03 | 1.1770 | 0.4325 | 0.0014 |
-| (2, 2) | 1.609 | 5 | MC | 4,000,000 | 2,709 | 6.773e-04 | 1.2532 | 0.3563 | 0.0008 |
-| (3, 3) | 1.946 | 2 | exact | — | 224 | 9.329e-02 | 0.8664 | 1.0795 | 0.0000 |
-| (3, 3) | 1.946 | 3 | MC | 40,000 | 1,627 | 4.068e-02 | 1.3739 | 0.5720 | 0.0027 |
-| (3, 3) | 1.946 | 4 | MC | 40,000 | 403 | 1.008e-02 | 1.5369 | 0.4090 | 0.0031 |
-| (3, 3) | 1.946 | 5 | MC | 400,000 | 801 | 2.002e-03 | 1.6195 | 0.3264 | 0.0014 |
-| (3, 3) | 1.946 | 6 | MC | 4,000,000 | 1,283 | 3.208e-04 | 1.6684 | 0.2775 | 0.0008 |
+| (1, 1) | 1.099 | 3 | census | — | 84 | 4.268e-03 | 0.3702 | 0.7284 | 0.0000 |
+| (1, 1) | 1.099 | 4 | DP | — | 17,202 | 3.996e-04 | 0.5409 | 0.5577 | 0.0000 |
+| (1, 1) | 1.099 | 5 | DP | — | 16,574,562 | 1.956e-05 | 0.6210 | 0.4776 | 0.0000 |
+| (1, 1) | 1.099 | 6 | DP | — | 86,148,328,050 | 5.740e-07 | 0.6689 | 0.4297 | 0.0000 |
+| (2, 1) | 1.386 | 2 | census | — | 84 | 3.281e-01 | 0.7611 | 0.6252 | 0.0000 |
+| (2, 1) | 1.386 | 3 | census | — | 48,196 | 1.839e-01 | 1.0441 | 0.3422 | 0.0000 |
+| (2, 1) | 1.386 | 4 | DP | — | 393,419,652 | 9.160e-02 | 1.1503 | 0.2360 | 0.0000 |
+| (2, 1) | 1.386 | 5 | DP | — | 45,560,019,060,572 | 4.047e-02 | 1.2026 | 0.1837 | 0.0000 |
+| (2, 1) | 1.386 | 6 | MC | 40,000 | 671 hits | 1.678e-02 | 1.2342 | 0.1521 | 0.0011 |
+| (2, 1) | 1.386 | 8 | MC | 400,000 | 667 hits | 1.667e-03 | 1.2647 | 0.1216 | 0.0006 |
+| (2, 1) | 1.386 | 10 | MC | 4,000,000 | 399 hits | 9.975e-05 | 1.2803 | 0.1060 | 0.0005 |
+| (1, 2) | 1.386 | 2 | census | — | 8 | 3.125e-02 | 0.1733 | 1.2130 | 0.0000 |
+| (1, 2) | 1.386 | 3 | census | — | 136 | 5.188e-04 | 0.3918 | 0.9945 | 0.0000 |
+| (1, 2) | 1.386 | 4 | DP | — | 72,872 | 1.697e-05 | 0.6131 | 0.7732 | 0.0000 |
+| (1, 2) | 1.386 | 5 | DP | — | 152,445,152 | 1.354e-07 | 0.6982 | 0.6881 | 0.0000 |
+| (2, 2) | 1.609 | 2 | census | — | 40 | 6.400e-02 | 0.5199 | 1.0896 | 0.0000 |
+| (2, 2) | 1.609 | 3 | census | — | 47,520 | 2.433e-02 | 1.0177 | 0.5917 | 0.0000 |
+| (2, 2) | 1.609 | 4 | DP | — | 740,712,190 | 4.854e-03 | 1.1759 | 0.4336 | 0.0000 |
+| (2, 2) | 1.609 | 5 | DP | — | 204,946,279,408,620 | 6.877e-04 | 1.2538 | 0.3557 | 0.0000 |
+| (3, 3) | 1.946 | 2 | census | — | 224 | 9.329e-02 | 0.8664 | 1.0795 | 0.0000 |
+| (3, 3) | 1.946 | 3 | DP | — | 1,615,376 | 4.003e-02 | 1.3721 | 0.5738 | 0.0000 |
+| (3, 3) | 1.946 | 4 | DP | — | 344,337,172,900 | 1.036e-02 | 1.5387 | 0.4072 | 0.0000 |
+| (3, 3) | 1.946 | 5 | MC | 400,000 | 801 hits | 2.002e-03 | 1.6195 | 0.3264 | 0.0014 |
+| (3, 3) | 1.946 | 6 | MC | 4,000,000 | 1,283 hits | 3.208e-04 | 1.6684 | 0.2775 | 0.0008 |
 
-Dropped as under-powered: (2, 2) L=6, 8, 10 and (3, 3) L=8, 10.
+`|C| = 0` exactly at (1,1) L=2 — no dwell-free attractor exists at all, so κ is
+undefined there. That is a **fact explained by Lemma E**, not a measurement
+failure, and it is reported separately from the drops.
+
+Dropped as under-powered (< 300 hits at 4,000,000 draws): (1,1) L=8, 10; (1,2) L=6, 8, 10; (2,2) L=6, 8, 10; (3,3) L=8, 10.
 
 `κ` is positive at every measured point, so multistability is extensive in
 system size. `c` falls monotonically in `L` at all three cells — and **it is
@@ -239,11 +322,14 @@ or asserted here.
   certified exhaustively at the twelve rows above and sampled to `L = 8`. It is
   the one load-bearing claim here without a proof, and it is what licenses
   reading `C` as *the* attractor set rather than merely the dwell-free part.
-- **The girth reading is a conjecture.** 4 is the girth of the square lattice
-  and (1,1) is the unique tested cell with `S+1 < 4`, which makes "the
-  threshold is the girth" a natural guess — but no second girth is tested, so
-  one cell is carrying that entire interpretation. A triangular or hexagonal
-  lattice would settle it cheaply.
+- **The girth reading was wrong, and its replacement covers only half.** The
+  first revision guessed that the `S+1 ≥ 4` threshold was the square lattice's
+  girth. Lemma E replaces that with a proven arithmetic condition — and settles
+  only the *emptiness* half. Why **dwelling attractors** are absent whenever
+  `S+1 ≥ 4` is still unexplained and still rests on (1,1) alone. The cheap
+  discriminator is a lattice of different girth **and parity**: triangular
+  (girth 3, non-bipartite, odd cycles available) or honeycomb (girth 6,
+  bipartite). Not run here.
 - **`θ = 1`, von Neumann, open boundary.** As everywhere else in this thread.
   The torus is untested; prediction P-C of
   [`coherence_larger_lattices_handoff.md`](coherence_larger_lattices_handoff.md)
@@ -251,12 +337,14 @@ or asserted here.
 - **`κ` is not converged** (above), and the sampled `P(L)` columns are upper
   bounds. All sampling is over raw configurations, uniform per cell; the
   gap-signature quotient is not used to reduce variance anywhere.
-- **The `κ` estimator is a rare-event estimator.** At the largest `L` it is
-  counting a few hundred hits in millions of draws, and its first revision
-  quoted points backed by one hit. It is now hit-count-governed, but this
-  remains the least robust section of the doc: an exact transfer-matrix count
-  of `|C|` (a `B^(2L)`-state DP) would replace it outright and is the right
-  next step if these numbers ever have to carry weight.
+- **The surviving `κ` points are still Monte-Carlo.** The DP has retired
+  sampling up to `L = 5`, but (2,1) `L = 6, 8, 10` and (3,3) `L = 5, 6` remain
+  rare-event estimates of a few hundred hits in millions of draws. They are now
+  hit-count-governed and cross-validated against the DP where the two overlap
+  (all within 1.2 SE), which is as much assurance as sampling can give. Pushing
+  the DP further needs either a larger state budget or arbitrary-precision
+  counts — `B = 4, L = 6` is blocked by the `int64` ceiling (`4³⁶ ≈ 4.7×10²¹`),
+  not by the state space.
 - **3×3 stops at (2,2).** `B = 6, 7` at 3×3 (10M and 40M configurations) were
   not run in the exhaustive census; the largest exhaustive row is 1,953,125
   configurations.
