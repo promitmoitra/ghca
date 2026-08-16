@@ -1575,3 +1575,88 @@ the reason, rather than deleting it: a wrong prediction with a diagnosed cause
 is more useful to the next reader than a clean list.
 
 — Claude (session `d560b36c`)
+
+---
+
+## 2026-08-16 — review of `docs/research_brainstorming_coherence_horizons.md` (Claude, session `d560b36c`)
+
+Read the doc on `feat/coherence-4x4-scaling` @ `32f4c28`. Good synthesis, and
+the ledger in §1 is accurate where I could check it (per-capita 2,184 / 1,232 /
+333 matches `ceil_role_counts` exactly; the ≈5% quiet-run ambiguity is sourced
+to `coherence_invariant.md` and the handoff; `ghca_plasticity.py` and
+`timescale_hierarchy_results.md` both exist). Three findings, one of which
+kills a direction's premise and one of which closes a proposed two-week pilot
+in four minutes.
+
+### 🔴 Direction 4's premise is false — the clock-shift quotient is NOT a deterministic macro-state
+
+§2.3 and Direction 4 assert that "the clock-shift equivalence class $[v]_\sim$
+is an exact deterministic dynamical macro-state". It is not, and this program
+already knew: **lumpability was falsified** (F2/F3 on the theory branch), and
+`spectrum_sufficiency_certificate.py` *asserts* that the clock-shift does not
+commute with the step map — that assertion exists precisely so this shortcut
+cannot be re-taken.
+
+Measured directly — for live `v` and each class-mate `v+k`, does `step(v+k)`
+land in the class of `step(v)`?
+
+| cell | class-mates whose image leaves the image class |
+|---|---|
+| (2,1) | 144/540 (26.7%) |
+| (2,2) | 256/800 (32.0%) |
+| (3,3) | 960/4704 (20.4%) |
+
+So the quotient map is not well-defined: one macro-state has several possible
+successor macro-states. **Direction 4's own falsifier — "macro-state
+transitions exhibiting indeterminism" — is already met before the ΦID
+computation starts.** EI on that partition would be measuring an
+ill-defined coarse-graining.
+
+This does not kill causal-emergence work here; it kills *this* partition. The
+one that *is* dynamically closed is R — the certified pair set — because
+closure under the pair map is exactly what Theorem 4 verifies. If ΦID is
+wanted, run it on the pair dynamics restricted to R, or on the gradient-spectrum
+partition (which is fate-exact at τa ≥ τp), not on clock-shift classes. Worth
+being precise about *why* the invariant is called a coherence relation on
+**pairs** rather than an equivalence on configurations: the whole arc is about
+pairs because the configuration-level quotient does not survive the dynamics.
+
+### ✅ Direction 2's H1 is already true — the pilot is unnecessary as scoped
+
+H1: for every trajectory pair reaching age S, some u-side cell has quiet run
+Q(i,t) < S. Scoped as a two-week pilot. It runs exhaustively at 2×2 in seconds
+over all live starts, tracking Q per cell along the forward orbit:
+
+| cell | S | ceiling holds | H1 holds | violations |
+|---|---|---|---|---|
+| (2,1) | 3 | 12 | 12 | **0** |
+| (2,2) | 4 | 24 | 24 | **0** |
+| (3,3) | 6 | 64 | 64 | **0** |
+
+Zero violations. The remaining work is not *testing* H1 at 2×2, it is (a)
+confirming at 3×3 over all 25,998 ceiling states, and (b) **proving** it —
+the hand argument, which is the actual open obligation. Suggest rescoping
+Direction 2 to the proof and treating the empirics as a one-day confirmation,
+which frees most of the two weeks.
+
+Note the framing gap: the doc says quiet-run ambiguity blocks the proof "because
+age is a state function and quiet run is a path function". True, and the fix is
+the doc's own move — carry the trajectory prefix. But H1 as stated is about
+*existence* of a young cell, and it is the existence that needs proving from the
+refractory pipeline, not the measurement.
+
+### ⚠ Minor: the `file:///` links will not resolve for anyone else
+
+Eight links point at `file:///home/dognosis/Documents/ghca/.exact/...` — that
+is a scratch worktree of mine, machine-local and transient. They will not
+render on GitHub or the MkDocs site and will break for every other reader.
+Use repo-relative paths (`../experiments/coherence_covering_lemma.py`).
+
+### On the roadmap
+
+Step 1 (land the coherence branch) is done — PR #85 merged; `main` also carries
+the inventory correction (#88) and the plan reconciliation (#87) now. Step 2 is
+done and reported. Step 3 is the one that matters, and per the above it is
+smaller than scoped. I would drop Direction 4 as written, or re-aim it at R.
+
+— Claude (session `d560b36c`)
