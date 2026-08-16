@@ -47,7 +47,8 @@ not as built-in modules.
 | `experiments/spectrum_sufficiency_certificate.py` | Machine checks for `docs/spectrum_sufficiency_proof.md`: certificate schema (ING-1/2/3) proves sufficiency at (1,1)/(2,1); death == simultaneous double-dwell (P4); signature moves only via dwell (P5); regime = ING-3 alone (P6) |
 | `experiments/viz_gh_vs_symbolic.py` | Animation: the medium, its space-time raster, and the symbol automaton side by side for a live and a dead run — the double-dwell death and the L2 class-exchange, visible |
 | `experiments/clock_shift_merge.py` | The regime law reduces to clock-shift merging: rearrangement-invariance is universal; clock-shift invariance == the regime; at `tau_a >= tau_p` EVERY orbit merges with its clock-shift (100%) |
-| `experiments/clock_shift_healing.py` | Lemma R (proven): step == clock-shift iff dwell-free; clock-shift = time-step on live attractors (`S+1 >= 4`); LIVE healing has the exact closed form `tau_a + 2*tau_p + 1` (12 cells), witnesses = one young-wave family; 2S saturators are all dead drains |
+| `experiments/clock_shift_healing.py` | Lemma R (proven): step == clock-shift iff dwell-free; clock-shift = time-step on live attractors (`S+1 >= 4`); LIVE healing has the exact closed form `tau_a + 2*tau_p + 1` (12 cells), witnesses = one young-wave family; 2S saturators are all dead drains. **Its "empirical half" now has a closed form — see `coherent_core.py`** |
+| `experiments/coherent_core.py` | **The coherent core**: the dwell-free attractor set is the STATIC local condition `C = {c : every cell has a neighbour at lag 1..tau_a}` — proven lattice-free (Theorem C), with `step = +1` on `C`, period exactly `S+1`, and `#attractors = \|C\|/(S+1)`; plus Theorem Z (the all-zero fixed point is the ONLY dead attractor, any graph — the fact `persistent_set_3x3.py`'s label propagation assumed). Census: the attractor architecture is **regime-independent** (holds verbatim at `tau_p > tau_a`); (1,1) is the sole cell with dwelling attractors (the only one with `S+1 < 4`); transients are `O(S)` not `O(L^2)`; `#attractors ~ exp(kappa L^2)` with kappa positive but **not converged**; `P -> 1` fast in `L` |
 | `experiments/damage_relaxation.py` | Discrete perturbation theory (damage spreading): the clock-shift is a zero mode; at `tau_a >= tau_p` every scattered damage relaxes back in exactly `tau_a + 2*tau_p + 1`; never-relaxing pairs == split-fate pairs, one for one — the regime law as a damage-healing transition |
 | `experiments/damage_relaxation_3x3.py` | Scaling: the transition survives at 3x3 (split-fate = 0 at every `tau_a >= tau_p` cell, up to 10M configs) but the 2x2 closed form does NOT lift (relax times 9/12/10/14, topology-dependent) and the right criterion is MERGE, not return-to-uniform ((1,1): 14,052 never-uniform pairs, all merged) |
 | `experiments/dwell_debt_confinement.py` | The confinement variable: damage == 1 + dwell-debt (exact identity); live debt confined (2x2: `ceil(S/2)`, 3x3: `S`) at `tau_a >= tau_p` vs unit-slope drift `T-k` (k=1 at (1,2), k=2 at (2,3)) at `tau_p > tau_a` — the regime law as debt confinement vs escape |
@@ -130,6 +131,22 @@ not as built-in modules.
   only via dwell, one adjacent-gap exchange at a time (P5). The regime
   boundary is relocated to a single question: why is the dead state's basin
   boundary signature-measurable exactly when `τa ≥ τp`?
+- [`docs/coherent_core.md`](docs/coherent_core.md) — **theory.** Two hand proofs
+  valid on *any* graph, plus the `L×L` phase-space census they license.
+  **Theorem C:** the dwell-free attractor set is exactly the static local
+  predicate `C = {c : every cell has a neighbour at lag 1..τa}`; `step` is the
+  global clock-shift on `C`, every such cycle is live with period exactly
+  `S+1`, and `#attractors = |C|/(S+1)`. **Theorem Z:** the all-zero fixed point
+  is the only dead attractor. Together they close the *empirical half* of
+  `clock_shift_healing.py` and discharge the assumption behind
+  `persistent_set_3x3.py`'s label propagation. The census adds four readings:
+  the attractor architecture is **regime-independent** (Theorem C holds
+  verbatim at `τp > τa` — the `τa ≥ τp` line governs basins only); (1,1) is the
+  sole cell with dwelling attractors; transients are `O(S)`, not `O(L²)`, so
+  phase space is a very wide, very shallow funnel; and `P → 1` fast in `L`, so
+  the dying set is a small-lattice phenomenon. Caveat: "every live attractor is
+  dwell-free when `S+1 ≥ 4`" is **certified, not proven**, and the girth
+  reading of that 4 rests on one cell.
 - [`docs/topology_cycle_packing_exact.md`](docs/topology_cycle_packing_exact.md) —
   **correction to the above.** `pack_long_cycles` picks `max(longer, key=len)`;
   maximising the *count* wants `min`. One word costs 1.0–4.7×, an exact set-packing

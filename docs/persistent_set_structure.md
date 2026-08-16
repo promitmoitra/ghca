@@ -221,6 +221,9 @@ Archive: `result/topology/persistent_set_3x3.npz`
   label propagation to the all-zero sink (valid because θ=1 GH has no non-zero
   dead attractor — checked exhaustively at 2x2, and the pipeline is checked
   against direct orbit iteration at 3x3 (1,1), both inside the script).
+  **That validity condition is now a theorem** for every graph and every
+  `(tau_a, tau_p)` — Theorem Z of [`coherent_core.md`](coherent_core.md) — so
+  the propagation no longer rests on a 2x2 check.
 
 Scope: open-boundary 3x3 box, θ = 1, von Neumann, cells up to S+1 = 7. The
 (4,3)/(3,4) pair (S+1 = 8, 134M configs) is the next affordable check.
