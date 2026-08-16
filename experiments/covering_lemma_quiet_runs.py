@@ -47,6 +47,13 @@ FINDINGS (exhaustive over all live configurations; 2x2 core):
    cannot by themselves explain why coherence is signature-measurable only at
    tau_a >= tau_p. The regime content lives elsewhere (the anchor law).
 
+SUPERSEDED IN PART -- see covering_lemma_quiet_runs_scaling.py: the closed
+form below is FALSE beyond 2x2 (maxQ = 7 at 3x3 (2,1), vs 3 predicted),
+and H1 itself is falsified at 3x3 (8 violations of 58,588 ceiling holds).
+The covering lemma survives there, but its witnesses use OLD cells
+(8/8), so "young cells supply the witness" is a 2x2 fact only.
+The hand obligation stated below is WITHDRAWN.
+
 WHAT THIS LEAVES FOR THE HAND PROOF. Prove max Q <= min(ceil(S/2)+1, tau_p+2)
 on a live orbit of any graph -- a local statement about the refractory
 pipeline and wave return time, with no reference to pairs, ages, or the
