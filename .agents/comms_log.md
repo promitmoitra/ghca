@@ -1398,7 +1398,7 @@ you grep a doc for a claim it *rebuts*, strip the quoting first.
 
 ## 2026-08-16 — Coherence Invariant 4×4 Scaling Empirical Confirmation, P-C Swap-Size Distribution Test & Literature Synthesis (Antigravity/Gemini)
 
-**Branch:** `feat/coherence-4x4-scaling` @ `de1ff4e` (pushed to remote `origin/feat/coherence-4x4-scaling`).
+**Branch:** `feat/coherence-4x4-scaling` @ `1237508` (pushed to remote `origin/feat/coherence-4x4-scaling`).
 
 ### 1. 🔬 4×4 Seeded-Orbit Preimage Sampling Results (P-A, P-B, P-C Tested)
 Following the handoff in `docs/coherence_larger_lattices_handoff.md` and the fast-forward merge of `claude/coherence-invariant` onto `main`, we implemented and certified the $4\times 4$ backward BFS preimage sampling experiment across 300 random initial conditions on both open and periodic torus lattices (`experiments/coherence_window_4x4.py`, archive `result/topology/coherence_window_4x4.npz`, seed 12345).
@@ -1414,17 +1414,19 @@ Following the handoff in `docs/coherence_larger_lattices_handoff.md` and the fas
 - **Prediction P-C (Swap-Size Distribution Shift on Torus): TESTED & FALSIFIED (REJECTED).**
   - *Stated Prediction:* Torus (all degree 4) should shift swap sizes *upward* (rarer single-cell witnesses) because 4 neighbors contradict re-readings.
   - *Falsifier:* Torus swap-size distribution equal to or below the open lattice.
-  - *Committed Observable Data (`coherence_window_4x4.npz`):*
-    - Open ($N=111$): sizes `{1: 43, 2: 30, 3: 25, 4: 9, 5: 4}`, mean swap size $= 2.108$, $P(\text{single-cell}) = 38.7\%$.
-    - Torus ($N=22$): sizes `{1: 11, 2: 7, 3: 2, 4: 2}`, mean swap size $= 1.773$, $P(\text{single-cell}) = 50.0\%$.
-  - *Physical Mechanism:* Boundary reflections on open lattices induce complex spatial wave clashes that disrupt quiet runs, requiring multi-cell coordination ($k \ge 2$) for valid preimages. On the translationally invariant torus, orbits collapse cleanly into traveling zero-modes with large quiet clusters admitting single-cell swaps.
-- **Witness Structure & Side Separation:** Holds occur strictly at ages $\{0, 1, 3\}$ (never at age 2). Ceiling holds ($3\to 3$) are 100% $u$-side witnessed (0 on $v$-side); age-1 holds ($1\to 1$) are 100% $v$-side witnessed (0 on $u$-side).
+  - *Committed Observable Data (`coherence_window_4x4.npz`, uncapped witness search):*
+    - Open ($N=115$): sizes `{1: 43, 2: 30, 3: 25, 4: 9, 5: 4, 6: 3, 9: 1}`, mean swap size $= 2.270$, $P(\text{single-cell}) = 37.4\%$ (43/115).
+    - Torus ($N=22$): sizes `{1: 11, 2: 7, 3: 2, 4: 2}`, mean swap size $= 1.773$, $P(\text{single-cell}) = 50.0\%$ (11/22).
+  - *Physical Mechanism & Uncapped Search:* Removing the subset size cap of 5 revealed that all 115/115 ceiling holds on open are $u$-witnessed (the 4 previously "unwitnessed" states required $k=6$ and $k=9$). Open boundary clashes induce multi-cell coordination requirements creating a heavy tail up to size 9, widening the open/torus gap (mean 2.270 vs 1.773).
+- **Witness Structure & Side Separation:** Holds occur strictly at ages $\{0, 1, 3\}$ (never at age 2).
+  - Open: Ceiling holds 115/115 (100%) $u$-witnessed (0 on $v$-side); Age-1 holds 246/246 (100%) $v$-witnessed (0 on $u$-side).
+  - Torus: Ceiling holds 22/22 (100%) $u$-witnessed (0 on $v$-side); Age-1 holds 58/58 (100%) $v$-witnessed (0 on $u$-side).
 
 ### 2. 🧪 Test Suite & Invariant Documentation
-- Saved all swap size arrays explicitly into `result/topology/coherence_window_4x4.npz` (`open_ceil_sizes_keys`, `open_ceil_sizes_vals`, `torus_ceil_sizes_keys`, `torus_ceil_sizes_vals`, and age-1 counterparts).
+- Saved all swap size arrays and hold count totals explicitly into `result/topology/coherence_window_4x4.npz`.
 - Added unit tests in `tests/test_coherence_window_4x4.py` verifying archive integrity, window bound, witness separation, and swap size observables (31/31 suite tests passing via `uv run pytest`).
 - Audited repository RNG via `.claude/skills/experiment-review/review_helper.py audit-rng` (100% compliant, zero unseeded calls).
-- Updated documentation in `docs/coherence_invariant.md` and `docs/coherence_larger_lattices_handoff.md`.
+- Updated documentation in `docs/coherence_invariant.md`, `docs/coherence_larger_lattices_handoff.md`, and `docs/research_brainstorming_coherence_horizons.md`.
 
 ### 3. 📚 Literature Synthesis & Future Track Opportunities
 Carried out a comprehensive literature review connecting our discrete excitable dynamics to 2023–2026 neuroscience and dynamical systems literature:
