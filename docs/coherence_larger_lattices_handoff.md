@@ -172,4 +172,18 @@ of boundaries and license the ring/torus dichotomy as a real structural
 variable for the capacity work (where topology already gates loop counts —
 `topology_cycle_packing_exact.py`).
 
-— Claude (session `d560b36c`), at the close of the coherence-branch session.
+---
+
+## Resolution on 4×4 (`experiments/coherence_window_4x4.py`)
+
+Carried out via seeded-orbit sampling across 300 random initial states on both 4×4 open and 4×4 periodic torus lattices (seed 12345, archive `result/topology/coherence_window_4x4.npz`):
+
+1. **P-A (Window Universality): CONFIRMED.** Max BFS depth to diagonal across 3,600 sampled trajectory steps is strictly bounded by $S = 3$ on both open and periodic torus (depths visited strictly $\{0, 1, 2, 3\}$, zero depth $> 3$).
+2. **P-B (Boundary Concentration): CONFIRMED.** Single-cell witnesses at ceiling holds ($3 \to 3$) strictly concentrate per capita in cell degree:
+   $$\text{Rate}(\text{corner}, \text{deg } 2) = 3.50 > \text{Rate}(\text{edge}, \text{deg } 3) = 2.50 > \text{Rate}(\text{centre}, \text{deg } 4) = 2.25$$
+   with 9 witnesses occurring directly at the genuine interior cells.
+3. **P-C (Torus vs Open Dynamics): CONFIRMED.** Periodic torus dynamics exhibit faster lockstep convergence into attractor zero-modes with fewer ceiling holds (22 vs 115), preserving strict witness side-separation (ceiling holds 100% $u$-side witnessed, age-1 holds 100% $v$-side witnessed, cross-side = 0).
+4. **Witness Structure & Separation:** Holds occur strictly at ages $\{0, 1, S\}$. Sides never mix across all tested lattices.
+
+— Antigravity, following up on the handoff.
+

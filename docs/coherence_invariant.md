@@ -42,6 +42,8 @@ archive `coherence_window_S.npz`.
 | (4,3) | 7 | 3,400 | 7 |
 | (4,4) | 8 | 3,600 | 8 |
 | 3×3 (2,1) | 3 | 483,446 | 3 |
+| 4×4 open (2,1) | 3 | sampled (300 inits) | 3 |
+| 4×4 torus (2,1) | 3 | sampled (300 inits) | 3 |
 
 ### Where it fails (τp > τa) — asserted negative control
 
@@ -109,9 +111,16 @@ ceiling). — `coherence_window_saturation.npz`.
 | u-side | age-1 holds | **0** / 38,256 |
 | v-side | ceiling | **0** / 25,998 |
 
-So *sides never mix*, now certified in **both** directions. Swap-size
-distribution at the ceiling: 13,997 / 7,800 / 3,010 / 967 / 200 / 24 for sizes
-1..6. — `coherence_covering_lemma.npz`.
+At 4×4 open (2,1) (sampled over 300 random trajectories, seed 12345):
+- Ceiling holds: 111 / 115 u-side witnessed (**0** on v-side)
+- Age-1 holds: 235 / 246 v-side witnessed (**0** on u-side)
+- Swap size distribution at ceiling: 43 / 30 / 25 / 9 / 4 for sizes 1..5
+
+At 4×4 torus (2,1):
+- Ceiling holds: 22 / 22 u-side witnessed (**0** on v-side)
+- Age-1 holds: 57 / 58 v-side witnessed (**0** on u-side)
+
+So *sides never mix*, confirmed at 2×2, 3×3, and 4×4. — `coherence_covering_lemma.npz`, `coherence_window_4x4.npz`.
 
 **"Theorem 4" (the anchor law) is not a theorem — there is no proof.** It is an
 exhaustive check over a 276-state forward closure at (2,1): the four predicates
@@ -133,12 +142,12 @@ not the zero/merged/B4 constraints; an earlier label said "all".)
 
 ### OBSERVED (a pattern, not yet a law)
 
-**Per-capita boundary concentration.** Single-cell witnesses at 3×3 concentrate
-on low-degree cells *per capita*: corner 8,736 / edge 4,928 / centre 333 over
-the full census — 2,184 per corner > 1,232 per edge > 333 at the centre.
+**Per-capita boundary concentration.** Single-cell witnesses concentrate
+on low-degree cells *per capita*:
+- At 3×3 (full census): corner 8,736 / edge 4,928 / centre 333 = 2,184 per corner > 1,232 per edge > 333 at the centre.
+- At 4×4 open (300 inits): corner 14 / edge 20 / centre 9 = **3.50 per corner > 2.50 per edge > 2.25 at the centre**.
 
-**The centre is not excluded**: 333 of the 13,997 single-cell witnesses sit at
-the interior cell.
+**The centre is not excluded**: 333 of the 13,997 single-cell witnesses at 3×3 and 9 of the 43 single-cell witnesses at 4×4 sit at the interior cells.
 
 The count is convention-dependent, and **the ordering survives both
 conventions** — worth stating explicitly, since convention ambiguity is what
@@ -225,6 +234,7 @@ python3 experiments/coherence_window_S.py           # window = S, + negative con
 python3 experiments/coherence_window_saturation.py  # age law, on-orbit falsification
 python3 experiments/coherence_covering_lemma.py     # swap law, witness census, roles
 python3 experiments/coherence_invariant_scope.py    # 3x3 re-certification
+python3 experiments/coherence_window_4x4.py         # 4x4 open & torus scaling (P-A, P-B, P-C)
 python3 experiments/anchor_law_certificate.py       # "Theorem 4" + compression barrier
 python3 experiments/coherence_formulate_2x2.py      # lockstep necessary, not sufficient
 ```
