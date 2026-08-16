@@ -1,5 +1,63 @@
 # Implementation Plan: GitOps Branch Inventory, Protection & Pre-Pruning Plan
 
+> [!CAUTION]
+> **Do not execute the step lists below as written.** They were authored
+> 2026-07-28 against a repository state that no longer exists, and the safety
+> analysis they rely on is incomplete in a way that destroys work. Read this
+> header, then run `scripts/branch_safety_check.sh` and act on **its** output.
+> The plan's *structure* (protect → land open PRs → harmonize → prune → branch
+> out) is still the right sequence; only its lists are stale.
+>
+> **1. The ancestry test used here is unsafe on this repo — but not for the
+> reason the inventory gives.**
+> - **Verified and real:** the repo has used both squash-merges and merge
+>   commits, so `git merge-base --is-ancestor` reports "unmerged" for branches
+>   whose content is fully landed. Reproduced here: 15 branches are `ANCESTOR=no,
+>   CHERRY=0`. This over-preserves; harmless. (Recorded in the PR #71 review.)
+> - **What actually loses work is per-path novelty, not ancestry.** A branch can
+>   be the sole holder of a tracked path that has never existed anywhere in
+>   `main`'s history, while looking like an ordinary feature branch. `git cherry`
+>   does not catch this; only walking the paths does. The check script below runs
+>   that test and refuses to mark such a branch SAFE unless an `archive/*` tag
+>   covers its tip.
+> - **Correction to [`branch_preservation_inventory.md`](branch_preservation_inventory.md)
+>   (on `main`):** that doc states "15 branches have no merge-base with `main` at
+>   all… they predate a history rewrite," and names three. **This does not
+>   reproduce — including at the inventory's own stated basis, `main` @
+>   `6f41eca`.** All three named branches have real merge-bases there and now
+>   (`55da552`, `eec7554d`, `857a84c8`; the first is a 2022 commit that is an
+>   ancestor of both). Across every remote head (64 when checked; the count
+>   moves) exactly **one** ref lacks a merge-base, and it is
+>   `__dolt_remote_info__`, a Dolt metadata ref rather than a code branch. The most likely cause is an incomplete local object graph in
+>   the session that produced the inventory: `git merge-base` exits non-zero when
+>   objects are missing, and that error reads identically to "no common
+>   ancestor." **Fetch fully before concluding two refs share no history.**
+> - The "no merge-base ⇒ hard stop" rule is still worth keeping — it is one line,
+>   and an unfetched-objects error should stop a deletion script rather than be
+>   interpreted — but keep it as cheap defence, not as a description of a known
+>   15-branch class. The inventory's sole-holder analysis is the part that
+>   protects work, and that part reproduces.
+>
+> **2. The inventory is a snapshot, not a live view.** It was verified against
+> `main` @ `6f41eca`. Re-verified 2026-08-16 against `main` @ `cfb60c8`, its
+> sole-holder count fell from **10 to 5**, and two of those five dissolve on
+> inspection (`claude/comms-claude-dir-tmpfs` is fully landed on
+> `agent-comms-log` — `git cherry` shows 0 unlanded patches, it looks novel only
+> because `.agents/comms_log.md` does not exist on `main`;
+> `publish/k-dyn-correction` is content-identical to `deploy-viz-page`, so its
+> "novel" paths are just the site infra). Three genuine sole holders remain, and
+> **all three are covered by `archive/*` tags at their exact tips**, so the work
+> is protected by immutable refs independent of branch lifetime. Never act on a
+> stored table; re-run the check.
+>
+> **3. Most of this plan is already done.** Step 0's PRs (#70, #71) are merged,
+> as are #80 and #84 since. **All nine** of Step 3's remote deletion targets are
+> already gone. The `archive/*` tags Step 0 asks for exist (10 on the remote).
+> Re-derive the current state before running anything.
+>
+> — reconciliation added 2026-08-16 (session `d560b36c`), verified against
+> `origin/main` @ `cfb60c8`.
+
 ## Goal Description
 Conduct a comprehensive GitOps pre-pruning audit of all local and remote branches in the `promitmoitra/ghca` repository. Based on current project state (PRs #1–#69), `main` history, and cross-agent coordination entries in `agent-comms-log`, classify every branch into protection, merge/rebase, or pruning categories, and establish a safe step-by-step removal and harmonization sequence.
 
@@ -190,8 +248,19 @@ git checkout -b track/closed_loop_phase1_3_rerun
 ## Verification Plan
 
 ### Automated Checks
-- Run `git branch -vv` to verify only protected core branches and active track branches remain locally.
-- Run `git branch -r` to verify remote branch cleanliness.
+- **Before deleting anything**, run `bash scripts/branch_safety_check.sh` and act
+  on its output rather than on any list in this document or in
+  `branch_preservation_inventory.md`. It applies three tests (ancestry, patch
+  equality via `git cherry`, per-path novelty) and four hard stops (open-PR head,
+  protected branch, missing merge-base, untagged sole holder). Snapshot at the time of writing (2026-08-16, `main` @ cfb60c8, 65 remote
+  heads): **41 SAFE / 17 KEEP** — a dated observation, not a standing
+  figure. The script is the authority; these numbers move whenever a branch is
+  pushed.
+- Tag before deleting. A branch the script marks `sole holder … UNTAGGED` becomes
+  SAFE once an `archive/*` tag points at its tip; deletion is irreversible from
+  the client side, tagging costs nothing.
+- Run `git branch -vv` and `git branch -r` to confirm the resulting state matches
+  the script's SAFE/KEEP partition.
 - Run `python3 reproduce_all.py` to confirm that branch harmonization did not break any reproducibility assertions or unit tests.
 
 ### Manual Verification
