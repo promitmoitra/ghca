@@ -185,11 +185,13 @@ Carried out via seeded-orbit sampling across 300 random initial states on both 4
 3. **P-C (Swap-Size Distribution Shift on Torus): TESTED & REJECTED (FALSIFIED).**
    - *Hypothesis:* On the torus (all degree 4), single-cell witnesses would be rarer and swap sizes shifted upward vs open lattice.
    - *Falsifier:* Torus swap-size distribution equal to or below the open one.
-   - *Committed Data (`coherence_window_4x4.npz`):*
-     - 4×4 Open ($N=111$): sizes `{1: 43, 2: 30, 3: 25, 4: 9, 5: 4}`, mean swap size $= 2.108$, $P(\text{single-cell}) = 38.7\%$.
+   - *Committed Data (`coherence_window_4x4.npz`, uncapped witness search):*
+     - 4×4 Open ($N=115$): sizes `{1: 43, 2: 30, 3: 25, 4: 9, 5: 4, 6: 3, 9: 1}`, mean swap size $= 2.270$, $P(\text{single-cell}) = 37.4\%$.
      - 4×4 Torus ($N=22$): sizes `{1: 11, 2: 7, 3: 2, 4: 2}`, mean swap size $= 1.773$, $P(\text{single-cell}) = 50.0\%$.
-   - *Finding:* The torus distribution is shifted *downward* (higher single-cell fraction, lower mean swap size). The hypothesis that 4 neighbours available to contradict re-reading necessitates larger swaps fails because open boundary reflections induce spatial wave clashes that break quiet runs and demand multi-cell swaps ($k \ge 2$), whereas translationally invariant torus orbits resolve into coherent traveling modes with large quiet clusters admitting single-cell swaps.
-4. **Witness Structure & Separation:** Holds occur strictly at ages $\{0, 1, S\}$. Sides never mix across all tested lattices (ceiling holds 100% $u$-side witnessed, age-1 holds 100% $v$-side witnessed; cross-side is 0).
+   - *Finding:* The torus distribution is shifted *downward* (higher single-cell fraction, lower mean swap size), and removing the artificial subset size cap of 5 reveals the heavy tail on open lattices (sizes up to 9). The hypothesis that 4 neighbours available to contradict re-reading necessitates larger swaps fails because open boundary reflections induce spatial wave clashes that break quiet runs and demand multi-cell swaps ($k \ge 2$), whereas translationally invariant torus orbits resolve into coherent traveling modes with large quiet clusters admitting single-cell swaps.
+4. **Witness Structure & Separation:** Holds occur strictly at ages $\{0, 1, S\}$. Sides never mix across all tested lattices:
+   - 4×4 Open: Ceiling holds 115/115 (100%) $u$-side witnessed (0 on $v$-side); Age-1 holds 246/246 (100%) $v$-side witnessed (0 on $u$-side).
+   - 4×4 Torus: Ceiling holds 22/22 (100%) $u$-side witnessed (0 on $v$-side); Age-1 holds 58/58 (100%) $v$-side witnessed (0 on $u$-side).
 
 — Antigravity, following up on the handoff.
 

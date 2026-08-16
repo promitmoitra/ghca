@@ -126,7 +126,7 @@ def make_ghca_4x4(ta=2, tp=1, periodic=False):
         cfg = u if side == 1 else v
         nxt = step(cfg)
         dws = [i for i in range(16) if cfg[i] == 0 and nxt[i] == 0]
-        for k in range(1, min(len(dws) + 1, 6)):
+        for k in range(1, len(dws) + 1):
             for su in combinations(dws, k):
                 cand = list(cfg)
                 for idx in su:
@@ -281,6 +281,9 @@ def main():
              open_ceil_u=np.array([res_open['ceil_u_witnessed']]),
              open_ceil_total=np.array([res_open['ceil_total']]),
              open_ceil_v=np.array([res_open['ceil_v_witnessed']]),
+             open_h1_v=np.array([res_open['h1_v_witnessed']]),
+             open_h1_total=np.array([res_open['h1_total']]),
+             open_h1_u=np.array([res_open['h1_u_witnessed']]),
              open_ceil_sizes_keys=np.array(sorted(res_open['ceil_sizes'].keys())),
              open_ceil_sizes_vals=np.array([res_open['ceil_sizes'][k] for k in sorted(res_open['ceil_sizes'].keys())]),
              open_h1_sizes_keys=np.array(sorted(res_open['h1_sizes'].keys())),
@@ -293,6 +296,9 @@ def main():
              torus_ceil_u=np.array([res_torus['ceil_u_witnessed']]),
              torus_ceil_total=np.array([res_torus['ceil_total']]),
              torus_ceil_v=np.array([res_torus['ceil_v_witnessed']]),
+             torus_h1_v=np.array([res_torus['h1_v_witnessed']]),
+             torus_h1_total=np.array([res_torus['h1_total']]),
+             torus_h1_u=np.array([res_torus['h1_u_witnessed']]),
              torus_ceil_sizes_keys=np.array(sorted(res_torus['ceil_sizes'].keys())),
              torus_ceil_sizes_vals=np.array([res_torus['ceil_sizes'][k] for k in sorted(res_torus['ceil_sizes'].keys())]),
              torus_h1_sizes_keys=np.array(sorted(res_torus['h1_sizes'].keys())),

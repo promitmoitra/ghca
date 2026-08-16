@@ -63,9 +63,21 @@ class TestCoherenceWindow4x4(unittest.TestCase):
         p_single_torus = torus_vals[0] / np.sum(torus_vals)  # key 1 is index 0
 
         # Verify exact reproducibility from archive
-        self.assertAlmostEqual(open_mean, 2.1081, places=3)
+        self.assertEqual(int(d["open_ceil_u"].item()), 115)
+        self.assertEqual(int(d["open_ceil_total"].item()), 115)
+        self.assertEqual(int(d["open_ceil_v"].item()), 0)
+        self.assertEqual(int(d["open_h1_v"].item()), 246)
+        self.assertEqual(int(d["open_h1_total"].item()), 246)
+        self.assertEqual(int(d["open_h1_u"].item()), 0)
+
+        self.assertEqual(int(d["torus_ceil_u"].item()), 22)
+        self.assertEqual(int(d["torus_ceil_total"].item()), 22)
+        self.assertEqual(int(d["torus_ceil_v"].item()), 0)
+
+        self.assertEqual(int(open_keys[-1]), 9, "Uncapped search must reveal max swap size 9 tail")
+        self.assertAlmostEqual(open_mean, 2.2696, places=3)
         self.assertAlmostEqual(torus_mean, 1.7727, places=3)
-        self.assertAlmostEqual(p_single_open, 0.3874, places=3)
+        self.assertAlmostEqual(p_single_open, 0.3739, places=3)
         self.assertAlmostEqual(p_single_torus, 0.5000, places=3)
 
 
