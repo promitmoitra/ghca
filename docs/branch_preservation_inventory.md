@@ -8,6 +8,26 @@ this repo.** Two independent reasons:
 1. The repo has used **both** squash-merges and merge commits, so
    `git merge-base --is-ancestor` reports "unmerged" for branches whose content is
    fully landed — 36 of them. Trusting that signal over-preserves (harmless).
+> [!WARNING]
+> **Correction (2026-08-16): claim 2 below does not reproduce.** Tested directly
+> against current `main` *and* against this document's own stated basis
+> `6f41eca`: the three branches named as having no merge-base all have real ones
+> (`55da552` — a 2022 commit ancestral to both — `eec7554d`, `857a84c8`). Across
+> every remote head, exactly **one** ref lacks a merge-base, and it is
+> `__dolt_remote_info__`, a Dolt metadata ref rather than a code branch.
+> The likely cause is an incomplete local object graph: `git merge-base` exits
+> non-zero when objects are missing, and that error is indistinguishable from
+> "no common ancestor" — so fetch fully before concluding two refs share no
+> history. Keep the hard stop as cheap defence, but do not treat it as a known
+> 15-branch class. **Claim 1 (squash-merges) and the sole-holder analysis below
+> both reproduce, and the sole-holder analysis is the part that protects work.**
+> Full analysis and a re-runnable replacement for the tables:
+> `scripts/branch_safety_check.sh` and the reconciled plan (PR #87).
+>
+> The tables in this document are a **snapshot** verified against `main` @
+> `6f41eca`. Re-verified 2026-08-16, the sole-holder count fell 10 → 5, two of
+> which dissolve on inspection. Run the script; do not act on the tables.
+
 2. **15 branches have no merge-base with `main` at all** — they predate a history
    rewrite. Ancestry checks on them are meaningless, and a pruning script will
    classify them as ordinary unmerged feature branches with no warning. Three of
