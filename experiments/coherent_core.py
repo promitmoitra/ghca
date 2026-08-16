@@ -128,23 +128,23 @@ FINDINGS.
    Past L ~ 5 essentially every sampled initial condition lands on its own
    attractor.
 
-   Every quoted point is backed by an exact |C| from the census or the DP, or
+   Every quoted point is backed by an exact |C| from the census or the TM, or
    by >= 300 Monte-Carlo hits with draws escalated up to 4,000,000; points that
    reach none of these are DROPPED and listed, not quoted. An earlier revision
    used a bare fraction floor of 5e-5 at n = 40,000 and thereby quoted kappa
    values resting on ONE to THREE hits -- (2,2) L=6 rested on 1 hit, (2,1)
    L=10 on 3.
 
-7. THE TRANSFER-MATRIX DP RETIRES SAMPLING UP TO L = 5 (not entirely -- see
-   below). Carrying the last 2L cells as DP state makes |C| exactly computable
+7. THE TRANSFER MATRIX RETIRES SAMPLING UP TO L = 5 (not entirely -- see
+   below). Carrying the last 2L cells as TM state makes |C| exactly computable
    in O(L^2 * B^(2L+1)); it reproduces all 12 census counts EXACTLY (an
-   independent check of both, since the census counts cycles and the DP counts
+   independent check of both, since the census counts cycles and the TM counts
    a static predicate). Reach, set by a state-space cap and an int64 overflow
    guard: L <= 5 at B <= 5, L <= 4 at B = 7. MC still carries (2,1) L = 6, 8,
    10 and (3,3) L = 5, 6, so the earlier "would retire the sampling entirely"
    was too strong.
 
-   Where the two overlap the DP VALIDATES the MC: every deviation is under
+   Where the two overlap the TM VALIDATES the MC: every deviation is under
    1 SE (max 0.98 over 8 comparisons), so the surviving MC points are sound
    estimates -- the first revision's numbers were right, merely under-powered
    in the tail. Two previously-MC points are now exact and moved:
@@ -471,8 +471,8 @@ def exact_C_count(L, ta, tp, max_states=12_000_000):
     """EXACT |C| by a cell-by-cell transfer matrix, no sampling.
 
     Cell m's coherence test reads m-L, m-1, m+1, m+L, so m can be finalised the
-    moment cell m+L is placed. Carrying the last 2L cells as the DP state is
-    therefore sufficient, and transitions branch only B ways (a row-by-row DP
+    moment cell m+L is placed. Carrying the last 2L cells as the transfer-matrix state is
+    therefore sufficient, and transitions branch only B ways (a row-by-row TM
     would branch B^L). State space is B^(2L); work is O(L^2 * B^(2L+1)).
 
     Two guards, both returning (None, reason) rather than a wrong number:
@@ -571,7 +571,7 @@ def density(L, ta, tp, seed=SEED, exact_nC=None):
 
     Three sources, in descending order of authority:
       1. the exhaustive census, where it covers this (L, ta, tp);
-      2. the exact transfer-matrix DP (exact_C_count), where it is affordable;
+      2. the exact transfer matrix (exact_C_count), where it is affordable;
       3. Monte-Carlo over uniformly random CONFIGURATIONS, escalating n until
          at least MIN_HITS land in C.
     A point that reaches none of these is REPORTED AS DROPPED rather than
@@ -587,7 +587,7 @@ def density(L, ta, tp, seed=SEED, exact_nC=None):
         return "EMPTY" if exact_nC == 0 else _pack(L, ta, tp, exact_nC, "census")
     dp, _why = exact_C_count(L, ta, tp)
     if dp is not None:
-        return "EMPTY" if dp == 0 else _pack(L, ta, tp, dp, "DP")
+        return "EMPTY" if dp == 0 else _pack(L, ta, tp, dp, "TM")
     for n in MC_BUDGET:
         hits = _mc_hits(L, ta, tp, B, n, seed)
         if hits >= MIN_HITS:
@@ -660,21 +660,21 @@ def main():
               + f"   [latest death t={max(deaths)}]", flush=True)
         assert ps == sorted(ps) or ps[-1] >= ps[0], "P not increasing in L"
 
-    print("\n=== transfer-matrix DP: exact |C|, validated against the census ===",
+    print("\n=== transfer matrix: exact |C|, validated against the census ===",
           flush=True)
-    print(f"{'lattice':>8} {'cell':>7} {'census |C|':>12} {'DP |C|':>12} {'match':>6}",
+    print(f"{'lattice':>8} {'cell':>7} {'census |C|':>12} {'TM |C|':>12} {'match':>6}",
           flush=True)
-    dpval = []
+    tmval = []
     for r in rows:
         got, why = exact_C_count(r["L"], r["ta"], r["tp"])
-        assert got is not None, f"DP unaffordable at a census row: {why}"
+        assert got is not None, f"TM unaffordable at a census row: {why}"
         match = (got == r["nC"])
-        dpval.append(dict(L=r["L"], ta=r["ta"], tp=r["tp"], census=r["nC"], dp=got,
+        tmval.append(dict(L=r["L"], ta=r["ta"], tp=r["tp"], census=r["nC"], dp=got,
                           match=int(match)))
         print(f"{str(r['L']) + 'x' + str(r['L']):>8} "
               f"{'(' + str(r['ta']) + ',' + str(r['tp']) + ')':>7} "
               f"{r['nC']:>12,} {got:>12,} {str(match):>6}", flush=True)
-        assert match, f"DP disagrees with the census at L={r['L']} ({r['ta']},{r['tp']})"
+        assert match, f"TM disagrees with the census at L={r['L']} ({r['ta']},{r['tp']})"
 
     print("\n=== LEMMA E (emptiness): C non-empty => some cycle length l has "
           "l <= kB <= l*ta ===", flush=True)
@@ -753,9 +753,9 @@ def main():
               + ", ".join(f"({ta},{tp}) L={L}" for ta, tp, L in dropped),
               flush=True)
 
-    print("\n=== validating the surviving MC estimator against the exact DP ===",
+    print("\n=== validating the surviving MC estimator against the exact transfer matrix ===",
           flush=True)
-    print("(the MC points that remain sit beyond the DP's reach, so their "
+    print("(the MC points that remain sit beyond the TM's reach, so their "
           "estimator is checked where the two overlap)", flush=True)
     print(f"{'cell':>7} {'L':>3} {'MC frac':>12} {'exact frac':>12} "
           f"{'|dev| in SE':>12}", flush=True)
@@ -791,7 +791,7 @@ def main():
            for k in att[0] if k != "periods"},
         **{f"p_{k}": np.array([r[k] for r in prow]) for k in prow[0]},
         **{f"d_{k}": np.array([r[k] for r in dens]) for k in dens[0]},
-        **{f"v_{k}": np.array([r[k] for r in dpval]) for k in dpval[0]},
+        **{f"v_{k}": np.array([r[k] for r in tmval]) for k in tmval[0]},
         **{f"e_{k}": np.array([r[k] for r in lem]) for k in lem[0]},
         **{f"x_c_{k}": np.array([r[k] for r in xcheck]) for k in xcheck[0]},
     )

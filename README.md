@@ -94,6 +94,14 @@ not as built-in modules.
 
 ## Documentation
 
+- [`docs/notations.md`](docs/notations.md) — **symbol reference.** What each
+  symbol means, which file defines it, and a **collisions** table for the ones
+  reused across threads — `S` (`τa+τp` vs *spikes*), `W` (coupling matrix vs
+  wave variable vs transfer-matrix window), `B` (base vs behaviour readout),
+  `c` (configuration vs coherence cost vs graph components), and `L` (lattice
+  side vs cycle length in the `τ < L` gate). Read first if a formula looks
+  wrong; it is usually a thread mismatch.
+
 - [`docs/learning_experiments.md`](docs/learning_experiments.md) — the full
   design: substrate spec, strict-reward learning framework, the two parallel
   plasticity lines (conduction weights vs local timescales), input/cue/feedback

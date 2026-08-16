@@ -226,55 +226,62 @@ construction** — it would equal `ln B` if every configuration were coherent �
 the **per-cell coherence cost `c = ln B − κ`**.
 
 `|C|` now comes from three sources, in descending order of authority: the
-exhaustive **census**; the exact transfer-matrix **DP** below; and only then
+exhaustive **census**; the exact transfer-matrix **TM** below; and only then
 **MC** over configurations, with draws escalated until at least **300** land in
 `C`. Points reaching none of these are **dropped, not quoted**.
 
 #### The exact transfer-matrix count
 
+> **Naming.** This section says **TM** (transfer matrix) throughout and
+> deliberately avoids the abbreviation *DP*. In a dynamical-systems /
+> excitable-media setting "DP" reads as **directed percolation**, and the
+> transfer matrix here is a *dynamic-programming* recursion — an exact counting
+> device with no percolation content. On what an actual directed-percolation
+> question would look like here, see [Honest scope](#honest-scope).
+
 Cell `m`'s coherence test reads `m−L, m−1, m+1, m+L`, so `m` can be finalised
-the moment cell `m+L` is placed. Carrying the last `2L` cells as DP state is
-therefore sufficient, and transitions branch only `B` ways — a row-by-row DP
+the moment cell `m+L` is placed. Carrying the last `2L` cells as transfer-matrix state is
+therefore sufficient, and transitions branch only `B` ways — a row-by-row TM
 would branch `B^L`. Cost is `O(L² · B^(2L+1))`; two guards (state space, and
 `int64` overflow of the `B^(L²)` count ceiling) return a *reason* rather than a
 wrong number.
 
 It reproduces **all 12 census counts exactly** — an independent check of both,
-since the census counts *cycles* and the DP counts a *static predicate*. Reach:
+since the census counts *cycles* and the TM counts a *static predicate*. Reach:
 `L ≤ 5` at `B ≤ 5`, `L ≤ 4` at `B = 7`, and `L ≤ 6` at `B = 3`.
 
 **It does not retire sampling entirely** — an earlier draft of this section said
 it would, which was too strong. MC still carries (2,1) `L = 6, 8, 10` and
 (3,3) `L = 5, 6`. What it does do is convert every point up to `L = 5` to exact,
 and **validate the estimator that remains**: over the 15 (cell, L) pairs where
-DP and MC overlap, every deviation is under **1.2 SE** (max 1.12). The first
+TM and MC overlap, every deviation is under **1.2 SE** (max 1.12). The first
 revision's MC numbers were sound estimates — they were merely under-powered in
 the tail, exactly as diagnosed.
 
 | (τa, τp) | ln B | L | source | draws | hits | \|C\|/B^(L²) | κ | c = ln B − κ | SE(κ) |
 | :---: | ---: | :---: | :---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | (1, 1) | 1.099 | 3 | census | — | 84 | 4.268e-03 | 0.3702 | 0.7284 | 0.0000 |
-| (1, 1) | 1.099 | 4 | DP | — | 17,202 | 3.996e-04 | 0.5409 | 0.5577 | 0.0000 |
-| (1, 1) | 1.099 | 5 | DP | — | 16,574,562 | 1.956e-05 | 0.6210 | 0.4776 | 0.0000 |
-| (1, 1) | 1.099 | 6 | DP | — | 86,148,328,050 | 5.740e-07 | 0.6689 | 0.4297 | 0.0000 |
+| (1, 1) | 1.099 | 4 | TM | — | 17,202 | 3.996e-04 | 0.5409 | 0.5577 | 0.0000 |
+| (1, 1) | 1.099 | 5 | TM | — | 16,574,562 | 1.956e-05 | 0.6210 | 0.4776 | 0.0000 |
+| (1, 1) | 1.099 | 6 | TM | — | 86,148,328,050 | 5.740e-07 | 0.6689 | 0.4297 | 0.0000 |
 | (2, 1) | 1.386 | 2 | census | — | 84 | 3.281e-01 | 0.7611 | 0.6252 | 0.0000 |
 | (2, 1) | 1.386 | 3 | census | — | 48,196 | 1.839e-01 | 1.0441 | 0.3422 | 0.0000 |
-| (2, 1) | 1.386 | 4 | DP | — | 393,419,652 | 9.160e-02 | 1.1503 | 0.2360 | 0.0000 |
-| (2, 1) | 1.386 | 5 | DP | — | 45,560,019,060,572 | 4.047e-02 | 1.2026 | 0.1837 | 0.0000 |
+| (2, 1) | 1.386 | 4 | TM | — | 393,419,652 | 9.160e-02 | 1.1503 | 0.2360 | 0.0000 |
+| (2, 1) | 1.386 | 5 | TM | — | 45,560,019,060,572 | 4.047e-02 | 1.2026 | 0.1837 | 0.0000 |
 | (2, 1) | 1.386 | 6 | MC | 40,000 | 671 hits | 1.678e-02 | 1.2342 | 0.1521 | 0.0011 |
 | (2, 1) | 1.386 | 8 | MC | 400,000 | 667 hits | 1.667e-03 | 1.2647 | 0.1216 | 0.0006 |
 | (2, 1) | 1.386 | 10 | MC | 4,000,000 | 399 hits | 9.975e-05 | 1.2803 | 0.1060 | 0.0005 |
 | (1, 2) | 1.386 | 2 | census | — | 8 | 3.125e-02 | 0.1733 | 1.2130 | 0.0000 |
 | (1, 2) | 1.386 | 3 | census | — | 136 | 5.188e-04 | 0.3918 | 0.9945 | 0.0000 |
-| (1, 2) | 1.386 | 4 | DP | — | 72,872 | 1.697e-05 | 0.6131 | 0.7732 | 0.0000 |
-| (1, 2) | 1.386 | 5 | DP | — | 152,445,152 | 1.354e-07 | 0.6982 | 0.6881 | 0.0000 |
+| (1, 2) | 1.386 | 4 | TM | — | 72,872 | 1.697e-05 | 0.6131 | 0.7732 | 0.0000 |
+| (1, 2) | 1.386 | 5 | TM | — | 152,445,152 | 1.354e-07 | 0.6982 | 0.6881 | 0.0000 |
 | (2, 2) | 1.609 | 2 | census | — | 40 | 6.400e-02 | 0.5199 | 1.0896 | 0.0000 |
 | (2, 2) | 1.609 | 3 | census | — | 47,520 | 2.433e-02 | 1.0177 | 0.5917 | 0.0000 |
-| (2, 2) | 1.609 | 4 | DP | — | 740,712,190 | 4.854e-03 | 1.1759 | 0.4336 | 0.0000 |
-| (2, 2) | 1.609 | 5 | DP | — | 204,946,279,408,620 | 6.877e-04 | 1.2538 | 0.3557 | 0.0000 |
+| (2, 2) | 1.609 | 4 | TM | — | 740,712,190 | 4.854e-03 | 1.1759 | 0.4336 | 0.0000 |
+| (2, 2) | 1.609 | 5 | TM | — | 204,946,279,408,620 | 6.877e-04 | 1.2538 | 0.3557 | 0.0000 |
 | (3, 3) | 1.946 | 2 | census | — | 224 | 9.329e-02 | 0.8664 | 1.0795 | 0.0000 |
-| (3, 3) | 1.946 | 3 | DP | — | 1,615,376 | 4.003e-02 | 1.3721 | 0.5738 | 0.0000 |
-| (3, 3) | 1.946 | 4 | DP | — | 344,337,172,900 | 1.036e-02 | 1.5387 | 0.4072 | 0.0000 |
+| (3, 3) | 1.946 | 3 | TM | — | 1,615,376 | 4.003e-02 | 1.3721 | 0.5738 | 0.0000 |
+| (3, 3) | 1.946 | 4 | TM | — | 344,337,172,900 | 1.036e-02 | 1.5387 | 0.4072 | 0.0000 |
 | (3, 3) | 1.946 | 5 | MC | 400,000 | 801 hits | 2.002e-03 | 1.6195 | 0.3264 | 0.0014 |
 | (3, 3) | 1.946 | 6 | MC | 4,000,000 | 1,283 hits | 3.208e-04 | 1.6684 | 0.2775 | 0.0008 |
 
@@ -330,6 +337,19 @@ or asserted here.
   discriminator is a lattice of different girth **and parity**: triangular
   (girth 3, non-bipartite, odd cycles available) or honeycomb (girth 6,
   bipartite). Not run here.
+- **Nothing here is a directed-percolation result, and `P` is not an order
+  parameter.** The substrate has a single absorbing state (Theorem Z), which is
+  the setting where DP universality is normally conjectured — but the dynamics
+  used here are **deterministic** (`ghca_main.Population`, `θ = 1`, no
+  spontaneous firing), so there is no stochastic control parameter and no
+  steady-state density to serve as an order parameter. `P(τa, τp)` is a measure
+  of the *basin* of the absorbing state over initial conditions, which is a
+  different object. The sampled `P(L)` table is likewise a basin measure at
+  fixed `(τa, τp)`, not a critical curve; it rises to 1 with `L` rather than
+  passing through a transition. A genuine absorbing-state study would need the
+  stochastic substrate (`ghca_net.Network` exposes `p_s`, and `θ` is
+  continuous) plus finite-size scaling — none of which is done, attempted, or
+  claimed here.
 - **`θ = 1`, von Neumann, open boundary.** As everywhere else in this thread.
   The torus is untested; prediction P-C of
   [`coherence_larger_lattices_handoff.md`](coherence_larger_lattices_handoff.md)
@@ -337,12 +357,12 @@ or asserted here.
 - **`κ` is not converged** (above), and the sampled `P(L)` columns are upper
   bounds. All sampling is over raw configurations, uniform per cell; the
   gap-signature quotient is not used to reduce variance anywhere.
-- **The surviving `κ` points are still Monte-Carlo.** The DP has retired
+- **The surviving `κ` points are still Monte-Carlo.** The TM has retired
   sampling up to `L = 5`, but (2,1) `L = 6, 8, 10` and (3,3) `L = 5, 6` remain
   rare-event estimates of a few hundred hits in millions of draws. They are now
-  hit-count-governed and cross-validated against the DP where the two overlap
+  hit-count-governed and cross-validated against the TM where the two overlap
   (all within 1.2 SE), which is as much assurance as sampling can give. Pushing
-  the DP further needs either a larger state budget or arbitrary-precision
+  the TM further needs either a larger state budget or arbitrary-precision
   counts — `B = 4, L = 6` is blocked by the `int64` ceiling (`4³⁶ ≈ 4.7×10²¹`),
   not by the state space.
 - **3×3 stops at (2,2).** `B = 6, 7` at 3×3 (10M and 40M configurations) were
