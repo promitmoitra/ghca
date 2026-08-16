@@ -262,6 +262,14 @@ def full_3x3():
             cs[len(w)] += 1
             if len(w) == 1:
                 roles[ROLE3[w[0]]] += 1
+    # Cross-side control, ceiling direction: does a v-side swap ever witness a
+    # ceiling hold? (The mirror check at the age-1 holds is n_h_u below.) Without
+    # both directions "sides never mix" is asserted on half the evidence.
+    n_c_v = 0
+    for c in ceil.tolist():
+        if side_witness(c, 0, S - 1) is not None:
+            n_c_v += 1
+
     h1 = codes[(ags == 1) & (img_age == 1)]
     n_h = 0
     hs = Counter()
@@ -273,7 +281,7 @@ def full_3x3():
             hs[len(w)] += 1
         if side_witness(c, 1, 0) is not None:
             n_h_u += 1
-    return ((len(ceil), n_c, dict(cs), dict(roles)),
+    return ((len(ceil), n_c, dict(cs), dict(roles), n_c_v),
             (len(h1), n_h, dict(hs), n_h_u))
 
 
@@ -293,7 +301,7 @@ def main():
         assert nH1 == nH, f"2x2 hold witness ({ta},{tp})"
 
     print("\n=== 3x3 (2,1) FULL census ===")
-    (nc, wc, cs, cr), (nh, wh, hs, nh_u) = full_3x3()
+    (nc, wc, cs, cr, nc_v), (nh, wh, hs, nh_u) = full_3x3()
     print(f"ceiling: {wc}/{nc} u-side witnessed, sizes {dict(sorted(cs.items()))}",
           flush=True)
     print(f"single-cell witness roles (FULL census): {cr}; per-capita "
@@ -304,6 +312,9 @@ def main():
     assert nc == wc == 25_998 and cs == CEIL_3_SIZES, "3x3 ceiling census"
     assert nh == wh == 38_256 and hs == HOLD1_3_SIZES, "3x3 hold census"
     assert nh_u == 0, "u/v side split changed"
+    print(f"cross-side control: v-side witnesses at the ceiling = {nc_v}/{nc}",
+          flush=True)
+    assert nc_v == 0, "v-side witnessed a ceiling hold -- sides DO mix"
     assert cr == CEIL_3_ROLES, "3x3 boundary-role census"
     assert sum(cr.values()) == cs[1], "role census must cover every size-1 witness"
     # The claim is per-capita, not presence/absence: the centre witnesses too.
@@ -320,7 +331,8 @@ def main():
              ceil_role_counts=np.array([cr[k] for k in sorted(cr)]),
              hold_n=np.array([nh]), hold_w=np.array([wh]),
              hold_sizes=np.array(sorted(hs.items())),
-             hold_u_side=np.array([nh_u]))
+             hold_u_side=np.array([nh_u]),
+             ceil_v_side=np.array([nc_v]))
     print(f"\nwrote {out}")
 
 

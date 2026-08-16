@@ -17,14 +17,22 @@ its own findings and reruns bit-identically.
    eight 2×2 cells and at 3×3 (2,1) (483,446 pairs, BFS depth 3).
    → `coherence_window_S.py`.
 2. **The age law.** age = BFS depth from the diagonal. Transitions: +1,
-   reset-to-0, or hold; holds occur only at ages {0, 1, S}.
+   reset-to-0, or hold; holds occur only at ages {0, 1, S}. **Scope:**
+   certified at `CENSUS_CELLS = [(2,1), (3,3)]` only, both τa ≥ τp.
    → `coherence_window_saturation.py`.
-3. **The swap law.** GH non-injectivity is exactly 0↔S swaps per cell
-   (proven by cases; 0 violations exhaustively). → `coherence_covering_lemma.py`.
+3. **The swap law.** GH non-injectivity is exactly 0↔S swaps per cell.
+   **The one genuinely general result on this branch**: the case argument uses
+   only the advance rule and the two routes to an image-0, so it is
+   lattice-free. The exhaustive 0-violation check is **2×2 only**
+   (`product(range(B), repeat=4)`) — there is no 3×3 exhaustive swap-law check,
+   although the 3×3 witness census assumes swaps are the only preimage freedom.
+   → `coherence_covering_lemma.py`.
 4. **The witness structure.** Every ceiling (S→S) hold is witnessed by a
    u-side swap subset; every age-1 hold by a v-side swap subset; sides never
-   mix (25,998/25,998 and 38,256/38,256 at 3×3 (2,1); u-side works for 0 of
-   the holds). Single-cell witnesses at 3×3 concentrate on the low-degree
+   mix — now certified in **both** directions at 3×3 (2,1): u-side witnesses
+   25,998/25,998 at the ceiling but 0/38,256 at the **age-1** holds, and
+   v-side witnesses 38,256/38,256 at the age-1 holds but 0/25,998 at the
+   ceiling (`ceil_v_side`). Single-cell witnesses at 3×3 concentrate on the low-degree
    boundary cells **per capita** — full census over all 25,998 ceiling
    states: corner 8,736 / edge 4,928 / centre 333, i.e. 2,184 per corner >
    1,232 per edge > 333 at the centre. **The centre is not excluded**: 333
@@ -63,7 +71,20 @@ or below the open one. (A clean version: compare 4×4-open vs 4×4-torus.)
 there every witness is single-cell — consistent with "low degree ⇒ easy
 witnesses" — but 2×2 is size-confounded; the 4×4 pair is the real test.
 
-**P-D (quiet-run mechanism).** The covering witness at a ceiling state exists
+**P-D (quiet-run mechanism) — not yet well-posed; fix before testing.**
+"Age" is a property of a pair *state* (BFS depth from the diagonal). "Quiet
+run" is a property of a *trajectory*: a config with a 0 at cell i does not
+determine how long it has been 0 — that ambiguity is exactly what the swap law
+formalises, and it is not rare (≈5% of the 483,446 reachable pair states at
+3×3 admit both readings for some cell). So the "iff" below compares a
+state-determined left side against a right side that is not a function of the
+state. Give quiet run an operational definition on trajectories — or restate
+P-D over (trajectory, time) pairs rather than states — before spending compute
+on it. Note also that the second falsifier clause is currently **vacuous**:
+every ceiling state is witnessed (25,998/25,998), so no witness-less ceiling
+state exists to examine.
+
+As stated: the covering witness at a ceiling state exists
 iff some dwelling u-cell has quiet run < the pair's age. This is the open
 lemma's content and is checkable directly wherever pairs are enumerable:
 record each dwelling cell's quiet run alongside the witness search.

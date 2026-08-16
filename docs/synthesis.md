@@ -307,22 +307,39 @@ the regime law's proof can treat as "the same wave, one tick apart" — turned
 out to be a **bounded-memory condition**: a pair is coherent iff its backward
 window of length exactly `S = τa + τp` contains an exact clock-shift state
 (`coherence_window_S.py`; window = S at all eight 2×2 cells tested and at 3×3
-(2,1), 483,446 pair states). One full cycle of history decides; nothing older
-matters, and no shorter window suffices. This is the same structural fact the
-E-series measures behaviourally: E2's retention is gated by τ against transit
-length, and the capacity work bounds how long a loop can hold information by
-the same timescale pair. The theory arc derives the analogous statement
-exactly, at the pair level: **the substrate's self-knowledge — whether two of
-its own histories cohere — has a working-memory span of one cycle.** The
-open covering lemma (`coherence_covering_lemma.py`) sharpens where that span
-comes from: quiet cells can disguise their age only up to their quiet run,
-so ancestry information physically decays through the refractory pipeline at
-one tick per step — a mechanistic account of *why* the window is S and not
-anything else. Caveat, per house rules: the identity is exact on the 2×2 and
-3×3 cores only; the E-series link is an analogy of structure (same gating
-quantity, same span), not a derived equivalence — connecting them formally
-would require the readout layer, which is exactly the substrate/analysis
-boundary the program keeps explicit.
+(2,1), 483,446 pair states — **every tested cell has τa ≥ τp**; the equality
+fails at τp > τa, e.g. window 9 vs S = 5 at (2,3)). One full cycle of history
+decides; nothing older matters, and no shorter window suffices.
+
+**Read the caveats before the claim.**
+
+- **Which side of the boundary each half sits on.** The coherence window is
+  pure *substrate*: a BFS depth on the pair map, computed by exhaustive
+  enumeration with no readout anywhere. E2's retention number is a *readout
+  accuracy* — a linear decoder scored on delayed trials. They are not
+  measurements of the same kind, and no derivation connects them.
+- **The gating quantity does match, and that part is checkable.** E2's `τ` is
+  constructed as `act + pas` (`e2_delayed_response.py:95`), i.e. τ = τa + τp = S
+  under the same state-machine convention. That correspondence is real.
+- **The span does *not* match.** E2's finding is that once τ < L, retention is
+  *unbounded* in the tested range (1.00 out to D = 200; see
+  [`e2_results.md`](e2_results.md)). The coherence result is that history older
+  than S is *irrelevant*. "Memory lasts as long as you like once a threshold is
+  met" and "memory reaches back exactly S" are different statements, not one
+  statement in two vocabularies. An earlier revision of this section claimed
+  "same span"; that was wrong and is withdrawn.
+- **The mechanism is conjectured, not established.** The covering lemma
+  (`coherence_covering_lemma.py`) suggests where the span comes from — quiet
+  cells can disguise their age only up to their quiet run, so ancestry decays
+  through the refractory pipeline at one tick per step. That lemma is **open**;
+  the script labels it "THE REMAINING HAND OBLIGATION". It is not yet an
+  account of why the window is S.
+
+With those in place, what the theory arc does establish, exactly and at the
+pair level: **the substrate's self-knowledge — whether two of its own histories
+cohere — has a bounded span of one cycle, on the cores enumerated.** The link
+to the E-series is an analogy of *structure*, sharing the gating quantity but
+not the span, and it is not load-bearing for anything in the proof chain.
 
 ## State of the evidence — the honest ledger
 

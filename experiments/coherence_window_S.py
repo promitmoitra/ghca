@@ -22,7 +22,15 @@ lockstep-bound pairs whose backward window is diagonal-free (they flow INTO
 R -- the traced example enters R at t=3 -- but were never themselves an exact
 clock-shift).
 
-WHY S IS THE RIGHT CONSTANT. A diagonal state recurs on every lockstep cycle
+WHY S IS THE RIGHT CONSTANT -- **SUPERSEDED, see below.** The rationale in
+this paragraph was falsified by coherence_window_saturation.py (commit
+5ba2c5f): on-orbit recurrence gaps are 5/4/6/5/7/9/10/12, strictly ABOVE S at
+all 8 cells, so a diagonal state does NOT recur on every lockstep cycle. The
+window is still exactly S (that reproduces); the explanation below is wrong.
+The current candidate mechanism is the quiet-run decay in
+coherence_covering_lemma.py, which is an OPEN lemma, not an account.
+
+Superseded text: A diagonal state recurs on every lockstep cycle
 (the pair returns to u = v+1 within the attractor period); S is one full
 excursion+refractory span, so "within S of a diagonal" is exactly "the pair's
 current disagreement pattern is one the clock-shift can generate inside a
@@ -50,6 +58,12 @@ from itertools import product
 
 ADJ2 = {0: (1, 2), 1: (0, 3), 2: (0, 3), 3: (1, 2)}
 CELLS = [(1, 1), (2, 1), (2, 2), (3, 1), (3, 2), (3, 3), (4, 3), (4, 4)]
+# Every cell above has tau_a >= tau_p. The window = S law is a REGIME law and
+# does not hold outside it -- asserted below as a negative control so the
+# scope cannot rot. (1,2) is a coincidence at 2x2 and dies at 3x3 (window 10
+# vs S 3), so it is excluded from the negative set.
+CELLS_NEG = [(2, 3), (2, 4), (3, 4), (3, 5), (4, 5)]
+WINDOW_NEG = {(2, 3): 9, (2, 4): 12, (3, 4): 15, (3, 5): 17, (4, 5): 20}
 R_EXPECT = {(1, 1): 48, (2, 1): 276, (2, 2): 360, (3, 1): 730,
             (3, 2): 1194, (3, 3): 1344, (4, 3): 3400, (4, 4): 3600}
 NB3 = [tuple(j for j in range(9) if abs(j//3 - i//3) + abs(j % 3 - i % 3) == 1)
@@ -189,6 +203,19 @@ def main():
                   f"impostors inside window-S set: {fp}", flush=True)
             assert (nR, fp, nex) == (276, 0, 192), "separation changed"
 
+    print("\n=== negative control: tau_p > tau_a, where window != S ===")
+    ws_neg = []
+    for ta, tp in CELLS_NEG:
+        S = ta + tp
+        stp, B = make_step(ta, tp)
+        depth = bfs_from_diag(stp, B, live_set(stp, B))
+        w = max(depth.values())
+        ws_neg.append(w)
+        print(f"({ta},{tp}) S={S}: window={w}  -- window != S, as expected",
+              flush=True)
+        assert w == WINDOW_NEG[(ta, tp)], f"neg-control window moved at ({ta},{tp})"
+        assert w != S, f"window == S at tau_p > tau_a ({ta},{tp}) -- the regime law would be WIDER than claimed; re-derive before celebrating"
+
     print("\n=== 3x3 (2,1): window at scale ===")
     n_live, n_R, d33 = depth_3x3_21()
     print(f"live={n_live:,} |R|={n_R:,} window={d33} (S=3)", flush=True)
@@ -198,6 +225,9 @@ def main():
                        "result", "topology", "coherence_window_S.npz")
     os.makedirs(os.path.dirname(out), exist_ok=True)
     np.savez(out,
+             ta_neg=np.array([c[0] for c in CELLS_NEG]),
+             tp_neg=np.array([c[1] for c in CELLS_NEG]),
+             window_neg=np.array(ws_neg),
              ta=np.array([c[0] for c in CELLS]),
              tp=np.array([c[1] for c in CELLS]),
              window=np.array(ws), n_R=np.array(sizes),
