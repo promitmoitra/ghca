@@ -1149,3 +1149,88 @@ Process notes for whoever continues:
   through the switch untouched.
 
 — Claude (session `d560b36c`)
+
+---
+
+## 2026-08-14 — response to the review of `claude/coherence-invariant` and `claude/planning-review-branches-sf4y29` (Claude, session `d560b36c`)
+
+I wrote the coherence thread; the review found three real errors in it. I
+re-derived each independently rather than reading the reviewer's numbers, and
+**all three hold**. Accepting both branches. Recorded here because two of the
+three are process failures worth other agents' attention, not just mine.
+
+### The errors, and what they teach
+
+**1. "centre 0" — a false fact filed under "do not re-derive".** The handoff
+listed `corner 323 / edge 60 / centre 0` as established. It was not a sample:
+it was the first 2,000 ceiling states in BFS enumeration order — no seed, no
+draw method — and no committed script computed roles at all, so nothing in
+any archive backed it. The full census (1.3 s; there was never a compute
+reason to prefix) shows the interior cell **does** witness. Two conventions
+both refute the zero: counting one role per single-cell witness gives
+`corner 8736 / edge 4928 / centre 333` (now committed and asserted);
+counting every cell of every witnessing subset gives `24768 / 16792 / 2079`
+(my independent re-derivation). The prediction it anchors survives because it
+was always per-capita, and that ordering holds either way.
+
+*Lesson:* an order-biased prefix is not a sample, and the phrase "what is
+established (do not re-derive)" is a load-bearing claim about provenance. Do
+not put a number there unless an archive holds it.
+
+**2. The window law is a REGIME law; I stated it unscoped.** All eight 2×2
+cells I tested have τa ≥ τp. Outside the regime the equality fails —
+independently confirmed: window 9 vs S=5 at (2,3), 12 vs 6 at (2,4), 15 vs 7
+at (3,4). Now an asserted negative control, so the scope cannot rot.
+
+**3. A vacuous assertion.** `separation_check_21` returned
+`len(extras & Rp)` where `extras = P - Rp` — identically 0 for any inputs. My
+"zero impostors inside the window-S set" check could never have failed.
+
+*Lesson:* assert-your-own-findings only works if the assertion can fail.
+Set-difference then intersect-back is the canonical way to write a check that
+tests nothing; a deliberate perturbation ("does this fire when I corrupt the
+input?") is cheap insurance.
+
+Also correct and accepted: **"Theorem 4" is not a proof** (an exhaustive check
+over a 276-state closure; its 3×3 "lift" is a re-enumeration, no argument
+transfers — README rightly downgraded PROVEN→CERTIFIED, LIFTS→METHOD scales);
+**"sides never mix" was asserted on half the evidence** (v-side at ceiling now
+checked: 0/25,998); and the synthesis **"same span" claim was wrong** — E2's
+retention is unbounded once τ < L, while coherence says history older than S
+is irrelevant. Different statements. The gating-quantity match (E2's
+τ = act + pas = S) is real and correctly kept.
+
+The structural fix matters most: six of my commits established a named
+invariant and a fourth "theorem" while touching only README, one experiment
+and one archive each. The strongest claims lived in commit messages and
+docstrings — exactly where this repo's review passes do not look, and with no
+caveats section anywhere. `docs/coherence_invariant.md` now sorts every claim
+by epistemic status (PROVEN: the swap law alone; CERTIFIED: age law, witness
+structure, compression barrier, Theorem 4; OBSERVED: boundary concentration).
+**A results doc is not optional bookkeeping — without one, a thread's claims
+are invisible to review.**
+
+### Recommendation on the planning branch
+
+`claude/planning-review-branches-sf4y29` @ `9c63ba5`: **accept the content,
+update before merging.** Its diff against `main` shows 3,907 deletions, which
+is staleness — it forked at `6f41eca`, 22 commits behind, before PR #84 landed;
+its own contribution is 8 commits / 769 insertions. Merge `main` into it (or
+rebase) so the diff reflects only additions.
+
+Its inventory supersedes my earlier pruning review (PR #71). I had caught that
+squash-merges make 36 branches look unmerged — over-preservation, harmless.
+I **missed** the class that actually loses work: **15 branches have no
+merge-base with `main` at all** (they predate a history rewrite), so ancestry
+checks on them are meaningless and a pruning script classifies them as
+ordinary feature branches with no warning. Three are sole holders of real
+content. Anyone holding a pruning plan: reconcile against
+`docs/branch_preservation_inventory.md` first, and treat "no merge-base" as a
+hard stop, not a signal to interpret.
+
+Neither branch merged — merges await the owner's explicit instruction, and
+self-authored work is not self-reviewed. That convention is what made this
+review worth having: the vacuous assertion and the unbacked "centre 0" would
+both have shipped otherwise.
+
+— Claude (session `d560b36c`)
