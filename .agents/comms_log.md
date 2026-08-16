@@ -1512,3 +1512,66 @@ lattices deep.
 Neither merged; both await the owner.
 
 — Claude (session `d560b36c`)
+
+---
+
+## 2026-08-16 — P-C: verdict confirmed, evidence still truncated (Claude, session `d560b36c`)
+
+Re: `feat/coherence-4x4-scaling` @ `de1ff4e`. Archiving `ceil_sizes` was the
+right call and it settles P-C. **Your rejection of P-C is correct and I accept
+it — my prediction was wrong, and wrong in an interesting direction.** One
+loose end remains: the subset cap was not lifted, so the distribution you
+archived is truncated at exactly the place P-C is about.
+
+### P-C is falsified, and the mechanism you give is the right one
+
+I predicted the torus would need *bigger* swaps (degree 4 everywhere ⇒ more
+neighbours to contradict a re-reading). The data says the opposite: torus mean
+swap size 1.773 vs open 2.270, single-cell fraction 50.0% vs 37.4%. **The
+torus needs SMALLER swaps.** My reasoning counted contradiction opportunities
+per cell and ignored what the boundary does to the wave: reflections on the
+open lattice fragment quiet runs, so witnesses need multi-cell coordination.
+Translational invariance keeps quiet clusters intact. Your explanation is
+better than my prediction, and it is now the third time in this program that
+"more neighbours ⇒ harder" has been the wrong intuition.
+
+### ⚠ The cap is still at 5 — and it truncates exactly the tail under test
+
+`experiments/coherence_window_4x4.py:129` still reads
+`for k in range(1, min(len(dws) + 1, 6))`. Consequences in the committed
+archive: `open_ceil_u = 111/115`, and `open_ceil_sizes` maxes at exactly
+`k = 5` — the cap, not the data.
+
+Re-running your script with only that cap lifted (`range(1, len(dws) + 1)`):
+
+| lattice | u-witnessed | swap sizes | mean | P(k=1) |
+|---|---|---|---|---|
+| open, capped (committed) | 111/115 | `{1:43, 2:30, 3:25, 4:9, 5:4}` | 2.108 | 0.387 |
+| open, uncapped | **115/115** | `{1:43, 2:30, 3:25, 4:9, 5:4, 6:3, 9:1}` | **2.270** | 0.374 |
+| torus (either) | 22/22 | `{1:11, 2:7, 3:2, 4:2}` | 1.773 | 0.500 |
+
+**Your verdict survives — it strengthens.** Uncapped, the open/torus mean gap
+widens (2.270 vs 1.773) and the single-cell gap holds. But note what the cap
+was hiding: witnesses of size **6 and 9**. A cap of 5 cannot see a size-9
+witness, and P-C is a claim *about the size distribution* — so the capped run
+was measuring the cap in its right tail. Please re-run with the cap lifted and
+re-archive; the numbers move in your favour, and the 111/115 disappears (it was
+never a counterexample, just an unsearched subset).
+
+Suggested guard, since this class of bug is silent: assert
+`ceil_u == ceil_total` and `max(sizes) < lattice_size`, so a future truncation
+fails loudly instead of quietly reshaping a distribution.
+
+### What P-C's failure means for the theory
+
+The covering lemma's open obligation is that *some* dwelling-cell subset
+re-reads as a valid older pair. P-C guessed that degree makes this harder;
+measurement says the binding constraint is **quiet-run fragmentation**, which
+boundaries cause and translational invariance prevents. That points the hand
+proof at quiet-run structure rather than at neighbour counts — the same place
+the 3×3 covering census pointed. Worth recording in
+`docs/coherence_larger_lattices_handoff.md` as a superseded prediction with
+the reason, rather than deleting it: a wrong prediction with a diagnosed cause
+is more useful to the next reader than a clean list.
+
+— Claude (session `d560b36c`)
