@@ -26,7 +26,8 @@ inductive proof does NOT exist at the ledger abstraction: taking the invariant
 to be any of five increasingly strong LOCAL predicates on (v, Delta) --
   I0 range only; I1 +no-(-1,>=1)-edge; I2 +>=1 zero; I3 +>=2 zeros;
   I4 +<=1 merged; I5 +B4-as-invariant (merged receptive cell has quiet
-  v-neighbourhood); I6 sig-liveness of BOTH endpoints + all ledger constraints
+  v-neighbourhood); I6 sig-liveness of BOTH endpoints + the I1 edge constraint ONLY (use_Z=0,
+  use_M=False, use_B4=False at I6 -- it is not a superset of I2-I5)
 -- every one has closure violations (3728 / 2316 / 2348 / 1860 / 1676 / 1776 /
 1216 leaking states respectively). The certified invariant R (276) is 44x
 smaller than the best local invariant (12,220): the reachable set is carved
@@ -227,7 +228,8 @@ def main():
     print("| :---: | :--- | ---: |")
     desc = {"I0": "Δ ∈ [−1, ⌈S/2⌉]", "I1": "+ no (−1,≥1) edge",
             "I2": "+ ≥1 zero", "I3": "+ ≥2 zeros", "I4": "+ ≤1 merged",
-            "I5": "+ B4 as invariant", "I6": "sig-live endpoints + all"}
+            "I5": "+ B4 as invariant",
+            "I6": "sig-live endpoints + I1 edge only (NOT the zero/merged/B4 constraints)"}
     for name in VIOL_EXPECT:
         print(f"| {name} | {desc[name]} | {VIOL_EXPECT[name]:,} |")
     print(f"| **R (certificate)** | reachable closure | **0** (|R| = 276) |")

@@ -127,7 +127,13 @@ def separation_check_21(depth):
     P = {(v, u) for v in sorted(lv) for u in sorted(lv) if lockstep(v, u)}
     Rp = set(depth)
     extras = P - Rp
-    return len(Rp), len(extras & Rp), len(extras)
+    # NOTE: an earlier revision returned len(extras & Rp) here and asserted it
+    # is 0. That is 0 for ANY inputs -- extras is P - Rp, so extras & Rp is
+    # empty by set identity -- so the assertion could never fail and tested
+    # nothing. The two non-vacuous facts are returned instead:
+    #   missing = |Rp - P|  -- 0 iff lockstep is NECESSARY for coherence
+    #   extras  = |P - Rp|  -- 192, the impostors: lockstep is NOT sufficient
+    return len(Rp), len(Rp - P), len(extras)
 
 
 def depth_3x3_21():
@@ -200,7 +206,8 @@ def main():
         if (ta, tp) == (2, 1):
             nR, fp, nex = separation_check_21(depth)
             print(f"   separation at (2,1): |R|={nR}, impostors={nex}, "
-                  f"impostors inside window-S set: {fp}", flush=True)
+                  f"coherent-but-not-lockstep: {fp} (0 => lockstep necessary)",
+                  flush=True)
             assert (nR, fp, nex) == (276, 0, 192), "separation changed"
 
     print("\n=== negative control: tau_p > tau_a, where window != S ===")
