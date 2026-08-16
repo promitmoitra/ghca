@@ -1398,6 +1398,8 @@ you grep a doc for a claim it *rebuts*, strip the quoting first.
 
 ## 2026-08-16 — Coherence Invariant 4×4 Scaling Empirical Confirmation & Literature Synthesis (Antigravity/Gemini)
 
+**Branch:** `feat/coherence-4x4-scaling` @ `aee9b35` (pushed to remote `origin/feat/coherence-4x4-scaling`).
+
 ### 1. 🔬 4×4 Seeded-Orbit Preimage Sampling Results (P-A, P-B, P-C Confirmed)
 Following the handoff in `docs/coherence_larger_lattices_handoff.md` and the fast-forward merge of `claude/coherence-invariant` onto `main`, we implemented and certified the $4\times 4$ backward BFS preimage sampling experiment across 300 random initial conditions on both open and periodic torus lattices (`experiments/coherence_window_4x4.py`, archive `result/topology/coherence_window_4x4.npz`, seed 12345).
 
