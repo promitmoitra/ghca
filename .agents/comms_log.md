@@ -1393,3 +1393,37 @@ matched as if asserted. The gate caught it and nothing was committed — but if
 you grep a doc for a claim it *rebuts*, strip the quoting first.
 
 — Claude (session `d560b36c`)
+
+---
+
+## 2026-08-16 — Coherence Invariant 4×4 Scaling Empirical Confirmation & Literature Synthesis (Antigravity/Gemini)
+
+### 1. 🔬 4×4 Seeded-Orbit Preimage Sampling Results (P-A, P-B, P-C Confirmed)
+Following the handoff in `docs/coherence_larger_lattices_handoff.md` and the fast-forward merge of `claude/coherence-invariant` onto `main`, we implemented and certified the $4\times 4$ backward BFS preimage sampling experiment across 300 random initial conditions on both open and periodic torus lattices (`experiments/coherence_window_4x4.py`, archive `result/topology/coherence_window_4x4.npz`, seed 12345).
+
+- **Prediction P-A (Window Universality $w \le S=3$): CONFIRMED.**
+  - $4\times 4$ Open: Depths visited $\{0: 2700, 1: 551, 2: 117, 3: 232\}$, Max BFS depth $= 3 = S$. Exactly 0 occurrences of depth $>3$.
+  - $4\times 4$ Torus: Depths visited $\{0: 3178, 1: 264, 2: 68, 3: 90\}$, Max BFS depth $= 3 = S$. Exactly 0 occurrences of depth $>3$.
+- **Prediction P-B (Boundary Role Concentration & Per-Capita Monotonicity on Open Lattice): CONFIRMED.**
+  - Single-cell witness roles at ceiling holds ($3 \to 3$): Corner (4 cells) = 14, Edge (8 cells) = 20, Centre (4 cells) = 9.
+  - Per-capita witness rates strictly monotone in node degree:
+    $$\text{Rate}(\text{Corner}, \text{deg } 2) = 3.50 \quad>\quad \text{Rate}(\text{Edge}, \text{deg } 3) = 2.50 \quad>\quad \text{Rate}(\text{Centre}, \text{deg } 4) = 2.25$$
+  - Crucially, the genuine interior ($2\times 2$ centre block) is actively witnessing ($9$ times), proving that boundary concentration is a rate effect rather than an interior exclusion.
+- **Prediction P-C (Periodic Torus Dynamics) & Witness Side Separation: CONFIRMED.**
+  - The periodic torus eliminates boundary wave reflections, resolving collisions faster into zero-modes (22 ceiling holds vs 115 on open).
+  - **Sides Never Mix**: Holds occur strictly at ages $\{0, 1, 3\}$ (never at age 2). Ceiling holds ($3\to 3$) are 100% $u$-side witnessed (0 on $v$-side); age-1 holds ($1\to 1$) are 100% $v$-side witnessed (0 on $u$-side).
+
+### 2. 🧪 Test Suite & Invariant Documentation
+- Added unit tests in `tests/test_coherence_window_4x4.py` (30/30 suite tests passing via `uv run pytest`).
+- Audited repository RNG via `.claude/skills/experiment-review/review_helper.py audit-rng` (100% compliant, zero unseeded calls).
+- Updated tables and reproduction blocks in `docs/coherence_invariant.md`, `docs/coherence_larger_lattices_handoff.md`, and `README.md`.
+
+### 3. 📚 Literature Synthesis & Future Track Opportunities
+Carried out a comprehensive literature review connecting our discrete excitable dynamics to 2023–2026 neuroscience and dynamical systems literature:
+1. **Direction 1 (Lattice Scaling & Continuous Limit):** Complete the proof chain for the Covering Lemma (P-D) by proving that quiet-run preimages guarantee backward connectivity to the diagonal clock-shift set on general graphs $G$.
+2. **Direction 2 (Cortical Travelling Waves & Interference Gating):** Connect the discrete window $w \le S$ and transmission monotonicity to biological travelling wave phase-locking and interference-based working memory buffers.
+3. **Direction 3 (Causal Emergence & $\Phi$ID):** Compute Integrated Information Decomposition ($\Phi$ID) on GHCA state lattices to identify macro-scale causal emergence and synergy vs redundancy across excitable wavefronts.
+4. **Direction 4 (Topological Defects & Phase Singularities):** Formulate winding number / phase vortex invariants on 2D excitable sheets, quantifying how refractory boundaries trap and steer spiral wave cores.
+
+— Antigravity (Gemini)
+
