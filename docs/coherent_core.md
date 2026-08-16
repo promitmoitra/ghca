@@ -145,21 +145,78 @@ these are **upper** bounds; the exact values are the `P` column above.
 | (3, 3) | 0.346 | 0.796 | 0.969 | 0.999 | 1.000 | 1.000 |
 | (2, 3) | 0.191 | 0.564 | 0.845 | 0.970 | 0.997 | 1.000 |
 
+### What exactly is sampled
+
+Every sampled quantity in this doc draws **raw configurations**, i.i.d. uniform
+per cell over `{0..S}` — never the coarse-grained gap-signature space of
+[`persistent_set_structure.md`](persistent_set_structure.md). That choice is
+load-bearing three times over:
+
+- **It is the right measure for `P`.** Moitra & Sen define `P` as the fraction
+  of initial *configurations* that sustain, so config-uniform sampling estimates
+  exactly that. Signature classes have wildly unequal sizes (14,641 configs →
+  91 classes at 2×2 (5,5)), so a class-uniform draw would estimate a different
+  number entirely.
+- **Class-uniform sampling would not even be well defined here.** The signature
+  is fate-pure only at `τp ≤ τa`, and the sampled sweep deliberately includes
+  (1,2) and (2,3), where classes are mixed — a class has no fate to sample.
+- **It makes the `κ` estimator a rare-event estimator**, since `C` is an
+  exponentially small subset. That is the weak point of this section and is
+  handled explicitly below rather than hidden.
+
+The signature compression is therefore *not* used as a variance-reduction
+device anywhere here. It remains the obvious lever for pushing the exhaustive
+census past 3×3 (§9 of the companion doc), which is a separate job.
+
 ### Attractor-entropy density
 
-`#attractors = |C|/B`, and `|C|/B^(L²)` estimated by Monte Carlo
-(`n = 40,000`, same seed) gives `κ = ln(#attractors)/L²`:
+`#attractors = |C|/B`, so `κ = ln(#attractors)/L²`. Note that **`κ ≤ ln B` by
+construction** — it would equal `ln B` if every configuration were coherent — so
+`κ` rising with `L` is largely that trivial ceiling. The informative quantity is
+the **per-cell coherence cost `c = ln B − κ`**.
 
-| (τa, τp) | L=2 | L=3 | L=4 | L=5 | L=6 | L=8 | L=10 |
-| :---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| (2, 1) | 0.763 | 1.044 | 1.150 | 1.203 | 1.234 | 1.263 | 1.277 |
-| (2, 2) | 0.525 | 1.021 | 1.176 | 1.237 | — | — | — |
-| (3, 3) | 0.868 | 1.374 | 1.537 | 1.617 | 1.671 | 1.761 | — |
+`|C|` is taken exactly from the census where available; otherwise `|C|/B^(L²)`
+is estimated by Monte Carlo over configurations, with draws escalated until at
+least **300** land in `C`. Points that cannot reach 300 hits at 4,000,000 draws
+are **dropped, not quoted**.
 
-Dashes are below the Monte-Carlo floor (`5×10⁻⁵`). `κ` is positive and rising —
-so multistability is extensive in system size and the attractor entropy density
-is bounded away from zero. **It is not converged**: `κ` is still increasing at
-the largest `L` the floor permits, so no plateau value or limit is claimed.
+| (τa, τp) | ln B | L | source | draws | hits | \|C\|/B^(L²) | κ | c = ln B − κ | SE(κ) |
+| :---: | ---: | :---: | :---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| (2, 1) | 1.386 | 2 | exact | — | 84 | 3.281e-01 | 0.7611 | 0.6252 | 0.0000 |
+| (2, 1) | 1.386 | 3 | exact | — | 48,196 | 1.839e-01 | 1.0441 | 0.3422 | 0.0000 |
+| (2, 1) | 1.386 | 4 | MC | 40,000 | 3,661 | 9.152e-02 | 1.1502 | 0.2361 | 0.0010 |
+| (2, 1) | 1.386 | 5 | MC | 40,000 | 1,635 | 4.088e-02 | 1.2030 | 0.1833 | 0.0010 |
+| (2, 1) | 1.386 | 6 | MC | 40,000 | 671 | 1.678e-02 | 1.2342 | 0.1521 | 0.0011 |
+| (2, 1) | 1.386 | 8 | MC | 400,000 | 667 | 1.667e-03 | 1.2647 | 0.1216 | 0.0006 |
+| (2, 1) | 1.386 | 10 | MC | 4,000,000 | 399 | 9.975e-05 | 1.2803 | 0.1060 | 0.0005 |
+| (2, 2) | 1.609 | 2 | exact | — | 40 | 6.400e-02 | 0.5199 | 1.0896 | 0.0000 |
+| (2, 2) | 1.609 | 3 | exact | — | 47,520 | 2.433e-02 | 1.0177 | 0.5917 | 0.0000 |
+| (2, 2) | 1.609 | 4 | MC | 400,000 | 1,977 | 4.942e-03 | 1.1770 | 0.4325 | 0.0014 |
+| (2, 2) | 1.609 | 5 | MC | 4,000,000 | 2,709 | 6.773e-04 | 1.2532 | 0.3563 | 0.0008 |
+| (3, 3) | 1.946 | 2 | exact | — | 224 | 9.329e-02 | 0.8664 | 1.0795 | 0.0000 |
+| (3, 3) | 1.946 | 3 | MC | 40,000 | 1,627 | 4.068e-02 | 1.3739 | 0.5720 | 0.0027 |
+| (3, 3) | 1.946 | 4 | MC | 40,000 | 403 | 1.008e-02 | 1.5369 | 0.4090 | 0.0031 |
+| (3, 3) | 1.946 | 5 | MC | 400,000 | 801 | 2.002e-03 | 1.6195 | 0.3264 | 0.0014 |
+| (3, 3) | 1.946 | 6 | MC | 4,000,000 | 1,283 | 3.208e-04 | 1.6684 | 0.2775 | 0.0008 |
+
+Dropped as under-powered: (2, 2) L=6, 8, 10 and (3, 3) L=8, 10.
+
+`κ` is positive at every measured point, so multistability is extensive in
+system size. `c` falls monotonically in `L` at all three cells — and **it is
+not converged**: `c` is still falling at the largest affordable `L`, so no
+limit is claimed for either `c` or `κ`. The shape of the decay (`c` roughly
+`c∞ + b/L`, consistent with a boundary correction — corner cells have two
+neighbours and so are the hardest to satisfy) is suggestive but is not fitted
+or asserted here.
+
+> **⚠ Superseded measurement.** The first revision of this section used a bare
+> fraction floor of `5×10⁻⁵` at `n = 40,000`, which admitted `κ` points resting
+> on **one to three hits**: (2,2) L=6 rested on 1 hit and (2,1) L=10 on 3, and
+> they were tabulated as if they were data. Those are now dropped or
+> re-measured. Re-measuring moved (2,2) L=5 from `κ = 1.237` (18 hits) to
+> `1.2532` (2,709 hits) — a real shift, not rounding. The estimator now
+> escalates on **hit count**, and the script asserts that every quoted point is
+> exact or ≥ 300 hits.
 
 ---
 
@@ -192,7 +249,14 @@ the largest `L` the floor permits, so no plateau value or limit is claimed.
   [`coherence_larger_lattices_handoff.md`](coherence_larger_lattices_handoff.md)
   expects boundary structure to matter.
 - **`κ` is not converged** (above), and the sampled `P(L)` columns are upper
-  bounds.
+  bounds. All sampling is over raw configurations, uniform per cell; the
+  gap-signature quotient is not used to reduce variance anywhere.
+- **The `κ` estimator is a rare-event estimator.** At the largest `L` it is
+  counting a few hundred hits in millions of draws, and its first revision
+  quoted points backed by one hit. It is now hit-count-governed, but this
+  remains the least robust section of the doc: an exact transfer-matrix count
+  of `|C|` (a `B^(2L)`-state DP) would replace it outright and is the right
+  next step if these numbers ever have to carry weight.
 - **3×3 stops at (2,2).** `B = 6, 7` at 3×3 (10M and 40M configurations) were
   not run in the exhaustive census; the largest exhaustive row is 1,953,125
   configurations.

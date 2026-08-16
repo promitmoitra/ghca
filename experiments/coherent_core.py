@@ -92,12 +92,24 @@ FINDINGS.
    any cell or size is t = 12.
 
 5. ATTRACTOR COUNT IS EXTENSIVE. |C|/B ~ exp(kappa * L^2) with kappa positive
-   and RISING in L -- 1.263 at (2,1) L=8 and 1.277 at L=10; 1.761 at (3,3)
-   L=8 -- so multistability is extensive in system size and the attractor
-   entropy density is bounded away from zero. NOT CONVERGED: kappa is still
-   increasing at the largest L the Monte-Carlo floor permits, so the plateau
-   value is not established here and no limit is claimed. Past L ~ 5
-   essentially every sampled initial condition lands on its own attractor.
+   at every measured point, so multistability is extensive in system size.
+   READ c = ln B - kappa, NOT kappa. kappa is bounded above by ln B by
+   construction (it would equal ln B if every configuration were coherent), so
+   "kappa rises with L" is mostly that trivial ceiling. The informative
+   quantity is the per-cell coherence COST c, and it falls monotonically:
+   (2,1) 0.625 -> 0.106 over L = 2..10; (2,2) 1.090 -> 0.356 over L = 2..5;
+   (3,3) 1.080 -> 0.278 over L = 2..6. NOT CONVERGED: c is still falling at
+   the largest affordable L, so no limit is claimed for either c or kappa.
+   Past L ~ 5 essentially every sampled initial condition lands on its own
+   attractor.
+
+   Every quoted point is backed by an exact |C| from the census or by >= 300
+   Monte-Carlo hits, with draws escalated up to 4,000,000 to get there; points
+   that cannot reach 300 hits are DROPPED and listed, not quoted. An earlier
+   revision of this experiment used a bare fraction floor of 5e-5 at n = 40,000
+   and thereby quoted kappa values resting on ONE to THREE hits -- (2,2) L=6
+   rested on 1 hit, (2,1) L=10 on 3. Those are now dropped or re-measured;
+   re-measuring moved (2,2) L=5 from kappa 1.237 (18 hits) to 1.2532 (2,709).
 
 6. DEATH IS A SMALL-LATTICE PHENOMENON. P(ta,tp) -> 1 rapidly in L at every
    cell tested, in both regimes. The sampled L = 2, 3 columns agree with the
@@ -134,8 +146,12 @@ SAMPLED_L = [2, 3, 4, 5, 6, 8]
 DENSITY_CELLS = [(2, 1), (2, 2), (3, 3)]
 DENSITY_L = [2, 3, 4, 5, 6, 8, 10]
 SEED = 20260816
-# converged kappa is read off the largest L whose MC estimate clears the floor
-MC_FLOOR = 5.0e-5
+# A kappa point is quoted only if backed by >= MIN_HITS configurations landing
+# in C (or by an exact count from the census). An earlier revision used a bare
+# fraction floor of 5e-5, which at n = 40,000 admitted points resting on ONE to
+# THREE hits; those are not measurements and are now dropped.
+MIN_HITS = 300
+MC_BUDGET = (40_000, 400_000, 4_000_000)
 
 
 # --------------------------------------------------------------------------
@@ -175,8 +191,11 @@ def step_digits(D, nbi, nbm, ta, B):
     return np.where(D == 0, fires.astype(D.dtype), (D + 1) % B)
 
 
-def in_C(D, nbi, nbm, ta, B, chunk=1 << 19):
-    """Membership of the coherent set C, chunked to bound peak memory."""
+def in_C(D, nbi, nbm, ta, B, max_elems=8_000_000):
+    """Membership of the coherent set C. Chunked by ELEMENT count (rows x cells
+    x 4), not by row count, so peak memory stays bounded as L grows."""
+    n_cells = D.shape[1]
+    chunk = max(1024, max_elems // (4 * n_cells))
     out = np.empty(len(D), bool)
     for s in range(0, len(D), chunk):
         d = D[s:s + chunk].astype(np.int16)
@@ -362,17 +381,53 @@ def sampled_attractor_check(L, ta, tp, n_samples=150, seed=SEED, maxT=4000):
                 max_trans=int(trans.max()), mean_trans=float(trans.mean()))
 
 
-def density(L, ta, tp, n=40000, seed=SEED):
-    """MC estimate of |C| / B^(L^2); returns (frac, ln #attractors, kappa)."""
-    B = ta + tp + 1
+def _mc_hits(L, ta, tp, B, n, seed, draw_chunk=200_000):
+    """Hits of C among n uniform-random CONFIGURATIONS, drawn in chunks so peak
+    memory is bounded. Deterministic given (seed, n, draw_chunk)."""
     rng = np.random.default_rng(seed)
     nbi, nbm = neighbour_table(L)
-    X = rng.integers(0, B, size=(n, L * L)).astype(np.int8)
-    frac = float(in_C(X, nbi, nbm, ta, B).mean())
-    if frac < MC_FLOOR:
-        return frac, float("nan"), float("nan")
-    ln_attr = np.log(frac) + (L * L - 1) * np.log(B)
-    return frac, float(ln_attr), float(ln_attr / (L * L))
+    hits, drawn = 0, 0
+    while drawn < n:
+        k = min(draw_chunk, n - drawn)
+        X = rng.integers(0, B, size=(k, L * L)).astype(np.int8)
+        hits += int(in_C(X, nbi, nbm, ta, B).sum())
+        drawn += k
+    return hits
+
+
+def density(L, ta, tp, seed=SEED, exact_nC=None):
+    """Attractor-entropy density kappa = ln(#attractors) / L^2, where
+    #attractors = |C|/B and |C| = frac * B^(L^2).
+
+    Uses the EXACT |C| from the exhaustive census when one is available for this
+    (L, ta, tp); otherwise Monte-Carlo over uniformly random CONFIGURATIONS,
+    escalating n until at least MIN_HITS configurations land in C. A point that
+    cannot reach MIN_HITS within the budget is REPORTED AS DROPPED rather than
+    quoted -- kappa from a handful of hits is not a measurement.
+
+    Returns None if the point is dropped.
+    """
+    B = ta + tp + 1
+    lnB = np.log(B)
+    if exact_nC is not None:
+        if exact_nC == 0:
+            return None
+        ln_frac = np.log(exact_nC) - (L * L) * lnB
+        kappa = (ln_frac + (L * L - 1) * lnB) / (L * L)
+        return dict(L=L, ta=ta, tp=tp, exact=1, n=0, hits=exact_nC,
+                    frac=float(exact_nC / B ** (L * L)), kappa=float(kappa),
+                    cost=float(lnB - kappa), se=0.0)
+    for n in MC_BUDGET:
+        hits = _mc_hits(L, ta, tp, B, n, seed)
+        if hits >= MIN_HITS:
+            frac = hits / n
+            kappa = (np.log(frac) + (L * L - 1) * lnB) / (L * L)
+            # delta-method SE on ln(frac), divided through by L^2
+            se = np.sqrt((1 - frac) / (frac * n)) / (L * L)
+            return dict(L=L, ta=ta, tp=tp, exact=0, n=n, hits=hits,
+                        frac=float(frac), kappa=float(kappa),
+                        cost=float(lnB - kappa), se=float(se))
+    return None
 
 
 # --------------------------------------------------------------------------
@@ -438,19 +493,46 @@ def main():
 
     print("\n=== attractor-entropy density: #attractors ~ exp(kappa L^2) ===",
           flush=True)
-    dens = []
+    print(f"kappa <= ln B by construction, so the informative quantity is the "
+          f"per-cell coherence COST c = ln B - kappa.", flush=True)
+    print(f"Exact |C| used where the census supplies it; otherwise MC over "
+          f"CONFIGURATIONS, escalated to >= {MIN_HITS} hits or dropped.",
+          flush=True)
+    print(f"{'cell':>7} {'lnB':>6} {'L':>3} {'source':>7} {'n':>9} {'hits':>8} "
+          f"{'frac':>11} {'kappa':>7} {'c=lnB-kappa':>12} {'SE':>7}", flush=True)
+    exact_nC = {(r["L"], r["ta"], r["tp"]): r["nC"] for r in rows}
+    dens, dropped = [], []
     for ta, tp in DENSITY_CELLS:
-        cells = []
+        lnB = np.log(ta + tp + 1)
         for L in DENSITY_L:
-            frac, ln_attr, kap = density(L, ta, tp)
-            dens.append(dict(L=L, ta=ta, tp=tp, frac=frac, ln_attr=ln_attr,
-                             kappa=kap))
-            if not np.isnan(kap):
-                cells.append((L, kap))
-        shown = "  ".join(f"L={L}:{k:.3f}" for L, k in cells)
-        print(f"({ta},{tp}): kappa {shown}   [MC floor {MC_FLOOR:g}]", flush=True)
-        ks = [k for _, k in cells]
-        assert len(ks) >= 3 and ks[-1] > ks[0] > 0, "kappa did not rise to a positive plateau"
+            d = density(L, ta, tp, exact_nC=exact_nC.get((L, ta, tp)))
+            if d is None:
+                dropped.append((ta, tp, L))
+                print(f"{'(' + str(ta) + ',' + str(tp) + ')':>7} {lnB:>6.3f} "
+                      f"{L:>3} {'DROPPED':>7} {'—':>9} {'<' + str(MIN_HITS):>8} "
+                      f"{'—':>11} {'—':>7} {'—':>12} {'—':>7}", flush=True)
+                continue
+            dens.append(d)
+            src = "exact" if d["exact"] else "MC"
+            print(f"{'(' + str(ta) + ',' + str(tp) + ')':>7} {lnB:>6.3f} {L:>3} "
+                  f"{src:>7} {d['n'] or '—':>9} {d['hits']:>8} {d['frac']:>11.3e} "
+                  f"{d['kappa']:>7.4f} {d['cost']:>12.4f} {d['se']:>7.4f}",
+                  flush=True)
+        got = [d for d in dens if (d["ta"], d["tp"]) == (ta, tp)]
+        assert len(got) >= 3, f"too few usable density points at ({ta},{tp})"
+        # every quoted point is backed by real evidence
+        assert all(d["exact"] or d["hits"] >= MIN_HITS for d in got), \
+            "a kappa point slipped through under-powered"
+        # kappa is strictly below its ceiling ln B, and the cost is falling in L
+        assert all(0 < d["kappa"] < lnB for d in got), "kappa outside (0, ln B)"
+        costs = [d["cost"] for d in got]
+        assert costs == sorted(costs, reverse=True), \
+            f"coherence cost not monotone decreasing at ({ta},{tp})"
+        assert costs[-1] > 0, "coherence cost hit zero"
+    if dropped:
+        print(f"\ndropped {len(dropped)} under-powered point(s): "
+              + ", ".join(f"({ta},{tp}) L={L}" for ta, tp, L in dropped),
+              flush=True)
 
     out = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                        "result", "topology", "coherent_core.npz")
@@ -477,6 +559,22 @@ def main():
               f"{r['N']:,} | {r['P']:.4f} | {r['nC']:,} | {r['attractors_C']:,} | "
               f"{r['live_attractors']:,} | {r['dwelling_attractors']} | "
               f"{r['max_transient']} |")
+
+    print("\n--- results-doc table 3: attractor-entropy density (generated) ---")
+    print("| (τa, τp) | ln B | L | source | draws | hits | \\|C\\|/B^(L²) | κ | "
+          "c = ln B − κ | SE(κ) |")
+    print("| :---: | ---: | :---: | :---: | ---: | ---: | ---: | ---: | ---: | ---: |")
+    for d in dens:
+        lnB = np.log(d["ta"] + d["tp"] + 1)
+        src = "exact" if d["exact"] else "MC"
+        draws = "—" if d["exact"] else f"{d['n']:,}"
+        print(f"| ({d['ta']}, {d['tp']}) | {lnB:.3f} | {d['L']} | {src} | {draws} | "
+              f"{d['hits']:,} | {d['frac']:.3e} | {d['kappa']:.4f} | "
+              f"{d['cost']:.4f} | {d['se']:.4f} |")
+    if dropped:
+        print("\nDropped as under-powered (< "
+              f"{MIN_HITS} hits at {MC_BUDGET[-1]:,} draws): "
+              + ", ".join(f"({ta}, {tp}) L={L}" for ta, tp, L in dropped))
 
     print("\n--- results-doc table 2: sampled P(L) (generated) ---")
     print("| (τa, τp) | " + " | ".join(f"L={L}" for L in SAMPLED_L) + " |")
