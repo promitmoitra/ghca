@@ -138,7 +138,20 @@ on low-degree cells *per capita*: corner 8,736 / edge 4,928 / centre 333 over
 the full census — 2,184 per corner > 1,232 per edge > 333 at the centre.
 
 **The centre is not excluded**: 333 of the 13,997 single-cell witnesses sit at
-the interior cell. An earlier revision reported "corner 323 / edge 60 / centre
+the interior cell.
+
+The count is convention-dependent, and **the ordering survives both
+conventions** — worth stating explicitly, since convention ambiguity is what
+produced the original error:
+
+| convention | corner | edge | centre | per capita |
+| :--- | ---: | ---: | ---: | :--- |
+| one role per single-cell witness (archived) | 8,736 | 4,928 | 333 | 2,184 > 1,232 > 333 |
+| every cell of every witnessing subset | 24,768 | 16,792 | 2,079 | 6,192 > 4,198 > 2,079 |
+
+(Second row independently re-derived on the `agent-comms-log` response to this
+review and reproduced here; not archived, as the first is the one the
+prediction is stated over.) An earlier revision reported "corner 323 / edge 60 / centre
 0" as a sample; those are the first 2,000 ceiling states in BFS enumeration
 order — an order-biased prefix, not a sample — and "centre 0" was false. The
 full census costs ~1.3 s. Now archived as `ceil_role_names`/`ceil_role_counts`.
