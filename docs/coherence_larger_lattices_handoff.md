@@ -182,8 +182,14 @@ Carried out via seeded-orbit sampling across 300 random initial states on both 4
 2. **P-B (Boundary Concentration): CONFIRMED.** Single-cell witnesses at ceiling holds ($3 \to 3$) strictly concentrate per capita in cell degree:
    $$\text{Rate}(\text{corner}, \text{deg } 2) = 3.50 > \text{Rate}(\text{edge}, \text{deg } 3) = 2.50 > \text{Rate}(\text{centre}, \text{deg } 4) = 2.25$$
    with 9 witnesses occurring directly at the genuine interior cells.
-3. **P-C (Torus vs Open Dynamics): CONFIRMED.** Periodic torus dynamics exhibit faster lockstep convergence into attractor zero-modes with fewer ceiling holds (22 vs 115), preserving strict witness side-separation (ceiling holds 100% $u$-side witnessed, age-1 holds 100% $v$-side witnessed, cross-side = 0).
-4. **Witness Structure & Separation:** Holds occur strictly at ages $\{0, 1, S\}$. Sides never mix across all tested lattices.
+3. **P-C (Swap-Size Distribution Shift on Torus): TESTED & REJECTED (FALSIFIED).**
+   - *Hypothesis:* On the torus (all degree 4), single-cell witnesses would be rarer and swap sizes shifted upward vs open lattice.
+   - *Falsifier:* Torus swap-size distribution equal to or below the open one.
+   - *Committed Data (`coherence_window_4x4.npz`):*
+     - 4×4 Open ($N=111$): sizes `{1: 43, 2: 30, 3: 25, 4: 9, 5: 4}`, mean swap size $= 2.108$, $P(\text{single-cell}) = 38.7\%$.
+     - 4×4 Torus ($N=22$): sizes `{1: 11, 2: 7, 3: 2, 4: 2}`, mean swap size $= 1.773$, $P(\text{single-cell}) = 50.0\%$.
+   - *Finding:* The torus distribution is shifted *downward* (higher single-cell fraction, lower mean swap size). The hypothesis that 4 neighbours available to contradict re-reading necessitates larger swaps fails because open boundary reflections induce spatial wave clashes that break quiet runs and demand multi-cell swaps ($k \ge 2$), whereas translationally invariant torus orbits resolve into coherent traveling modes with large quiet clusters admitting single-cell swaps.
+4. **Witness Structure & Separation:** Holds occur strictly at ages $\{0, 1, S\}$. Sides never mix across all tested lattices (ceiling holds 100% $u$-side witnessed, age-1 holds 100% $v$-side witnessed; cross-side is 0).
 
 — Antigravity, following up on the handoff.
 

@@ -255,7 +255,22 @@ def main():
     assert res_torus['ceil_v_witnessed'] == 0, "Witness structure failure on Torus: v-side witnessed ceiling hold"
     assert res_torus['h1_u_witnessed'] == 0, "Witness structure failure on Torus: u-side witnessed age-1 hold"
 
-    # Save artifact
+    # 3. P-C Swap-Size Distribution Comparison
+    o_tot = sum(res_open['ceil_sizes'].values())
+    o_mean = sum(k * v for k, v in res_open['ceil_sizes'].items()) / o_tot if o_tot > 0 else 0
+    p_single_open = res_open['ceil_sizes'][1] / o_tot if o_tot > 0 else 0
+
+    t_tot = sum(res_torus['ceil_sizes'].values())
+    t_mean = sum(k * v for k, v in res_torus['ceil_sizes'].items()) / t_tot if t_tot > 0 else 0
+    p_single_torus = res_torus['ceil_sizes'][1] / t_tot if t_tot > 0 else 0
+
+    print("\n=== P-C Swap-Size Distribution Analysis (Open vs Torus) ===")
+    print(f"  Open Ceiling Holds (N={o_tot}): mean size = {o_mean:.3f}, P(single-cell) = {p_single_open:.3f} ({res_open['ceil_sizes'][1]}/{o_tot})")
+    print(f"  Torus Ceiling Holds (N={t_tot}): mean size = {t_mean:.3f}, P(single-cell) = {p_single_torus:.3f} ({res_torus['ceil_sizes'][1]}/{t_tot})")
+    print(f"  Swap Size Distribution (Open):  {dict(sorted(res_open['ceil_sizes'].items()))}")
+    print(f"  Swap Size Distribution (Torus): {dict(sorted(res_torus['ceil_sizes'].items()))}")
+
+    # Save artifact with explicit swap-size distribution fields
     out = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                        "result", "topology", "coherence_window_4x4.npz")
     os.makedirs(os.path.dirname(out), exist_ok=True)
@@ -266,6 +281,10 @@ def main():
              open_ceil_u=np.array([res_open['ceil_u_witnessed']]),
              open_ceil_total=np.array([res_open['ceil_total']]),
              open_ceil_v=np.array([res_open['ceil_v_witnessed']]),
+             open_ceil_sizes_keys=np.array(sorted(res_open['ceil_sizes'].keys())),
+             open_ceil_sizes_vals=np.array([res_open['ceil_sizes'][k] for k in sorted(res_open['ceil_sizes'].keys())]),
+             open_h1_sizes_keys=np.array(sorted(res_open['h1_sizes'].keys())),
+             open_h1_sizes_vals=np.array([res_open['h1_sizes'][k] for k in sorted(res_open['h1_sizes'].keys())]),
              open_roles_names=np.array(sorted(res_open['ceil_roles'].keys())),
              open_roles_counts=np.array([res_open['ceil_roles'][k] for k in sorted(res_open['ceil_roles'].keys())]),
              torus_depth_keys=np.array(list(res_torus['depth_hist'].keys())),
@@ -273,14 +292,18 @@ def main():
              torus_max_d=np.array([max_d_torus]),
              torus_ceil_u=np.array([res_torus['ceil_u_witnessed']]),
              torus_ceil_total=np.array([res_torus['ceil_total']]),
-             torus_ceil_v=np.array([res_torus['ceil_v_witnessed']]))
+             torus_ceil_v=np.array([res_torus['ceil_v_witnessed']]),
+             torus_ceil_sizes_keys=np.array(sorted(res_torus['ceil_sizes'].keys())),
+             torus_ceil_sizes_vals=np.array([res_torus['ceil_sizes'][k] for k in sorted(res_torus['ceil_sizes'].keys())]),
+             torus_h1_sizes_keys=np.array(sorted(res_torus['h1_sizes'].keys())),
+             torus_h1_sizes_vals=np.array([res_torus['h1_sizes'][k] for k in sorted(res_torus['h1_sizes'].keys())]))
     print(f"\nSaved results to {out}")
 
     print("\n--- Summary Results Table ---")
-    print("| Lattice | Boundary | S | Max Depth (P-A) | Ceiling u-Witness | Ceiling v-Witness | Rate(Corner) | Rate(Edge) | Rate(Centre) |")
-    print("| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |")
-    print(f"| 4×4 | Open | {res_open['S']} | {max_d_open} | {res_open['ceil_u_witnessed']}/{res_open['ceil_total']} | {res_open['ceil_v_witnessed']} | {r_corner:.2f} | {r_edge:.2f} | {r_centre:.2f} |")
-    print(f"| 4×4 | Torus | {res_torus['S']} | {max_d_torus} | {res_torus['ceil_u_witnessed']}/{res_torus['ceil_total']} | {res_torus['ceil_v_witnessed']} | N/A | N/A | N/A |")
+    print("| Lattice | Boundary | S | Max Depth (P-A) | Ceiling u-Witness | Ceiling v-Witness | Mean Swap Size (P-C) | P(Single-Cell) | Rate(Corner) | Rate(Edge) | Rate(Centre) |")
+    print("| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |")
+    print(f"| 4×4 | Open | {res_open['S']} | {max_d_open} | {res_open['ceil_u_witnessed']}/{res_open['ceil_total']} | {res_open['ceil_v_witnessed']} | {o_mean:.3f} | {p_single_open:.1%} | {r_corner:.2f} | {r_edge:.2f} | {r_centre:.2f} |")
+    print(f"| 4×4 | Torus | {res_torus['S']} | {max_d_torus} | {res_torus['ceil_u_witnessed']}/{res_torus['ceil_total']} | {res_torus['ceil_v_witnessed']} | {t_mean:.3f} | {p_single_torus:.1%} | N/A | N/A | N/A |")
 
 
 if __name__ == "__main__":

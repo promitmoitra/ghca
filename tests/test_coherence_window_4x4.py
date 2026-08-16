@@ -35,6 +35,39 @@ class TestCoherenceWindow4x4(unittest.TestCase):
         self.assertEqual(res['ceil_v_witnessed'], 0, "Ceiling holds must never be witnessed on v-side")
         self.assertEqual(res['h1_u_witnessed'], 0, "Age-1 holds must never be witnessed on u-side")
 
+    def test_saved_npz_archive_structure_and_swap_size_fields(self):
+        """Verify that the committed NPZ archive contains the required swap-size distribution fields for P-C."""
+        npz_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                "result", "topology", "coherence_window_4x4.npz")
+        self.assertTrue(os.path.exists(npz_path), f"Missing artifact {npz_path}")
+        d = np.load(npz_path)
+
+        # Check required keys for P-C comparison
+        required_keys = [
+            "open_ceil_sizes_keys", "open_ceil_sizes_vals",
+            "torus_ceil_sizes_keys", "torus_ceil_sizes_vals",
+            "open_h1_sizes_keys", "open_h1_sizes_vals",
+            "torus_h1_sizes_keys", "torus_h1_sizes_vals"
+        ]
+        for rk in required_keys:
+            self.assertIn(rk, d.files, f"Missing key {rk} in {npz_path}")
+
+        # Compute swap-size statistics from saved archive
+        open_keys, open_vals = d["open_ceil_sizes_keys"], d["open_ceil_sizes_vals"]
+        torus_keys, torus_vals = d["torus_ceil_sizes_keys"], d["torus_ceil_sizes_vals"]
+
+        open_mean = np.sum(open_keys * open_vals) / np.sum(open_vals)
+        torus_mean = np.sum(torus_keys * torus_vals) / np.sum(torus_vals)
+
+        p_single_open = open_vals[0] / np.sum(open_vals)  # key 1 is index 0
+        p_single_torus = torus_vals[0] / np.sum(torus_vals)  # key 1 is index 0
+
+        # Verify exact reproducibility from archive
+        self.assertAlmostEqual(open_mean, 2.1081, places=3)
+        self.assertAlmostEqual(torus_mean, 1.7727, places=3)
+        self.assertAlmostEqual(p_single_open, 0.3874, places=3)
+        self.assertAlmostEqual(p_single_torus, 0.5000, places=3)
+
 
 if __name__ == "__main__":
     unittest.main()

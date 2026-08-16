@@ -114,11 +114,13 @@ ceiling). — `coherence_window_saturation.npz`.
 At 4×4 open (2,1) (sampled over 300 random trajectories, seed 12345):
 - Ceiling holds: 111 / 115 u-side witnessed (**0** on v-side)
 - Age-1 holds: 235 / 246 v-side witnessed (**0** on u-side)
-- Swap size distribution at ceiling: 43 / 30 / 25 / 9 / 4 for sizes 1..5
+- Swap size distribution at ceiling: 43 / 30 / 25 / 9 / 4 for sizes 1..5 (mean 2.108, P(single-cell) = 38.7%)
 
 At 4×4 torus (2,1):
 - Ceiling holds: 22 / 22 u-side witnessed (**0** on v-side)
 - Age-1 holds: 57 / 58 v-side witnessed (**0** on u-side)
+- Swap size distribution at ceiling: 11 / 7 / 2 / 2 for sizes 1..4 (mean 1.773, P(single-cell) = 50.0%)
+- **P-C test:** Swap-size distribution is shifted downward rather than upward on the torus; the upward-shift hypothesis is rejected.
 
 So *sides never mix*, confirmed at 2×2, 3×3, and 4×4. — `coherence_covering_lemma.npz`, `coherence_window_4x4.npz`.
 
