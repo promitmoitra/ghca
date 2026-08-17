@@ -152,30 +152,30 @@ flowchart LR
 
 ---
 
-### Direction 2: Closing the Covering Lemma via Trajectory-History Operationalization (P-D)
+### Direction 2: Closing the Covering Lemma via Structural Subset Selection (P-D)
 
 ```mermaid
 flowchart TD
-    A["State Representation: (v, u)"] -->|Ambiguity: 5% of states admit multiple histories| B["Trajectory Representation: v(t), u(t)"]
-    B --> C["Operational Quiet Run:<br/>Q(i, t) = consecutive steps cell i stayed 0"]
-    C --> D["Evaluate Inversion Condition:<br/>Q(i, t) < Age(v(t), u(t))"]
-    D --> E["Exact Mathematical Theorem:<br/>Covering Lemma Hand-Proof from Refractory Pipeline"]
+    A["State Representation: (v, u) at Ceiling (Age S)"] --> B["Spatial/Degree Structure:<br/>Corner (deg 2) > Edge (deg 3) > Centre (deg 4)"]
+    B --> C["Dwelling Subset Selection:<br/>Independent Sets & Wave Return Path Coverage"]
+    C --> D["Evaluate Swap Consistency:<br/>0 ↔ S Preimage Re-reading"]
+    D --> E["Exact Mathematical Theorem:<br/>Covering Lemma Hand-Proof from Graph Topology & Swap Law"]
 ```
 
 * **Two-Sentence Pitch:**  
-  *The analytical proof of the coherence invariant currently stalls on the Covering Lemma because state-space "age" is compared against trajectory-space "quiet runs" that are ambiguous in $\approx 5\%$ of states.*  
-  *We operationalize quiet runs over backward trajectory histories $(v_{t-k..t}, u_{t-k..t})$, proving that every ceiling hold is witnessed by a cell whose quiet dwell time is strictly younger than the refractory horizon $S$.*
+  *While 2×2 suggested that witnesses are strictly young quiet cells ($Q < S$), 3×3 scaling revealed that quiet runs exceed $S$ and old cells ($Q \ge S$) successfully supply witnesses when young ones are absent.*  
+  *We pivot the Covering Lemma proof from temporal quiet-run bounds to **structural/topological subset constraints** (degree ordering $\text{corner} > \text{edge} > \text{centre}$ and wave path coverage), establishing that every persistent ceiling state admits a consistent older reading under the universal Swap Law.*
 
 * **Core Tension:**  
-  *State Function vs Path Function:* Cellular automata configurations lack explicit velocity/history variables, yet preimage uniqueness requires knowing how many ticks a cell has rested at $0$.
+  *Temporal Decay vs Structural Coverage:* Preimage uniqueness cannot be established by temporal age alone (since cells can remain quiet for $\ge S$ ticks), but relies on topological boundaries fragmenting quiet runs and providing independent dwelling witness subsets.
 
-* **Key Hypotheses & Status:**
-  * **H1 (Exact Trajectory Witnessing):** For every trajectory pair $(v(t), u(t))$ reaching age $S$, there exists at least one cell $i$ on the $u$-side where $Q(i, t) < S$.  
-    *Empirical Status:* **Confirmed at $2\times 2$** across $(2,1)$, $(2,2)$, and $(3,3)$ ($12/12$, $24/24$, $64/64$ ceiling holds; **0 violations**).
-  * **Analytical Proof Obligation:** The remaining work is the **hand proof** — establishing from the refractory pipeline that quiet-run preimages guarantee backward connectivity to the diagonal clock-shift set on general graphs $G$, with $3\times 3$ empirical census serving as verification.
+* **Key Findings & Falsification Ledger:**
+  * **Temporal H1 ($Q < S$) Falsified at 3×3:** At $3\times 3$ $(2,1)$, 8 out of 58,588 ceiling holds have $\min Q(i,t) = S = 3$ (all dwelling cells are old). The $2\times 2$ quiet-run bound ($\max Q \le \min(\lceil S/2 \rceil + 1, \tau_p + 2)$) was an artifact of the 4-cycle where waves return within half a period.
+  * **Covering Lemma Survives via Old-Cell Witnesses:** All 8 violating pairs are 100% witnessed ($8/8$), using dwelling subsets where $Q \ge S$.
+  * **Structural Degree Ordering Holds Universally:** Max quiet runs and witness concentrations scale strictly with node degree: $\text{corner} > \text{edge} > \text{centre}$ across all cells ($9 > 6 > 3$ at $(2,2)$), providing the true invariant handle for the hand proof.
 
-* **Rescoped Plan:**
-  * Fast 1-day empirical verification pass over all 25,998 ceiling states on $3\times 3$, followed directly by constructing the formal analytical hand proof from refractory recovery bounds.
+* **Target Proof Strategy:**
+  * Construct the formal hand proof by showing that for any graph $G$, the existence of a degree-bounded boundary cell or independent cycle return path guarantees at least one dwelling subset whose swap $0 \leftrightarrow S$ forms a valid predecessor pair under the Swap Law.
 
 ---
 
