@@ -48,7 +48,8 @@ not as built-in modules.
 | `experiments/viz_gh_vs_symbolic.py` | Animation: the medium, its space-time raster, and the symbol automaton side by side for a live and a dead run — the double-dwell death and the L2 class-exchange, visible |
 | `experiments/clock_shift_merge.py` | The regime law reduces to clock-shift merging: rearrangement-invariance is universal; clock-shift invariance == the regime; at `tau_a >= tau_p` EVERY orbit merges with its clock-shift (100%) |
 | `experiments/clock_shift_healing.py` | Lemma R (proven): step == clock-shift iff dwell-free; clock-shift = time-step on live attractors (`S+1 >= 4`); LIVE healing has the exact closed form `tau_a + 2*tau_p + 1` (12 cells), witnesses = one young-wave family; 2S saturators are all dead drains. **Its "empirical half" now has a closed form — see `coherent_core.py`** |
-| `experiments/coherent_core.py` | **The coherent core**: the dwell-free attractor set is the STATIC local condition `C = {c : every cell has a neighbour at lag 1..tau_a}` — proven lattice-free (Theorem C), with `step = +1` on `C`, period exactly `S+1`, and `#attractors = \|C\|/(S+1)`; plus Theorem Z (the all-zero fixed point is the ONLY dead attractor, any graph — the fact `persistent_set_3x3.py`'s label propagation assumed). Census: the attractor architecture is **regime-independent** (holds verbatim at `tau_p > tau_a`); (1,1) is the sole cell with dwelling attractors (the only one with `S+1 < 4`); transients are `O(S)` not `O(L^2)`; `#attractors ~ exp(kappa L^2)` with kappa positive but **not converged** (read the per-cell cost `c = ln B - kappa`, since `kappa <= ln B` trivially; every quoted point is exact or >= 300 MC hits, under-powered points dropped — a first revision quoted kappa from 1–3 hits and is corrected in place); `P -> 1` fast in `L` |
+| `experiments/coherent_core.py` | **The coherent core**: the dwell-free attractor set is the STATIC local condition `C = {c : every cell has a neighbour at lag 1..tau_a}` — proven lattice-free (Theorem C), with `step = +1` on `C`, period exactly `S+1`, and `#attractors = \|C\|/(S+1)`; plus Theorem Z (the all-zero fixed point is the ONLY dead attractor, any graph — the fact `persistent_set_3x3.py`'s label propagation assumed). Census: the attractor architecture is **regime-independent** (holds verbatim at `tau_p > tau_a`); (1,1) is the sole cell with dwelling attractors **among this census's rows** (the only one there with `S+1 < 4`) — **not** a general fact: square 3x3 (1,3) also has 28, see `girth_parity.py`; transients are `O(S)` not `O(L^2)`; `#attractors ~ exp(kappa L^2)` with kappa positive but **not converged** (read the per-cell cost `c = ln B - kappa`, since `kappa <= ln B` trivially; every quoted point is exact or >= 300 MC hits, under-powered points dropped — a first revision quoted kappa from 1–3 hits and is corrected in place); `P -> 1` fast in `L` |
+| `experiments/girth_parity.py` | **Girth vs the dwelling anomaly**: the discriminator `coherent_core.md` named and did not run. Nine graphs (C3–C8 rings, square 3x3, triangular 3x3, honeycomb) with girth and parity varied independently, all properties MEASURED. Prediction `H_g` ("a live attractor dwells iff B < girth") **FALSIFIED at exactly one cell** — square 3x3 (1,3), where `C` is empty for Lemma E's arithmetic reason — then repaired: `H_g'` ("a dwelling live attractor exists iff live ones exist and (B < girth or C empty)") is certified **80/80**, with both substantive halves clean (39 and 21 rows). So there are TWO obstructions: Lemma E's arithmetic decides whether dwell-free attractors exist at all, and given that they do, GIRTH decides whether dwelling ones coexist. Also extends Lemma E, Theorem C and Theorem Z off the square lattice (39 non-bipartite rows, 0 violations) |
 | `experiments/damage_relaxation.py` | Discrete perturbation theory (damage spreading): the clock-shift is a zero mode; at `tau_a >= tau_p` every scattered damage relaxes back in exactly `tau_a + 2*tau_p + 1`; never-relaxing pairs == split-fate pairs, one for one — the regime law as a damage-healing transition |
 | `experiments/damage_relaxation_3x3.py` | Scaling: the transition survives at 3x3 (split-fate = 0 at every `tau_a >= tau_p` cell, up to 10M configs) but the 2x2 closed form does NOT lift (relax times 9/12/10/14, topology-dependent) and the right criterion is MERGE, not return-to-uniform ((1,1): 14,052 never-uniform pairs, all merged) |
 | `experiments/dwell_debt_confinement.py` | The confinement variable: damage == 1 + dwell-debt (exact identity); live debt confined (2x2: `ceil(S/2)`, 3x3: `S`) at `tau_a >= tau_p` vs unit-slope drift `T-k` (k=1 at (1,2), k=2 at (2,3)) at `tau_p > tau_a` — the regime law as debt confinement vs escape |
@@ -155,6 +156,22 @@ not as built-in modules.
   the dying set is a small-lattice phenomenon. Caveat: "every live attractor is
   dwell-free when `S+1 ≥ 4`" is **certified, not proven**, and the girth
   reading of that 4 rests on one cell.
+- [`docs/girth_parity.md`](docs/girth_parity.md) — **theory.** Runs the
+  discriminator the above doc left open. Nine graphs separate girth from parity
+  (girths 3–8, both parities; every property measured, not assumed). The
+  recorded prediction — *a live attractor dwells iff `B < girth`* — is
+  **falsified at exactly one cell**, square 3×3 (1,3), where Lemma E makes `C`
+  empty regardless of girth. The repair is certified **80/80**: a dwelling live
+  attractor exists ⟺ live attractors exist and (`B < girth` or `C` empty). The
+  upshot is that there are **two** obstructions, previously conflated because
+  the square lattice never separated them — Lemma E's arithmetic decides whether
+  dwell-free attractors can exist at all, and *given that they can*, girth
+  decides whether dwelling ones coexist. The clean comparison: square 3×3 and
+  honeycomb at the same cell (2,1) and same `B = 4`, both bipartite, differ only
+  in girth (4 vs 6) and give 0 vs 10 dwelling attractors. Also carries Lemma E,
+  Theorem C and Theorem Z off the square lattice for the first time (39
+  non-bipartite rows, 0 violations). Caveat: certified, not proven; graphs have
+  ≤ 10 nodes and the honeycomb only reaches `B ≤ 4`.
 - [`docs/topology_cycle_packing_exact.md`](docs/topology_cycle_packing_exact.md) —
   **correction to the above.** `pack_long_cycles` picks `max(longer, key=len)`;
   maximising the *count* wants `min`. One word costs 1.0–4.7×, an exact set-packing

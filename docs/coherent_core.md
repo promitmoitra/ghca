@@ -76,14 +76,20 @@ once around it returns to the starting phase, so the sum is `0 mod B`; the sum
 also lies in `[ℓ, ℓ·τa]` and is at least `ℓ ≥ 3 > 0`, so it equals `kB` for some
 `k ≥ 1`. ∎
 
-> **⚠ This corrects a conjecture made in the first revision of this doc**, which
-> read the (1,1) anomaly as a **girth** effect — "`S+1 ≥ 4`, and 4 is the girth
-> of the square lattice". That reading is wrong. The obstruction is arithmetic,
-> not metric: the square lattice is **bipartite**, so every cycle length is
-> even, while `B = 3` at (1,1) is odd. At 2×2 the only cycle length is 4 and no
-> multiple of 3 lies in `[4, 4]`, so `C` is empty; at 3×3 a 6-cycle exists and
-> `6 = 2·3` lies in `[6, 6]`, so `C` is not (`|C| = 84`). Girth alone predicts
-> neither.
+> **⚠ Revised twice — read the whole note.** The first revision of this doc read
+> the (1,1) anomaly as a **girth** effect ("`S+1 ≥ 4`, and 4 is the girth of the
+> square lattice"). The second revision called that simply wrong. Both were
+> partly off, and [`girth_parity.md`](girth_parity.md) settles it:
+>
+> - **For `|C| = 0`, the obstruction is arithmetic, not metric** — this lemma.
+>   The square lattice is **bipartite**, so every cycle length is even, while
+>   `B = 3` at (1,1) is odd. At 2×2 the only cycle length is 4 and no multiple
+>   of 3 lies in `[4, 4]`, so `C` is empty; at 3×3 a 6-cycle exists and
+>   `6 = 2·3` lies in `[6, 6]`, so `C` is not (`|C| = 84`). Girth alone predicts
+>   neither.
+> - **For whether *dwelling* attractors coexist, girth is exactly the criterion**
+>   — given `C ≠ ∅`. That half was wrongly discarded and is now certified over
+>   nine graphs of girth 3–8, both parities.
 
 Necessity is asserted at 16 (lattice, cell) pairs. The converse held at all 16
 but is **not** claimed.
@@ -108,10 +114,12 @@ records as "vacuous" without explaining them. And it correctly separates
 3×3 (1,4) — where `6 = 1·6` puts `|C| = 168` — from 3×3 (1,3) and (1,5), where
 no multiple of `B` lands in any `[ℓ, ℓ]`.
 
-**Lemma E does not settle the open claim.** It says when `C` is *empty*; the
-un-proven claim says when *dwelling* attractors are *absent*. These are
-different: 3×3 (1,1) has a non-empty `C` (28 attractors) **and** 34 dwelling
-ones. See [Honest scope](#honest-scope).
+**Lemma E does not settle the open claim on its own.** It says when `C` is
+*empty*; the un-proven claim says when *dwelling* attractors are *absent*.
+These are different: 3×3 (1,1) has a non-empty `C` (28 attractors) **and** 34
+dwelling ones. The missing half turns out to be **girth** —
+see [`girth_parity.md`](girth_parity.md), which combines the two into a
+condition certified over nine graphs.
 
 ---
 
@@ -329,14 +337,18 @@ or asserted here.
   certified exhaustively at the twelve rows above and sampled to `L = 8`. It is
   the one load-bearing claim here without a proof, and it is what licenses
   reading `C` as *the* attractor set rather than merely the dwell-free part.
-- **The girth reading was wrong, and its replacement covers only half.** The
-  first revision guessed that the `S+1 ≥ 4` threshold was the square lattice's
-  girth. Lemma E replaces that with a proven arithmetic condition — and settles
-  only the *emptiness* half. Why **dwelling attractors** are absent whenever
-  `S+1 ≥ 4` is still unexplained and still rests on (1,1) alone. The cheap
-  discriminator is a lattice of different girth **and parity**: triangular
-  (girth 3, non-bipartite, odd cycles available) or honeycomb (girth 6,
-  bipartite). Not run here.
+- **The girth reading is half-right, and the halves are now separated.** ⚠
+  *Superseded — this bullet previously said girth was simply "wrong" and that
+  the discriminator was "not run here". It has since been run:
+  [`girth_parity.md`](girth_parity.md).* There are **two** obstructions, which
+  the square lattice never separated at the cells tested here: **Lemma E's
+  arithmetic** decides whether dwell-free attractors can exist at all, and
+  **given that they can, girth** decides whether dwelling ones coexist. On nine
+  graphs spanning girths 3–8 and both parities, "a dwelling live attractor
+  exists ⟺ live attractors exist and (`B < girth` or `C` empty)" is certified
+  80/80. So the `S+1 ≥ 4` threshold here really was the square lattice's girth
+  — it just needed `C ≠ ∅` as a side condition, which every square cell tested
+  in this doc happened to satisfy except (1,1) and (1,3).
 - **Nothing here is a directed-percolation result, and `P` is not an order
   parameter.** The substrate has a single absorbing state (Theorem Z), which is
   the setting where DP universality is normally conjectured — but the dynamics

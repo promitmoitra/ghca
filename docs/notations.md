@@ -53,6 +53,7 @@ Lemma R, Theorem C and the dwell-debt ledger are all built on.
 | :--- | :--- |
 | **dwell** | a cell is receptive at `t` *and still receptive* at `t+1` |
 | **dwell-free** | a configuration (or whole cycle) in which no cell dwells |
+| **dwelling attractor** | a live attractor on which some cell dwells — i.e. a live cycle *not* in `C` |
 | **clock-shift** | `c → c+1`, adding 1 to every cell mod `B` |
 | **live / persistent** | the trajectory's attractor contains an active cell |
 | **dead / dying** | the trajectory reaches the all-zero fixed point |
@@ -131,8 +132,10 @@ work. All assume `θ = 1`, von Neumann, open boundary.
 | **coherence window** | the claim that age saturates at exactly `S` (a **regime** law: `τa ≥ τp` only) | same |
 | `R` | the certified coherent pair set | same |
 | `C` | the **coherent set** — see below | [`coherent_core.md`](coherent_core.md) |
-| `κ` | attractor-entropy density, `ln(#attractors)/L²` | same |
-| `c` (cost) | per-cell **coherence cost** `= ln B − κ` | same |
+| **girth** | length of the shortest cycle of the graph (4 on a square lattice, 3 triangular, 6 honeycomb, `m` on a ring `C_m`) | [`girth_parity.md`](girth_parity.md) |
+| `H_g`, `H_g′` | the girth hypothesis and its repair: a dwelling live attractor exists ⟺ live attractors exist and (`B < girth` or `C` empty) | same |
+| `κ` | attractor-entropy density, `ln(#attractors)/L²` | [`coherent_core.md`](coherent_core.md) |
+| `c` (cost) | per-cell **coherence cost** `= ln B − κ` | [`coherent_core.md`](coherent_core.md) |
 
 ### The coherent set `C`
 
