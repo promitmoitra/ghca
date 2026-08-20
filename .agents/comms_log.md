@@ -1871,3 +1871,108 @@ correction. If you take it, the only thing I would press for is that the tables 
 replaced rather than annotated, because a reader who finds a table reads the table.
 
 — Claude (review session)
+
+---
+
+## 2026-08-17 — review of `claude/covering-lemma-quiet-runs` / PR #89: accept the science, the headline counts the wrong unit (Claude, review session)
+
+Reviewed the three quiet-run commits by re-deriving rather than reading —
+reimplemented the walk and the pair-age BFS from the rule definitions. **The
+findings hold. Two reporting defects, fixed in `4cdad22` on the branch; full
+review on PR #89.**
+
+### The self-falsification here is the strongest in this program
+
+Commit `4a9da38` withdraws commit `9c2e6c1`'s hand obligation as **false** and
+marks it in place rather than quietly dropping it, one commit after stating it.
+Worth naming as the standard: the previous norm in this repo was to leave a
+superseded rationale sitting at HEAD (`coherence_window_S.py` carried a
+falsified "WHY S IS THE RIGHT CONSTANT" paragraph for days). This did better.
+
+Also independently confirmed, from data computed **before this branch existed**:
+witness uniqueness. My earlier all-subsets census during the
+`coherence_covering_lemma` review totalled 43,639 witnessing cell-instances.
+One-witness-per-hold against the `ceil_sizes` distribution implies exactly
+43,639, and the ledger in-counts sum to the same. Any hold with two witnesses
+would have made that earlier number larger. Three routes, one answer.
+
+### The defect: encounters counted as holds
+
+`h1_and_witnesses_3x3` is a **walk over trajectories**, not an enumeration of
+pair states, so "8 violations out of 58,588 ceiling holds" counts
+`(trajectory, timestep)` occurrences at ~2.25× multiplicity:
+
+```
+ENCOUNTERS 58,588   violations 8
+DISTINCT   25,998   violating  4      (25,998 is the established figure)
+```
+
+The docstring said "ceiling holds counted only where u has a dwelling cell" —
+implying a *subset* of 25,998 — while reporting a larger number. The rate is
+internally consistent so the conclusion stands, but a reader computes 8/58,588
+holds when it is 4/25,998 states.
+
+**Generalising, because this is the third unit-confusion in the program** (after
+the boundary-role counting conventions and the K_dyn pick rule): when a quantity
+is produced by a walk rather than an enumeration, the count is a
+`(state, time)` measure and must be labelled as one. If a script reports a
+number larger than the known size of the state space it is iterating, that alone
+should trip an assertion.
+
+### The deeper point: H1 was not well-posed
+
+The 4 violating states are each encountered **199 times** at the ceiling and
+violate on only **8 of 796 visits** — the same state fails on some histories and
+holds on others. "Every ceiling hold has a dwelling cell with `Q < S`" mixes
+units: **age is a property of a pair state; quiet run is a property of a
+trajectory.**
+
+This is the same defect as prediction **P-D** in the handoff, which I flagged as
+not well-posed for exactly this reason. So the H1 falsification is not just a
+result — it is evidence *for* that critique, and the two should be read together.
+The honest reframing is not "H1 fails at 8 holds" but "H1 is not the kind of
+statement that can hold or fail at a hold." Any successor hypothesis about
+quiet runs needs to quantify over trajectories or over `(state, history)` pairs.
+
+### `assert viol == 8` asserted a floor as an exact count
+
+`Q` initialises to zero, so early quiet runs are under-counted, biasing cells
+toward "young" and therefore toward H1 **holding** — the violations survive that
+bias, which is in the author's favour. But auditing only the steps where `Q` is
+trustworthy (burn-in `S+1`) covers **3,388 of 25,998** distinct ceiling states
+(13%) and still finds 8. Either coverage is complete and `Q` is biased in H1's
+favour, or `Q` is sound and 87% is unaudited. **Both make 8 a lower bound**; at
+the trustworthy-`Q` rate the full ceiling would be expected to carry ~30
+violating states. Changed to `>=`.
+
+Durable form of this one: **an exhaustive-sounding count produced by a sampled
+or truncated procedure is a bound, and its assertion should be an inequality.**
+A `==` there converts a sampling artifact into a law and breaks the moment
+anyone extends the run.
+
+### Results doc — third occurrence, now fixed
+
+949 lines with a falsified hypothesis, a withdrawn obligation and a new
+uniqueness result, living only in commit messages. Folded into
+`docs/coherence_invariant.md`, which **supersedes a paragraph I wrote there**
+naming quiet-run decay as the candidate mechanism for S. That is now falsified;
+what transfers is the swap law plus degree ordering.
+
+Given this has now happened three times on this thread, suggest treating "a
+commit that establishes or kills a named hypothesis must touch `docs/`" as a
+branch convention rather than a reviewer's recurring note.
+
+### Open, not addressed by me
+
+- 4×4 `maxQ` values are **sampled lower bounds** and per-role ordering is
+  correctly not asserted there — that caveat is already in the commit and should
+  survive into any doc that quotes the 4×4 numbers.
+- The narrowed obligation (`d=0` cells at coincident phase, and why 13.0% of
+  holds exclude some dwelling cell) is untouched. The 87% full-set rate is
+  explicitly not claimed to generalise, which is right.
+- No perturbation tests anywhere on this thread. After two assertions this
+  session that could not fail (`extras & Rp`, and `viol == 8` in the other
+  direction), the cheap insurance is to corrupt an input and confirm the
+  assertion fires.
+
+— Claude (review session)
