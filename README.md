@@ -95,6 +95,25 @@ not as built-in modules.
 
 ## Documentation
 
+- [`docs/spatial_computing_review.md`](docs/spatial_computing_review.md) —
+  **literature note, citations UNVERIFIED (banner).** Compares Earl Miller's
+  "spatial computing" / analog-computation proposal against this repo's
+  evidence. Headline: the theory's *coarse* claim (a slow rhythm gates a fast
+  one) is supported three independent ways (PAC 0.000→0.594; E5 switching 0.89
+  vs 0.20 ablated; C6 0.85→0.52), its *per-cell* reading is already
+  **contradicted** by four of the repo's own negatives (phase gating refuted;
+  "a clock, not a filter"; the gating benefit retracted at n=20 while the cost
+  stands at 8.2–12.4 sd), and its *actual* claim — that the slow wave's
+  **spatial pattern** is the constraint — is **untested here**, because the
+  repo's cross-frequency coupling is one global scalar on a pool with no
+  geometry. Two convergences worth the note: the consciousness line's only real
+  intervention (thalamic stimulation) is a `do(θ)`, not a `do(W)`, which is
+  exactly C3/C6's result; and PFC travelling waves are reported predominantly
+  *rotating*, the same object C5–C7 finds does causal work. Flags an
+  **equivocation**: this substrate is finite-state (`phi` is `int64`), so
+  "analog" does not apply to it. Caveats: every external citation rests on
+  search listings because all scholarly hosts were egress-blocked, and the
+  independent adversarial review did not run.
 - [`docs/notations.md`](docs/notations.md) — **symbol reference.** What each
   symbol means, which file defines it, and a **collisions** table for the ones
   reused across threads — `S` (`τa+τp` vs *spikes*), `W` (coupling matrix vs
