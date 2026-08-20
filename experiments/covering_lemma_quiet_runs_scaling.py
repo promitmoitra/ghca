@@ -84,8 +84,28 @@ CELLS_3 = [(1, 1), (2, 1), (2, 2), (3, 1)]
 Q3_EXPECT = {(1, 1): 6, (2, 1): 7, (2, 2): 9, (3, 1): 7}
 ROLE3_EXPECT = {(1, 1): (6, 4, 2), (2, 1): (7, 5, 3),
                 (2, 2): (9, 6, 3), (3, 1): (7, 5, 3)}
-H1_3X3 = dict(cell=(2, 1), n_ceil=58_588, ok=58_580, viol=8,
-              minq={0: 57780, 1: 716, 2: 84, 3: 8})
+# NOTE ON UNITS (corrected after review). The H1 audit is a WALK over
+# trajectories, not an enumeration of pair states, so every count below is an
+# ENCOUNTER count -- a (trajectory, timestep) occurrence -- carrying ~2.25x
+# multiplicity. Distinct-state figures are tracked separately. Confusing the two
+# is easy and was: 58,588 "ceiling holds" is 58,588 ceiling ENCOUNTERS over
+# 25,998 DISTINCT ceiling states, and 25,998 is the established figure from
+# coherence_covering_lemma.py.
+#
+# WALK SPEC (counts are only meaningful relative to this): start from every live
+# diagonal pair (v, v+1); step 4*S + 20 times; quiet runs Q initialised to ZERO.
+#
+# WHY viol IS A FLOOR, NOT A COUNT. Q starts at zero, so early quiet runs are
+# under-counted, biasing cells toward "young" (Q < S) and therefore toward H1
+# HOLDING. The violations survive that bias. But auditing only the steps where Q
+# is trustworthy (burn-in of S+1) covers just 3,388 of the 25,998 distinct
+# ceiling states -- 13% -- while still finding the same 8. So either coverage is
+# complete and Q is biased in H1's favour, or Q is sound and 87% of the ceiling
+# is unaudited. Both readings make 8 a LOWER BOUND, asserted with >=: a longer
+# walk or later burn-in may legitimately find more, and that must not fail.
+H1_3X3 = dict(cell=(2, 1), n_ceil_enc=58_588, ok_enc=58_580, viol_enc_min=8,
+              n_ceil_distinct=25_998, viol_distinct_min=4,
+              minq_enc={0: 57780, 1: 716, 2: 84, 3: 8})
 CELLS_4 = [(2, 1), (2, 2)]
 Q4_EXPECT = {("open", 2, 1): 5, ("open", 2, 2): 8,
              ("torus", 2, 1): 4, ("torus", 2, 2): 7}
@@ -183,6 +203,8 @@ def h1_and_witnesses_3x3(ta=2, tp=1):
     n_ceil = ok = viol = 0
     minq = {}
     viol_pairs = []
+    seen_ceil = set()   # distinct ceiling pair-states encountered
+    seen_viol = set()   # distinct states violating H1 on at least one visit
     Vv, Uu = live.copy(), sh[live]
     Q = np.zeros((len(Vv), 9), dtype=np.int8)
     for _ in range(4 * S + 20):
@@ -203,7 +225,10 @@ def h1_and_witnesses_3x3(ta=2, tp=1):
             mq = np.where(dwell, Qs, 127).min(axis=1)
             for x in mq[hasd].tolist():
                 minq[x] = minq.get(x, 0) + 1
+            for j in np.nonzero(hasd)[0]:
+                seen_ceil.add(int(Vv[ui[j]]) * N + int(Uu[ui[j]]))
             for j in np.nonzero(bad)[0]:
+                seen_viol.add(int(Vv[ui[j]]) * N + int(Uu[ui[j]]))
                 viol_pairs.append((int(Vv[ui[j]]), int(Uu[ui[j]]), Qs[j].copy()))
         for i in range(9):
             Q[:, i] = np.where(((Uu // pw[i]) % B) == 0, Q[:, i] + 1, 0)
@@ -232,7 +257,8 @@ def h1_and_witnesses_3x3(ta=2, tp=1):
             if all(Qv[i] >= S for i in found):
                 wit_old += 1
     return dict(n_ceil=n_ceil, ok=ok, viol=viol, minq=minq,
-                wit_any=wit_any, wit_old=wit_old, n_viol=len(viol_pairs))
+                wit_any=wit_any, wit_old=wit_old, n_viol=len(viol_pairs),
+                n_ceil_distinct=len(seen_ceil), viol_distinct=len(seen_viol))
 
 
 def step4(cfg, ta, tp, NB):
@@ -293,14 +319,26 @@ def main():
 
     print("\n=== 2) H1 at 3x3 (2,1), and are the violations witnessed? ===")
     h = h1_and_witnesses_3x3()
-    print(f"ceiling holds with a dwelling u-cell: {h['n_ceil']:,}", flush=True)
-    print(f"  H1 holds: {h['ok']:,}   VIOLATIONS: {h['viol']}")
-    print(f"  min-quiet-run distribution at ceiling: {dict(sorted(h['minq'].items()))}")
+    print(f"ceiling ENCOUNTERS with a dwelling u-cell: {h['n_ceil']:,}"
+          f"   (over {h['n_ceil_distinct']:,} DISTINCT ceiling states)", flush=True)
+    print(f"  H1 holds: {h['ok']:,} encounters   VIOLATIONS: {h['viol']} encounters"
+          f", on {h['viol_distinct']} distinct state(s)")
+    print(f"  min-quiet-run distribution at ceiling (encounters): "
+          f"{dict(sorted(h['minq'].items()))}")
     print(f"  violations witnessed: {h['wit_any']}/{h['n_viol']}   "
           f"witness uses only OLD cells: {h['wit_old']}/{h['n_viol']}")
-    assert h["n_ceil"] == H1_3X3["n_ceil"], "3x3 ceiling count changed"
-    assert h["viol"] == H1_3X3["viol"] > 0, "H1 must be FALSIFIED at 3x3"
-    assert dict(sorted(h["minq"].items())) == H1_3X3["minq"], "min-Q census changed"
+    print("  NOTE: H1's truth value is TRAJECTORY-dependent, not state-dependent "
+          "-- the same ceiling state violates on some visits and not others, "
+          "because quiet run is a property of history and age is a property of "
+          "state. See the units note at the top of this file.")
+    assert h["n_ceil"] == H1_3X3["n_ceil_enc"], "3x3 ceiling encounter count changed"
+    assert h["n_ceil_distinct"] == H1_3X3["n_ceil_distinct"], \
+        "3x3 DISTINCT ceiling count changed -- this should equal the enumeration figure"
+    # >= not ==: the violation count is a floor, see the units note.
+    assert h["viol"] >= H1_3X3["viol_enc_min"] > 0, "H1 must be FALSIFIED at 3x3"
+    assert h["viol_distinct"] >= H1_3X3["viol_distinct_min"] > 0, \
+        "at least one distinct state must violate H1"
+    assert dict(sorted(h["minq"].items())) == H1_3X3["minq_enc"], "min-Q census changed"
     assert h["wit_any"] == h["n_viol"], "covering lemma must survive"
     assert h["wit_old"] == h["n_viol"], "violations must be OLD-cell witnessed"
 
@@ -323,6 +361,9 @@ def main():
     os.makedirs(os.path.dirname(out), exist_ok=True)
     np.savez(out,
              **{f"q3_{k}": np.array([r[k] for r in q3]) for k in q3[0]},
+             h1_n_ceil_enc=np.array([h["n_ceil"]]),
+             h1_n_ceil_distinct=np.array([h["n_ceil_distinct"]]),
+             h1_viol_distinct=np.array([h["viol_distinct"]]),
              h1_n_ceil=np.array([h["n_ceil"]]), h1_ok=np.array([h["ok"]]),
              h1_viol=np.array([h["viol"]]),
              h1_minq_keys=np.array(sorted(h["minq"])),

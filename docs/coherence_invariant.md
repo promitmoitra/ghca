@@ -160,12 +160,69 @@ full census costs ~1.3 s. Now archived as `ceil_role_names`/`ceil_role_counts`.
 
 ## What this does *not* explain
 
-The mechanism behind S is **open**. The covering lemma
-([`coherence_covering_lemma.py`](../experiments/coherence_covering_lemma.py))
-suggests that quiet cells can disguise their age only up to their quiet run, so
-ancestry decays through the refractory pipeline at one tick per step — but that
-lemma is explicitly labelled "THE REMAINING HAND OBLIGATION" in its own source.
-It is a conjecture, not an account.
+The mechanism behind S is **open**, and the leading candidate has since been
+**falsified**.
+
+> **⚠ Superseded.** An earlier revision of this section said the covering lemma
+> "suggests that quiet cells can disguise their age only up to their quiet run,
+> so ancestry decays through the refractory pipeline at one tick per step."
+> **Quiet-run age is not the mechanism.** See below.
+
+### Quiet-run age is not the covering mechanism (`covering_lemma_quiet_runs*`)
+
+At 2×2 the story looked complete: every ceiling hold has a dwelling cell with
+quiet run `Q < S`, the young cell supplies the witness, and `Q` obeys a closed
+form `min(⌈S/2⌉+1, τp+2)` exact at all 16 τa ≥ τp cells. **All three are 2×2
+artifacts.**
+
+- **The closed form dies at 3×3**: maxQ = 6/7/9/7 at (1,1)/(2,1)/(2,2)/(3,1)
+  against the 2×2 form's 2/3/3/3 — and maxQ > S everywhere, where at 2×2 it was
+  < S. The hand obligation to prove it is **withdrawn as false**.
+- **The young-cell story inverts**: at 3×3 the violating pairs are all witnessed
+  (8/8), and every witnessing subset uses only cells with **Q ≥ S**. A witness
+  can be built from cells that waited longer than a full cycle.
+- **What transfers instead**: the swap law (proven, universal) plus **degree
+  ordering** — per-role quiet-run maxima order strictly corner > edge > centre
+  at every 3×3 cell ((2,2): 9/6/3), the same structural fact behind per-capita
+  witness concentration. A torus, all degree 4, has no boundary to order.
+
+**And the falsified hypothesis was not well-posed to begin with.** "Every
+ceiling hold has a dwelling cell with Q < S" mixes units: *age* is a property of
+a pair **state** (BFS depth), while *quiet run* is a property of a
+**trajectory**. Measured: the 4 distinct violating states are each encountered
+199 times at the ceiling and violate on only **8 of 796 visits** — the same
+state fails on some histories and holds on others. So the audit's counts are
+encounters, not holds: 58,588 ceiling **encounters** over 25,998 distinct
+ceiling states, ~2.25× multiplicity. This is the same defect as prediction P-D
+in the handoff, and its falsification is that defect made visible.
+
+Consequence for anyone extending this: **8 is a floor, not a count.** Quiet runs
+initialise to zero in the walk, which biases cells toward "young" and therefore
+toward the hypothesis *holding*; auditing only the steps where `Q` is
+trustworthy covers 3,388 of 25,998 distinct ceiling states (13%) and still finds
+8. Either reading makes it a lower bound.
+
+### The witness is unique (`covering_witness_selection.py`)
+
+Two exact handles replace the dead one:
+
+- **2×2 is degenerate, not merely small.** At every 2×2 cell, *every* dwelling
+  subset of *every* ceiling hold witnesses — 12/24/44/64/152 witnessing, **zero**
+  non-witnessing. The selection question does not exist there, which is the
+  structural reason three hypotheses read as laws at 2×2 and died at 3×3.
+- **At 3×3 (2,1) the witness is unique.** Over all 25,998 ceiling holds:
+  25,998 witnessing subsets and 90,014 non-witnessing, census `{1: 25998}` —
+  exactly one witness per hold, never two. It is the full dwelling set in
+  22,622 holds (87.0%). A proof need not search subsets, only exhibit *the*
+  witness. *(Independently cross-checked: one-witness-per-hold against the
+  `ceil_sizes` distribution implies 43,639 witnessing cell-instances, which
+  equals both the ledger in-counts and an all-subsets census run separately.)*
+- **No cell-local rule decides membership.** Six predicates all fail; the best
+  (ledger + receptive) reaches 92.4%. The ledger `d = (u−v) mod B` is strongly
+  predictive — `d=1` never witnesses (0/3,768), `d ∈ {2,3}` always
+  (39,379/39,379) — but `d=0` splits 4,260 in / 2,172 out, undecidable from
+  cell *i*'s own data. This is the compression barrier one level down: the
+  deciding object is the wave configuration, not per-cell bookkeeping.
 
 An earlier rationale — that a diagonal state recurs on every lockstep cycle, so
 S is one excursion+refractory span — was **falsified** twelve minutes after it
